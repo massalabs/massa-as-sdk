@@ -4,4 +4,4 @@ export * as Types from './types/index';
 export * as ProbabilityHelpers from './helpers/probability/index';
 
 // Re-exported massa-std
-export * as StdLib from 'massa-sc-std/assembly/index';
+export * as StdLib from '@massalabs/massa-sc-std/assembly/index';
