@@ -2,15 +2,26 @@
   "name": "massa-as-sdk",
   "version": "1.0.0",
   "description": "Massa as sdk",
-  "main": "index.ts",
+  "main": "assembly/index.ts",
+  "types": "assembly/index.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/massalabs/massa-as-sdk"
+  },
+  "license": "MIT",
   "scripts": {
     "test": "asp",
     "fmt": "prettier --write '{*,**/*}.{js,ts,jsx,tsx,json}'",
     "lint:fix": "eslint --fix --ext .ts . && yarn fmt",
     "lint": "eslint --ext .ts . && prettier --check '{*,**/*}.{js,ts,jsx,tsx,json}'"
   },
-  "author": "Grégory Libert <greg_libert@yahoo.fr>",
-  "license": "ISC",
+  "author": "Massa Labs <info@massa.net>",
+  "contributors": ["Grégory Libert <greg_libert@yahoo.fr> "],
+  "private": false,
+  "publishConfig": {
+      "access": "public",
+      "registry": "https://registry.npmjs.org/"
+  },
   "devDependencies": {
     "@as-pect/cli": "^6.2.4",
     "@typescript-eslint/eslint-plugin": "^5.18.0",
@@ -25,5 +36,11 @@
   },
   "dependencies": {
     "@massalabs/massa-sc-std": "4.0.1"
-  }
+  },
+  "keywords": [
+    "massa",
+    "std",
+    "smart-contracts",
+    "assemblyscript"
+  ]
 }
