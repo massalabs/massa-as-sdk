@@ -1,0 +1,29 @@
+{
+  "name": "massa-as-sdk",
+  "version": "1.0.0",
+  "description": "Massa as sdk",
+  "main": "index.ts",
+  "scripts": {
+    "test": "asp",
+    "fmt": "prettier --write '{*,**/*}.{js,ts,jsx,tsx,json}'",
+    "lint:fix": "eslint --fix --ext .ts . && yarn fmt",
+    "lint": "eslint --ext .ts . && prettier --check '{*,**/*}.{js,ts,jsx,tsx,json}'"
+  },
+  "author": "Grégory Libert <greg_libert@yahoo.fr>",
+  "license": "ISC",
+  "devDependencies": {
+    "@as-pect/cli": "^6.2.4",
+    "@typescript-eslint/eslint-plugin": "^5.18.0",
+    "@typescript-eslint/parser": "^5.18.0",
+    "assemblyscript": "^0.19.23",
+    "eslint": "^8.12.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.6.2",
+    "typescript": "^4.6.3"
+  },
+  "dependencies": {
+    "@massalabs/massa-sc-std": "4.0.1"
+  }
+}
