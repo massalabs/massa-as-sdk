@@ -24,4 +24,3 @@ describe('Black box tests', () => {
   });
 });
 */
-

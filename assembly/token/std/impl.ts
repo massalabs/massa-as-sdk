@@ -180,7 +180,7 @@ function _transfer(from: Address, to: Address, amount: u64): bool {
   const newTobalance = currentToBalance + amount;
 
   if (
-    currentFromBalance < amount && // underflow of balance from
+    currentFromBalance < amount || // underflow of balance from
     newTobalance < currentToBalance
   ) {
     // overflow of balance to

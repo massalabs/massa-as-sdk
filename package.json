@@ -16,11 +16,13 @@
     "lint": "eslint --ext .ts . && prettier --check '{*,**/*}.{js,ts,jsx,tsx,json}'"
   },
   "author": "Massa Labs <info@massa.net>",
-  "contributors": ["Grégory Libert <greg_libert@yahoo.fr> "],
+  "contributors": [
+    "Grégory Libert <greg_libert@yahoo.fr> "
+  ],
   "private": false,
   "publishConfig": {
-      "access": "public",
-      "registry": "https://registry.npmjs.org/"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
     "@as-pect/cli": "^6.2.4",
