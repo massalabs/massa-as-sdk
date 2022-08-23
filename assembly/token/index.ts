@@ -6,5 +6,5 @@ export {StandardToken};
 export {TokenWrapper};
 */
 
-export * from './std/impl';
-export * from './std/wrapper';
+export * from './impl';
+export * from './wrapper';

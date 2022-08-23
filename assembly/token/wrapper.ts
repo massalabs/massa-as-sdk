@@ -8,7 +8,7 @@ import {Currency, Amount, ByteArray} from '../../types/index';
  * Massa standard token.
  * All the serialization/deserialization will handled here.
  *
- * ```assembyscript
+ * ```assemblyscript
  *  ...
  *  const coin = new TokenWrapper(sc_address);
  *  const coinName = coin.Name();

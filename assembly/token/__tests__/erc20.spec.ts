@@ -1,4 +1,4 @@
-import * as token from '../std/impl';
+import * as token from '../impl';
 // TODO change relative path to cleaner import
 import {setData} from '../../vm-mock/storage';
 
