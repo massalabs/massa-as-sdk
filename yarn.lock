@@ -117,10 +117,10 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
-"@massalabs/massa-sc-std@4.0.1":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@massalabs/massa-sc-std/-/massa-sc-std-4.0.1.tgz#44cf1fd095004336aab99a387d69479679e5db4c"
-  integrity sha512-L/npFlzI9hYVnCMpeh+3Weg4MEgHSBCataxLzAJWpQLSwQUx9ITKukX9MfjACrnP2O7hcZlHq8INikoytdwOFg==
+"@massalabs/massa-sc-std@4.0.2":
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@massalabs/massa-sc-std/-/massa-sc-std-4.0.2.tgz#f1d9dfe7650f698eb6a4d04fa13f0c8dac3d6002"
+  integrity sha512-s1SMF03q+dSt4lGrJkzzpoRKor9AwbObUTlVJLoLhzN1cTHfefOtKveEvTZRfPDVTh4KgN6d4s9C4EDCzzRqiw==
   dependencies:
     assemblyscript-json "^1.1.0"
     mscl-type "https://gitpkg.now.sh/massalabs/massa-sc-library/type?main"
@@ -288,7 +288,7 @@ assemblyscript-json@^1.1.0:
   resolved "https://registry.yarnpkg.com/assemblyscript-json/-/assemblyscript-json-1.1.0.tgz#49d38bc21f1ac36f2887528a35de6cf7d59c17be"
   integrity sha512-UbE8ts8csTWQgd5TnSPN7MRV9NveuHv1bVnKmDLoo/tzjqxkmsZb3lu59Uk8H7SGoqdkDSEE049alx/nHnSdFw==
 
-assemblyscript@^0.19.23:
+assemblyscript@^0.19.20:
   version "0.19.23"
   resolved "https://registry.yarnpkg.com/assemblyscript/-/assemblyscript-0.19.23.tgz#16ece69f7f302161e2e736a0f6a474e6db72134c"
   integrity sha512-fwOQNZVTMga5KRsfY80g7cpOl4PsFQczMwHzdtgoqLXaYhkhavufKb0sB0l3T1DUxpAufA0KNhlbpuuhZUwxMA==
