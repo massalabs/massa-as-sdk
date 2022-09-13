@@ -4,7 +4,7 @@ import {
   Context,
   generateEvent,
 } from '@massalabs/massa-sc-std/assembly';
-import {ByteArray} from 'massa-as/assembly';
+import {ByteArray} from 'massa-as';
 
 const TRANSFER_EVENT_NAME = 'TRANSFER';
 const APPROVAL_EVENT_NAME = 'APPROVAL';
