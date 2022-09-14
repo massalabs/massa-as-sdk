@@ -3,7 +3,7 @@ import {
   Storage,
   Context,
   generateEvent,
-} from '@massalabs/massa-sc-std/assembly';
+} from '../std/index';
 import {ByteArray} from 'massa-as/assembly';
 
 const TRANSFER_EVENT_NAME = 'TRANSFER';
