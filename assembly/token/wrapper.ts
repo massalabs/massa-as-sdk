@@ -1,4 +1,4 @@
-import {Address, call} from '@massalabs/massa-sc-std/assembly';
+import {Address, call} from '../std/index';
 import {Currency, Amount, ByteArray} from 'massa-as/assembly';
 
 /**
