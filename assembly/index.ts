@@ -9,8 +9,7 @@ import * as env from './env/index';
 export {env};
 
 // massa std functionalities
-import * as std from './std/index';
-export {std};
+export * from './std/index';
 
 // massa erc20-alike token
 import * as token from './token/index';
