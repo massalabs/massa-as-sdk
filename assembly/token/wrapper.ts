@@ -1,5 +1,5 @@
 import {Address, call} from '../std/index';
-import {Currency, Amount, ByteArray} from 'massa-as/assembly';
+import {Currency, Amount, ByteArray} from '@massalabs/as/assembly';
 
 /**
  * The Massa's standard token implementation wrapper.

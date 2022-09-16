@@ -1,18 +1,22 @@
 {
-  "name": "massa-as-sdk",
+  "name": "@massalabs/massa-as-sdk",
   "version": "1.0.0",
-  "description": "Massa as sdk",
-  "license": "MIT",
-  "author": "Massa Labs <info@massa.net>",
-  "contributors": ["Grégory Libert <greg_libert@yahoo.fr> "],
-  "private": false,
+  "description": "Massa assemblyscript sdk",
   "main": "assembly/index.ts",
   "types": "assembly/index.ts",
   "type": "module",
+  "author": "Massa Labs <info@massa.net>",
+  "contributors": [
+    "Evgeni Pirianov evgeni.pirianov@gmail.com",
+    "Grégory Libert <greg_libert@yahoo.fr>"
+  ],
+  "license": "(MIT AND Apache-2.0)",
+  "homepage": "https://github.com/massalabs/massa-as-sdk",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/massalabs/massa-as-sdk"
   },
+  "private": false,
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
@@ -37,9 +41,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "prettier": "^2.7.1",
     "typescript": "^4.8.3",
-    "massa-as": "git+https://github.com/massalabs/massa-as"
-  },
-  "dependencies": {
+    "@massalabs/as": "1.0.0"
   },
   "keywords": [
     "massa",
@@ -47,7 +49,8 @@
     "smart-contracts",
     "assemblyscript",
     "wasm",
-    "runtime"
+    "runtime",
+    "sdk"
   ],
   "exports": {
     ".": {
