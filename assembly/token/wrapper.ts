@@ -1,5 +1,5 @@
-import {Address, call} from '@massalabs/massa-sc-std';
-import {Currency, Amount, ByteArray} from '../types/index';
+import {Address, call} from '../std/index';
+import {Currency, Amount, ByteArray} from '@massalabs/as/assembly';
 
 /**
  * The Massa's standard token implementation wrapper.
@@ -31,8 +31,8 @@ export class TokenWrapper {
     this._origin = at;
     this._name = call(this._origin, 'name', '', 0);
     this._currency = new Currency(
-        this._name,
-        U8.parseInt(call(this._origin, 'decimals', '', 0))
+      this._name,
+      U8.parseInt(call(this._origin, 'decimals', '', 0)),
     );
   }
 
@@ -110,7 +110,7 @@ export class TokenWrapper {
    */
   balanceOf(account: Address): Amount {
     return this.toAmount(
-        call(this._origin, 'balanceOf', account.toByteString(), 0)
+      call(this._origin, 'balanceOf', account.toByteString(), 0),
     );
   }
 
@@ -129,12 +129,12 @@ export class TokenWrapper {
 
     return (
       call(
-          this._origin,
-          'transfer',
-          toAccount
-              .toStringSegment()
-              .concat(ByteArray.fromU64(nbTokens.value()).toByteString()),
-          0
+        this._origin,
+        'transfer',
+        toAccount
+          .toStringSegment()
+          .concat(ByteArray.fromU64(nbTokens.value()).toByteString()),
+        0,
       ) == '1'
     );
   }
@@ -149,12 +149,12 @@ export class TokenWrapper {
    */
   allowance(ownerAccount: Address, spenderAccount: Address): Amount {
     return this.toAmount(
-        call(
-            this._origin,
-            'allowance',
-            ownerAccount.toStringSegment().concat(spenderAccount.toStringSegment()),
-            0
-        )
+      call(
+        this._origin,
+        'allowance',
+        ownerAccount.toStringSegment().concat(spenderAccount.toStringSegment()),
+        0,
+      ),
     );
   }
 
@@ -176,12 +176,12 @@ export class TokenWrapper {
 
     return (
       call(
-          this._origin,
-          'increaseAllowance',
-          spenderAccount
-              .toStringSegment()
-              .concat(ByteArray.fromU64(nbTokens.value()).toByteString()),
-          0
+        this._origin,
+        'increaseAllowance',
+        spenderAccount
+          .toStringSegment()
+          .concat(ByteArray.fromU64(nbTokens.value()).toByteString()),
+        0,
       ) == '1'
     );
   }
@@ -204,12 +204,12 @@ export class TokenWrapper {
 
     return (
       call(
-          this._origin,
-          'decreaseAllowance',
-          spenderAccount
-              .toStringSegment()
-              .concat(ByteArray.fromU64(nbTokens.value()).toByteString()),
-          0
+        this._origin,
+        'decreaseAllowance',
+        spenderAccount
+          .toStringSegment()
+          .concat(ByteArray.fromU64(nbTokens.value()).toByteString()),
+        0,
       ) == '1'
     );
   }
@@ -230,9 +230,9 @@ export class TokenWrapper {
    * @return {boolean} true on success
    */
   transferFrom(
-      ownerAccount: Address,
-      recipientAccount: Address,
-      nbTokens: Amount
+    ownerAccount: Address,
+    recipientAccount: Address,
+    nbTokens: Amount,
   ): boolean {
     if (!this.checkAmount(nbTokens)) {
       return false;
@@ -240,16 +240,16 @@ export class TokenWrapper {
 
     return (
       call(
-          this._origin,
-          'transferFrom',
-          ownerAccount
+        this._origin,
+        'transferFrom',
+        ownerAccount
+          .toStringSegment()
+          .concat(
+            recipientAccount
               .toStringSegment()
-              .concat(
-                  recipientAccount
-                      .toStringSegment()
-                      .concat(ByteArray.fromU64(nbTokens.value()).toByteString())
-              ),
-          0
+              .concat(ByteArray.fromU64(nbTokens.value()).toByteString()),
+          ),
+        0,
       ) == '1'
     );
   }

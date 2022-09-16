@@ -1,8 +1,16 @@
 // Standard Massa AssemblyScript SDK
-export * from './token/index';
-export * from './types/index';
-export * from './helpers/probability/index';
-export * from './collections/persistentMap';
-export * from './serde/index';
 
+// massa higher order collections
+import * as collections from './collections/index';
+export {collections};
 
+// massa native wasm bindings
+import * as env from './env/index';
+export {env};
+
+// massa std functionalities
+export * from './std';
+
+// massa erc20-alike token
+import * as token from './token/index';
+export {token};

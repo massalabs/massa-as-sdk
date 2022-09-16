@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import {Storage} from '@massalabs/massa-sc-std';
+import {Storage} from '../std/index';
 
 export const _KEY_ELEMENT_SUFFIX = '::';
 

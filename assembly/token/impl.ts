@@ -3,8 +3,8 @@ import {
   Storage,
   Context,
   generateEvent,
-} from '@massalabs/massa-sc-std';
-import {ByteArray} from '../types/index';
+} from '../std/index';
+import {ByteArray} from '@massalabs/as/assembly';
 
 const TRANSFER_EVENT_NAME = 'TRANSFER';
 const APPROVAL_EVENT_NAME = 'APPROVAL';

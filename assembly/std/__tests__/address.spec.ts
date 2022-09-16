@@ -1,9 +1,9 @@
 import {Address} from '../address';
 
-describe('Doc tests', () => {
-  it('should be simple to use', () => {
+describe('Address tests', () => {
+  it('basic tests', () => {
     const a1 = Address.fromByteString(
-        'A1aMywGBgBywiL6WcbKR4ugxoBtdP9P3waBVi5e713uvj7F1DJL'
+      'A1aMywGBgBywiL6WcbKR4ugxoBtdP9P3waBVi5e713uvj7F1DJL',
     );
 
     expect<bool>(a1.isValid()).toBeTruthy();
@@ -35,5 +35,3 @@ describe('Doc tests', () => {
     expect<Address>(a3).toBe(a1);
   });
 });
-
-describe('Blackbox tests', () => {});
