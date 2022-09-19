@@ -135,6 +135,10 @@ export function getOpData(key: StaticArray<u8>): StaticArray<u8> {
  */
 export function getOpKeys(): Array<StaticArray<u8>> {
   let keys_ser = env.getOpKeys();
+  return derOpKeys(keys_ser);
+}
+
+function derOpKeys(keys_ser: StaticArray<u8>): Array<StaticArray<u8>> {
   let keys_der = new Array<StaticArray<u8>>();
   // Datastore deserialization
   // Format is: L (u32); V1_L (u8); V1 data (u8*V1_L); ...
@@ -153,6 +157,7 @@ export function getOpKeys(): Array<StaticArray<u8>> {
     keys_der.push(StaticArray.slice(keys_ser, start, end));
     i = end;
   }
+
   return keys_der;
 }
 
