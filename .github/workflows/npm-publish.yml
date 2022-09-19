@@ -28,20 +28,7 @@ jobs:
           node-version: 16
           registry-url: https://registry.npmjs.org/
       - run: |
-          npm run test:ci
+          npm ci
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
-
-  release:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
-          registry-url: https://registry.npmjs.org/
-      - run: |
-          npm run test:ci
-      - uses: softprops/action-gh-release@v1
