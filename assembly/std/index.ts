@@ -138,24 +138,53 @@ export function getOpKeys(): Array<StaticArray<u8>> {
   return derOpKeys(keys_ser);
 }
 
-function derOpKeys(keys_ser: StaticArray<u8>): Array<StaticArray<u8>> {
+export function derOpKeys(keys_ser: StaticArray<u8>): Array<StaticArray<u8>> {
+
+  let MAX_DATASTORE_ENTRY_COUNT = u16.MAX_VALUE;
+  let default_res = new Array<StaticArray<u8>>();
   let keys_der = new Array<StaticArray<u8>>();
   // Datastore deserialization
   // Format is: L (u32); V1_L (u8); V1 data (u8*V1_L); ...
   // TODO: test keys_ser initial len
   // u8 * 4 (LE) => u32
   let entry_count: u32 = keys_ser[0] << 24 + keys_ser[1] << 16 + keys_ser[2] << 8 + keys_ser[3];
+
+  if (entry_count == 0 || entry_count > MAX_DATASTORE_ENTRY_COUNT) {
+    return keys_der;
+  }
+
+  let entry_pushed: u32 = 0;
   let i = 4;
-  // TODO: test the following data
-  // let keys_ser = [3, 0, 0, 0, 2]; // wrong format; 3 vec; 1st vec len = 2; no data for 1st vec
-  // let keys_ser = [1, 0, 0, 0, 255, 1, 2]; // wrong format; 1 vec; 1st vec len = 255; not enough data for 1st vec
-  // let keys_ser = [255, 255, 255, 255, 2]; // invalid; too much entry
   while(i < keys_ser.length) {
     let current_len = keys_ser[i];
     let start = i+1;
     let end = i+current_len+1;
+
+    // Check for edge cases: e.g. data len is set to 0
+    if (start >= keys_ser.length) {
+        // force to return default_res
+        entry_pushed <= 1 ? 0 : entry_pushed - 1;
+        break;
+    }
+    // Check for wrong/malicious format or truncated data
+    // Example: let keys_ser = [1, 0, 0, 0, 255, 1, 2];
+    if (end > keys_ser.length) {
+        entry_pushed <= 1 ? 0 : entry_pushed - 1;
+        break;
+    }
+
     keys_der.push(StaticArray.slice(keys_ser, start, end));
+    entry_pushed += 1;
+    if (entry_pushed > entry_count) {
+        entry_pushed = 0;
+        break;
+    }
+
     i = end;
+  }
+
+  if (entry_count != entry_pushed) {
+    return default_res;
   }
 
   return keys_der;
