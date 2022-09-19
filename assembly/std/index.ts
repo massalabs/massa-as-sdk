@@ -103,6 +103,60 @@ export function balanceOf(address: string): u64 {
 }
 
 /**
+ * Check for key in datastore
+ *
+ * @param {StaticArray<u8>} key
+ *
+ * @return {bool} - true if key is present in datastore, false otherwise.
+ */
+export function hasOpKey(key: StaticArray<u8>): bool {
+  let result = env.hasOpKey(key);
+  // From https://doc.rust-lang.org/reference/types/boolean.html &&
+  // https://www.assemblyscript.org/types.html
+  // we can safely cast from u8 to bool
+  return bool(result[0]);
+}
+
+/*
+ * Get data associated with the given key from datastore
+ *
+ * @param {StaticArray<u8>} key
+ *
+ * @return {StaticArray<u8>} - data as a byte array
+ */
+export function getOpData(key: StaticArray<u8>): StaticArray<u8> {
+  return env.getOpData(key);
+}
+
+/*
+ * Get all keys from datastore
+ *
+ * @return {Array<StaticArray<u8>} - a list of key (e.g. a list of bytearray)
+ */
+export function getOpKeys(): Array<StaticArray<u8>> {
+  let keys_ser = env.getOpKeys();
+  let keys_der = new Array<StaticArray<u8>>();
+  // Datastore deserialization
+  // Format is: L (u32); V1_L (u8); V1 data (u8*V1_L); ...
+  // TODO: test keys_ser initial len
+  // u8 * 4 (LE) => u32
+  let entry_count: u32 = keys_ser[0] << 24 + keys_ser[1] << 16 + keys_ser[2] << 8 + keys_ser[3];
+  let i = 4;
+  // TODO: test the following data
+  // let keys_ser = [3, 0, 0, 0, 2]; // wrong format; 3 vec; 1st vec len = 2; no data for 1st vec
+  // let keys_ser = [1, 0, 0, 0, 255, 1, 2]; // wrong format; 1 vec; 1st vec len = 255; not enough data for 1st vec
+  // let keys_ser = [255, 255, 255, 255, 2]; // invalid; too much entry
+  while(i < keys_ser.length) {
+    let current_len = keys_ser[i];
+    let start = i+1;
+    let end = i+current_len+1;
+    keys_der.push(StaticArray.slice(keys_ser, start, end));
+    i = end;
+  }
+  return keys_der;
+}
+
+/**
  * Converts data to base58.
  *
  * @param {string} data
