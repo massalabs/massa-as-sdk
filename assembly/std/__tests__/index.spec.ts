@@ -21,7 +21,8 @@ describe('index tests', () => {
     let keys_ser_ko3: StaticArray<u8> = [1, 0, 0, 0, 255, 1, 2]; // wrong format; 1 vec; 1st vec len = 255; not enough data for 1st vec
     let keys_ser_ko4: StaticArray<u8> = [255, 255, 255, 255, 2]; // invalid; too much entry
     let keys_ser_ko5: StaticArray<u8> = [1, 0, 0, 0, 0]; // edge case; not invalid but meh :-/
-    let keys_ser_ko6: StaticArray<u8> = [1, 0, 0, 0, 2, 127, 254, 1, 99]; // invalid only 1 entry but 2 entries in data
+    let keys_ser_ko6: StaticArray<u8> = [0, 0, 0, 0, 0]; // edge case; not invalid but meh :-/
+    let keys_ser_ko7: StaticArray<u8> = [1, 0, 0, 0, 2, 127, 254, 1, 99]; // invalid only 1 entry but 2 entries in data
 
     let res = derOpKeys(keys_ser_ok1);
     expect(res.length).toBe(keys_ser_ok1_expected_len);
@@ -52,5 +53,7 @@ describe('index tests', () => {
     expect(res_5.length).toBe(0);
     let res_6 = derOpKeys(keys_ser_ko6);
     expect(res_6.length).toBe(0);
+    let res_7 = derOpKeys(keys_ser_ko7);
+    expect(res_7.length).toBe(0);
   });
 });
