@@ -15,7 +15,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - run: npm test:ci
+      - run: npm ci
+      - run: npm run test:ci
 
   publish-npm:
     needs: test
@@ -32,7 +33,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
 
-  build:
+  release:
     needs: test
     runs-on: ubuntu-latest
     steps:
