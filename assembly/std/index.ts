@@ -2,6 +2,7 @@ import {env} from '../env/index';
 import {Address} from './address';
 import * as Storage from './storage';
 import * as Context from './context';
+import {MAX_DATASTORE_ENTRY_COUNT} from './constant';
 
 export {Address, Storage, Context};
 
@@ -140,7 +141,6 @@ export function getOpKeys(): Array<StaticArray<u8>> {
 
 export function derOpKeys(keys_ser: StaticArray<u8>): Array<StaticArray<u8>> {
 
-  let MAX_DATASTORE_ENTRY_COUNT = u16.MAX_VALUE;
   let default_res = new Array<StaticArray<u8>>();
   let keys_der = new Array<StaticArray<u8>>();
   // Datastore deserialization

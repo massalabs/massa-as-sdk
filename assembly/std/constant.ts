@@ -1,0 +1,1 @@
+export const MAX_DATASTORE_ENTRY_COUNT = u16.MAX_VALUE;
