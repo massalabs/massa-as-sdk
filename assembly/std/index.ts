@@ -145,9 +145,16 @@ export function derOpKeys(keys_ser: StaticArray<u8>): Array<StaticArray<u8>> {
   let keys_der = new Array<StaticArray<u8>>();
   // Datastore deserialization
   // Format is: L (u32); V1_L (u8); V1 data (u8*V1_L); ...
-  // TODO: test keys_ser initial len
   // u8 * 4 (LE) => u32
-  let entry_count: u32 = keys_ser[0] << 24 + keys_ser[1] << 16 + keys_ser[2] << 8 + keys_ser[3];
+
+  // Build a DataView from our StaticArray<u8> so we can easily compute: entry_count
+  let ar = new Uint8Array(4);
+  ar[0] = keys_ser[0];
+  ar[1] = keys_ser[1];
+  ar[2] = keys_ser[2];
+  ar[3] = keys_ser[3];
+  let dv = new DataView(ar.buffer, ar.byteOffset, ar.byteLength);
+  let entry_count = dv.getUint32(0, true /* littleEndian */);
 
   if (entry_count == 0 || entry_count > MAX_DATASTORE_ENTRY_COUNT) {
     return keys_der;
