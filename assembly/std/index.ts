@@ -142,7 +142,6 @@ export function getOpKeys(): Array<StaticArray<u8>> {
 export function derOpKeys(keys_ser: StaticArray<u8>): Array<StaticArray<u8>> {
 
   let default_res = new Array<StaticArray<u8>>();
-  let keys_der = new Array<StaticArray<u8>>();
   // Datastore deserialization
   // Format is: L (u32); V1_L (u8); V1 data (u8*V1_L); ...
   // u8 * 4 (LE) => u32
@@ -157,9 +156,10 @@ export function derOpKeys(keys_ser: StaticArray<u8>): Array<StaticArray<u8>> {
   let entry_count = dv.getUint32(0, true /* littleEndian */);
 
   if (entry_count == 0 || entry_count > MAX_DATASTORE_ENTRY_COUNT) {
-    return keys_der;
+    return default_res;
   }
 
+  let keys_der = new Array<StaticArray<u8>>(entry_count);
   let entry_pushed: u32 = 0;
   let i = 4;
   while(i < keys_ser.length) {
@@ -180,7 +180,7 @@ export function derOpKeys(keys_ser: StaticArray<u8>): Array<StaticArray<u8>> {
         break;
     }
 
-    keys_der.push(StaticArray.slice(keys_ser, start, end));
+    keys_der[entry_pushed] = StaticArray.slice(keys_ser, start, end);
     entry_pushed += 1;
     if (entry_pushed > entry_count) {
         entry_pushed = 0;
