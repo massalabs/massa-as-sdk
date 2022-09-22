@@ -110,8 +110,8 @@ export function balanceOf(address: string): u64 {
  *
  * @return {bool} - true if key is present in datastore, false otherwise.
  */
-export function hasOpKey(key: StaticArray<u8>): bool {
-  let result = env.hasOpKey(key);
+export function hasOpKey(key: Uint8Array): bool {
+  let result = env.hasOpKey(key.buffer);
   // From https://doc.rust-lang.org/reference/types/boolean.html &&
   // https://www.assemblyscript.org/types.html
   // we can safely cast from u8 to bool
@@ -125,8 +125,9 @@ export function hasOpKey(key: StaticArray<u8>): bool {
  *
  * @return {StaticArray<u8>} - data as a byte array
  */
-export function getOpData(key: StaticArray<u8>): StaticArray<u8> {
-  return env.getOpData(key);
+export function getOpData(key: Uint8Array): Uint8Array {
+  let result_ = env.getOpData(key.buffer);
+  return Uint8Array.wrap(result_);
 }
 
 /*
@@ -134,32 +135,34 @@ export function getOpData(key: StaticArray<u8>): StaticArray<u8> {
  *
  * @return {Array<StaticArray<u8>} - a list of key (e.g. a list of bytearray)
  */
-export function getOpKeys(): Array<StaticArray<u8>> {
-  let keys_ser = env.getOpKeys();
+export function getOpKeys(): Array<Uint8Array> {
+  let buf = env.getOpKeys();
+  let keys_ser: Uint8Array = Uint8Array.wrap(buf);
   return derOpKeys(keys_ser);
 }
 
-export function derOpKeys(keys_ser: StaticArray<u8>): Array<StaticArray<u8>> {
+/*
+ * Internal function - used by getOpKeys
+ */
+export function derOpKeys(keys_ser: Uint8Array): Array<Uint8Array> {
 
-  let default_res = new Array<StaticArray<u8>>();
+  let default_res = new Array<Uint8Array>();
+
+  if (keys_ser.length == 0) {
+    return default_res;
+  }
+
   // Datastore deserialization
   // Format is: L (u32); V1_L (u8); V1 data (u8*V1_L); ...
   // u8 * 4 (LE) => u32
-
-  // Build a DataView from our StaticArray<u8> so we can easily compute: entry_count
-  let ar = new Uint8Array(4);
-  ar[0] = keys_ser[0];
-  ar[1] = keys_ser[1];
-  ar[2] = keys_ser[2];
-  ar[3] = keys_ser[3];
-  let dv = new DataView(ar.buffer, ar.byteOffset, ar.byteLength);
+  let dv = new DataView(keys_ser.buffer, 0, 4);
   let entry_count = dv.getUint32(0, true /* littleEndian */);
 
   if (entry_count == 0 || entry_count > MAX_DATASTORE_ENTRY_COUNT) {
     return default_res;
   }
 
-  let keys_der = new Array<StaticArray<u8>>(entry_count);
+  let keys_der = new Array<Uint8Array>(entry_count);
   let entry_pushed: u32 = 0;
   let i = 4;
   while(i < keys_ser.length) {
@@ -180,7 +183,7 @@ export function derOpKeys(keys_ser: StaticArray<u8>): Array<StaticArray<u8>> {
         break;
     }
 
-    keys_der[entry_pushed] = StaticArray.slice(keys_ser, start, end);
+    keys_der[entry_pushed] = keys_ser.subarray(start, end); // no copy here
     entry_pushed += 1;
     if (entry_pushed > entry_count) {
         entry_pushed = 0;
