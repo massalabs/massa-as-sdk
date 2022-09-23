@@ -106,7 +106,7 @@ export function balanceOf(address: string): u64 {
 /**
  * Check for key in datastore
  *
- * @param {StaticArray<u8>} key
+ * @param {Uint8Array} key
  *
  * @return {bool} - true if key is present in datastore, false otherwise.
  */
@@ -123,7 +123,7 @@ export function hasOpKey(key: Uint8Array): bool {
  *
  * @param {StaticArray<u8>} key
  *
- * @return {StaticArray<u8>} - data as a byte array
+ * @return {Uint8Array} - data as a byte array
  */
 export function getOpData(key: Uint8Array): Uint8Array {
   let result_ = env.getOpData(key.buffer);
@@ -133,7 +133,7 @@ export function getOpData(key: Uint8Array): Uint8Array {
 /*
  * Get all keys from datastore
  *
- * @return {Array<StaticArray<u8>} - a list of key (e.g. a list of bytearray)
+ * @return {Array<Uint8Array>} - a list of key (e.g. a list of bytearray)
  */
 export function getOpKeys(): Array<Uint8Array> {
   let buf = env.getOpKeys();
