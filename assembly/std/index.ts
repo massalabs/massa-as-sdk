@@ -146,10 +146,8 @@ export function getOpKeys(): Array<Uint8Array> {
  */
 export function derOpKeys(keys_ser: Uint8Array): Array<Uint8Array> {
 
-  let default_res = new Array<Uint8Array>();
-
   if (keys_ser.length == 0) {
-    return default_res;
+    return new Array<Uint8Array>();
   }
 
   // Datastore deserialization
@@ -158,43 +156,12 @@ export function derOpKeys(keys_ser: Uint8Array): Array<Uint8Array> {
   let dv = new DataView(keys_ser.buffer, 0, 4);
   let entry_count = dv.getUint32(0, true /* littleEndian */);
 
-  if (entry_count == 0 || entry_count > MAX_DATASTORE_ENTRY_COUNT) {
-    return default_res;
-  }
-
+  let cursor = 4;
   let keys_der = new Array<Uint8Array>(entry_count);
-  let entry_pushed: u32 = 0;
-  let i = 4;
-  while(i < keys_ser.length) {
-    let current_len = keys_ser[i];
-    let start = i+1;
-    let end = i+current_len+1;
-
-    // Check for edge cases: e.g. data len is set to 0
-    if (start >= keys_ser.length) {
-        // force to return default_res
-        entry_pushed <= 1 ? 0 : entry_pushed - 1;
-        break;
-    }
-    // Check for wrong/malicious format or truncated data
-    // Example: let keys_ser = [1, 0, 0, 0, 255, 1, 2];
-    if (end > keys_ser.length) {
-        entry_pushed <= 1 ? 0 : entry_pushed - 1;
-        break;
-    }
-
-    keys_der[entry_pushed] = keys_ser.subarray(start, end); // no copy here
-    entry_pushed += 1;
-    if (entry_pushed > entry_count) {
-        entry_pushed = 0;
-        break;
-    }
-
-    i = end;
-  }
-
-  if (entry_count != entry_pushed) {
-    return default_res;
+  for (let i: u32 = 0; i < entry_count; i++) {
+    let end = cursor + keys_ser[cursor] + 1;
+    keys_der[i] = keys_ser.subarray(cursor + 1, end); // no copy here
+    cursor = end;
   }
 
   return keys_der;
