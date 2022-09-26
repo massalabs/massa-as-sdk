@@ -2,6 +2,7 @@ import {env} from '../env/index';
 import {Address} from './address';
 import * as Storage from './storage';
 import * as Context from './context';
+import {MAX_DATASTORE_ENTRY_COUNT} from './constant';
 
 export {Address, Storage, Context};
 
@@ -100,6 +101,70 @@ export function balance(): u64 {
  */
 export function balanceOf(address: string): u64 {
   return env.balanceOf(address);
+}
+
+/**
+ * Check for key in datastore
+ *
+ * @param {Uint8Array} key
+ *
+ * @return {bool} - true if key is present in datastore, false otherwise.
+ */
+export function hasOpKey(key: Uint8Array): bool {
+  let result = env.hasOpKey(key.buffer);
+  // From https://doc.rust-lang.org/reference/types/boolean.html &&
+  // https://www.assemblyscript.org/types.html
+  // we can safely cast from u8 to bool
+  return bool(result[0]);
+}
+
+/*
+ * Get data associated with the given key from datastore
+ *
+ * @param {StaticArray<u8>} key
+ *
+ * @return {Uint8Array} - data as a byte array
+ */
+export function getOpData(key: Uint8Array): Uint8Array {
+  let result_ = env.getOpData(key.buffer);
+  return Uint8Array.wrap(result_);
+}
+
+/*
+ * Get all keys from datastore
+ *
+ * @return {Array<Uint8Array>} - a list of key (e.g. a list of bytearray)
+ */
+export function getOpKeys(): Array<Uint8Array> {
+  let buf = env.getOpKeys();
+  let keys_ser: Uint8Array = Uint8Array.wrap(buf);
+  return derOpKeys(keys_ser);
+}
+
+/*
+ * Internal function - used by getOpKeys
+ */
+export function derOpKeys(keys_ser: Uint8Array): Array<Uint8Array> {
+
+  if (keys_ser.length == 0) {
+    return new Array<Uint8Array>();
+  }
+
+  // Datastore deserialization
+  // Format is: L (u32); V1_L (u8); V1 data (u8*V1_L); ...
+  // u8 * 4 (LE) => u32
+  let dv = new DataView(keys_ser.buffer, 0, 4);
+  let entry_count = dv.getUint32(0, true /* littleEndian */);
+
+  let cursor = 4;
+  let keys_der = new Array<Uint8Array>(entry_count);
+  for (let i: u32 = 0; i < entry_count; i++) {
+    let end = cursor + keys_ser[cursor] + 1;
+    keys_der[i] = keys_ser.subarray(cursor + 1, end); // no copy here
+    cursor = end;
+  }
+
+  return keys_der;
 }
 
 /**
