@@ -160,7 +160,13 @@ export function derOpKeys(keys_ser: Uint8Array): Array<Uint8Array> {
   let keys_der = new Array<Uint8Array>(entry_count);
   for (let i: u32 = 0; i < entry_count; i++) {
     let end = cursor + keys_ser[cursor] + 1;
-    keys_der[i] = keys_ser.subarray(cursor + 1, end); // no copy here
+    // keys_der[i] = keys_ser.subarray(cursor + 1, end); // no copy here
+    // Need a copy here otherwise weird things will happen
+    let ar_ = keys_ser.subarray(cursor + 1, end);
+    let ar = new Uint8Array(ar_.length);
+    ar.set(ar_); // copy subarray into dest
+    keys_der[i] = ar;
+
     cursor = end;
   }
 
