@@ -163,13 +163,13 @@ export namespace env {
 
     // @ts-ignore
     @external("massa", "assembly_script_get_op_keys")
-    export declare function getOpKeys(): ArrayBuffer;
+    export declare function getOpKeys(): StaticArray<u8>;
 
     // @ts-ignore
     @external("massa", "assembly_script_has_op_key")
-    export declare function hasOpKey(key: ArrayBuffer): StaticArray<u8>;
+    export declare function hasOpKey(key: StaticArray<u8>): StaticArray<u8>;
 
     // @ts-ignore
     @external("massa", "assembly_script_get_op_data")
-    export declare function getOpData(key: ArrayBuffer): ArrayBuffer;
+    export declare function getOpData(key: StaticArray<u8>): StaticArray<u8>;
 }

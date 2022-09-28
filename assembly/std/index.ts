@@ -106,12 +106,12 @@ export function balanceOf(address: string): u64 {
 /**
  * Check for key in datastore
  *
- * @param {Uint8Array} key
+ * @param {StaticArray<u8>} key
  *
  * @return {bool} - true if key is present in datastore, false otherwise.
  */
-export function hasOpKey(key: Uint8Array): bool {
-  let result = env.hasOpKey(key.buffer);
+export function hasOpKey(key: StaticArray<u8>): bool {
+  let result = env.hasOpKey(key);
   // From https://doc.rust-lang.org/reference/types/boolean.html &&
   // https://www.assemblyscript.org/types.html
   // we can safely cast from u8 to bool
@@ -123,44 +123,48 @@ export function hasOpKey(key: Uint8Array): bool {
  *
  * @param {StaticArray<u8>} key
  *
- * @return {Uint8Array} - data as a byte array
+ * @return {StaticArray<u8>} - data as a byte array
  */
-export function getOpData(key: Uint8Array): Uint8Array {
-  let result_ = env.getOpData(key.buffer);
-  return Uint8Array.wrap(result_);
+export function getOpData(key: StaticArray<u8>): StaticArray<u8> {
+  return env.getOpData(key);
 }
 
 /*
  * Get all keys from datastore
  *
- * @return {Array<Uint8Array>} - a list of key (e.g. a list of bytearray)
+ * @return {StaticArray<u8>} - a list of key (e.g. a list of bytearray)
  */
-export function getOpKeys(): Array<Uint8Array> {
-  let buf = env.getOpKeys();
-  let keys_ser: Uint8Array = Uint8Array.wrap(buf);
+export function getOpKeys(): Array<StaticArray<u8>> {
+  let keys_ser = env.getOpKeys();
   return derOpKeys(keys_ser);
 }
 
 /*
  * Internal function - used by getOpKeys
  */
-export function derOpKeys(keys_ser: Uint8Array): Array<Uint8Array> {
+export function derOpKeys(keys_ser: StaticArray<u8>): Array<StaticArray<u8>> {
 
   if (keys_ser.length == 0) {
-    return new Array<Uint8Array>();
+    return new Array<StaticArray<u8>>();
   }
 
   // Datastore deserialization
   // Format is: L (u32); V1_L (u8); V1 data (u8*V1_L); ...
   // u8 * 4 (LE) => u32
-  let dv = new DataView(keys_ser.buffer, 0, 4);
+  let ar = new Uint8Array(4);
+  ar[0] = keys_ser[0];
+  ar[1] = keys_ser[1];
+  ar[2] = keys_ser[2];
+  ar[3] = keys_ser[3];
+  let dv = new DataView(ar.buffer, ar.byteOffset, ar.byteLength);
   let entry_count = dv.getUint32(0, true /* littleEndian */);
 
   let cursor = 4;
-  let keys_der = new Array<Uint8Array>(entry_count);
+  let keys_der = new Array<StaticArray<u8>>(entry_count);
   for (let i: u32 = 0; i < entry_count; i++) {
     let end = cursor + keys_ser[cursor] + 1;
-    keys_der[i] = keys_ser.subarray(cursor + 1, end); // no copy here
+    keys_der[i] = StaticArray.slice(keys_ser, cursor +1, end);
+
     cursor = end;
   }
 
