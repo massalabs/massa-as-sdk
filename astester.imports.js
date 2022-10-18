@@ -42,7 +42,6 @@ export function local(memory) {
         }
         const addressStorage = Storage.get(a);
         addressStorage.set(k, v);
-        console.log("addressStrorage ", addressStorage);
       },
       assembly_script_get_data_for(a_ptr, k_ptr) {
         let v = "";
