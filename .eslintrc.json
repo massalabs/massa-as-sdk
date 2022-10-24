@@ -21,7 +21,6 @@
         // Omitted semicolons are hugely popular, yet within the compiler it makes
         // sense to be better safe than sorry.
         "semi": "error",
-        "operator-linebreak": ["error", "before"],
 
         // Our code bases uses 2 spaces for indentation, and we enforce it here so
         // files don't mix spaces, tabs or different indentation levels.
