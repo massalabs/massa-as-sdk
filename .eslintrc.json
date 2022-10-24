@@ -26,7 +26,7 @@
         // files don't mix spaces, tabs or different indentation levels.
         "indent": [
             "error",
-            2,
+            4,
             {
                 "SwitchCase": 1,
                 "VariableDeclarator": "first",
