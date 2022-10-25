@@ -126,9 +126,7 @@ export class PersistentMap<K, V> {
       return parseFloat(Storage.get(this._key(key)));
     } else if (isBoolean<V>()) {
       // @ts-ignore
-      return Storage.get(this._key(key)).toLowerCase() == 'true' ?
-        true :
-        false;
+      return Storage.get(this._key(key)).toLowerCase() == 'true' ? true : false;
     } else {
       // @ts-ignore
       return null;

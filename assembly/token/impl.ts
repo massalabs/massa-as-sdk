@@ -1,9 +1,4 @@
-import {
-  Address,
-  Storage,
-  Context,
-  generateEvent,
-} from '../std/index';
+import {Address, Storage, Context, generateEvent} from '../std/index';
 import {ByteArray} from '@massalabs/as/assembly';
 
 const TRANSFER_EVENT_NAME = 'TRANSFER';
@@ -329,13 +324,13 @@ export function decreaseAllowance(args: string): string {
  *
  */
 function _approve(
-    ownerAddress: Address,
-    spenderAddress: Address,
-    amount: u64
+  ownerAddress: Address,
+  spenderAddress: Address,
+  amount: u64,
 ): void {
   Storage.set(
-      ownerAddress.toByteString().concat(spenderAddress.toByteString()),
-      amount.toString()
+    ownerAddress.toByteString().concat(spenderAddress.toByteString()),
+    amount.toString(),
   );
 }
 
