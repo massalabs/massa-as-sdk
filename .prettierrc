@@ -2,19 +2,5 @@
   "bracketSpacing": false,
   "singleQuote": true,
   "trailingComma": "all",
-  "parser": "typescript",
-  "overrides": [
-    {
-      "files": ["*.asconfig.json"],
-      "options": {
-        "parser": "json"
-      }
-    },
-    {
-        "files": ["*.json"],
-        "options": {
-          "parser": "json"
-        }
-      }
-  ]
+  "parser": "typescript"
 }

@@ -103,9 +103,9 @@ export function balanceOf(args: string): string {
  * @return {u64}
  */
 function _balance(address: Address): u64 {
-  const bal = Storage.has(address.toByteString()) ?
-    Storage.get(address.toByteString()) :
-    '0';
+  const bal = Storage.has(address.toByteString())
+    ? Storage.get(address.toByteString())
+    : '0';
 
   return U64.parseInt(bal, 10);
 }
@@ -209,9 +209,9 @@ export function allowance(args: string): string {
   spenderAddress.fromStringSegment(args, offset);
 
   const r =
-    ownerAddress.isValid() && spenderAddress.isValid() ?
-      _allowance(ownerAddress, spenderAddress) :
-      <u64>NaN;
+    ownerAddress.isValid() && spenderAddress.isValid()
+      ? _allowance(ownerAddress, spenderAddress)
+      : <u64>NaN;
 
   return r.toString();
 }
