@@ -28,12 +28,13 @@
     "fmt": "as-prettier --write '{*,**/*}.{js,ts,jsx,tsx,json}' && npm run lint:fix",
     "fmt:check": "as-prettier --check '{*,**/*}.{js,ts,jsx,tsx,json}'",
     "lint": "eslint --ext .ts .",
+    "asbuild:debug": "asc assembly/std/arguments.ts --target debug",
     "lint:fix": "eslint --fix --ext .ts ."
   },
   "devDependencies": {
     "@as-pect/cli": "^7.0.7",
     "@assemblyscript/loader": "^0.21.2",
-    "@massalabs/as": "1.0.0",
+    "@massalabs/as": "^1.0.2",
     "@typescript-eslint/eslint-plugin": "^5.29.0",
     "@typescript-eslint/parser": "^5.29.0",
     "as-console": "^6.0.2",

@@ -1,5 +1,5 @@
 import {Address, Storage, Context, generateEvent} from '../std/index';
-import {ByteArray} from '@massalabs/as/assembly';
+import {Args} from '../std/arguments';
 
 const TRANSFER_EVENT_NAME = 'TRANSFER';
 const APPROVAL_EVENT_NAME = 'APPROVAL';
@@ -28,7 +28,7 @@ export function version(_: string): string {
 }
 
 // ======================================================== //
-// ====                 TOKEN ATTIBUTES                ==== //
+// ====                 TOKEN ATTRIBUTES                ==== //
 // ======================================================== //
 
 /**
@@ -84,12 +84,13 @@ export function decimals(_: string): string {
 /**
  * Returns the balance of an account.
  *
- * @param {string} args - byte string containing an owner's account (Address).
+ * @param {string} argsString - byte string containing an owner's account (Address).
  *
  * @return {string} - u64
  */
-export function balanceOf(args: string): string {
-  const addr = Address.fromByteString(args);
+export function balanceOf(argsString: string): string {
+  const args = new Args(argsString);
+  const addr = args.nextAddress();
 
   const r = addr.isValid() ? _balance(addr) : <u64>NaN;
   return r.toString();
@@ -128,19 +129,18 @@ function _setBalance(address: Address, balance: u64): void {
 /**
  * Transfers tokens from the caller's account to the recipient's account.
  *
- * @param {string} args - byte string with the following format:
+ * @param {string} argsString - byte string with the following format:
  * - the recipient's account (address)
  * - the number of tokens (u64).
  *
  * @return {string} - boolean value ("1" or "0")
  */
-export function transfer(args: string): string {
+export function transfer(argsString: string): string {
   const ownerAddress = Context.caller();
 
-  const toAddress = new Address();
-  const offset = toAddress.fromStringSegment(args);
-
-  const amount = ByteArray.fromByteString(args.substr(offset, 8)).toU64();
+  const args = new Args(argsString);
+  const toAddress = args.nextAddress();
+  const amount = args.nextU64();
 
   if (!toAddress.isValid() || isNaN(amount)) {
     return '0';
@@ -195,18 +195,16 @@ function _transfer(from: Address, to: Address, amount: u64): bool {
 /**
  * Returns the allowance set on the owner's account for the spender.
  *
- * @param {string} args - byte string with the following format:
+ * @param {string} argsString - byte string with the following format:
  * - the owner's account (address)
  * - the spender's account (address).
  *
  * @return {string} - u64
  */
-export function allowance(args: string): string {
-  const ownerAddress = new Address();
-  const offset = ownerAddress.fromStringSegment(args);
-
-  const spenderAddress = new Address();
-  spenderAddress.fromStringSegment(args, offset);
+export function allowance(argsString: string): string {
+  const args = new Args(argsString);
+  const ownerAddress = args.nextAddress();
+  const spenderAddress = args.nextAddress();
 
   const r =
     ownerAddress.isValid() && spenderAddress.isValid()
@@ -236,19 +234,18 @@ function _allowance(ownerAddress: Address, spenderAddress: Address): u64 {
  *
  * This function can only be called by the owner.
  *
- * @param {string} args - byte string with the following format:
+ * @param {string} argsString - byte string with the following format:
  * - the spender's account (address);
  * - the amount (u64).
  *
  * @return {string} - boolean value ("1" or "0")
  */
-export function increaseAllowance(args: string): string {
+export function increaseAllowance(argsString: string): string {
   const ownerAddress = Context.caller();
 
-  const spenderAddress = new Address();
-  const offset = spenderAddress.fromStringSegment(args);
-
-  const amount = ByteArray.fromByteString(args.substr(offset, 8)).toU64();
+  const args = new Args(argsString);
+  const spenderAddress = args.nextAddress();
+  const amount = args.nextU64();
 
   if (!spenderAddress.isValid() || isNaN(amount)) {
     return '0';
@@ -277,19 +274,18 @@ export function increaseAllowance(args: string): string {
  *
  * This function can only be called by the owner.
  *
- * @param {string} args - byte string with the following format:
+ * @param {string} argsString - byte string with the following format:
  * - the spender's account (address);
  * - the amount (u64).
  *
  * @return {string} - boolean value ("1" or "0")
  */
-export function decreaseAllowance(args: string): string {
+export function decreaseAllowance(argsString: string): string {
   const ownerAddress = Context.caller();
 
-  const spenderAddress = new Address();
-  const offset = spenderAddress.fromStringSegment(args);
-
-  const amount = ByteArray.fromByteString(args.substr(offset, 8)).toU64();
+  const args = new Args(argsString);
+  const spenderAddress = args.nextAddress();
+  const amount = args.nextU64();
 
   if (!spenderAddress.isValid() || isNaN(amount)) {
     return '0';
@@ -343,23 +339,20 @@ function _approve(
  * - both allowance and transfer are executed if possible;
  * - or if allowance or transfer is not possible, both are discarded.
  *
- * @param {string} args - byte string with the following format:
+ * @param {string} argsString - byte string with the following format:
  * - the owner's account (address);
  * - the recipient's account (address);
  * - the amount (u64).
  *
  * @return {string} - boolean value ("1" or "0")
  */
-export function transferFrom(args: string): string {
+export function transferFrom(argsString: string): string {
   const spenderAddress = Context.caller();
 
-  const ownerAddress = new Address();
-  let offset = ownerAddress.fromStringSegment(args);
-
-  const recipientAddress = new Address();
-  offset = recipientAddress.fromStringSegment(args, offset);
-
-  const amount = ByteArray.fromByteString(args.substr(offset, 8)).toU64();
+  const args = new Args(argsString);
+  const ownerAddress = args.nextAddress();
+  const recipientAddress = args.nextAddress();
+  const amount = args.nextU64();
 
   if (!ownerAddress.isValid() || !recipientAddress.isValid() || isNaN(amount)) {
     return '0';
