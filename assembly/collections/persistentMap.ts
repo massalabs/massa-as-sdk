@@ -32,6 +32,7 @@ export const _KEY_ELEMENT_SUFFIX = "::";
  */
 export class PersistentMap<K, V> {
   private _elementPrefix: string;
+  private _size: usize;
 
   /**
    * Creates or restores a persistent map with a given storage prefix.
@@ -46,6 +47,7 @@ export class PersistentMap<K, V> {
    */
   constructor(prefix: string) {
     this._elementPrefix = prefix + _KEY_ELEMENT_SUFFIX;
+    this._size = 0;
   }
 
   /**
@@ -76,6 +78,20 @@ export class PersistentMap<K, V> {
   }
 
   /**
+   * Returns the map size
+   *
+   * ```ts
+   * let map = new PersistentMap<string, string>("m")
+   *
+   * map.size()
+   *
+   * @return {usize} the map size
+   */
+  size(): usize {
+    return this._size;
+  }
+
+  /**
    * Removes the given key and related value from the map
    *
    * ```ts
@@ -90,6 +106,26 @@ export class PersistentMap<K, V> {
    */
   delete(key: K): void {
     Storage.del(this._key(key));
+    this._decreaseSize();
+  }
+
+  /**
+   * Increases the internal map size counter
+   * @param {string} key Key to remove.
+   */
+  _increaseSize(key: K): void {
+    if (!this.contains(key)) {
+      this._size += 1;
+    }
+  }
+
+  /**
+   * Decreases the internal map size counter
+   */
+  _decreaseSize(): void {
+    if (this._size > 0) {
+      this._size -= 1;
+    }
   }
 
   /**
@@ -170,19 +206,26 @@ export class PersistentMap<K, V> {
    * @param {V} value The new value of the element.
    */
   set(key: K, value: V): void {
+    // assert map size wont overflow
+    assert(this._size < Usize.MAX_VALUE);
     if (isString<V>()) {
+      this._increaseSize(key);
       // @ts-ignore
       Storage.set(this._key(key), value);
     } else if (isInteger<V>()) {
+      this._increaseSize(key);
       // @ts-ignore
       Storage.set(this._key(key), value.toString());
     } else if (isFloat<V>()) {
+      this._increaseSize(key);
       // @ts-ignore
       Storage.set(this._key(key), value.toString());
     } else if (isBoolean<V>()) {
+      this._increaseSize(key);
       // @ts-ignore
       Storage.set(this._key(key), value.toString());
     } else {
+      this._increaseSize(key);
       // @ts-ignore
       Storage.set(this._key(key), value.toString());
     }
