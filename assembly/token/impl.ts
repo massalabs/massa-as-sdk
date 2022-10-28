@@ -1,9 +1,4 @@
-import {
-  Address,
-  Storage,
-  Context,
-  generateEvent,
-} from '../std/index';
+import {Address, Storage, Context, generateEvent} from '../std/index';
 import {ByteArray} from '@massalabs/as/assembly';
 
 const TRANSFER_EVENT_NAME = 'TRANSFER';
@@ -108,9 +103,9 @@ export function balanceOf(args: string): string {
  * @return {u64}
  */
 function _balance(address: Address): u64 {
-  const bal = Storage.has(address.toByteString()) ?
-    Storage.get(address.toByteString()) :
-    '0';
+  const bal = Storage.has(address.toByteString())
+    ? Storage.get(address.toByteString())
+    : '0';
 
   return U64.parseInt(bal, 10);
 }
@@ -214,9 +209,9 @@ export function allowance(args: string): string {
   spenderAddress.fromStringSegment(args, offset);
 
   const r =
-    ownerAddress.isValid() && spenderAddress.isValid() ?
-      _allowance(ownerAddress, spenderAddress) :
-      <u64>NaN;
+    ownerAddress.isValid() && spenderAddress.isValid()
+      ? _allowance(ownerAddress, spenderAddress)
+      : <u64>NaN;
 
   return r.toString();
 }
@@ -329,13 +324,13 @@ export function decreaseAllowance(args: string): string {
  *
  */
 function _approve(
-    ownerAddress: Address,
-    spenderAddress: Address,
-    amount: u64
+  ownerAddress: Address,
+  spenderAddress: Address,
+  amount: u64,
 ): void {
   Storage.set(
-      ownerAddress.toByteString().concat(spenderAddress.toByteString()),
-      amount.toString()
+    ownerAddress.toByteString().concat(spenderAddress.toByteString()),
+    amount.toString(),
   );
 }
 

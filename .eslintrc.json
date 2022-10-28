@@ -7,7 +7,8 @@
         "eslint:recommended",
         "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended",
-        "google"
+        "google",
+        "prettier"
     ],
     "parserOptions": {
         "ecmaVersion": 2020,
@@ -78,7 +79,10 @@
         "no-unused-vars": "off",
 
         // Disabled here, but enabled again for TypeScript files.
-        "@typescript-eslint/no-unused-vars": "off"
+        "@typescript-eslint/no-unused-vars": "off",
+
+        // Too problematic because of AssemblyScript methods like __pin and __unpin.
+        "no-underscore-dangle": ["off"]
     },
     "overrides": [
         // === TypeScript rules ====================================================
@@ -108,7 +112,10 @@
                 "@typescript-eslint/ban-ts-comment": "off",
 
                 // Utilized to achieve portability in some cases
-                "@typescript-eslint/no-non-null-assertion": "off"
+                "@typescript-eslint/no-non-null-assertion": "off",
+
+                // Type conversions require an explicit cast in AssemblyScript.
+                "@typescript-eslint/no-unnecessary-type-assertion": "off"
             }
         },
 
@@ -128,7 +135,11 @@
 
                 // The compiler has its own `Function` class for example
                 "no-shadow-restricted-names": "off",
-                "@typescript-eslint/ban-types": "off"
+                "@typescript-eslint/ban-types": "off",
+
+                // Different behavior in AssemblyScript.
+                // https://www.assemblyscript.org/basics.html#triple-equals
+                "eqeqeq": "off"
             }
         },
 

@@ -103,11 +103,7 @@ export function append(key: string, value: string): void {
  * @param {string} key key string
  * @param {string} value value to append
  */
-export function appendOf(
-  address: Address,
-  key: string,
-  value: string,
-): void {
+export function appendOf(address: Address, key: string, value: string): void {
   env.appendOf(address.toByteString(), key, value);
 }
 
