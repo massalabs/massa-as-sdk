@@ -25,7 +25,6 @@ describe('Persistent Map tests', () => {
     assert<bool>(map.contains(key), 'must contain key');
 
     // get value
-    assert<bool>(isString(map.get(key)), 'must be a value');
     assert<string>(map.get(key) as string, value);
 
     // replace value
@@ -33,7 +32,6 @@ describe('Persistent Map tests', () => {
     map.set(key, updatedValue);
 
     // check for value
-    assert<bool>(isString(map.get(key)), 'must be a value');
     assert<string>(map.get(key) as string, updatedValue);
 
     // check for value
