@@ -1,4 +1,4 @@
-import {Address, call} from '@massalabs/massa-as-sdk';
+import {Address, call} from '../std';
 import {ByteArray} from '@massalabs/as/assembly';
 
 /**
