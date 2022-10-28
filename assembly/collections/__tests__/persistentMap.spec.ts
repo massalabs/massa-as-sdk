@@ -25,14 +25,16 @@ describe('Persistent Map tests', () => {
     assert<bool>(map.contains(key), 'must contain key');
 
     // get value
-    assert<string>(map.get(key), value);
+    assert<bool>(isString(map.get(key)), 'must be a value');
+    assert<string>(map.get(key) as string, value);
 
     // replace value
     const updatedValue: string = value.toUpperCase();
     map.set(key, updatedValue);
 
     // check for value
-    assert<string>(map.get(key), updatedValue);
+    assert<bool>(isString(map.get(key)), 'must be a value');
+    assert<string>(map.get(key) as string, updatedValue);
 
     // check for value
     assert<bool>(map.contains(key), 'must contain key');
@@ -54,6 +56,6 @@ describe('Persistent Map tests', () => {
     assert<bool>(map.size() === 1, 'size must be 1');
 
     // key should not be there anymore
-    assert<null>(map.get(key), null);
+    assert<bool>(!map.get(key), 'key must have been deleted');
   });
 });
