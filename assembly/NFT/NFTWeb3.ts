@@ -18,7 +18,7 @@ export function main(_: string): i32 {
 
     generateEvent(`NFTNAMES is ${NFTName}`);
     const maxSupply = NFT.CurrentSupply;
-    generateEvent(`max supply is ${maxSupply}`);
+    generateEvent(`max supply is ${maxSupply.toString()}`);
     const NFTOwned = NFT.OwnerIndex(AddressSelf);
 
     generateEvent(`${AddressSelf._value} owns  ${NFTOwned.join(',')}`);
