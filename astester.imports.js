@@ -42,7 +42,7 @@ export function local(memory) {
                 if (!StorageOf.has(a)) {
                     StorageOf.set(a, new Map());
                 }
-                const addressStorage = Storage.get(a);
+                const addressStorage = StorageOf.get(a);
                 addressStorage.set(k, v);
             },
             assembly_script_get_data_for(a_ptr, k_ptr) {
@@ -50,7 +50,7 @@ export function local(memory) {
                 const a = getString(a_ptr);
                 const k = getString(k_ptr);
                 if (StorageOf.has(a)) {
-                    const addressStorage = Storage.get(a);
+                    const addressStorage = StorageOf.get(a);
                     if (addressStorage.has(k)) {
                         v = addressStorage.get(k);
                     }
@@ -73,7 +73,7 @@ export function local(memory) {
                 const k = getString(k_ptr);
                 const v = getString(v_ptr);
                 if (!Storage.has(k)) {
-                    StorageOf.set(k, new Map());
+                    Storage.set(k, new Map());
                 }
                 Storage.set(k, v);
             },
