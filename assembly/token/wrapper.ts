@@ -253,4 +253,33 @@ export class TokenWrapper {
       ) == '1'
     );
   }
+
+  /**
+   * A simple function allowing the token owner
+   * to mint tokens for an address
+   *
+   * @param {Address} receiverAccount
+   * @param {Amount} nbTokens
+   *
+   * @return {boolean} true on success
+   */
+  mint(
+    receiverAccount: Address,
+    nbTokens: Amount,
+  ): boolean {
+    if (!this.checkAmount(nbTokens)) {
+      return false;
+    }
+
+    return (
+      call(
+        this._origin,
+        'mint',
+        receiverAccount
+          .toStringSegment()
+          .concat(ByteArray.fromU64(nbTokens.value()).toByteString()),
+        0,
+      ) == '1'
+    );
+  }
 }

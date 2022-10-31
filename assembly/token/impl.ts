@@ -426,16 +426,30 @@ export function transferFrom(args: string): string {
 }
 
 /**
- * Sets the mint amount for an owner's account.
+ * Sets the mint amount for a receiver's account.
  *
- * @param {Address} ownerAddress - owner address
- * @param {u64} amount - amount to mint for that address
+ * @param {string} args - byte string with the following format:
+ * - the receivers's account (address);
+ * - the amount (u64).
+ *
+ * @return {string} - boolean value ("1" or "0")
  */
 export function mint(
-  ownerAddress: Address,
-  amount: u64,
-): void {
+  args: string,
+): string {
+  const ownerAddress = Context.caller();
   // only the token owner can mint tokens for an address
-  assert(_assertTokenOwner(Context.caller()));
-  _setBalance(ownerAddress, amount);
+  assert(_assertTokenOwner(ownerAddress));
+
+  const receiverAddress = new Address();
+  const offset = receiverAddress.fromStringSegment(args);
+
+  const amount: u64 = ByteArray.fromByteString(args.substr(offset, 8)).toU64();
+
+  if (!receiverAddress.isValid() || isNaN(amount)) {
+    return '0';
+  }
+
+  _setBalance(receiverAddress, amount);
+  return '1';
 }
