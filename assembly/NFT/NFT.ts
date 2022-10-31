@@ -16,7 +16,10 @@ const ownerKey: string = 'Owner';
 const maxSupplyKey: string = 'MaxSupply';
 const baseURIKey: string = 'baseURI';
 const initCounter: u64 = 0;
-let arrOwners: Array<string>;
+
+/**
+ *The NFT's main characteristics
+ */
 
 const name: string = 'MASSA_NFT';
 const symbol: string = 'NFT';
@@ -28,7 +31,7 @@ const baseURI: string = 'massa.net/nft/';
  * for instance if maxSupply = 3 => ["", 1 , "", 2, "", 3]
  */
 
-arrOwners = new Array<string>(maxSupply * 2);
+const arrOwners: Array<string> = new Array<string>(maxSupply * 2);
 for (let i = 0; i < arrOwners.length; ++i) {
     arrOwners[i] = '';
 }
