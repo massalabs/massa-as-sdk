@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {
   Address,
   Storage,
@@ -8,6 +9,38 @@ import {ByteArray} from '@massalabs/as/assembly';
 
 const TRANSFER_EVENT_NAME = 'TRANSFER';
 const APPROVAL_EVENT_NAME = 'APPROVAL';
+const TOKEN_OWNER_STORAGE_KEY = 'token_owner_storage_key';
+
+/**
+ * Returns if the an Address is the token owner or not. Returns true if no token owner is yet set
+ * @param {Address} caller - Caller to be compared with the token owner in storage.
+ * @return {bool}
+ */
+function _assertTokenOwner(caller: Address): bool {
+  if (!Storage.has(TOKEN_OWNER_STORAGE_KEY)) {
+    return true; // no token owner set
+  }
+  // else - token owner is set, check if it equals the caller
+  const tokenOwner = Address.fromByteString(Storage.get(TOKEN_OWNER_STORAGE_KEY));
+  if (tokenOwner.equals(caller)) {
+    return true;
+  }
+
+  // token owner is not the caller
+  return false;
+}
+
+/**
+ * Sets the token owner
+ * @param {string} _args - ?
+ */
+export function setTokenOwner(_args: string): void {
+  // Check that the caller is the token owner.
+  // For initial calls, there is no owner and the check will pass.
+  // Any subsequent calls will fail unless the token owner decides to nominate a new owner
+  assert(_assertTokenOwner(Context.caller()));
+  Storage.set(TOKEN_OWNER_STORAGE_KEY, Context.caller().toByteString());
+}
 
 /**
  * Constructs an event given a key and arguments
@@ -33,7 +66,7 @@ export function version(_: string): string {
 }
 
 // ======================================================== //
-// ====                 TOKEN ATTIBUTES                ==== //
+// ====                 TOKEN ATTRIBUTES                ==== //
 // ======================================================== //
 
 /**
@@ -329,13 +362,13 @@ export function decreaseAllowance(args: string): string {
  *
  */
 function _approve(
-    ownerAddress: Address,
-    spenderAddress: Address,
-    amount: u64
+  ownerAddress: Address,
+  spenderAddress: Address,
+  amount: u64,
 ): void {
   Storage.set(
-      ownerAddress.toByteString().concat(spenderAddress.toByteString()),
-      amount.toString()
+    ownerAddress.toByteString().concat(spenderAddress.toByteString()),
+    amount.toString(),
   );
 }
 
@@ -390,4 +423,19 @@ export function transferFrom(args: string): string {
   generateEvent(event);
 
   return '1';
+}
+
+/**
+ * Sets the mint amount for an owner's account.
+ *
+ * @param {Address} ownerAddress - owner address
+ * @param {u64} amount - amount to mint for that address
+ */
+function mint(
+  ownerAddress: Address,
+  amount: u64,
+): void {
+  // only the token owner can mint tokens for an address
+  assert(_assertTokenOwner(Context.caller()));
+  _setBalance(ownerAddress, amount);
 }
