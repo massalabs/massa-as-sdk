@@ -6,12 +6,7 @@
 ////////////////////////////
 ///////////////////////////////
 
-import {
-    Address,
-    Storage,
-    Context,
-    generateEvent,
-} from '@massalabs/massa-as-sdk';
+import {Address, Storage, Context, generateEvent} from '../std';
 
 const nameKey: string = 'Name';
 const symbolKey: string = 'Symbol';
@@ -27,6 +22,11 @@ const name: string = 'MASSA_NFT';
 const symbol: string = 'NFT';
 const maxSupply: u32 = 10000;
 const baseURI: string = 'massa.net/nft/';
+
+/**
+ *Init an array containing the owner of each tokenId
+ * for instance if maxSupply = 3 => ["", 1 , "", 2, "", 3]
+ */
 
 arrOwners = new Array<string>(maxSupply * 2);
 for (let i = 0; i < arrOwners.length; ++i) {
@@ -53,19 +53,11 @@ function increment(_: string): void {
  * init the counter to 0, the owner of the contract,
  * the "ledger" of owner of token IDs ,
  * then create key value for each.
- * @param {string} name
- * @param {string} symbol
- * @param {string} maxSupply
- * @param {string} baseURI
+ * @param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
  * @return {void}
  */
 
-export function setNFT(
-    name: string,
-    symbol: string,
-    maxSupply: u64,
-    baseURI: string
-): void {
+export function setNFT(_: string): void {
     assert(Storage.has(nameKey), 'NFT already setted');
     Storage.set(nameKey, name);
     Storage.set(symbolKey, symbol);
