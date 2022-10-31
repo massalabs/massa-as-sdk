@@ -431,7 +431,7 @@ export function transferFrom(args: string): string {
  * @param {Address} ownerAddress - owner address
  * @param {u64} amount - amount to mint for that address
  */
-function mint(
+export function mint(
   ownerAddress: Address,
   amount: u64,
 ): void {
