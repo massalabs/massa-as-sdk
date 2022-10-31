@@ -15,14 +15,14 @@ import {ByteArray} from '@massalabs/as/assembly';
  * ...
  * ```
  */
-let arrOwners: Array<string>;
 
 export class NFTWrapper {
     _origin: Address;
     _name: string;
     _symbol: string;
-    _maxSupply: u32;
+    _maxSupply: string;
     _baseURI: string;
+    _arrOwner: string;
 
     /**
      * Wraps a smart contract exposing standard token FFI.
@@ -31,27 +31,12 @@ export class NFTWrapper {
      */
     constructor(at: Address) {
         this._origin = at;
+        call(this._origin, 'setNFT', '', 0);
         this._name = call(this._origin, 'Name', '', 0);
         this._symbol = call(this._origin, 'Symbol', '', 0);
-        this._maxSupply = u32(parseInt(call(this._origin, 'Symbol', '', 0)));
+        this._maxSupply = call(this._origin, 'Symbol', '', 0);
         this._baseURI = call(this._origin, 'BaseURI', '', 0);
-        arrOwners = new Array<string>(this._maxSupply * 2);
-        for (let i = 0; i < arrOwners.length; ++i) {
-            arrOwners[i] = '';
-        }
-        let j = 1;
-        for (let i = 1; i < arrOwners.length; i += 2) {
-            arrOwners[i] = j.toString();
-            j++;
-        }
-        call(
-            this._origin,
-            'setNFT',
-            `${this._name},${this._symbol}, ${this._maxSupply.toString()}, ${
-                this._baseURI
-            }`,
-            0
-        );
+        this._arrOwner = call(this._origin, 'CheckLedger', '', 0);
     }
 
     /**
@@ -157,12 +142,12 @@ export class NFTWrapper {
     }
 
     /**
-   *Transfer a choosen token from the caller to the to Address
-   check first the caller owns the token 
-   * @param {Address} to
-   * @param {u64} tokenId
-   * @return {void}
-   */
+     *Transfer a choosen token from the caller to the to Address
+     check first the caller owns the token 
+     * @param {Address} to
+     * @param {u64} tokenId
+     * @return {void}
+     */
 
     Tranfer(to: Address, tokenId: u64): void {
         call(
