@@ -6,24 +6,32 @@
 ////////////////////////////
 ///////////////////////////////
 
-import {Address, Storage, Context, generateEvent} from '../std/index';
-
-const nameKey: string = 'Name';
-const symbolKey: string = 'Symbol';
+import {Address, Storage, Context, generateEvent} from '../std';
 const ownersKey: string = 'Owners';
 const counterKey: string = 'Counter';
 const ownerKey: string = 'Owner';
-const maxSupplyKey: string = 'MaxSupply';
 const baseURIKey: string = 'baseURI';
 const initCounter: u64 = 0;
-let arrOwners: Array<string>;
+
+/**
+ *The NFT's main characteristics
+ */
 
 const name: string = 'MASSA_NFT';
 const symbol: string = 'NFT';
-const maxSupply: u32 = 10000;
+const maxSupply: string = '3';
 const baseURI: string = 'massa.net/nft/';
 
-arrOwners = new Array<string>(maxSupply * 2);
+const ofAddress = new Address('0x');
+
+/**
+ *Init an array containing the owner of each tokenId
+ * for instance if maxSupply = 3 => ["", 1 , "", 2, "", 3]
+ */
+
+const arrOwners: Array<string> = new Array<string>(
+    2 * u32(parseInt(maxSupply))
+);
 for (let i = 0; i < arrOwners.length; ++i) {
     arrOwners[i] = '';
 }
@@ -31,6 +39,17 @@ let j = 1;
 for (let i = 1; i < arrOwners.length; i += 2) {
     arrOwners[i] = j.toString();
     j++;
+}
+/**
+ * Increment the NFT counter
+ * @param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
+ * @return {void}
+ */
+
+export function increment(_: string): string {
+    const incr = u64(parseInt(Storage.getOf(ofAddress, counterKey))) + 1;
+    Storage.setOf(ofAddress, counterKey, incr.toString());
+    return '';
 }
 
 /**
@@ -42,15 +61,10 @@ for (let i = 1; i < arrOwners.length; i += 2) {
  * @return {void}
  */
 
-const ofAddress = new Address('0x');
-
 export function setNFT(_: string): void {
-    // assert(Storage.has(nameKey), "NFT already setted");
-    Storage.setOf(ofAddress, nameKey, name);
-    Storage.setOf(ofAddress, symbolKey, symbol);
-    Storage.setOf(ofAddress, maxSupplyKey, maxSupply.toString());
+    //   assert(Storage.has(counterKey), "NFT already setted");
     Storage.setOf(ofAddress, baseURIKey, baseURI);
-    //    Storage.setOf(ofAddress, ownerKey, Context.caller()._value);
+    // Storage.setOf(ofAddress, ownerKey, Context.caller()._value);
     Storage.setOf(ofAddress, ownersKey, arrOwners.toString());
     Storage.setOf(ofAddress, counterKey, initCounter.toString());
     generateEvent(
@@ -79,12 +93,12 @@ export function Symbol(_: string): string {
 
 /**
  * Return the token URI (external link written in NFT where pictures or others a stored)
- * @param {u64} tokenId
+ * @param {string} tokenId
  * @return {string}
  */
 
-export function TokenURI(tokenId: u64): string {
-    return baseURI + tokenId.toString();
+export function TokenURI(tokenId: string): string {
+    return baseURI + tokenId;
 }
 
 /**
@@ -100,42 +114,32 @@ export function BaseURI(_: string): string {
 /**
  * Return the max supply possible
  ** @param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
- * @return {u64}
+ * @return {string}
  */
 
-export function LimitSupply(_: string): u64 {
-    return u64(parseInt(Storage.getOf(ofAddress, maxSupplyKey)));
+export function LimitSupply(_: string): string {
+    return maxSupply;
 }
 
 /**
- * Return the current counter, if 10 NFT minted, returns 10.
+ * Return the current counter, if 10 NFT minted, returns '10'.
  *  * @param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
- * * @return {u64}
+ * * @return {string}
  */
 
-export function CurrentSupply(_: string): u32 {
-    return u32(parseInt(Storage.getOf(ofAddress, counterKey)));
+export function CurrentSupply(_: string): string {
+    return Storage.getOf(ofAddress, counterKey);
 }
 
-/**
- * Increment the NFT counter
- * @param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
- * @return {void}
- */
-
-function increment(_: string): void {
-    const incr = u64(parseInt(Storage.getOf(ofAddress, counterKey))) + 1;
-    Storage.setOf(ofAddress, counterKey, incr.toString());
-}
 /**
  *
  * Return a string array containing all the tokenIDs with all the owners
  *  * @param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
- *  * @return {Array<string>}
+ *  * @return {string}
  */
 
-export function CheckLedger(_: string): Array<string> {
-    return Storage.getOf(ofAddress, ownersKey).split(',');
+export function CheckLedger(_: string): string {
+    return Storage.getOf(ofAddress, ownersKey);
 }
 
 /**
@@ -151,17 +155,17 @@ export function OnlyOwner(_: string): bool {
 
 /**
  *
- * Return an array with all tokenIDs owned by an address
+ * Return a string of array with all tokenIDs owned by an address
  * @param {Addresse} address
- * @return {Array<u64>}
+ * @return {string}
  */
 
-export function OwnerIndex(address: Address): Array<u64> {
-    const arrRaw = CheckLedger('_');
+export function OwnerIndex(address: Address): string {
+    const arrRaw = CheckLedger('').split(',');
     const indexes: Array<u64> = [];
     for (let i = 0; i < arrRaw.length; i++)
         if (arrRaw[i] === address._value) indexes.push(i + 1);
-    return indexes;
+    return indexes.join(',');
 }
 
 /**
@@ -172,7 +176,7 @@ export function OwnerIndex(address: Address): Array<u64> {
  */
 
 export function OwnerOf(tokenId: u64): string {
-    const arrRaw = CheckLedger('_');
+    const arrRaw = CheckLedger('_').split(',');
     const OwnerIndex = arrRaw.indexOf(tokenId.toString()) - 1;
     return arrRaw[OwnerIndex];
 }
@@ -186,32 +190,33 @@ export function OwnerOf(tokenId: u64): string {
  */
 
 export function Mint(to: Address): void {
-    assert(LimitSupply('_') >= CurrentSupply('_'), 'Limit supply reached');
-    const arrRaw = CheckLedger('_');
-    arrRaw[CurrentSupply('_') + 1] = to._value;
+    assert(
+        u32(parseInt(LimitSupply('_'))) > u32(parseInt(CurrentSupply('_'))),
+        'Limit supply reached'
+    );
+    const arrRaw = CheckLedger('_').split(',');
+    arrRaw[u32(parseInt(CurrentSupply('_')) * 2)] = to._value;
     Storage.setOf(ofAddress, ownersKey, arrRaw.join(','));
     increment('_');
-    generateEvent(
-        `tokenId ${CurrentSupply('_').toString()} minted to ${to._value} `
-    );
+    generateEvent(`tokenId ${CurrentSupply('_')} minted to ${to._value} `);
 }
 
 /**
-*Transfer a choosen token from the caller to the to Address
-check first the caller owns the token 
-* @param {Address} to
-* @param {u64} tokenId
-* @return {void}
-*/
+ *Transfer a choosen token from the caller to the to Address
+ check first the caller owns the token 
+ * @param {Address} to
+ * @param {u64} tokenId
+ * @return {void}
+ */
 
 export function Tranfer(to: Address, tokenId: u64): void {
     assert(
         OwnerOf(tokenId) == Context.caller()._value,
         `You are not the owner of ${tokenId.toString()}`
     );
-    const arrRaw = CheckLedger('_');
+    const arrRaw = CheckLedger('_').split(',');
     arrRaw[arrRaw.indexOf(tokenId.toString()) - 1] = to._value;
-    Storage.set(ownersKey, arrRaw.join(','));
+    Storage.setOf(ofAddress, ownersKey, arrRaw.join(','));
     generateEvent(
         `token ${tokenId.toString()} sent from ${Context.caller()._value} to ${
             to._value

@@ -41,7 +41,7 @@ for (let i = 1; i < arrOwners.length; i += 2) {
 /**
  * Increment the NFT counter
  * @param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
- * @return {void}
+ * @return {string}
  */
 
 function increment(_: string): void {
@@ -55,18 +55,19 @@ function increment(_: string): void {
  * the "ledger" of owner of token IDs ,
  * then create key value for each.
  * @param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
- * @return {void}
+ * @return {string}
  */
 
-export function setNFT(_: string): void {
-    assert(Storage.has(counterKey), 'NFT already setted');
+export function setNFT(_: string): string {
+    //   assert(Storage.has(counterKey), "NFT already setted");
     Storage.set(baseURIKey, baseURI);
-    Storage.set(ownerKey, Context.caller()._value);
+    // Storage.set(ownerKey, Context.caller()._value);
     Storage.set(ownersKey, arrOwners.toString());
     Storage.set(counterKey, initCounter.toString());
     generateEvent(
-        `${name} with symbol  ${symbol} and total supply of  ${maxSupply.toString()} is well setted`
+        `${name} with symbol  ${symbol} and total supply of  ${maxSupply} is well setted`
     );
+    return '';
 }
 
 /**
@@ -192,7 +193,7 @@ export function Mint(to: Address): void {
         'Limit supply reached'
     );
     const arrRaw = CheckLedger('_').split(',');
-    arrRaw[u32(parseInt(CurrentSupply('_'))) + 1] = to._value;
+    arrRaw[u32(parseInt(CurrentSupply('_')) * 2)] = to._value;
     Storage.set(ownersKey, arrRaw.join(','));
     increment('_');
     generateEvent(`tokenId ${CurrentSupply('_')} minted to ${to._value} `);
