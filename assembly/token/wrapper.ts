@@ -63,6 +63,14 @@ export class TokenWrapper {
     return call(this._origin, 'symbol', '', 0);
   }
 
+  /** Returns the decimals of the token.
+   *
+   * @return {string} token decimals.
+   */
+  decimals(): string {
+    return call(this._origin, 'decimals', '', 0);
+  }
+
   /**
    * Returns the total token supply.
    *

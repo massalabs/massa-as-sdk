@@ -210,18 +210,18 @@ export function transfer(args: string): string {
 function _transfer(from: Address, to: Address, amount: u64): bool {
   const currentFromBalance = _balance(from);
   const currentToBalance = _balance(to);
-  const newTobalance = currentToBalance + amount;
+  const newToBalance = currentToBalance + amount;
 
   if (
     currentFromBalance < amount || // underflow of balance from
-    newTobalance < currentToBalance
+    newToBalance < currentToBalance
   ) {
     // overflow of balance to
     return false;
   }
 
   _setBalance(from, currentFromBalance - amount);
-  _setBalance(to, newTobalance);
+  _setBalance(to, newToBalance);
 
   return true;
 }
