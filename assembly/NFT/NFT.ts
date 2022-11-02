@@ -90,12 +90,12 @@ export function Symbol(_: string): string {
 
 /**
  * Return the token URI (external link written in NFT where pictures or others a stored)
- * @param {u64} tokenId
+ * @param {string} tokenId
  * @return {string}
  */
 
-export function TokenURI(tokenId: u64): string {
-    return baseURI + tokenId.toString();
+export function TokenURI(tokenId: string): string {
+    return baseURI + tokenId;
 }
 
 /**
