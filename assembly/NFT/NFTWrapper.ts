@@ -58,12 +58,12 @@ export class NFTWrapper {
 
     /**
      * Return the token URI (external link written in NFT where pictures or others a stored)
-     * @param {u64} tokenId
+     * @param {string} tokenId
      * @return {string}
      */
 
-    TokenURI(tokenId: u64): string {
-        return call(this._origin, 'TokenURI', tokenId.toString(), 0);
+    TokenURI(tokenId: string): string {
+        return call(this._origin, 'TokenURI', tokenId, 0);
     }
 
     /**
