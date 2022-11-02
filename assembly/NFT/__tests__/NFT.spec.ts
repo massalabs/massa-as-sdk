@@ -1,6 +1,6 @@
-import {Storage} from '@massalabs/massa-as-sdk';
+import {Storage} from '../../std/index';
 import {event, setStorage} from '../sum';
-import {Address} from '@massalabs/massa-as-sdk';
+import {Address} from '../../std/index';
 import {
     setNFT,
     Name,
@@ -9,9 +9,9 @@ import {
     BaseURI,
     LimitSupply,
     Mint,
-} from '../NFT';
+} from '../NFT_fortest';
 
-const address = new Address('0x');
+const ofAddress = new Address('0x');
 
 describe('NFT contract TEST', () => {
     test('name call', () => {
@@ -30,15 +30,15 @@ describe('NFT contract TEST', () => {
             return;
         }
     });
-    // test("setNFT call", () => {
-    //     setNFT("");
-    //     const got = Storage.get("counterKey");
-    //     const want = "NFT";
-    //     if (got != want) {
-    //         error(got.toString() + ", " + want.toString() + " was expected.");
-    //         return;
-    //     }
-    // });
+    test('setNFT call', () => {
+        setNFT('');
+        const got = Storage.getOf(ofAddress, 'Counter');
+        const want = '0';
+        if (got != want) {
+            error(got.toString() + ', ' + want.toString() + ' was expected.');
+            return;
+        }
+    });
     test('TokenURI call', () => {
         const got = TokenURI(1);
         const want = 'massa.net/nft/1';
@@ -64,8 +64,8 @@ describe('NFT contract TEST', () => {
         }
     });
     test('Mint call', () => {
-        Mint(address);
-        const got = Storage.get('owners');
+        Mint(ofAddress);
+        const got = Storage.getOf(ofAddress, 'owners');
         const want = '10000';
         if (got != want) {
             error(got.toString() + ', ' + want.toString() + ' was expected.');
