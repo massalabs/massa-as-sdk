@@ -58,12 +58,12 @@ export class NFTWrapper {
 
     /**
      * Return the token URI (external link written in NFT where pictures or others a stored)
-     * @param {string} tokenId
+     * @param {u64} tokenId
      * @return {string}
      */
 
-    TokenURI(tokenId: string): string {
-        return call(this._origin, 'TokenURI', tokenId, 0);
+    TokenURI(tokenId: u64): string {
+        return call(this._origin, 'TokenURI', tokenId.toString(), 0);
     }
 
     /**
@@ -142,12 +142,12 @@ export class NFTWrapper {
     }
 
     /**
-     *Transfer a choosen token from the caller to the to Address
-     check first the caller owns the token 
-     * @param {Address} to
-     * @param {u64} tokenId
-     * @return {void}
-     */
+    *Transfer a choosen token from the caller to the to Address
+    check first the caller owns the token 
+    * @param {Address} to
+    * @param {u64} tokenId
+    * @return {void}
+    */
 
     Tranfer(to: Address, tokenId: u64): void {
         call(
