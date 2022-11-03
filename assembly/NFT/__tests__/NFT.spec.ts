@@ -9,8 +9,8 @@ import {
     LimitSupply,
     Mint,
     CurrentSupply,
-    CheckLedger,
     increment,
+    Tranfer,
 } from '../NFT_fortest';
 
 const ofAddress = new Address('0x');
@@ -76,40 +76,22 @@ describe('NFT contract TEST', () => {
             return;
         }
     });
-    // test("Current supply after increment", () => {
-    //     increment("");
-    //     const got = CurrentSupply("");
-    //     const want = "1";
-    //     if (got != want) {
-    //         error(got.toString() + ", " + want.toString() + " was expected.");
-    //         return;
-    //     }
-    // });
-    test('CheckLedger call', () => {
-        const got = CheckLedger('');
-        const want = ',1,,2,,3';
-        if (got != want) {
-            error(got.toString() + ', ' + want.toString() + ' was expected.');
-            return;
-        }
-    });
+
     test('Mint test', () => {
-        for (let i = 1; i <= 3; i++) {
+        for (let i = 1; i <= 5; i++) {
             Mint(toAddress);
         }
-        const got = CheckLedger('');
-        const want = '1x,1,1x,2,1x,3';
+        const got = Storage.getOf(ofAddress, 'ownerOf_3');
+        const want = '1x';
         if (got != want) {
             error(got.toString() + ', ' + want.toString() + ' was expected.');
             return;
         }
     });
     test('transfer test', () => {
-        for (let i = 1; i <= 2; i++) {
-            Mint(toAddress);
-        }
-        const got = CheckLedger('');
-        const want = '1x,1,1x,2,1x,3';
+        Tranfer(transferAddress, 2);
+        const got = Storage.getOf(ofAddress, 'ownerOf_2');
+        const want = transferAddress._value;
         if (got != want) {
             error(got.toString() + ', ' + want.toString() + ' was expected.');
             return;
