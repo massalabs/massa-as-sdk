@@ -4,7 +4,7 @@ import * as Storage from './storage';
 import * as Context from './context';
 import {Args} from './arguments';
 
-export {Address, Storage, Context};
+export {Address, Storage, Context, Args};
 
 /**
  * Prints in the node logs
