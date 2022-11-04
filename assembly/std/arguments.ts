@@ -137,7 +137,7 @@ export class Args {
     x = (x | byteArray[offset + 3]) << 8;
     x = (x | byteArray[offset + 2]) << 8;
     x = (x | byteArray[offset + 1]) << 8;
-    x = x | byteArray[offset + 0];
+    x = x | byteArray[offset];
     return x;
   }
 
@@ -159,7 +159,7 @@ export class Args {
     x = (x | byteArray[offset + 3]) << 8;
     x = (x | byteArray[offset + 2]) << 8;
     x = (x | byteArray[offset + 1]) << 8;
-    x = x | byteArray[offset + 0];
+    x = x | byteArray[offset];
     return x;
   }
 }

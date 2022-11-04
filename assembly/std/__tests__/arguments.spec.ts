@@ -83,15 +83,32 @@ describe('Args tests', () => {
     args1
       .add(97 as u64)
       .add('my string')
-      .add(113 as u64);
+      .add(11356323656733 as u64);
 
     expect(args1.nextU64()).toBe(97);
     expect(args1.nextString()).toBe('my string');
-    expect(args1.nextU64()).toBe(113);
+    expect(args1.nextU64()).toBe(11356323656733);
 
     const args2 = new Args(args1.serialize());
     expect(args2.nextU64()).toBe(97);
     expect(args2.nextString()).toBe('my string');
-    expect(args2.nextU64()).toBe(113);
+    expect(args2.nextU64()).toBe(11356323656733);
+  });
+
+  it('With string and 0 and max number', () => {
+    const args1 = new Args();
+    args1
+      .add(0 as u64)
+      .add('my string')
+      .add(0xffffffffffffffff as u64);
+
+    expect(args1.nextU64()).toBe(0);
+    expect(args1.nextString()).toBe('my string');
+    expect(args1.nextU64()).toBe(0xffffffffffffffff);
+
+    const args2 = new Args(args1.serialize());
+    expect(args2.nextU64()).toBe(0);
+    expect(args2.nextString()).toBe('my string');
+    expect(args2.nextU64()).toBe(0xffffffffffffffff);
   });
 });
