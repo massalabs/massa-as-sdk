@@ -166,7 +166,7 @@ export function OwnerOf(tokenId: string): string {
  */
 
 export function Mint(args: string): string {
-    if (u32(parseInt(LimitSupply(''))) >= u32(parseInt(CurrentSupply('')))) {
+    if (u32(parseInt(LimitSupply(''))) > u32(parseInt(CurrentSupply('')))) {
         const addr = Address.fromByteString(args);
         _increment('');
         const tokenID: string = CurrentSupply('');
