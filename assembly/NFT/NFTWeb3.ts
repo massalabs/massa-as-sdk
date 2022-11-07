@@ -3,7 +3,7 @@ import {NFTWrapper} from './NFTWrapper';
 
 export function main(_: string): i32 {
     const NFTAddress = new Address(
-        'A1wcdUbmzXYyPJUa7ZmyVNP7ZEm2jEFnsdbaeKejEHPm4unP2Sr'
+        'A12QPCVR6UFjSk4F6gr7hWUgFz5czxbYshyxoMZqiYcam7LnJihK'
     );
 
     const toAddress = new Address(
