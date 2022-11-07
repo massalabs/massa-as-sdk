@@ -1,6 +1,6 @@
-import * as token from '../impl';
+// import * as token from '../impl';
 // TODO change relative path to cleaner import
-import {setData} from '../../vm-mock/storage';
+// import {setData} from '../../vm-mock/storage';
 
 /*
 describe('Black box tests', () => {
@@ -24,4 +24,3 @@ describe('Black box tests', () => {
   });
 });
 */
-

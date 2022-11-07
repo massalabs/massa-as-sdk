@@ -1,0 +1,8 @@
+{
+    "*.{js,ts,jsx,tsx,json}": [
+        "as-prettier --check"
+    ],
+    "*.ts": [
+        "eslint --ext .ts"
+    ]
+}

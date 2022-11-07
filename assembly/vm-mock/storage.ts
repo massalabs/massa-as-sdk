@@ -10,4 +10,4 @@
  */
 // @ts-ignore: decorator
 @external("massa-sc-std", "set")
-export declare function setData(k:string, v:string):void;
+export declare function setData(k: string, v: string): void;
