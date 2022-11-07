@@ -39,7 +39,7 @@ const baseURI: string = 'massa.net/nft/';
  */
 
 export function setNFT(_: string): string {
-    //  if (!Storage.has(counterKey)) {
+    //  if (!Storage.hasOf(ofAddress, counterKey)) {
     Storage.setOf(ofAddress, baseURIKey, baseURI);
     Storage.setOf(ofAddress, ownerKey, OwnerAddress.toByteString());
     Storage.setOf(ofAddress, counterKey, initCounter.toString());
@@ -98,7 +98,7 @@ export function Symbol(_: string): string {
  */
 
 export function TokenURI(tokenId: string): string {
-    return baseURI + tokenId;
+    return Storage.getOf(ofAddress, baseURIKey) + tokenId;
 }
 
 /**
@@ -108,7 +108,7 @@ export function TokenURI(tokenId: string): string {
  */
 
 export function BaseURI(_: string): string {
-    return baseURI;
+    return Storage.getOf(ofAddress, baseURIKey);
 }
 
 /**

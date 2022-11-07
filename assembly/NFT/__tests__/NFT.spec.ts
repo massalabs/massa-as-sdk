@@ -9,12 +9,11 @@ import {
     LimitSupply,
     Mint,
     CurrentSupply,
-    increment,
-    Tranfer,
+    Transfer,
+    SetURI,
 } from '../NFT_fortest';
-
+import {ByteArray} from '@massalabs/as/assembly';
 const ofAddress = new Address('0x');
-
 const toAddress = new Address('1x');
 const transferAddress = new Address('2x');
 
@@ -79,7 +78,7 @@ describe('NFT contract TEST', () => {
 
     test('Mint test', () => {
         for (let i = 1; i <= 5; i++) {
-            Mint(toAddress);
+            Mint(toAddress.toByteString());
         }
         const got = Storage.getOf(ofAddress, 'ownerOf_3');
         const want = '1x';
@@ -89,9 +88,21 @@ describe('NFT contract TEST', () => {
         }
     });
     test('transfer test', () => {
-        Tranfer(transferAddress, 2);
+        const args = transferAddress
+            .toStringSegment()
+            .concat(ByteArray.fromU64(2).toByteString());
+        Transfer(args);
         const got = Storage.getOf(ofAddress, 'ownerOf_2');
-        const want = transferAddress._value;
+        const want = transferAddress.toByteString();
+        if (got != want) {
+            error(got.toString() + ', ' + want.toString() + ' was expected.');
+            return;
+        }
+    });
+    test('Change URI', () => {
+        SetURI('my.massa/');
+        const got = BaseURI('');
+        const want = 'my.massa/';
         if (got != want) {
             error(got.toString() + ', ' + want.toString() + ' was expected.');
             return;

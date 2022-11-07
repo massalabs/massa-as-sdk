@@ -33,7 +33,7 @@ const baseURI: string = 'massa.net/nft/';
 export function setNFT(_: string): string {
     if (!Storage.has(counterKey)) {
         Storage.set(baseURIKey, baseURI);
-        Storage.set(ownerKey, Context.caller().toByteString());
+        Storage.set(ownerKey, Context.caller()._value);
         Storage.set(counterKey, initCounter.toString());
         generateEvent(
             `${name} with symbol  ${symbol} and total supply of  ${maxSupply} is well setted`
@@ -90,7 +90,12 @@ export function Symbol(_: string): string {
  */
 
 export function TokenURI(tokenId: string): string {
-    return baseURI + tokenId;
+    if (Storage.has(baseURIKey)) {
+        return Storage.get(baseURIKey) + tokenId;
+    } else {
+        generateEvent(`NFT not yet Setted`);
+        return '';
+    }
 }
 
 /**
@@ -100,7 +105,12 @@ export function TokenURI(tokenId: string): string {
  */
 
 export function BaseURI(_: string): string {
-    return baseURI;
+    if (Storage.has(baseURIKey)) {
+        return Storage.get(baseURIKey);
+    } else {
+        generateEvent(`NFT not yet Setted`);
+        return '';
+    }
 }
 
 /**
@@ -156,13 +166,13 @@ export function OwnerOf(tokenId: string): string {
  */
 
 export function Mint(args: string): string {
-    if (u32(parseInt(LimitSupply(''))) > u32(parseInt(CurrentSupply('')))) {
+    if (u32(parseInt(LimitSupply(''))) >= u32(parseInt(CurrentSupply('')))) {
         const addr = Address.fromByteString(args);
         _increment('');
         const tokenID: string = CurrentSupply('');
         const key = ownerTokenKey + tokenID;
-        Storage.set(key, addr.toByteString());
-        generateEvent(`tokenId ${tokenID} minted to ${addr.toByteString()} `);
+        Storage.set(key, addr._value);
+        generateEvent(`tokenId ${tokenID} minted to ${addr._value} `);
     } else {
         generateEvent(`Max supply reached`);
     }
@@ -189,7 +199,7 @@ function _increment(_: string): string {
  */
 
 function _OnlyOwner(_: string): bool {
-    return Context.caller().toByteString() == Storage.get(ownerKey);
+    return Context.caller()._value == Storage.get(ownerKey);
 }
 
 // ==================================================== //
