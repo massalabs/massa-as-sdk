@@ -33,7 +33,7 @@ const baseURI: string = 'massa.net/nft/';
 export function setNFT(_: string): string {
     if (!Storage.has(counterKey)) {
         Storage.set(baseURIKey, baseURI);
-        Storage.set(ownerKey, Context.caller()._value);
+        Storage.set(ownerKey, Context.caller().toByteString());
         Storage.set(counterKey, initCounter.toString());
         generateEvent(
             `${name} with symbol  ${symbol} and total supply of  ${maxSupply} is well setted`
@@ -171,8 +171,8 @@ export function Mint(args: string): string {
         _increment('');
         const tokenID: string = CurrentSupply('');
         const key = ownerTokenKey + tokenID;
-        Storage.set(key, addr._value);
-        generateEvent(`tokenId ${tokenID} minted to ${addr._value} `);
+        Storage.set(key, addr.toByteString());
+        generateEvent(`tokenId ${tokenID} minted to ${addr.toByteString()} `);
     } else {
         generateEvent(`Max supply reached`);
     }
@@ -199,7 +199,7 @@ function _increment(_: string): string {
  */
 
 function _OnlyOwner(_: string): bool {
-    return Context.caller()._value == Storage.get(ownerKey);
+    return Context.caller().toByteString() == Storage.get(ownerKey);
 }
 
 // ==================================================== //
