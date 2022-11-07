@@ -20,9 +20,8 @@ export class NFTWrapper {
     _origin: Address;
     _name: string;
     _symbol: string;
-    _maxSupply: string;
     _baseURI: string;
-    _arrOwner: string;
+    _limitSupply: string;
 
     /**
      * Wraps a smart contract exposing standard token FFI.
@@ -31,12 +30,11 @@ export class NFTWrapper {
      */
     constructor(at: Address) {
         this._origin = at;
-        call(this._origin, 'setNFT', '', 0);
         this._name = call(this._origin, 'Name', '', 0);
         this._symbol = call(this._origin, 'Symbol', '', 0);
-        this._maxSupply = call(this._origin, 'Symbol', '', 0);
         this._baseURI = call(this._origin, 'BaseURI', '', 0);
-        this._arrOwner = call(this._origin, 'CheckLedger', '', 0);
+        this._limitSupply = call(this._origin, 'LimitSupply', '', 0);
+        call(this._origin, 'setNFT', '', 0);
     }
 
     /**
@@ -63,17 +61,25 @@ export class NFTWrapper {
      */
 
     TokenURI(tokenId: u64): string {
-        return call(this._origin, 'TokenURI', tokenId.toString(), 0);
+        return this._baseURI + tokenId.toString();
     }
 
     /**
-     * Return the token URI (external link written in NFT where pictures or others a stored)
-     * @param {u64} tokenId
+     * Return the base URI (external link written in NFT where pictures or others a stored)
      * @return {string}
      */
 
-    LimitSupply(): u64 {
-        return u64(parseInt(call(this._origin, 'LimitSupply', '', 0)));
+    BaseURI(): string {
+        return this._baseURI;
+    }
+
+    /**
+     * Return the max supply
+     * @return {string}
+     */
+
+    LimitSupply(): string {
+        return this._limitSupply;
     }
 
     /**
@@ -81,41 +87,8 @@ export class NFTWrapper {
      * * @return {u64}
      */
 
-    CurrentSupply(): u64 {
-        return u64(parseInt(call(this._origin, 'CurrentSupply', '', 0)));
-    }
-
-    /**
-     *
-     * Return a string array containing all the tokenIDs with all the owners
-     *  * @return {Array<string>}
-     */
-
-    CheckLedger(): Array<string> {
-        return call(this._origin, 'CheckLedger', '', 0).split(',');
-    }
-
-    /**
-     *
-     * Return an array with all tokenIDs owned by an address
-     * @param {Addresse} address
-     * @return {Array<u64>}
-     */
-
-    OwnerIndex(address: Address): Array<u64> {
-        let arrOfNum: Array<u64> = [0];
-        const strArr = call(
-            this._origin,
-            'OwnerIndex',
-            address._value,
-            0
-        ).split(',');
-
-        arrOfNum = strArr.map<u64>(function (item): u64 {
-            return u64(parseInt(item));
-        });
-
-        return arrOfNum;
+    CurrentSupply(): string {
+        return call(this._origin, 'CurrentSupply', '', 0);
     }
 
     /**
@@ -134,11 +107,11 @@ export class NFTWrapper {
      * The to address becomes the owner of the next token (if current tokenID = 10, will mint 11 )
      * Check if max supply is not reached
      * @param {Address} to
-     * @return {void}
+     * @return {string}
      */
 
-    Mint(to: Address): void {
-        call(this._origin, 'Mint', to._value, 0);
+    Mint(to: Address): string {
+        return call(this._origin, 'Mint', to.toByteString(), 0);
     }
 
     /**
@@ -149,11 +122,13 @@ export class NFTWrapper {
     * @return {void}
     */
 
-    Tranfer(to: Address, tokenId: u64): void {
-        call(
+    Tranfer(to: Address, tokenId: u64): string {
+        return call(
             this._origin,
             'Transfer',
-            to._value.concat(ByteArray.fromU64(tokenId).toByteString()),
+            to
+                .toStringSegment()
+                .concat(ByteArray.fromU64(tokenId).toByteString()),
             0
         );
     }
