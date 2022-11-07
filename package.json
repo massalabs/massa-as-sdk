@@ -64,4 +64,5 @@
       "import": "./build/release.js",
       "types": "./build/release.d.ts"
     }
+  }
 }
