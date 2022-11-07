@@ -5,7 +5,6 @@ export function setExports(xpt) {
 }
 
 export function local(memory) {
-    const StorageOf = new Map();
     const Storage = new Map();
     const SIZE_OFFSET = -4;
     const utf16 = new TextDecoder('utf-16le', {fatal: true});
@@ -39,43 +38,23 @@ export function local(memory) {
                 const a = getString(a_ptr);
                 const k = getString(k_ptr);
                 const v = getString(v_ptr);
-                if (!StorageOf.has(a)) {
-                    StorageOf.set(a, new Map());
+                if (!Storage.has(a)) {
+                    Storage.set(a, new Map());
                 }
-                const addressStorage = StorageOf.get(a);
+                const addressStorage = Storage.get(a);
                 addressStorage.set(k, v);
             },
             assembly_script_get_data_for(a_ptr, k_ptr) {
                 let v = '';
                 const a = getString(a_ptr);
                 const k = getString(k_ptr);
-                if (StorageOf.has(a)) {
-                    const addressStorage = StorageOf.get(a);
+                if (Storage.has(a)) {
+                    const addressStorage = Storage.get(a);
                     if (addressStorage.has(k)) {
                         v = addressStorage.get(k);
                     }
                 }
                 return newString(v);
-            },
-            assembly_script_has_data(k_ptr) {
-                const k = getString(k_ptr);
-                return Storage.get(k);
-            },
-            assembly_script_get_data(k_ptr) {
-                let v = '';
-                const k = getString(k_ptr);
-                if (Storage.has(k)) {
-                    const v = Storage.get(k);
-                }
-                return newString(v);
-            },
-            set_data(k_ptr, v_ptr) {
-                const k = getString(k_ptr);
-                const v = getString(v_ptr);
-                if (!Storage.has(k)) {
-                    Storage.set(k, new Map());
-                }
-                Storage.set(k, v);
             },
         },
     };
