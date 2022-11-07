@@ -26,10 +26,10 @@ const OwnerAddress = new Address('9x');
  *The NFT's main characteristics
  */
 
-const name: string = 'MASSA_NFT';
-const symbol: string = 'NFT';
-const maxSupply: string = '3';
-const baseURI: string = 'massa.net/nft/';
+const _name: string = 'MASSA_NFT';
+const _symbol: string = 'NFT';
+const _maxSupply: string = '3';
+const _baseURI: string = 'massa.net/nft/';
 
 /**
  * Init the NFT with name, symbol, maxsupply and baseURI,
@@ -37,19 +37,18 @@ const baseURI: string = 'massa.net/nft/';
  * @param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
  * @return {string}
  */
-
 export function setNFT(_: string): string {
-    //  if (!Storage.hasOf(ofAddress, counterKey)) {
-    Storage.setOf(ofAddress, baseURIKey, baseURI);
-    Storage.setOf(ofAddress, ownerKey, OwnerAddress.toByteString());
-    Storage.setOf(ofAddress, counterKey, initCounter.toString());
-    generateEvent(
-        `${name} with symbol  ${symbol} and total supply of  ${maxSupply} is well setted`
-    );
-    // } else {
-    //     generateEvent(`NFT already setted`);
-    // }
-    return '';
+  //  if (!Storage.hasOf(ofAddress, counterKey)) {
+  Storage.setOf(ofAddress, baseURIKey, _baseURI);
+  Storage.setOf(ofAddress, ownerKey, OwnerAddress.toByteString());
+  Storage.setOf(ofAddress, counterKey, initCounter.toString());
+  generateEvent(
+    `${_name} with symbol  ${_symbol} and total supply of  ${_maxSupply} is well setted`
+  );
+  // } else {
+  //     generateEvent(`NFT already setted`);
+  // }
+  return '';
 }
 
 /**
@@ -57,15 +56,14 @@ export function setNFT(_: string): string {
  * @param {string} newBaseURI new link include in the NFTs
  * @return {string}
  */
-
-export function SetURI(newBaseURI: string): string {
-    if (_OnlyOwner('')) {
-        Storage.setOf(ofAddress, baseURIKey, newBaseURI);
-        generateEvent(`new base URI ${newBaseURI} well setted`);
-    } else {
-        generateEvent(`you are not the contract Owner`);
-    }
-    return '';
+export function setURI(newBaseURI: string): string {
+  if (_onlyOwner('')) {
+    Storage.setOf(ofAddress, baseURIKey, newBaseURI);
+    generateEvent(`new base URI ${newBaseURI} well setted`);
+  } else {
+    generateEvent(`you are not the contract Owner`);
+  }
+  return '';
 }
 
 // ======================================================== //
@@ -77,18 +75,16 @@ export function SetURI(newBaseURI: string): string {
  * @param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
  * @return {string}
  */
-
-export function Name(_: string): string {
-    return name;
+export function name(_: string): string {
+  return _name;
 }
 /**
  * Return the NFT's symbol
- *  * @param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
+ * @param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
  * @return {string}
  */
-
-export function Symbol(_: string): string {
-    return symbol;
+export function symbol(_: string): string {
+  return _symbol;
 }
 
 /**
@@ -96,44 +92,40 @@ export function Symbol(_: string): string {
  * @param {string} tokenId
  * @return {string}
  */
-
-export function TokenURI(tokenId: string): string {
-    return Storage.getOf(ofAddress, baseURIKey) + tokenId;
+export function tokenURI(tokenId: string): string {
+  return Storage.getOf(ofAddress, baseURIKey) + tokenId;
 }
 
 /**
  * Return base URI
- ** @param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
+ * @param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
  * @return {string}
  */
-
-export function BaseURI(_: string): string {
-    return Storage.getOf(ofAddress, baseURIKey);
+export function baseURI(_: string): string {
+  return Storage.getOf(ofAddress, baseURIKey);
 }
 
 /**
  * Return the max supply possible
- ** @param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
+ * @param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
  * @return {string}
  */
-
-export function LimitSupply(_: string): string {
-    return maxSupply;
+export function limitSupply(_: string): string {
+  return _maxSupply;
 }
 
 /**
  * Return the current counter, if 10 NFT minted, returns '10'.
- *  * @param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
- * * @return {string}
+ *  @param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
+ *  @return {string}
  */
-
-export function CurrentSupply(_: string): string {
-    // if (Storage.hasOf(ofAddress, counterKey)) {
-    return Storage.getOf(ofAddress, counterKey);
-    // } else {
-    //     generateEvent(`NFT not setted yet`);
-    //     return "";
-    // }
+export function currentSupply(_: string): string {
+  // if (Storage.hasOf(ofAddress, counterKey)) {
+  return Storage.getOf(ofAddress, counterKey);
+  // } else {
+  //     generateEvent(`NFT not setted yet`);
+  //     return "";
+  // }
 }
 
 /**
@@ -142,14 +134,13 @@ export function CurrentSupply(_: string): string {
  * @param {string} tokenId
  * @return {string}
  */
-
-export function OwnerOf(tokenId: string): string {
-    // if (Storage.hasOf(ofAddress, ownerTokenKey + tokenId.toString())) {
-    return Storage.getOf(ofAddress, ownerTokenKey + tokenId.toString());
-    // } else {
-    //     generateEvent(`NFT not minted yet`);
-    //     return "";
-    // }
+export function ownerOf(tokenId: string): string {
+  // if (Storage.hasOf(ofAddress, ownerTokenKey + tokenId.toString())) {
+  return Storage.getOf(ofAddress, ownerTokenKey + tokenId.toString());
+  // } else {
+  //     generateEvent(`NFT not minted yet`);
+  //     return "";
+  // }
 }
 
 // ==================================================== //
@@ -162,19 +153,18 @@ export function OwnerOf(tokenId: string): string {
  * @param {string} args - byte string containing an owner's account (Address).
  * @return {string}
  */
-
-export function Mint(args: string): string {
-    if (u32(parseInt(LimitSupply(''))) > u32(parseInt(CurrentSupply('')))) {
-        const addr = Address.fromByteString(args);
-        _increment('');
-        const tokenID: string = CurrentSupply('');
-        const key = ownerTokenKey + tokenID;
-        Storage.setOf(ofAddress, key, addr.toByteString());
-        generateEvent(`tokenId ${tokenID} minted to ${addr.toByteString()} `);
-    } else {
-        generateEvent(`Max supply reached`);
-    }
-    return 'Minted';
+export function mint(args: string): string {
+  if (u32(parseInt(limitSupply(''))) > u32(parseInt(currentSupply('')))) {
+    const addr = Address.fromByteString(args);
+    _increment('');
+    const tokenID: string = currentSupply('');
+    const key = ownerTokenKey + tokenID;
+    Storage.setOf(ofAddress, key, addr.toByteString());
+    generateEvent(`tokenId ${tokenID} minted to ${addr.toByteString()} `);
+  } else {
+    generateEvent(`Max supply reached`);
+  }
+  return 'Minted';
 }
 
 /**
@@ -183,22 +173,20 @@ export function Mint(args: string): string {
  * @return {string}
  */
 function _increment(_: string): string {
-    const add1: u32 = 1;
-    const incr = u32(parseInt(Storage.getOf(ofAddress, counterKey))) + add1;
-    Storage.setOf(ofAddress, counterKey, incr.toString());
-    return '';
+  const add1: u32 = 1;
+  const incr = u32(parseInt(Storage.getOf(ofAddress, counterKey))) + add1;
+  Storage.setOf(ofAddress, counterKey, incr.toString());
+  return '';
 }
 
 /**
  *
  * Return true if the caller is the creator of the SC
- *  * @param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
- *  * @return {bool}
+ *  @param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
+ *  @return {bool}
  */
-
-//always true for test
-function _OnlyOwner(_: string): bool {
-    return '9x' == Storage.getOf(ofAddress, ownerKey);
+function _onlyOwner(_: string): bool { // always true for test
+  return '9x' == Storage.getOf(ofAddress, ownerKey);
 }
 
 // ==================================================== //
@@ -213,29 +201,28 @@ function _OnlyOwner(_: string): bool {
  * - the tokenID (u64).
  * @return {string}
  */
+export function transfer(args: string): string {
+  const toAddress = new Address();
+  const offset = toAddress.fromStringSegment(args);
 
-export function Transfer(args: string): string {
-    const toAddress = new Address();
-    const offset = toAddress.fromStringSegment(args);
-
-    const tokenId: u64 = ByteArray.fromByteString(
-        args.substr(offset, 8)
-    ).toU64();
+  const tokenId: u64 = ByteArray.fromByteString(
+    args.substr(offset, 8)
+  ).toU64();
     // if (!Storage.hasOf(ofAddress, ownerTokenKey + tokenId.toString())) {
     //     generateEvent(`token ${tokenId.toString()} not yet minted`);
     //     return "";
     // }
     // if (OwnerOf(tokenId.toString()) == Context.caller().toByteString()) {
-    Storage.setOf(
-        ofAddress,
-        ownerTokenKey + tokenId.toString(),
-        toAddress.toByteString()
-    );
-    generateEvent(
-        `token ${tokenId.toString()} sent from you to ${toAddress.toByteString()}`
-    );
-    // } else {
-    //     generateEvent(`You are not the owner of ${tokenId.toString()}`);
-    // }
-    return '';
+  Storage.setOf(
+    ofAddress,
+    ownerTokenKey + tokenId.toString(),
+    toAddress.toByteString()
+  );
+  generateEvent(
+    `token ${tokenId.toString()} sent from you to ${toAddress.toByteString()}`
+  );
+  // } else {
+  //     generateEvent(`You are not the owner of ${tokenId.toString()}`);
+  // }
+  return '';
 }
