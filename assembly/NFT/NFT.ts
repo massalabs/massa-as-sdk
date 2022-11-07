@@ -93,7 +93,7 @@ export function TokenURI(tokenId: string): string {
     if (Storage.has(baseURIKey)) {
         return Storage.get(baseURIKey) + tokenId;
     } else {
-        generateEvent(`NFT not yet Setted`);
+        generateEvent(`NFT not setted yet`);
         return '';
     }
 }
@@ -108,7 +108,7 @@ export function BaseURI(_: string): string {
     if (Storage.has(baseURIKey)) {
         return Storage.get(baseURIKey);
     } else {
-        generateEvent(`NFT not yet Setted`);
+        generateEvent(`NFT not setted yet`);
         return '';
     }
 }
