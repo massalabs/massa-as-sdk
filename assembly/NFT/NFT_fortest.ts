@@ -11,7 +11,7 @@
 // this NFT_fortest contract has been modificated in consequences
 // original contract kept commented to further implementation
 
-import {Address, Storage, Context, generateEvent} from '../std';
+import {Address, Storage, generateEvent} from '../std';
 import {ByteArray} from '@massalabs/as/assembly';
 const ownerTokenKey: string = 'ownerOf_';
 const counterKey: string = 'Counter';

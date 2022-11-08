@@ -22,58 +22,37 @@ describe('NFT contract TEST', () => {
     setNFT('');
     const got = Storage.getOf(ofAddress, 'Counter');
     const want = '0';
-    if (got != want) {
-      error(got.toString() + ', ' + want.toString() + ' was expected.');
-      return;
-    }
+    expect(got).toBe(want);
   });
   test('name call', () => {
     const got = name('');
     const want = 'MASSA_NFT';
-    if (got != want) {
-      error(got.toString() + ', ' + want.toString() + ' was expected.');
-      return;
-    }
+    expect(got).toBe(want);
   });
   test('symbol call', () => {
     const got = symbol('');
     const want = 'NFT';
-    if (got != want) {
-      error(got.toString() + ', ' + want.toString() + ' was expected.');
-      return;
-    }
+    expect(got).toBe(want);
   });
   test('TokenURI call', () => {
     const got = tokenURI('1');
     const want = 'massa.net/nft/1';
-    if (got != want) {
-      error(got.toString() + ', ' + want.toString() + ' was expected.');
-      return;
-    }
+    expect(got).toBe(want);
   });
   test('BaseURI call', () => {
     const got = baseURI('');
     const want = 'massa.net/nft/';
-    if (got != want) {
-      error(got.toString() + ', ' + want.toString() + ' was expected.');
-      return;
-    }
+    expect(got).toBe(want);
   });
   test('Limitsupply call', () => {
     const got = limitSupply('');
     const want = '3';
-    if (got != want) {
-      error(got.toString() + ', ' + want.toString() + ' was expected.');
-      return;
-    }
+    expect(got).toBe(want);
   });
   test('Current supply call', () => {
     const got = currentSupply('');
     const want = '0';
-    if (got != want) {
-      error(got.toString() + ', ' + want.toString() + ' was expected.');
-      return;
-    }
+    expect(got).toBe(want);
   });
 
   test('Mint test', () => {
@@ -82,10 +61,7 @@ describe('NFT contract TEST', () => {
     }
     const got = Storage.getOf(ofAddress, 'ownerOf_3');
     const want = '1x';
-    if (got != want) {
-      error(got.toString() + ', ' + want.toString() + ' was expected.');
-      return;
-    }
+    expect(got).toBe(want);
   });
   test('transfer test', () => {
     const args = transferAddress
@@ -94,18 +70,12 @@ describe('NFT contract TEST', () => {
     transfer(args);
     const got = Storage.getOf(ofAddress, 'ownerOf_2');
     const want = transferAddress.toByteString();
-    if (got != want) {
-      error(got.toString() + ', ' + want.toString() + ' was expected.');
-      return;
-    }
+    expect(got).toBe(want);
   });
   test('Change URI', () => {
     setURI('my.massa/');
     const got = baseURI('');
     const want = 'my.massa/';
-    if (got != want) {
-      error(got.toString() + ', ' + want.toString() + ' was expected.');
-      return;
-    }
+    expect(got).toBe(want);
   });
 });
