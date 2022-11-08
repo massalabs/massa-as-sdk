@@ -15,7 +15,7 @@ const baseURIKey: string = 'baseURI';
 const initCounter: u64 = 0;
 
 /**
- *The NFT's main characteristics
+ * The NFT's main characteristics
  */
 
 const _name: string = 'MASSA_NFT';
@@ -24,9 +24,8 @@ const _maxSupply: string = '10000';
 const _baseURI: string = 'massa.net/nft/';
 
 /**
- * Init the NFT with name, symbol, maxsupply and baseURI,
- *
- * init the counter to 0, the owner of the contract,
+ * Init the NFT with name, symbol, maxSupply and baseURI,
+ * init the counter to 0, the owner of the contract.
  * @param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
  *
  * @return {string}
@@ -61,7 +60,7 @@ export function setURI(newBaseURI: string): string {
 }
 
 // ======================================================== //
-// ====                 TOKEN ATTIBUTES                ==== //
+// ====                 TOKEN ATTRIBUTES                ==== //
 // ======================================================== //
 
 /**
@@ -72,6 +71,7 @@ export function setURI(newBaseURI: string): string {
 export function name(_: string): string {
   return _name;
 }
+
 /**
  * Return the NFT's symbol
  * @param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
@@ -82,7 +82,7 @@ export function symbol(_: string): string {
 }
 
 /**
- * Return the token URI (external link written in NFT where pictures or others a stored)
+ * Return the token URI (external link written in NFT where pictures or others are stored)
  * @param {string} tokenId
  * @return {string}
  */
@@ -109,7 +109,7 @@ export function baseURI(_: string): string {
 
 /**
  * Return the max supply possible
- *@param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
+ * @param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
  * @return {string}
  */
 export function limitSupply(_: string): string {
@@ -118,8 +118,8 @@ export function limitSupply(_: string): string {
 
 /**
  * Return the current counter, if 10 NFT minted, returns '10'.
- *  @param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
- *  @return {string}
+ * @param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
+ * @return {string}
  */
 export function currentSupply(_: string): string {
   if (Storage.has(counterKey)) {
@@ -130,7 +130,6 @@ export function currentSupply(_: string): string {
 }
 
 /**
- *
  * Return the tokenId's owner
  * @param {string} tokenId
  * @return {string}
@@ -146,8 +145,8 @@ export function ownerOf(tokenId: string): string {
 // ==================================================== //
 // ====                 TRANSFER                   ==== //
 // ==================================================== //
+
 /**
- *
  * The to address becomes the owner of the next token (if current tokenID = 10, will mint 11 )
  * Check if max supply is not reached
  * @param {string} args - byte string containing an owner's account (Address).
@@ -180,20 +179,18 @@ function _increment(_: string): string {
 }
 
 /**
- *
  * Return true if the caller is the creator of the SC
- *   @param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
- *   @return {bool}
+ * @param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
+ * @return {bool}
  */
 function _onlyOwner(_: string): bool {
   return Context.caller().toByteString() == Storage.get(ownerKey);
 }
 
 /**
- *
  * Return true if the caller is token's owner
- *   @param {u64} tokenId the tokenID
- *   @return {bool}
+ * @param {u64} tokenId the tokenID
+ * @return {bool}
  */
 function _onlyTokenOwner(tokenId: u64): bool {
   return ownerOf(tokenId.toString()) == Context.caller().toByteString();
@@ -204,8 +201,8 @@ function _onlyTokenOwner(tokenId: u64): bool {
 // ==================================================== //
 
 /**
- *Transfer a choosen token from the caller to the to Address
- check first the caller owns the token and if token minted
+ * Transfer a chosen token from the caller to the to Address.
+ * Check first the caller owns the token and if token minted.
  * @param {string} args - byte string with the following format:
  * - the recipient's account (address)
  * - the tokenID (u64).
@@ -214,8 +211,8 @@ function _onlyTokenOwner(tokenId: u64): bool {
 export function transfer(args: string): string {
   const toAddress = new Address();
   const offset = toAddress.fromStringSegment(args);
-
   const tokenId: u64 = ByteArray.fromByteString(args.substr(offset, 8)).toU64();
+
   if (!Storage.has(ownerTokenKey + tokenId.toString())) {
     generateEvent(`token ${tokenId.toString()} not yet minted`);
     return '';

@@ -12,7 +12,7 @@ import {ByteArray} from '@massalabs/as/assembly';
  *  ...
  *  const coin = new NFTWrapper(sc_address);
  *  const coinName = coin.Name();
- * ...
+ *  ...
  * ```
  */
 export class NFTWrapper {
@@ -52,7 +52,7 @@ export class NFTWrapper {
   }
 
   /**
-   * Return the token URI (external link written in NFT where pictures or others a stored)
+   * Return the token URI (external link written in NFT where pictures or others are stored)
    * @param {u64} tokenId
    * @return {string}
    */
@@ -85,7 +85,6 @@ export class NFTWrapper {
   }
 
   /**
-   *
    * Return the owner of a tokenID
    * @param {u64} tokenId
    * @return {string}
@@ -95,7 +94,6 @@ export class NFTWrapper {
   }
 
   /**
-   *
    * The to address becomes the owner of the next token (if current tokenID = 10, will mint 11 )
    * Check if max supply is not reached
    * @param {Address} to
@@ -106,12 +104,12 @@ export class NFTWrapper {
   }
 
   /**
-    *Transfer a choosen token from the caller to the to Address
-    check first the caller owns the token 
-    * @param {Address} to
-    * @param {u64} tokenId
-    * @return {void}
-    */
+   * Transfer a chosen token from the caller to the to Address.
+   * Check first the caller owns the token.
+   * @param {Address} to
+   * @param {u64} tokenId
+   * @return {void}
+   */
   transfer(to: Address, tokenId: u64): string {
     return call(
       this._origin,
