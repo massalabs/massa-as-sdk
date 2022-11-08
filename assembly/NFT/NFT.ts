@@ -178,7 +178,7 @@ export function mint(args: string): string {
  */
 function _increment(_: string): string {
   const add1: u32 = 1;
-  const incr = u32(parseInt(Storage.get(counterKey))) + add1;
+  const incr = u32(parseInt(Storage.get(counterKey))) ++;
   Storage.set(counterKey, incr.toString());
   return '';
 }
