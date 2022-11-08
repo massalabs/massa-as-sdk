@@ -37,7 +37,7 @@ export function setNFT(_: string): string {
     Storage.set(ownerKey, Context.caller().toByteString());
     Storage.set(counterKey, initCounter.toString());
     generateEvent(
-      `${name} with symbol  ${_symbol} and total supply of  ${_maxSupply} is well setted`,
+      `${name} with symbol ${_symbol} and total supply of ${_maxSupply} is well setted`,
     );
   } else {
     generateEvent(`NFT already setted`);
