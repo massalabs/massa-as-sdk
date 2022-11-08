@@ -112,7 +112,7 @@ export class NFTWrapper {
     * @param {u64} tokenId
     * @return {void}
     */
-  tranfer(to: Address, tokenId: u64): string {
+  transfer(to: Address, tokenId: u64): string {
     return call(
       this._origin,
       'transfer',
