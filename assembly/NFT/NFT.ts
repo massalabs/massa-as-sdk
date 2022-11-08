@@ -163,7 +163,7 @@ export function mint(args: string): string {
   } else {
     generateEvent(`Max supply reached`);
   }
-  return 'Minted';
+  return '';
 }
 
 /**

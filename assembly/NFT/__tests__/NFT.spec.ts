@@ -44,7 +44,8 @@ describe('NFT contract TEST', () => {
     }
   });
   test('TokenURI call', () => {
-    const got = tokenURI('1');
+    const tokenId = '1';
+    const got = tokenURI(tokenId);
     const want = 'massa.net/nft/1';
     if (got != want) {
       error(got.toString() + ', ' + want.toString() + ' was expected.');
@@ -80,7 +81,8 @@ describe('NFT contract TEST', () => {
     for (let i = 1; i <= 5; i++) {
       mint(toAddress.toByteString());
     }
-    const got = Storage.getOf(ofAddress, 'ownerOf_3');
+    const keyOwner = 'ownerOf_3';
+    const got = Storage.getOf(ofAddress, keyOwner);
     const want = '1x';
     if (got != want) {
       error(got.toString() + ', ' + want.toString() + ' was expected.');
@@ -88,11 +90,12 @@ describe('NFT contract TEST', () => {
     }
   });
   test('transfer test', () => {
+    const keyOwner = 'ownerOf_2';
     const args = transferAddress
       .toStringSegment()
       .concat(ByteArray.fromU64(2).toByteString());
     transfer(args);
-    const got = Storage.getOf(ofAddress, 'ownerOf_2');
+    const got = Storage.getOf(ofAddress, keyOwner);
     const want = transferAddress.toByteString();
     if (got != want) {
       error(got.toString() + ', ' + want.toString() + ' was expected.');
@@ -100,7 +103,8 @@ describe('NFT contract TEST', () => {
     }
   });
   test('Change URI', () => {
-    setURI('my.massa/');
+    const newURI = 'my.massa/';
+    setURI(newURI);
     const got = baseURI('');
     const want = 'my.massa/';
     if (got != want) {

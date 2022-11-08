@@ -65,7 +65,7 @@ export class NFTWrapper {
    * @return {string}
    */
   baseURI(): string {
-    return this._baseURI;
+    return call(this._origin, 'baseURI', '', 0);
   }
 
   /**
