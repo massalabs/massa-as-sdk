@@ -190,6 +190,16 @@ function _onlyOwner(_: string): bool {
   return '9x' == Storage.getOf(ofAddress, ownerKey);
 }
 
+/**
+ *
+ * Return true if the caller is token's owner
+ *   @param {u64} tokenId the tokenID
+ *   @return {bool}
+ */
+function _onlyTokenOwner(tokenId: u64): bool {
+  return ownerOf(tokenId.toString()) == '1x';
+}
+
 // ==================================================== //
 // ====                 TRANSFER                   ==== //
 // ==================================================== //
@@ -211,17 +221,17 @@ export function transfer(args: string): string {
   //     generateEvent(`token ${tokenId.toString()} not yet minted`);
   //     return "";
   // }
-  // if (OwnerOf(tokenId.toString()) == Context.caller().toByteString()) {
-  Storage.setOf(
-    ofAddress,
-    ownerTokenKey + tokenId.toString(),
-    toAddress.toByteString(),
-  );
-  generateEvent(
-    `token ${tokenId.toString()} sent from you to ${toAddress.toByteString()}`,
-  );
-  // } else {
-  //     generateEvent(`You are not the owner of ${tokenId.toString()}`);
-  // }
+  if (_onlyTokenOwner(tokenId)) {
+    Storage.setOf(
+      ofAddress,
+      ownerTokenKey + tokenId.toString(),
+      toAddress.toByteString(),
+    );
+    generateEvent(
+      `token ${tokenId.toString()} sent from you to ${toAddress.toByteString()}`,
+    );
+  } else {
+    generateEvent(`You are not the owner of ${tokenId.toString()}`);
+  }
   return '';
 }

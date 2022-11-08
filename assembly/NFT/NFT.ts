@@ -90,7 +90,6 @@ export function tokenURI(tokenId: string): string {
   if (Storage.has(baseURIKey)) {
     return Storage.get(baseURIKey) + tokenId;
   } else {
-    generateEvent(`NFT not setted yet`);
     return '';
   }
 }
@@ -104,7 +103,6 @@ export function baseURI(_: string): string {
   if (Storage.has(baseURIKey)) {
     return Storage.get(baseURIKey);
   } else {
-    generateEvent(`NFT not setted yet`);
     return '';
   }
 }
@@ -127,7 +125,6 @@ export function currentSupply(_: string): string {
   if (Storage.has(counterKey)) {
     return Storage.get(counterKey);
   } else {
-    generateEvent(`NFT not setted yet`);
     return '';
   }
 }
@@ -142,7 +139,6 @@ export function ownerOf(tokenId: string): string {
   if (Storage.has(ownerTokenKey + tokenId.toString())) {
     return Storage.get(ownerTokenKey + tokenId.toString());
   } else {
-    generateEvent(`NFT not minted yet`);
     return '';
   }
 }
@@ -193,6 +189,16 @@ function _onlyOwner(_: string): bool {
   return Context.caller().toByteString() == Storage.get(ownerKey);
 }
 
+/**
+ *
+ * Return true if the caller is token's owner
+ *   @param {u64} tokenId the tokenID
+ *   @return {bool}
+ */
+function _onlyTokenOwner(tokenId: u64): bool {
+  return ownerOf(tokenId.toString()) == Context.caller().toByteString();
+}
+
 // ==================================================== //
 // ====                 TRANSFER                   ==== //
 // ==================================================== //
@@ -214,7 +220,7 @@ export function transfer(args: string): string {
     generateEvent(`token ${tokenId.toString()} not yet minted`);
     return '';
   }
-  if (ownerOf(tokenId.toString()) == Context.caller().toByteString()) {
+  if (_onlyTokenOwner(tokenId)) {
     Storage.set(ownerTokenKey + tokenId.toString(), toAddress.toByteString());
     generateEvent(
       `token ${tokenId.toString()} sent from ${Context.caller().toByteString()} to ${toAddress.toByteString()}`,
