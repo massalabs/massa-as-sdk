@@ -209,18 +209,13 @@ export function transfer(args: string): string {
   const toAddress = new Address();
   const offset = toAddress.fromStringSegment(args);
 
-  const tokenId: u64 = ByteArray.fromByteString(
-    args.substr(offset, 8),
-  ).toU64();
+  const tokenId: u64 = ByteArray.fromByteString(args.substr(offset, 8)).toU64();
   if (!Storage.has(ownerTokenKey + tokenId.toString())) {
     generateEvent(`token ${tokenId.toString()} not yet minted`);
     return '';
   }
   if (ownerOf(tokenId.toString()) == Context.caller().toByteString()) {
-    Storage.set(
-      ownerTokenKey + tokenId.toString(),
-      toAddress.toByteString(),
-    );
+    Storage.set(ownerTokenKey + tokenId.toString(), toAddress.toByteString());
     generateEvent(
       `token ${tokenId.toString()} sent from ${Context.caller().toByteString()} to ${toAddress.toByteString()}`,
     );

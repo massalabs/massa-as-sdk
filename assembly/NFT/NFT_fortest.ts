@@ -43,7 +43,7 @@ export function setNFT(_: string): string {
   Storage.setOf(ofAddress, ownerKey, OwnerAddress.toByteString());
   Storage.setOf(ofAddress, counterKey, initCounter.toString());
   generateEvent(
-    `${_name} with symbol  ${_symbol} and total supply of  ${_maxSupply} is well setted`
+    `${_name} with symbol  ${_symbol} and total supply of  ${_maxSupply} is well setted`,
   );
   // } else {
   //     generateEvent(`NFT already setted`);
@@ -185,7 +185,8 @@ function _increment(_: string): string {
  *  @param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
  *  @return {bool}
  */
-function _onlyOwner(_: string): bool { // always true for test
+function _onlyOwner(_: string): bool {
+  // always true for test
   return '9x' == Storage.getOf(ofAddress, ownerKey);
 }
 
@@ -205,21 +206,19 @@ export function transfer(args: string): string {
   const toAddress = new Address();
   const offset = toAddress.fromStringSegment(args);
 
-  const tokenId: u64 = ByteArray.fromByteString(
-    args.substr(offset, 8)
-  ).toU64();
-    // if (!Storage.hasOf(ofAddress, ownerTokenKey + tokenId.toString())) {
-    //     generateEvent(`token ${tokenId.toString()} not yet minted`);
-    //     return "";
-    // }
-    // if (OwnerOf(tokenId.toString()) == Context.caller().toByteString()) {
+  const tokenId: u64 = ByteArray.fromByteString(args.substr(offset, 8)).toU64();
+  // if (!Storage.hasOf(ofAddress, ownerTokenKey + tokenId.toString())) {
+  //     generateEvent(`token ${tokenId.toString()} not yet minted`);
+  //     return "";
+  // }
+  // if (OwnerOf(tokenId.toString()) == Context.caller().toByteString()) {
   Storage.setOf(
     ofAddress,
     ownerTokenKey + tokenId.toString(),
-    toAddress.toByteString()
+    toAddress.toByteString(),
   );
   generateEvent(
-    `token ${tokenId.toString()} sent from you to ${toAddress.toByteString()}`
+    `token ${tokenId.toString()} sent from you to ${toAddress.toByteString()}`,
   );
   // } else {
   //     generateEvent(`You are not the owner of ${tokenId.toString()}`);
