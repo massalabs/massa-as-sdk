@@ -22,8 +22,8 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "test": "asp --verbose",
-    "test:ci": "asp --summary",
+    "test:asp": "asp --verbose",
+    "test:asp:ci": "asp --summary",
     "prettier": "as-prettier --write '{*,**/*}.{js,ts,jsx,tsx,json}'",
     "fmt": "as-prettier --write '{*,**/*}.{js,ts,jsx,tsx,json}' && npm run lint:fix",
     "fmt:check": "as-prettier --check '{*,**/*}.{js,ts,jsx,tsx,json}'",
