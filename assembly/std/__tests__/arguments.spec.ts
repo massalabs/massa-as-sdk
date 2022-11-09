@@ -6,12 +6,23 @@ const ADDR1 = 'A1Czd9sRp3mt2KU9QBEEZPsYxRq9TisMs1KnV4JYCe7Z4AAVinq';
 
 describe('Args tests', () => {
   it('With 2 addresses and a number', () => {
+    // Create an argument class instance
     const args1 = new Args();
+    // add some arguments
     args1.add(new Address(ADDR0)).add(new Address(ADDR1)).add(97);
 
-    const args2 = new Args(args1.serialize());
-    expect(args2.nextAddress()._value).toBe(ADDR0);
-    expect(args2.nextAddress()._value).toBe(ADDR1);
+    // use serialize to get the byte string
+    const byteString = args1.serialize();
+    // you can then use it in the call function:
+    // env.call(at.toByteString(), functionName, byteString, coins);
+
+    // create an argument class with the byte string
+    const args2 = new Args(byteString);
+    // assert that the first address is same we provide
+    // in the first call to add function
+    expect(args2.nextAddress().toByteString()).toBe(ADDR0);
+    // and so on with the 2 following arguments
+    expect(args2.nextAddress().toByteString()).toBe(ADDR1);
     expect(args2.nextU64()).toBe(97);
   });
 
@@ -20,11 +31,11 @@ describe('Args tests', () => {
     args1.add(97).add(new Address(ADDR0));
 
     expect(args1.nextU64()).toBe(97);
-    expect(args1.nextAddress()._value).toBe(ADDR0);
+    expect(args1.nextAddress().toByteString()).toBe(ADDR0);
 
     const args2 = new Args(args1.serialize());
     expect(args2.nextU64()).toBe(97);
-    expect(args2.nextAddress()._value).toBe(ADDR0);
+    expect(args2.nextAddress().toByteString()).toBe(ADDR0);
   });
 
   it('With Address and i64', () => {
@@ -35,12 +46,12 @@ describe('Args tests', () => {
       .add(113 as i64);
 
     expect(args1.nextI64()).toBe(97);
-    expect(args1.nextAddress()._value).toBe(ADDR0);
+    expect(args1.nextAddress().toByteString()).toBe(ADDR0);
     expect(args1.nextI64()).toBe(113);
 
     const args2 = new Args(args1.serialize());
     expect(args2.nextI64()).toBe(97);
-    expect(args2.nextAddress()._value).toBe(ADDR0);
+    expect(args2.nextAddress().toByteString()).toBe(ADDR0);
     expect(args2.nextI64()).toBe(113);
   });
 
@@ -52,12 +63,12 @@ describe('Args tests', () => {
       .add(113 as u64);
 
     expect(args1.nextU64()).toBe(97);
-    expect(args1.nextAddress()._value).toBe(ADDR0);
+    expect(args1.nextAddress().toByteString()).toBe(ADDR0);
     expect(args1.nextU64()).toBe(113);
 
     const args2 = new Args(args1.serialize());
     expect(args2.nextU64()).toBe(97);
-    expect(args2.nextAddress()._value).toBe(ADDR0);
+    expect(args2.nextAddress().toByteString()).toBe(ADDR0);
     expect(args2.nextU64()).toBe(113);
   });
 

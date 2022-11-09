@@ -47,8 +47,9 @@ export class Args {
   nextString(): string {
     let offset: i32 = this.offset as i32;
     const length = u8(this.argsString.codePointAt(offset));
-    const result = this.argsString.slice(offset + 1, offset + length + 1);
-    this.offset = offset + length + 1;
+    const end = offset + length + 1;
+    const result = this.argsString.slice(offset + 1, end);
+    this.offset = end;
     return result;
   }
 
@@ -83,7 +84,7 @@ export class Args {
   add<T>(arg: T): Args {
     if (arg instanceof Address) {
       this.argsString = this.argsString.concat(arg.toStringSegment());
-    } else if (arg instanceof String || typeof arg == 'string') {
+    } else if (arg instanceof String) {
       const str: string = arg.toString();
       this.argsString = this.argsString.concat(
         String.fromCharCode(u8(str.length)).concat(str as string),
@@ -96,10 +97,7 @@ export class Args {
       this.argsString = this.argsString.concat(
         ByteArray.fromI64(arg as i64).toByteString(),
       );
-    } else {
-      throw new Error('unsupported type: ' + typeof arg);
     }
-
     return this;
   }
 
@@ -130,13 +128,9 @@ export class Args {
     }
 
     let x: u64 = 0;
-    x = (x | byteArray[offset + 7]) << 8;
-    x = (x | byteArray[offset + 6]) << 8;
-    x = (x | byteArray[offset + 5]) << 8;
-    x = (x | byteArray[offset + 4]) << 8;
-    x = (x | byteArray[offset + 3]) << 8;
-    x = (x | byteArray[offset + 2]) << 8;
-    x = (x | byteArray[offset + 1]) << 8;
+    for (let i = 7; i >= 1; --i) {
+      x = (x | byteArray[offset + i]) << 8;
+    }
     x = x | byteArray[offset];
     return x;
   }
@@ -152,13 +146,9 @@ export class Args {
     }
 
     let x: i64 = 0;
-    x = (x | byteArray[offset + 7]) << 8;
-    x = (x | byteArray[offset + 6]) << 8;
-    x = (x | byteArray[offset + 5]) << 8;
-    x = (x | byteArray[offset + 4]) << 8;
-    x = (x | byteArray[offset + 3]) << 8;
-    x = (x | byteArray[offset + 2]) << 8;
-    x = (x | byteArray[offset + 1]) << 8;
+    for (let i = 7; i >= 1; --i) {
+      x = (x | byteArray[offset + i]) << 8;
+    }
     x = x | byteArray[offset];
     return x;
   }
