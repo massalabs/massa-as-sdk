@@ -105,9 +105,7 @@ describe('NFT contract TEST', () => {
   test('Change URI', () => {
     const newURI = 'my.massa/';
     setURI(newURI);
-    const got = baseURI('');
-    const want = 'my.massa/';
-    if (got != want) {
+    if (baseURI('') != newURI) {
       error(got.toString() + ', ' + want.toString() + ' was expected.');
       return;
     }
