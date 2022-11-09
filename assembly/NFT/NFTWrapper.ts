@@ -19,7 +19,6 @@ export class NFTWrapper {
   _origin: Address;
   _name: string;
   _symbol: string;
-  _baseURI: string;
   _limitSupply: string;
 
   /**
@@ -31,7 +30,6 @@ export class NFTWrapper {
     this._origin = at;
     this._name = call(this._origin, 'name', '', 0);
     this._symbol = call(this._origin, 'symbol', '', 0);
-    this._baseURI = call(this._origin, 'baseURI', '', 0);
     this._limitSupply = call(this._origin, 'limitSupply', '', 0);
     call(this._origin, 'setNFT', '', 0);
   }
@@ -57,7 +55,7 @@ export class NFTWrapper {
    * @return {string}
    */
   tokenURI(tokenId: u64): string {
-    return this._baseURI + tokenId.toString();
+    return call(this._origin, 'baseURI', '', 0) + tokenId.toString();
   }
 
   /**
