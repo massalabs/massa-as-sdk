@@ -155,7 +155,7 @@ export function ownerOf(tokenId: string): string {
 export function mint(args: string): string {
   if (u32(parseInt(limitSupply(''))) > u32(parseInt(currentSupply('')))) {
     const addr = Address.fromByteString(args);
-    _increment('');
+    _increment();
     const tokenID: string = currentSupply('');
     const key = ownerTokenKey + tokenID;
     Storage.set(key, addr.toByteString());
@@ -168,10 +168,9 @@ export function mint(args: string): string {
 
 /**
  * Increment the NFT counter
- * @param {string} _ - unused see https://github.com/massalabs/massa-sc-std/issues/18
  * @return {string}
  */
-function _increment(_: string): string {
+function _increment(): string {
   const add1: u32 = 1;
   const incr = u32(parseInt(Storage.get(counterKey))) + add1;
   Storage.set(counterKey, incr.toString());
