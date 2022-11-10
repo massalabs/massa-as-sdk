@@ -92,6 +92,16 @@ describe('Args tests', () => {
     expect(args2.nextI64()).toBe(113);
   });
 
+  it('With a big string', () => {
+    const args1 = new Args();
+    args1.add('a'.repeat(257));
+
+    expect(args1.nextString()).toBe('a'.repeat(257));
+
+    const args2 = new Args(args1.serialize());
+    expect(args2.nextString()).toBe('a'.repeat(257));
+  });
+
   it('With string and u64', () => {
     const args1 = new Args();
     args1
@@ -114,15 +124,15 @@ describe('Args tests', () => {
     args1
       .add(0 as u64)
       .add('my string')
-      .add(0xffffffffffffffff as u64);
+      .add(u64.MAX_VALUE as u64);
 
     expect(args1.nextU64()).toBe(0);
     expect(args1.nextString()).toBe('my string');
-    expect(args1.nextU64()).toBe(0xffffffffffffffff);
+    expect(args1.nextU64()).toBe(u64.MAX_VALUE);
 
     const args2 = new Args(args1.serialize());
     expect(args2.nextU64()).toBe(0);
     expect(args2.nextString()).toBe('my string');
-    expect(args2.nextU64()).toBe(0xffffffffffffffff);
+    expect(args2.nextU64()).toBe(u64.MAX_VALUE);
   });
 });

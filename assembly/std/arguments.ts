@@ -2,96 +2,113 @@ import {Address} from './address';
 import {ByteArray} from '@massalabs/as/assembly/byteArray';
 
 /**
- * Args for remote function call
+ * Args for remote function call.
+ *
+ * This class can serialize assembly script native types into bytes, in order to
+ * make smart-contract function call easier.
+ *
+ * In a smart-contract exposed function, use this class to deserialize the string
+ * argument, using the `next...` methods.
+ *
+ * In a smart-contract, to call another smart-contract function, use this class
+ * to serialize the arguments you want to pass to the smart-contract function
+ * call.
+ *
  */
 export class Args {
   private offset: i64 = 0;
-  private argsString: string = '';
+  private serialized: string = '';
 
   /**
    *
-   * @param {string} argsString
-   * @param {Array<string>} types
+   * @param {string} serialized
    */
-  constructor(argsString: string = '') {
-    this.argsString = argsString;
+  constructor(serialized: string = '') {
+    this.serialized = serialized;
   }
 
   /**
+   * Returns the serialized string to pass to CallSC.
    *
    * @return {string} the serialized string
    */
   serialize(): string {
-    return this.argsString;
+    return this.serialized;
   }
 
   // getters
 
   /**
+   * Returns the deserialized address.
    *
    * @return {Address} the address
    */
   nextAddress(): Address {
     const address = new Address();
     this.offset = address.fromStringSegment(
-      this.argsString,
+      this.serialized,
       this.offset as i32,
     );
     return address;
   }
 
   /**
+   * Returns the deserialized string.
    *
    * @return {string} the string
    */
   nextString(): string {
     let offset: i32 = this.offset as i32;
-    const length = u8(this.argsString.codePointAt(offset));
+    const length = u16(this.serialized.codePointAt(offset));
     const end = offset + length + 1;
-    const result = this.argsString.slice(offset + 1, end);
+    const result = this.serialized.slice(offset + 1, end);
     this.offset = end;
     return result;
   }
 
   /**
+   * Returns the deserialized number as u64.
    *
    * @return {u64}
    */
   nextU64(): u64 {
-    const byteArray = this.fromByteString(this.argsString);
+    const byteArray = this.fromByteString(this.serialized);
     const amount = this.toU64(byteArray, this.offset as u8);
     this.offset += 8;
     return amount;
   }
 
   /**
+   * Returns the deserialized number as i64.
    *
    * @return {i64}
    */
   nextI64(): i64 {
-    const byteArray = this.fromByteString(this.argsString);
+    const byteArray = this.fromByteString(this.serialized);
     const amount = changetype<i64>(this.toU64(byteArray, this.offset as u8));
     this.offset += 8;
     return amount;
   }
 
   /**
+   * Returns the deserialized number as u32.
    *
    * @return {u32}
    */
   nextU32(): u32 {
-    const byteArray = this.fromByteString(this.argsString);
+    const byteArray = this.fromByteString(this.serialized);
     const amount = this.toU32(byteArray, this.offset as u8);
     this.offset += 4;
     return amount;
   }
 
   /**
+   * Returns the deserialized number as i32.
    *
    * @return {i32}
    */
   nextI32(): i32 {
-    const byteArray = this.fromByteString(this.argsString);
+    const byteArray = this.fromByteString(this.serialized);
     const amount = changetype<i32>(this.toU32(byteArray, this.offset as u8));
     this.offset += 4;
     return amount;
@@ -99,6 +116,9 @@ export class Args {
   // Setter
 
   /**
+   * Adds an argument to the serialized byte string if the argument is an
+   * instance of a handled type (String of 65536 characters maximum,
+   * Address, u32, i32, u64, i64).
    *
    * @param {T} arg the argument to add
    *
@@ -106,27 +126,29 @@ export class Args {
    */
   add<T>(arg: T): Args {
     if (arg instanceof Address) {
-      this.argsString = this.argsString.concat(arg.toStringSegment());
+      this.serialized = this.serialized.concat(arg.toStringSegment());
     } else if (arg instanceof String) {
       const str: string = arg.toString();
-      this.argsString = this.argsString.concat(
-        String.fromCharCode(u8(str.length)).concat(str as string),
+      this.serialized = this.serialized.concat(
+        String.fromCharCode(u16(str.length)).concat(str as string),
       );
     } else if (arg instanceof u32) {
-      this.argsString = this.argsString.concat(
+      this.serialized = this.serialized.concat(
         ByteArray.fromU32(arg as u32).toByteString(),
       );
-    } else if (arg instanceof i32) {
-      this.argsString = this.argsString.concat(
-        ByteArray.fromI32(arg as i32).toByteString(),
+    } else if (arg instanceof i64) {
+      this.serialized = this.serialized.concat(
+        ByteArray.fromI64(arg as i64).toByteString(),
       );
     } else if (arg instanceof u64) {
-      this.argsString = this.argsString.concat(
+      this.serialized = this.serialized.concat(
         ByteArray.fromU64(arg as u64).toByteString(),
       );
-    } else if (arg instanceof i64 || typeof arg == 'number') {
-      this.argsString = this.argsString.concat(
-        ByteArray.fromI64(arg as i64).toByteString(),
+    } else if (arg instanceof i32 || typeof arg == 'number') {
+      // doing this `const one = 1;`, variable one is instance of i32
+      // and typeof number
+      this.serialized = this.serialized.concat(
+        ByteArray.fromI32(arg as i32).toByteString(),
       );
     }
     return this;
@@ -135,6 +157,7 @@ export class Args {
   // Utils
 
   /**
+   * Converts a string into a byte array.
    *
    * @param {string} byteString
    * @return {Uint8Array}
@@ -148,6 +171,7 @@ export class Args {
   }
 
   /**
+   * Converts a byte array into a u64.
    *
    * @param {Uint8Array} byteArray
    * @param {u8} offset
@@ -167,6 +191,7 @@ export class Args {
   }
 
   /**
+   * Converts a byte array into a u32.
    *
    * @param {Uint8Array} byteArray
    * @param {u8} offset
