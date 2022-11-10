@@ -9,7 +9,10 @@ describe('Args tests', () => {
     // Create an argument class instance
     const args1 = new Args();
     // add some arguments
-    args1.add(new Address(ADDR0)).add(new Address(ADDR1)).add(97);
+    args1
+      .add(new Address(ADDR0))
+      .add(new Address(ADDR1))
+      .add(97 as u64);
 
     // use serialize to get the byte string
     const byteString = args1.serialize();
@@ -28,13 +31,13 @@ describe('Args tests', () => {
 
   it('With a number and an address', () => {
     const args1 = new Args();
-    args1.add(97).add(new Address(ADDR0));
+    args1.add(97 as u32).add(new Address(ADDR0));
 
-    expect(args1.nextU64()).toBe(97);
+    expect(args1.nextU32()).toBe(97 as u32);
     expect(args1.nextAddress().toByteString()).toBe(ADDR0);
 
     const args2 = new Args(args1.serialize());
-    expect(args2.nextU64()).toBe(97);
+    expect(args2.nextU32()).toBe(97 as u32);
     expect(args2.nextAddress().toByteString()).toBe(ADDR0);
   });
 

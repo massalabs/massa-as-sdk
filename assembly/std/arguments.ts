@@ -54,6 +54,7 @@ export class Args {
   }
 
   /**
+   *
    * @return {u64}
    */
   nextU64(): u64 {
@@ -64,15 +65,37 @@ export class Args {
   }
 
   /**
+   *
    * @return {i64}
    */
   nextI64(): i64 {
     const byteArray = this.fromByteString(this.argsString);
-    const amount = this.toI64(byteArray, this.offset as u8);
+    const amount = changetype<i64>(this.toU64(byteArray, this.offset as u8));
     this.offset += 8;
     return amount;
   }
 
+  /**
+   *
+   * @return {u32}
+   */
+  nextU32(): u32 {
+    const byteArray = this.fromByteString(this.argsString);
+    const amount = this.toU32(byteArray, this.offset as u8);
+    this.offset += 4;
+    return amount;
+  }
+
+  /**
+   *
+   * @return {i32}
+   */
+  nextI32(): i32 {
+    const byteArray = this.fromByteString(this.argsString);
+    const amount = changetype<i32>(this.toU32(byteArray, this.offset as u8));
+    this.offset += 4;
+    return amount;
+  }
   // Setter
 
   /**
@@ -88,6 +111,14 @@ export class Args {
       const str: string = arg.toString();
       this.argsString = this.argsString.concat(
         String.fromCharCode(u8(str.length)).concat(str as string),
+      );
+    } else if (arg instanceof u32) {
+      this.argsString = this.argsString.concat(
+        ByteArray.fromU32(arg as u32).toByteString(),
+      );
+    } else if (arg instanceof i32) {
+      this.argsString = this.argsString.concat(
+        ByteArray.fromI32(arg as i32).toByteString(),
       );
     } else if (arg instanceof u64) {
       this.argsString = this.argsString.concat(
@@ -136,17 +167,18 @@ export class Args {
   }
 
   /**
+   *
    * @param {Uint8Array} byteArray
    * @param {u8} offset
-   * @return {i64}
+   * @return {u32}
    */
-  private toI64(byteArray: Uint8Array, offset: u8 = 0): i64 {
+  private toU32(byteArray: Uint8Array, offset: u8 = 0): u32 {
     if (byteArray.length - offset < 8) {
-      return <i64>NaN;
+      return <u32>NaN;
     }
 
-    let x: i64 = 0;
-    for (let i = 7; i >= 1; --i) {
+    let x: u32 = 0;
+    for (let i = 3; i >= 1; --i) {
       x = (x | byteArray[offset + i]) << 8;
     }
     x = x | byteArray[offset];
