@@ -58,10 +58,10 @@ export class Args {
    * @return {string} the string
    */
   nextString(): string {
+    const length = this.nextU32();
     let offset: i32 = this.offset as i32;
-    const length = u16(this.serialized.codePointAt(offset));
-    const end = offset + length + 1;
-    const result = this.serialized.slice(offset + 1, end);
+    const end = offset + length;
+    const result = this.serialized.slice(offset, end);
     this.offset = end;
     return result;
   }
@@ -129,9 +129,8 @@ export class Args {
       this.serialized = this.serialized.concat(arg.toStringSegment());
     } else if (arg instanceof String) {
       const str: string = arg.toString();
-      this.serialized = this.serialized.concat(
-        String.fromCharCode(u16(str.length)).concat(str as string),
-      );
+      this.add<u32>(str.length);
+      this.serialized = this.serialized.concat(str as string);
     } else if (arg instanceof u32) {
       this.serialized = this.serialized.concat(
         ByteArray.fromU32(arg as u32).toByteString(),

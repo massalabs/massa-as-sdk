@@ -94,12 +94,12 @@ describe('Args tests', () => {
 
   it('With a big string', () => {
     const args1 = new Args();
-    args1.add('a'.repeat(257));
+    args1.add('a'.repeat(65600));
 
-    expect(args1.nextString()).toBe('a'.repeat(257));
+    expect(args1.nextString()).toBe('a'.repeat(65600));
 
     const args2 = new Args(args1.serialize());
-    expect(args2.nextString()).toBe('a'.repeat(257));
+    expect(args2.nextString()).toBe('a'.repeat(65600));
   });
 
   it('With string and u64', () => {
