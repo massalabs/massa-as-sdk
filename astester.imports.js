@@ -1,3 +1,4 @@
+/* eslint-disable require-jsdoc */
 let exports;
 
 export function setExports(xpt) {
@@ -15,6 +16,7 @@ function makeid(length) {
   return result;
 }
 
+// Generates a 50 char lengh address
 function generateAddress() {
   return 'A12' + makeid(47);
 }
@@ -37,8 +39,8 @@ export async function local(memory) {
   };
   const defaultAddress = 'A12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq';
 
-  const Ledger = new Map();
-  Ledger.set(defaultAddress, emptyAddress);
+  const ledger = new Map();
+  ledger.set(defaultAddress, emptyAddress);
 
   const SIZE_OFFSET = -4;
   const utf16 = new TextDecoder('utf-16le', {fatal: true});
@@ -57,7 +59,6 @@ export async function local(memory) {
     const U16 = new Uint16Array(memory.buffer);
     for (let i = 0, p = ptr >>> 1; i < length; ++i)
       U16[p + i] = str.charCodeAt(i);
-    console.log(ptr);
     return ptr;
   }
 
@@ -71,7 +72,7 @@ export async function local(memory) {
       assembly_script_set_data(k_ptr, v_ptr) {
         const k = getString(k_ptr);
         const v = getString(v_ptr);
-        const addressStorage = Ledger.get(defaultAddress).storage;
+        const addressStorage = ledger.get(defaultAddress).storage;
         addressStorage.set(k, v);
       },
 
@@ -79,19 +80,19 @@ export async function local(memory) {
         const a = getString(a_ptr);
         const k = getString(k_ptr);
         const v = getString(v_ptr);
-        if (!Ledger.has(a)) {
-          Ledger.set(a, emptyAddress);
+        if (!ledger.has(a)) {
+          ledger.set(a, emptyAddress);
         }
 
-        const addressStorage = Ledger.get(a).storage;
+        const addressStorage = ledger.get(a).storage;
         addressStorage.set(k, v);
       },
 
       assembly_script_get_data(k_ptr) {
         let v = '';
         const k = getString(k_ptr);
-        if (Ledger.has(defaultAddress)) {
-          const addressStorage = Ledger.get(defaultAddress).storage;
+        if (ledger.has(defaultAddress)) {
+          const addressStorage = ledger.get(defaultAddress).storage;
           if (addressStorage.has(k)) {
             v = addressStorage.get(k);
           }
@@ -103,8 +104,8 @@ export async function local(memory) {
         let v = '';
         const a = getString(a_ptr);
         const k = getString(k_ptr);
-        if (Ledger.has(a)) {
-          const addressStorage = Ledger.get(a).storage;
+        if (ledger.has(a)) {
+          const addressStorage = ledger.get(a).storage;
           if (addressStorage.has(k)) {
             v = addressStorage.get(k);
           }
@@ -114,15 +115,15 @@ export async function local(memory) {
 
       assembly_script_has_data(k_ptr) {
         const k = getString(k_ptr);
-        const addressStorage = Ledger.get(defaultAddress).storage;
+        const addressStorage = ledger.get(defaultAddress).storage;
         return addressStorage.has(k);
       },
 
       assembly_script_has_data_for(a_ptr, k_ptr) {
         const a = getString(a_ptr);
         const k = getString(k_ptr);
-        if (Ledger.has(a)) {
-          const addressStorage = Ledger.get(a).storage;
+        if (ledger.has(a)) {
+          const addressStorage = ledger.get(a).storage;
           return addressStorage.has(k);
         } else {
           return false;
@@ -130,7 +131,7 @@ export async function local(memory) {
       },
 
       assembly_script_get_call_stack() {
-        const [_, contractAddress] = Ledger.keys();
+        const [_, contractAddress] = ledger.keys();
         return newString(
           '[ ' + defaultAddress + ' , ' + contractAddress + ' ]',
         );
@@ -142,7 +143,7 @@ export async function local(memory) {
         );
       },
 
-      // Here we get directly the path of the assemblyscript file as a trick
+      // map the assemblyscript file with the contractAddresses generated
       assembly_script_create_sc(path_ptr) {
         const path = getString(path_ptr);
         const newAddress = {_value: generateAddress(), _isValid: true};
@@ -150,7 +151,7 @@ export async function local(memory) {
           storage: new Map(),
           contract: path,
         };
-        Ledger.set(newAddress._value, newAddressLedger);
+        ledger.set(newAddress._value, newAddressLedger);
         return newString(newAddress._value);
       },
     },
