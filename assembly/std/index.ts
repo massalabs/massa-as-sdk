@@ -235,7 +235,7 @@ export function unsafeRandom(): i64 {
  * @param {u64} validityEndPeriod - Period of the validity end slot
  * @param {u8} validityEndThread - Thread of the validity end slot
  * @param {u64} maxGas - Maximum gas for the message execution
- * @param {u64} gasPrice - Price of one gas unit
+ * @param {u64} rawFee - Fee to be paid for message execution
  * @param {u64} coins - Coins of the sender
  * @param {string} msg - serialized data
  */
@@ -247,7 +247,7 @@ export function sendMessage(
   validityEndPeriod: u64,
   validityEndThread: u8,
   maxGas: u64,
-  gasPrice: u64,
+  rawFee: u64,
   coins: u64,
   msg: string,
 ): void {
@@ -258,8 +258,7 @@ export function sendMessage(
     validityStartThread,
     validityEndPeriod,
     validityEndThread,
-    maxGas,
-    gasPrice,
+    rawFee,
     coins,
     msg,
   );
