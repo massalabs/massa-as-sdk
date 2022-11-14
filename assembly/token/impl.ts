@@ -84,12 +84,12 @@ export function decimals(_: string): string {
 /**
  * Returns the balance of an account.
  *
- * @param {string} argsString - byte string containing an owner's account (Address).
+ * @param {string} stringifyArgs - Args object serialized as a string containing an owner's account (Address).
  *
  * @return {string} - u64
  */
-export function balanceOf(argsString: string): string {
-  const args = new Args(argsString);
+export function balanceOf(stringifyArgs: string): string {
+  const args = new Args(stringifyArgs);
   const addr = args.nextAddress();
 
   const r = addr.isValid() ? _balance(addr) : <u64>NaN;
@@ -129,16 +129,16 @@ function _setBalance(address: Address, balance: u64): void {
 /**
  * Transfers tokens from the caller's account to the recipient's account.
  *
- * @param {string} argsString - byte string with the following format:
+ * @param {string} stringifyArgs - Args object serialized as a string containing:
  * - the recipient's account (address)
  * - the number of tokens (u64).
  *
  * @return {string} - boolean value ("1" or "0")
  */
-export function transfer(argsString: string): string {
+export function transfer(stringifyArgs: string): string {
   const ownerAddress = Context.caller();
 
-  const args = new Args(argsString);
+  const args = new Args(stringifyArgs);
   const toAddress = args.nextAddress();
   const amount = args.nextU64();
 
@@ -195,14 +195,14 @@ function _transfer(from: Address, to: Address, amount: u64): bool {
 /**
  * Returns the allowance set on the owner's account for the spender.
  *
- * @param {string} argsString - byte string with the following format:
+ * @param {string} stringifyArgs - Args object serialized as a string containing:
  * - the owner's account (address)
  * - the spender's account (address).
  *
  * @return {string} - u64
  */
-export function allowance(argsString: string): string {
-  const args = new Args(argsString);
+export function allowance(stringifyArgs: string): string {
+  const args = new Args(stringifyArgs);
   const ownerAddress = args.nextAddress();
   const spenderAddress = args.nextAddress();
 
@@ -234,16 +234,16 @@ function _allowance(ownerAddress: Address, spenderAddress: Address): u64 {
  *
  * This function can only be called by the owner.
  *
- * @param {string} argsString - byte string with the following format:
+ * @param {string} stringifyArgs - Args object serialized as a string containing:
  * - the spender's account (address);
  * - the amount (u64).
  *
  * @return {string} - boolean value ("1" or "0")
  */
-export function increaseAllowance(argsString: string): string {
+export function increaseAllowance(stringifyArgs: string): string {
   const ownerAddress = Context.caller();
 
-  const args = new Args(argsString);
+  const args = new Args(stringifyArgs);
   const spenderAddress = args.nextAddress();
   const amount = args.nextU64();
 
@@ -274,16 +274,16 @@ export function increaseAllowance(argsString: string): string {
  *
  * This function can only be called by the owner.
  *
- * @param {string} argsString - byte string with the following format:
+ * @param {string} stringifyArgs - Args object serialized as a string containing:
  * - the spender's account (address);
  * - the amount (u64).
  *
  * @return {string} - boolean value ("1" or "0")
  */
-export function decreaseAllowance(argsString: string): string {
+export function decreaseAllowance(stringifyArgs: string): string {
   const ownerAddress = Context.caller();
 
-  const args = new Args(argsString);
+  const args = new Args(stringifyArgs);
   const spenderAddress = args.nextAddress();
   const amount = args.nextU64();
 
@@ -339,17 +339,17 @@ function _approve(
  * - both allowance and transfer are executed if possible;
  * - or if allowance or transfer is not possible, both are discarded.
  *
- * @param {string} argsString - byte string with the following format:
+ * @param {string} stringifyArgs - Args object serialized as a string containing:
  * - the owner's account (address);
  * - the recipient's account (address);
  * - the amount (u64).
  *
  * @return {string} - boolean value ("1" or "0")
  */
-export function transferFrom(argsString: string): string {
+export function transferFrom(stringifyArgs: string): string {
   const spenderAddress = Context.caller();
 
-  const args = new Args(argsString);
+  const args = new Args(stringifyArgs);
   const ownerAddress = args.nextAddress();
   const recipientAddress = args.nextAddress();
   const amount = args.nextU64();

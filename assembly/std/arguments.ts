@@ -73,9 +73,9 @@ export class Args {
    */
   nextU64(): u64 {
     const byteArray = this.fromByteString(this.serialized);
-    const amount = this.toU64(byteArray, this.offset as u8);
+    const value = this.toU64(byteArray, this.offset as u8);
     this.offset += 8;
-    return amount;
+    return value;
   }
 
   /**
@@ -85,9 +85,9 @@ export class Args {
    */
   nextI64(): i64 {
     const byteArray = this.fromByteString(this.serialized);
-    const amount = changetype<i64>(this.toU64(byteArray, this.offset as u8));
+    const value = changetype<i64>(this.toU64(byteArray, this.offset as u8));
     this.offset += 8;
-    return amount;
+    return value;
   }
 
   /**
@@ -97,9 +97,9 @@ export class Args {
    */
   nextU32(): u32 {
     const byteArray = this.fromByteString(this.serialized);
-    const amount = this.toU32(byteArray, this.offset as u8);
+    const value = this.toU32(byteArray, this.offset as u8);
     this.offset += 4;
-    return amount;
+    return value;
   }
 
   /**
@@ -109,9 +109,9 @@ export class Args {
    */
   nextI32(): i32 {
     const byteArray = this.fromByteString(this.serialized);
-    const amount = changetype<i32>(this.toU32(byteArray, this.offset as u8));
+    const value = changetype<i32>(this.toU32(byteArray, this.offset as u8));
     this.offset += 4;
-    return amount;
+    return value;
   }
 
   // Setter
