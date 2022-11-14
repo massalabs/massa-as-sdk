@@ -2,8 +2,9 @@ import {env} from '../env/index';
 import {Address} from './address';
 import * as Storage from './storage';
 import * as Context from './context';
+import {Args} from './arguments';
 
-export {Address, Storage, Context};
+export {Address, Storage, Context, Args};
 
 /**
  * Prints in the node logs
@@ -29,10 +30,10 @@ export function print(message: string): void {
 export function call(
   at: Address,
   functionName: string,
-  args: string,
+  args: Args,
   coins: u64,
 ): string {
-  return env.call(at.toByteString(), functionName, args, coins);
+  return env.call(at.toByteString(), functionName, args.serialize(), coins);
 }
 
 /**
@@ -141,9 +142,8 @@ export function getOpKeys(): Array<StaticArray<u8>> {
 /**
  * Internal function - used by getOpKeys
  *
- * @param {StaticArray<u8>} keysSer -
- *
- * @return {StaticArray<u8>} -
+ * @param {StaticArray<u8>} keysSer TBD
+ * @return {Array<StaticArray<u8>>} TBD
  */
 export function derOpKeys(keysSer: StaticArray<u8>): Array<StaticArray<u8>> {
   if (keysSer.length == 0) {
