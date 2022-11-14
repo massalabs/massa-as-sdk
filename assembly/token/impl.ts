@@ -1,9 +1,9 @@
 import {Address, Storage, Context, generateEvent} from '../std/index';
+import {ByteArray} from '@massalabs/as/assembly';
 import {Args} from '../std/arguments';
-
+import { ProposalState } from './enums';
 const TRANSFER_EVENT_NAME = 'TRANSFER';
 const APPROVAL_EVENT_NAME = 'APPROVAL';
-
 /**
  * Constructs an event given a key and arguments
  *
@@ -379,3 +379,177 @@ export function transferFrom(stringifyArgs: string): string {
 
   return '1';
 }
+// ==================================================== //
+// ====                 VOTE                       ==== //
+// ==================================================== //
+/*
+* @param {string} args - byte string with the following format:
+ * - the owner's account (address);
+ * - the recipient's account (address);
+ * - the amount (u64).
+ *
+ * @return {string} - boolean value ("1" or "0")*/
+
+export function delegate(delegatee: string): string {
+  
+return "address";
+}
+
+// ==================================================== //
+// ====                 GOVERNANCE                 ==== //
+// ==================================================== //
+
+
+/* @param {string} args - byte string with the following format:
+ * - proposal id (u64);
+ * @return {string} - ProposalState*/
+export function proposalState(proposalId: string): string {
+    // Fetch the proposal
+    const proposal = Storage.get(proposalId);   
+
+        if (proposal.executed) {
+            return ProposalState.Executed;
+        }
+
+        if (proposal.canceled) {
+            return ProposalState.Canceled;
+        }
+
+        if (proposal == null) {
+            return"Governor: unknown proposal id";
+        }
+
+        if (proposal.timestamp() + proposal.delay > block.timestamp) {
+            return ProposalState.Pending;
+        }
+
+        uint256 deadline = proposalDeadline(proposalId);
+
+        if (deadline >= block.number) {
+            return ProposalState.Active;
+        }
+
+        if (_voteSucceeded(proposalId)) {
+            return ProposalState.Succeeded;
+        } else {
+            return ProposalState.Defeated;
+        }
+
+}
+    /**
+     * @notice module:user-config
+     * @dev Delay, in number of blocks, between the vote start and vote ends.
+     *
+     * NOTE: Struct Proposal Storage register
+     * Key : proposal*id* 
+     * Values : 
+     * 
+     * NOTE: The {votingDelay} can delay the start of the vote. This must be considered when setting the voting
+     * duration compared to the voting delay.
+     */
+// create a new proposal and Emit the event ProposalCreated
+export function createProposal(ownerAddress: Address,targets: string[], values: string[], signatures: string[], calldatas: string[], description: string): string {
+
+    // Check if the proposer is a valid address
+    if (!ownerAddress.isValid()) {
+        return "Governor: invalid proposer address";
+    }
+
+    // Check if the proposal is valid
+    if (targets.length != values.length || targets.length != signatures.length || targets.length != calldatas.length) {
+        return "Governor: proposal function information arity mismatch";
+    }
+
+    // Check if the proposal is valid
+    if (targets.length == 0) {
+        return "Governor: must provide actions";
+    }
+    //Generate the proposal id
+    let proposalId = "proposal";
+    let exit = false;
+    for (let index = 1; exit == true; index++) {
+      if (Storage.has(proposalId.concat(index.toString())) == false) {
+        exit = true;
+        proposalId = proposalId.concat(index.toString());
+      }        
+    }
+    // Create the proposal
+    Storage.append(
+      "proposal",
+      proposalId,
+    );
+
+
+    //Register the proposal in Storage
+
+    // require(Context.caller() == guardian, "Governor: only guardian can propose");
+    // require(targets.length == values.length && targets.length == signatures.length && targets.length == calldatas.length, "Governor: proposal function information arity mismatch");
+    // require(targets.length != 0, "Governor: must provide actions");
+    // require(targets.length <= proposalMaxOperations, "Governor: too many actions");
+}
+
+// function setOwnerProposalAddress(ownerAddress: Address, proposalId:u64): string {
+//     // Check if the ownerAddress is a valid address
+//     if (!ownerAddress.isValid()) {
+//         return "Governor: invalid owner address";
+//     }
+//     // Set the ownerAddress in Storage
+//     Storage.set(
+//       ownerAddress.toByteString().concat(proposalId.toString()),
+//       "ownerProposalAddress",
+//     );
+//     if (Storage.get(ownerAddress.toByteString().concat(proposalId.toString())) == null) {
+//         return "Governor: invalid owner address";
+//     }
+//     else{
+//         return "Governor: valid owner address";
+//     }
+// }
+
+export function cancelProposal(proposalId: string): string {
+
+    // Fetch the proposal
+    const proposal = Storage.get(proposalId);
+
+    // Check if the proposal is valid
+    if (proposal == null) {
+        return "Governor: unknown proposal id";
+    }
+    Storage.set(
+      ownerAddress.toByteString().concat(proposalId.toString()),
+    //if proposal canceled return 1
+    if (proposal) {
+        return "0";
+    }
+    //if proposal executed return 1
+    if (proposal.executed) {
+        return "Governor: proposal already executed";
+    }
+    return "0";
+  }
+export function setEndVote(deadline: string): string {
+    return "deadline";
+}
+
+export function setStartVote(start: string): string {
+    return "start";
+  }
+    /**
+     * @notice module:user-config
+     * @dev Delay, in number of blocks, between the vote start and vote ends.
+     *
+     * NOTE: The {votingDelay} can delay the start of the vote. This must be considered when setting the voting
+     * duration compared to the voting delay.
+     */
+export function setVotingPeriod(period: string): string {
+    return "period";
+}
+    /**
+     * @notice module:user-config
+     * @dev Delay, in number of block, between the proposal is created and the vote starts. This can be increassed to
+     * leave time for users to buy voting power, or delegate it, before the voting of a proposal starts.
+     */
+export function setVotingDelay(delay: string): string {
+    return "threshold";
+}
+

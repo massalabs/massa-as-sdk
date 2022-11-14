@@ -245,4 +245,31 @@ export class TokenWrapper {
       ) == '1'
     );
   }
+  
+  /**
+   * Transfers token ownership from the owner's account to
+   * the recipient's account using the spender's allowance.
+   *
+   * This function can only be called by the spender.
+   * This function is atomic:
+   * - both allowance and transfer are executed if possible;
+   * - or if allowance or transfer is not possible, both are discarded.
+   *
+   * @param {Address} delegatee   
+   *
+   * @return {boolean} true on success
+   */
+  delegate(
+    delegatee: Address,
+  ): boolean {
+    return (
+      call(
+        this._origin,
+        'delegate',
+            delegatee.toByteString(),0)
+          )
+  }
+  return this.toAmount(
+    call(this._origin, 'balanceOf', account.toByteString(), 0),
+  );
 }
