@@ -113,11 +113,12 @@ export class Args {
     this.offset += 4;
     return amount;
   }
+
   // Setter
 
   /**
    * Adds an argument to the serialized byte string if the argument is an
-   * instance of a handled type (String of 65536 characters maximum,
+   * instance of a handled type (String of u32.MAX_VALUE characters maximum,
    * Address, u32, i32, u64, i64).
    *
    * @param {T} arg the argument to add
