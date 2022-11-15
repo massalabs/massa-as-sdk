@@ -5,20 +5,20 @@ export function setExports(xpt) {
   exports = xpt;
 }
 
-function makeid(length) {
-  var result = '';
-  var characters =
+function mixRandomChars(length) {
+  let result = '';
+  let characters =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  var charactersLength = characters.length;
-  for (var i = 0; i < length; i++) {
+  let charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
 }
 
 // Generates a 50 char lengh address
-function generateAddress() {
-  return 'A12' + makeid(47);
+function generateDumbAddress() {
+  return 'A12' + mixRandomChars(47);
 }
 
 /* Ledger format :
@@ -32,15 +32,19 @@ function generateAddress() {
     }
 }
 */
-export async function local(memory) {
-  const emptyAddress = {
-    storage: new Map(),
-    contract: '',
-  };
+export function local(memory) {
   const defaultAddress = 'A12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq';
+  const contractAddress = 'A12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT';
 
   const ledger = new Map();
-  ledger.set(defaultAddress, emptyAddress);
+  ledger.set(defaultAddress, {
+    storage: new Map(),
+    contract: '',
+  });
+  ledger.set(contractAddress, {
+    storage: new Map(),
+    contract: '',
+  });
 
   const SIZE_OFFSET = -4;
   const utf16 = new TextDecoder('utf-16le', {fatal: true});
@@ -72,7 +76,7 @@ export async function local(memory) {
       assembly_script_set_data(k_ptr, v_ptr) {
         const k = getString(k_ptr);
         const v = getString(v_ptr);
-        const addressStorage = ledger.get(defaultAddress).storage;
+        const addressStorage = ledger.get(contractAddress).storage;
         addressStorage.set(k, v);
       },
 
@@ -81,7 +85,10 @@ export async function local(memory) {
         const k = getString(k_ptr);
         const v = getString(v_ptr);
         if (!ledger.has(a)) {
-          ledger.set(a, emptyAddress);
+          ledger.set(a, {
+            storage: new Map(),
+            contract: '',
+          });
         }
 
         const addressStorage = ledger.get(a).storage;
@@ -91,8 +98,8 @@ export async function local(memory) {
       assembly_script_get_data(k_ptr) {
         let v = '';
         const k = getString(k_ptr);
-        if (ledger.has(defaultAddress)) {
-          const addressStorage = ledger.get(defaultAddress).storage;
+        if (ledger.has(contractAddress)) {
+          const addressStorage = ledger.get(contractAddress).storage;
           if (addressStorage.has(k)) {
             v = addressStorage.get(k);
           }
@@ -115,7 +122,7 @@ export async function local(memory) {
 
       assembly_script_has_data(k_ptr) {
         const k = getString(k_ptr);
-        const addressStorage = ledger.get(defaultAddress).storage;
+        const addressStorage = ledger.get(contractAddress).storage;
         return addressStorage.has(k);
       },
 
@@ -131,22 +138,22 @@ export async function local(memory) {
       },
 
       assembly_script_get_call_stack() {
-        const [_, contractAddress] = ledger.keys();
         return newString(
           '[ ' + defaultAddress + ' , ' + contractAddress + ' ]',
         );
       },
 
       assembly_script_unsafe_random() {
+        const maxi64 = '9223372036854775807';
         return BigInt(
-          Math.floor(Math.random() * Number.MAX_SAFE_INTEGER).toString(),
+          Math.floor(BigInt(Math.random()) * BigInt(maxi64)).toString(),
         );
       },
 
       // map the assemblyscript file with the contractAddresses generated
       assembly_script_create_sc(path_ptr) {
         const path = getString(path_ptr);
-        const newAddress = {_value: generateAddress(), _isValid: true};
+        const newAddress = {_value: generateDumbAddress(), _isValid: true};
         const newAddressLedger = {
           storage: new Map(),
           contract: path,
