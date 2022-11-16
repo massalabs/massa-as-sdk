@@ -650,16 +650,16 @@ export function getProposalVotingData (stringifyArgs:string): string {
 * @param {string} stringifyArgs - Args object serialized as a string containing:
 * - ownerProposalAddress {Address} String containing Address of Owner Proposal to retrieve right Datastore
 * - proposalId {string} String containing the proposalId to retrieve data
-* - title
-* - description
-* - state
-* - tokenName
-* - tokenSybmol
-* - votingDelay
-* - votingPeriod
-* - treshold
-* - launchDate
-* - lastUpdate
+* - title {string} String containing the title of the proposal 
+* - description {string} String containing the description of the proposal
+* - state {string} String containing the state of the proposal
+* - tokenName {string} String containing the tokenName of the proposal
+* - tokenSybmol {string} String containing the tokenSymbol of the proposal
+* - votingDelay {u64} Containing the votingDelay of the proposal
+* - votingPeriod {u64} Containing the votingPeriod of the proposal
+* - treshold {u64} Containing the treshold of the proposal
+* - launchDate {u64} Containing the launchDate of the proposal
+* - lastUpdate {u64} Containing the lastUpdate of the proposal
 * @return {string} - ProposalState
 */
 function proposalState(stringifyArgs: string): string {
@@ -679,11 +679,11 @@ function proposalState(stringifyArgs: string): string {
   const description = argsFromData.nextString();
   const tokenName = argsFromData.nextString();
   const tokenSymbol = argsFromData.nextString();
-  const votingDelay = argsFromData.nextString();
-  const votingPeriod = argsFromData.nextI64();
-  const treshold = argsFromData.nextString();
-  const launchDate = argsFromData.nextI64();
-  const lastUpdate = argsFromData.nextString();
+  const votingDelay = argsFromData.nextU64();
+  const votingPeriod = argsFromData.nextU64();
+  const treshold = argsFromData.nextU64();
+  const launchDate = argsFromData.nextU64();
+  const lastUpdate = argsFromData.nextU64();
 
   let proposalState; 
 
