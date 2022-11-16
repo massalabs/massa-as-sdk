@@ -1,15 +1,15 @@
-import {env} from '../env';
-import {Address} from './address';
+import { env } from '../env';
+import { Address } from './address';
 
 /**
  * Sets (key, value) in the datastore of the callee's address.
  *
  * Note: Existing entries are overwritten and missing ones are created.
  *
- * @param {string} key
- * @param {string} value
+ * @param {StaticArray<u8>} key
+ * @param {StaticArray<u8>} value
  */
-export function set(key: string, value: string): void {
+export function set(key: StaticArray<u8>, value: StaticArray<u8>): void {
   env.set(key, value);
 }
 
@@ -20,10 +20,10 @@ export function set(key: string, value: string): void {
  * TODO: explains security mecanisms
  *
  * @param {Address} address
- * @param {string} key
- * @param {string} value
+ * @param {StaticArray<u8>} key
+ * @param {StaticArray<u8>} value
  */
-export function setOf(address: Address, key: string, value: string): void {
+export function setOf(address: Address, key: StaticArray<u8>, value: StaticArray<u8>): void {
   env.setOf(address.toByteString(), key, value);
 }
 
@@ -32,11 +32,11 @@ export function setOf(address: Address, key: string, value: string): void {
  *
  * TODO: explains what happens on missing key.
  *
- * @param {string} key
+ * @param {StaticArray<u8>} key
  *
- * @return {string}
+ * @return {StaticArray<u8>}
  */
-export function get(key: string): string {
+export function get(key: StaticArray<u8>): StaticArray<u8> {
   return env.get(key);
 }
 
@@ -46,11 +46,11 @@ export function get(key: string): string {
  * TODO: explains what happens on missing key.
  *
  * @param {Address} address
- * @param {string} key
+ * @param {StaticArray<u8>} key
  *
- * @return {string}
+ * @return {StaticArray<u8>}
  */
-export function getOf(address: Address, key: string): string {
+export function getOf(address: Address, key: StaticArray<u8>): StaticArray<u8> {
   return env.getOf(address.toByteString(), key);
 }
 
@@ -60,9 +60,9 @@ export function getOf(address: Address, key: string): string {
  * TODO: explains what happens on missing key.
  * TODO: explains security mecanisms
  *
- * @param {string} key
+ * @param {StaticArray<u8>} key
  */
-export function del(key: string): void {
+export function del(key: StaticArray<u8>): void {
   env.del(key);
 }
 
@@ -73,9 +73,9 @@ export function del(key: string): void {
  * TODO: explains security mecanisms
  *
  * @param {Address} address
- * @param {string} key
+ * @param {StaticArray<u8>} key
  */
-export function deleteOf(address: Address, key: string): void {
+export function deleteOf(address: Address, key: StaticArray<u8>): void {
   env.deleteOf(address.toByteString(), key);
 }
 
@@ -85,10 +85,10 @@ export function deleteOf(address: Address, key: string): void {
  *
  * Note: do nothing if key is absent.
  *
- * @param {string} key
- * @param {string} value
+ * @param {StaticArray<u8>} key
+ * @param {StaticArray<u8>} value
  */
-export function append(key: string, value: string): void {
+export function append(key: StaticArray<u8>, value: StaticArray<u8>): void {
   env.append(key, value);
 }
 
@@ -100,10 +100,10 @@ export function append(key: string, value: string): void {
  * TODO: explains security mecanisms
  *
  * @param {Address} address target address
- * @param {string} key key string
- * @param {string} value value to append
+ * @param {StaticArray<u8>} key
+ * @param {StaticArray<u8>} value value to append
  */
-export function appendOf(address: Address, key: string, value: string): void {
+export function appendOf(address: Address, key: StaticArray<u8>, value: StaticArray<u8>): void {
   env.appendOf(address.toByteString(), key, value);
 }
 
@@ -111,10 +111,10 @@ export function appendOf(address: Address, key: string, value: string): void {
  * Checks if the (key, value) exists in the datastore
  * of the callee's address.
  *
- * @param {string} key
+ * @param {StaticArray<u8>} key
  * @return {bool}
  */
-export function has(key: string): bool {
+export function has(key: StaticArray<u8>): bool {
   return env.has(key);
 }
 
@@ -123,11 +123,11 @@ export function has(key: string): bool {
  * of the given address.
  *
  * @param {Address} address
- * @param {string} key
+ * @param {StaticArray<u8>} key
  *
  * @return {bool}
  */
-export function hasOf(address: Address, key: string): bool {
+export function hasOf(address: Address, key: StaticArray<u8>): bool {
   return env.hasOf(address.toByteString(), key);
 }
 
@@ -136,9 +136,9 @@ export function hasOf(address: Address, key: string): bool {
  *
  * TODO: explains failure consequences.
  *
- * @param {string} bytecode base64-encoded
+ * @param {StaticArray<u8>} bytecode
  */
-export function setBytecode(bytecode: string): void {
+export function setBytecode(bytecode: StaticArray<u8>): void {
   env.setBytecode(bytecode);
 }
 
@@ -148,8 +148,8 @@ export function setBytecode(bytecode: string): void {
  * TODO: explains security mecanisms.
  *
  * @param {Address} address target address
- * @param {string} bytecode base64-encoded
+ * @param {StaticArray<u8>} bytecode
  */
-export function setBytecodeOf(address: Address, bytecode: string): void {
+export function setBytecodeOf(address: Address, bytecode: StaticArray<u8>): void {
   env.setBytecodeOf(address.toByteString(), bytecode);
 }

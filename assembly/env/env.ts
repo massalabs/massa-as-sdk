@@ -18,55 +18,55 @@ export namespace env {
 
   // @ts-ignore
   @external("massa", "assembly_script_create_sc")
-  export declare function createSC(bytecode: string): string;
+  export declare function createSC(bytecode: StaticArray<u8>): string;
 
   // @ts-ignore
   @external("massa", "assembly_script_set_data")
-  export declare function set(key: string, value: string): void;
+  export declare function set(key: StaticArray<u8>, value: StaticArray<u8>): void;
 
   // @ts-ignore
   @external("massa", "assembly_script_set_data_for")
   export declare function setOf(
     address: string,
-    key: string,
-    value: string,
+    key: StaticArray<u8>,
+    value: StaticArray<u8>,
   ): void;
 
   // @ts-ignore
   @external("massa", "assembly_script_get_data")
-  export declare function get(key: string): string;
+  export declare function get(key: StaticArray<u8>): StaticArray<u8>;
 
   // @ts-ignore
   @external("massa", "assembly_script_get_data_for")
-  export declare function getOf(address: string, key: string): string;
+  export declare function getOf(address: string, key: StaticArray<u8>): StaticArray<u8>;
 
   // @ts-ignore
   @external("massa", "assembly_script_delete_data")
-  export declare function del(key: string): void;
+  export declare function del(key: StaticArray<u8>): void;
 
   // @ts-ignore
   @external("massa", "assembly_script_delete_data_for")
-  export declare function deleteOf(address: string, key: string): void;
+  export declare function deleteOf(address: string, key: StaticArray<u8>): void;
 
   // @ts-ignore
   @external("massa", "assembly_script_append_data")
-  export declare function append(key: string, value: string): void;
+  export declare function append(key: StaticArray<u8>, value: StaticArray<u8>): void;
 
   // @ts-ignore
   @external("massa", "assembly_script_append_data_for")
   export declare function appendOf(
     address: string,
-    key: string,
-    value: string,
+    key: StaticArray<u8>,
+    value: StaticArray<u8>,
   ): void;
 
   // @ts-ignore
   @external("massa", "assembly_script_has_data")
-  export declare function has(key: string): bool;
+  export declare function has(key: StaticArray<u8>): bool;
 
   // @ts-ignore
   @external("massa", "assembly_script_has_data_for")
-  export declare function hasOf(address: string, key: string): bool;
+  export declare function hasOf(address: string, key: StaticArray<u8>): bool;
 
   // @ts-ignore
   @external("massa", "assembly_script_get_owned_addresses")
@@ -153,13 +153,13 @@ export namespace env {
 
   // @ts-ignore
   @external("massa", "assembly_script_set_bytecode")
-  export declare function setBytecode(bytecode: string): void;
+  export declare function setBytecode(bytecode: StaticArray<u8>): void;
 
   // @ts-ignore
   @external("massa", "assembly_script_set_bytecode_for")
   export declare function setBytecodeOf(
     address: string,
-    bytecode: string,
+    bytecode: StaticArray<u8>,
   ): void;
 
   // @ts-ignore

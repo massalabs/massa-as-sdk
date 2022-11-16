@@ -45,11 +45,11 @@ export function call(
  * The context allow you to write in this smart contract while you're executing
  * the current bytecode.
  *
- * @param {string} bytecode - base64 encoded
+ * @param {StaticArray<u8>} bytecode
  *
  * @return {string} Smart contract address
  */
-export function createSC(bytecode: string): Address {
+export function createSC(bytecode: StaticArray<u8>): Address {
   return Address.fromByteString(env.createSC(bytecode));
 }
 
