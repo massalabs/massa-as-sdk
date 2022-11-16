@@ -659,7 +659,6 @@ export function getProposalVotingData (stringifyArgs:string): string {
 * - votingPeriod {u64} Containing the votingPeriod of the proposal
 * - treshold {u64} Containing the treshold of the proposal
 * - launchDate {u64} Containing the launchDate of the proposal
-* - lastUpdate {u64} Containing the lastUpdate of the proposal
 * @return {string} - ProposalState
 */
 function proposalState(stringifyArgs: string): string {
@@ -683,7 +682,7 @@ function proposalState(stringifyArgs: string): string {
   const votingPeriod = argsFromData.nextU64();
   const treshold = argsFromData.nextU64();
   const launchDate = argsFromData.nextU64();
-  const lastUpdate = argsFromData.nextU64();
+
 
   let proposalState; 
 
