@@ -198,7 +198,7 @@ export class Args {
    * @return {u32}
    */
   private toU32(byteArray: Uint8Array, offset: u8 = 0): u32 {
-    if (byteArray.length - offset < 8) {
+    if (byteArray.length - offset < 4) {
       return <u32>NaN;
     }
 
