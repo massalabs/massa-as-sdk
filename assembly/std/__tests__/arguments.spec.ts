@@ -167,4 +167,14 @@ describe('Args tests', () => {
     const args1 = NoArg;
     expect(args1.serialize()).toBe('');
   });
+
+  it('With float numbers', () => {
+    const args1 = new Args();
+    args1.add(3 as f64);
+
+    expect(args1.nextF64()).toBe(3);
+
+    const args2 = new Args(args1.serialize());
+    expect(args2.nextF64()).toBe(3);
+  });
 });
