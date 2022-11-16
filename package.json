@@ -30,6 +30,9 @@
     "lint": "eslint --ext .ts .",
     "asbuild:debug": "asc assembly/std/arguments.ts --target debug",
     "lint:fix": "eslint --fix --ext .ts .",
+    "release:patch": "npm version patch -m 'Release version %s'",
+    "release:minor": "npm version minor -m 'Release version %s'",
+    "release:major": "npm version major -m 'Release version %s'",
     "prepare": "husky install"
   },
   "devDependencies": {
