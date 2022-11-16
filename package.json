@@ -29,7 +29,8 @@
     "fmt:check": "as-prettier --check '{*,**/*}.{js,ts,jsx,tsx,json}'",
     "lint": "eslint --ext .ts .",
     "asbuild:debug": "asc assembly/std/arguments.ts --target debug",
-    "lint:fix": "eslint --fix --ext .ts ."
+    "lint:fix": "eslint --fix --ext .ts .",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@as-pect/cli": "^7.0.7",
