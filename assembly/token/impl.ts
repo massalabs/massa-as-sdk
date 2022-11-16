@@ -599,7 +599,6 @@ export function getProposalData (stringifyArgs:string): string {
   const args = new Args();
   const owner = args.nextAddress();
   const id = args.nextString();
-  const withArgs = args.nextU64();
   let result ;
   result = Storage.getOf(owner,"Data".concat(id));
   return result;
@@ -618,7 +617,6 @@ export function getUserVotingData (stringifyArgs:string): string {
   const args = new Args();
   const owner = args.nextAddress();
   const id = args.nextString();
-  const withArgs = args.nextU64();
   let result;
   result = Storage.getOf(owner,"VotingData".concat(id.concat(owner.toByteString())));
   return result;
@@ -637,7 +635,6 @@ export function getProposalVotingData (stringifyArgs:string): string {
   const args = new Args();
   const owner = args.nextAddress();
   const id = args.nextString();
-  const withArgs = args.nextU64();
   let result;
   result = Storage.get("VotingData".concat(id));
   return result;
