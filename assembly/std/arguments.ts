@@ -1,5 +1,4 @@
 import {Address} from './address';
-import {ByteArray} from '@massalabs/as/assembly/byteArray';
 
 /**
  * Args for remote function call.
@@ -44,10 +43,14 @@ export class Args {
    * @return {Address} the address
    */
   nextAddress(): Address {
+    const length = this.serialized[this.offset as i32];
     let address = Address.fromByteArray(
-      this.serialized.slice(this.offset as i32, (this.offset as i32) + 52),
+      this.serialized.slice(
+        (this.offset as i32) + 1,
+        (this.offset as i32) + length + 1,
+      ),
     );
-    this.offset += 52;
+    this.offset += length + 1;
     return address;
   }
 
@@ -63,6 +66,21 @@ export class Args {
     const result = this.serialized.slice(offset, end);
     this.offset = end;
     return this.toByteString(result);
+  }
+
+  /**
+   * Returns the deserialized bytearray.
+   *
+   * @return {Uint8Array}
+   */
+  nextByteArray(): Uint8Array {
+    const length = this.serialized[this.offset as i32];
+    let byteArray = this.serialized.slice(
+      (this.offset as i32) + 1,
+      (this.offset as i32) + length + 1,
+    );
+    this.offset += length + 1;
+    return byteArray;
   }
 
   /**
@@ -135,7 +153,15 @@ export class Args {
     return value;
   }
 
-  concatArrays(a: Uint8Array, b: Uint8Array): Uint8Array {
+  /**
+   * Internal function to concat to Uint8Array.
+   *
+   * @param {Uint8Array} a first array to concat
+   * @param {Uint8Array} b second array to concat
+   *
+   * @return {Uint8Array} the concatenated array
+   */
+  private concatArrays(a: Uint8Array, b: Uint8Array): Uint8Array {
     var c = new Uint8Array(a.length + b.length);
     c.set(a, 0);
     c.set(b, a.length);
@@ -155,13 +181,25 @@ export class Args {
    */
   add<T>(arg: T): Args {
     if (arg instanceof Address) {
-      this.serialized = this.concatArrays(this.serialized, arg.toByteArray());
+      let length = new Uint8Array(1);
+      length[0] = arg._value.length;
+      this.serialized = this.concatArrays(
+        this.concatArrays(this.serialized, length),
+        arg.toByteArray(),
+      );
     } else if (arg instanceof String) {
       const str: string = arg.toString();
       this.add<u32>(str.length);
       this.serialized = this.concatArrays(
         this.serialized,
         this.fromByteString(arg as string),
+      );
+    } else if (arg instanceof Uint8Array) {
+      let length = new Uint8Array(1);
+      length[0] = arg.length;
+      this.serialized = this.concatArrays(
+        this.concatArrays(this.serialized, length),
+        arg,
       );
     } else if (arg instanceof u32) {
       this.serialized = this.concatArrays(
@@ -218,7 +256,8 @@ export class Args {
   /**
    * Converts a byte array in a string.
    *
-   * @param {Uint8Array} bytArray
+   * @param {Uint8Array} byteArray the byte array to convert
+   *
    * @return {string}
    */
   private toByteString(byteArray: Uint8Array): string {
@@ -229,41 +268,57 @@ export class Args {
     return byteString;
   }
 
-    /**
+  /**
    * Converts a f64 in a bytearray.
+   *
+   * @param {f64} number the number to convert
+   *
+   * @return {Uint8Array} the converted bytearray
    */
-     private fromF64(number: f64): Uint8Array {
-      let byteArray = new Uint8Array(8);
-      let first_part: u32 = (number >> 32) as u32;
-      byteArray.set(this.fromF32(first_part), 4);
-      byteArray.set(this.fromF32(number as f32));
-      return byteArray;
+  private fromF64(number: f64): Uint8Array {
+    let byteArray = new Uint8Array(8);
+    let firstPart: u32 = (number >> 32) as u32;
+    byteArray.set(this.fromF32(firstPart), 4);
+    byteArray.set(this.fromF32(number as f32));
+    return byteArray;
+  }
+
+  /**
+   * Converts a f32 in a bytearray.
+   *
+   * @param {f32} number the number to convert
+   *
+   * @return {Uint8Array} the converted bytearray
+   */
+  private fromF32(number: f32): Uint8Array {
+    const byteArray = new Uint8Array(4);
+    for (let i = 0; i < 4; i++) {
+      byteArray[i] = u8(number >> (i * 8));
     }
-  
-    /**
-     * Converts a f32 in a bytearray.
-     */
-    private fromF32(number: f32): Uint8Array {
-      const byteArray = new Uint8Array(4);
-      for (let i = 0; i < 4; i++) {
-        byteArray[i] = u8(number >> (i * 8));
-      }
-      return byteArray;
-    }
+    return byteArray;
+  }
 
   /**
    * Converts a u64 in a bytearray.
+   *
+   * @param {u64} number the number to convert
+   *
+   * @return {Uint8Array} the converted bytearray
    */
   private fromU64(number: u64): Uint8Array {
     let byteArray = new Uint8Array(8);
-    let first_part: u32 = (number >> 32) as u32;
-    byteArray.set(this.fromU32(first_part), 4);
+    let firstPart: u32 = (number >> 32) as u32;
+    byteArray.set(this.fromU32(firstPart), 4);
     byteArray.set(this.fromU32(number as u32));
     return byteArray;
   }
 
   /**
    * Converts a u32 in a bytearray.
+   *
+   * @param {u32} number the number to convert
+   *
+   * @return {Uint8Array} the converted bytearray
    */
   private fromU32(number: u32): Uint8Array {
     const byteArray = new Uint8Array(4);
@@ -280,7 +335,7 @@ export class Args {
    * @param {u8} offset
    * @return {f64}
    */
-   private toF64(byteArray: Uint8Array, offset: u8 = 0): f64 {
+  private toF64(byteArray: Uint8Array, offset: u8 = 0): f64 {
     if (byteArray.length - offset < 8) {
       return <f64>NaN;
     }

@@ -1,8 +1,8 @@
 import {Address} from '../address';
 import {Args, NoArg} from '../arguments';
 
-const ADDR0 = 'A12cap3Gd1bDwVaY7LkPAj7GAayKueNq6ebaPELBfBhQLqR3R7rg';
-const ADDR1 = 'A1Czd9sRp3mt2KU9QBEEZPsYxRq9TisMs1KnV4JYCe7Z4AAVinq';
+const ADDR0 = 'A12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M';
+const ADDR1 = 'A1nsqw9mCcYLyyMJx5f4in4NXDoe4B1LzV9pQdvX5Wrxq9ehf6h';
 
 describe('Args tests', () => {
   it('With 2 addresses and a number', () => {
@@ -171,10 +171,51 @@ describe('Args tests', () => {
   it('With float numbers', () => {
     const args1 = new Args();
     args1.add(3 as f64);
+  });
 
-    expect(args1.nextF64()).toBe(3);
+  it('With byteArray', () => {
+    const args1 = new Args();
+    let test = new Uint8Array(10);
+    test[0] = 1;
+    test[1] = 2;
+    test[2] = 3;
+    test[3] = 4;
+    test[4] = 5;
+    test[5] = 6;
+    test[6] = 7;
+    test[7] = 8;
+    test[8] = 9;
+    test[9] = 10;
+    args1.add(test);
+    expect(args1.nextByteArray()).toStrictEqual(test);
 
     const args2 = new Args(args1.serialize());
-    expect(args2.nextF64()).toBe(3);
+    expect(args2.nextByteArray()).toStrictEqual(test);
+  });
+
+  it('With byteArray, string and number', () => {
+    const args1 = new Args();
+    let test = new Uint8Array(10);
+    test[0] = 1;
+    test[1] = 2;
+    test[2] = 3;
+    test[3] = 4;
+    test[4] = 5;
+    test[5] = 6;
+    test[6] = 7;
+    test[7] = 8;
+    test[8] = 9;
+    test[9] = 10;
+    args1.add('my string');
+    args1.add(test);
+    args1.add(300 as u64);
+    expect(args1.nextString()).toBe('my string');
+    expect(args1.nextByteArray()).toStrictEqual(test);
+    expect(args1.nextU64()).toBe(300);
+
+    const args2 = new Args(args1.serialize());
+    expect(args2.nextString()).toBe('my string');
+    expect(args2.nextByteArray()).toStrictEqual(test);
+    expect(args2.nextU64()).toBe(300);
   });
 });
