@@ -22,7 +22,10 @@ export namespace env {
 
   // @ts-ignore
   @external("massa", "assembly_script_set_data")
-  export declare function set(key: StaticArray<u8>, value: StaticArray<u8>): void;
+  export declare function set(
+    key: StaticArray<u8>,
+    value: StaticArray<u8>,
+  ): void;
 
   // @ts-ignore
   @external("massa", "assembly_script_set_data_for")
@@ -38,7 +41,10 @@ export namespace env {
 
   // @ts-ignore
   @external("massa", "assembly_script_get_data_for")
-  export declare function getOf(address: string, key: StaticArray<u8>): StaticArray<u8>;
+  export declare function getOf(
+    address: string,
+    key: StaticArray<u8>,
+  ): StaticArray<u8>;
 
   // @ts-ignore
   @external("massa", "assembly_script_delete_data")
@@ -50,7 +56,10 @@ export namespace env {
 
   // @ts-ignore
   @external("massa", "assembly_script_append_data")
-  export declare function append(key: StaticArray<u8>, value: StaticArray<u8>): void;
+  export declare function append(
+    key: StaticArray<u8>,
+    value: StaticArray<u8>,
+  ): void;
 
   // @ts-ignore
   @external("massa", "assembly_script_append_data_for")

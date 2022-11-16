@@ -1,5 +1,5 @@
-import { env } from '../env';
-import { Address } from './address';
+import {env} from '../env';
+import {Address} from './address';
 
 /**
  * Sets (key, value) in the datastore of the callee's address.
@@ -23,7 +23,11 @@ export function set(key: StaticArray<u8>, value: StaticArray<u8>): void {
  * @param {StaticArray<u8>} key
  * @param {StaticArray<u8>} value
  */
-export function setOf(address: Address, key: StaticArray<u8>, value: StaticArray<u8>): void {
+export function setOf(
+  address: Address,
+  key: StaticArray<u8>,
+  value: StaticArray<u8>,
+): void {
   env.setOf(address.toByteString(), key, value);
 }
 
@@ -103,7 +107,11 @@ export function append(key: StaticArray<u8>, value: StaticArray<u8>): void {
  * @param {StaticArray<u8>} key
  * @param {StaticArray<u8>} value value to append
  */
-export function appendOf(address: Address, key: StaticArray<u8>, value: StaticArray<u8>): void {
+export function appendOf(
+  address: Address,
+  key: StaticArray<u8>,
+  value: StaticArray<u8>,
+): void {
   env.appendOf(address.toByteString(), key, value);
 }
 
@@ -150,6 +158,9 @@ export function setBytecode(bytecode: StaticArray<u8>): void {
  * @param {Address} address target address
  * @param {StaticArray<u8>} bytecode
  */
-export function setBytecodeOf(address: Address, bytecode: StaticArray<u8>): void {
+export function setBytecodeOf(
+  address: Address,
+  bytecode: StaticArray<u8>,
+): void {
   env.setBytecodeOf(address.toByteString(), bytecode);
 }
