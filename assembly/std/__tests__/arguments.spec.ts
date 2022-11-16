@@ -135,4 +135,14 @@ describe('Args tests', () => {
     expect(args2.nextString()).toBe('my string');
     expect(args2.nextU64()).toBe(u64.MAX_VALUE);
   });
+
+  it('With float numbers', () => {
+    const args1 = new Args();
+    args1.add(3 as f64);
+
+    expect(args1.nextF64()).toBe(3);
+
+    const args2 = new Args(args1.serialize());
+    expect(args2.nextF64()).toBe(3);
+  });
 });
