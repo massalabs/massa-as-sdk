@@ -33,11 +33,14 @@ function generateDumbAddress() {
 }
 */
 export function local(memory) {
-    const defaultAddress = 'A12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq';
+    // Thoose both address have been generated randomly
+    const callerAddress = 'A12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq';
     const contractAddress = 'A12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT';
 
+    let callStack = callerAddress + ' , ' + contractAddress;
+
     const ledger = new Map();
-    ledger.set(defaultAddress, {
+    ledger.set(callerAddress, {
         storage: new Map(),
         contract: '',
     });
@@ -69,6 +72,10 @@ export function local(memory) {
     return {
         massa: {
             memory,
+            assembly_script_change_call_stack(callstack_ptr) {
+                const callStackToString = getString(callstack_ptr)
+                callStack = callStackToString;
+            },
             assembly_script_generate_event(string) {
                 console.log('event', getString(string));
             },
@@ -138,24 +145,20 @@ export function local(memory) {
             },
 
             assembly_script_get_call_stack() {
-                return newString(
-                    '[ ' + defaultAddress + ' , ' + contractAddress + ' ]',
-                );
+                return newString('[ ' + callStack + ']');
             },
 
             assembly_script_unsafe_random() {
-                const maxi64 = '9223372036854775807';
                 return BigInt(
-                    Math.floor(BigInt(Math.random()) * BigInt(maxi64)).toString(),
+                    Math.floor(Math.random() * Number.MAX_SAFE_INTEGER).toString(),
                 );
             },
-
             // map the assemblyscript file with the contractAddresses generated
             assembly_script_create_sc(_) {
                 const newAddress = { _value: generateDumbAddress(), _isValid: true };
                 const newAddressLedger = {
                     storage: new Map(),
-                    contract: path,
+                    contract: ''
                 };
                 ledger.set(newAddress._value, newAddressLedger);
                 return newString(newAddress._value);
