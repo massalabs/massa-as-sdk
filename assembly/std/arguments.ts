@@ -210,3 +210,5 @@ export class Args {
     return x;
   }
 }
+
+export const NoArg: Args = new Args();
