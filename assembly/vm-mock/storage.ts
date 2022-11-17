@@ -10,8 +10,7 @@
  */
 // @ts-ignore: decorator
 @external("massa-sc-std", "set")
-    export declare function setData(k: string, v: string): void;
-
+export declare function setData(k: string, v: string): void;
 
 /**
  *  Change the callstack until the next call on this function
@@ -23,5 +22,4 @@
  */
 // @ts-ignore: decorator
 @external("massa", "assembly_script_change_call_stack")
-    export declare function changeCallStack(callStack: string): void;
-
+export declare function changeCallStack(callStack: string): void;
