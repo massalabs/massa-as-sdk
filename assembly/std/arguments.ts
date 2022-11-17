@@ -276,11 +276,8 @@ export class Args {
    * @return {Uint8Array} the converted bytearray
    */
   private fromF64(number: f64): Uint8Array {
-    let byteArray = new Uint8Array(8);
-    let firstPart: u32 = (number >> 32) as u32;
-    byteArray.set(this.fromF32(firstPart), 4);
-    byteArray.set(this.fromF32(number as f32));
-    return byteArray;
+    log(number);
+    return this.fromU64(bswap<u64>(reinterpret<u64>(number)));
   }
 
   /**
@@ -291,11 +288,7 @@ export class Args {
    * @return {Uint8Array} the converted bytearray
    */
   private fromF32(number: f32): Uint8Array {
-    const byteArray = new Uint8Array(4);
-    for (let i = 0; i < 4; i++) {
-      byteArray[i] = u8(number >> (i * 8));
-    }
-    return byteArray;
+    return this.fromU32(bswap<u32>(reinterpret<u32>(number)));
   }
 
   /**
@@ -340,10 +333,7 @@ export class Args {
       return <f64>NaN;
     }
 
-    let x: f64 = 0;
-    x = (x | this.toF32(byteArray, offset + 4)) << 32;
-    x = x | this.toF32(byteArray, offset);
-    return x;
+    return reinterpret<f64>(bswap<u64>(this.toU64(byteArray, offset)));
   }
 
   /**
@@ -358,12 +348,7 @@ export class Args {
       return <f32>NaN;
     }
 
-    let x: f32 = 0;
-    for (let i = 3; i >= 1; --i) {
-      x = (x | byteArray[offset + i]) << 8;
-    }
-    x = x | byteArray[offset];
-    return x;
+    return reinterpret<f32>(bswap<u32>(this.toU32(byteArray, offset)));
   }
 
   /**

@@ -136,15 +136,31 @@ describe('Args tests', () => {
     expect(args2.nextU64()).toBe(u64.MAX_VALUE);
   });
 
-  // it('With float numbers', () => {
-  //   const args1 = new Args();
-  //   args1.add(3 as f64);
+  it('With float numbers', () => {
+    const args1 = new Args();
+    args1.add(3 as f64);
 
-  //   expect(args1.nextF64()).toBe(3);
+    expect(args1.nextF64()).toBe(3);
 
-  //   const args2 = new Args(args1.serialize());
-  //   expect(args2.nextF64()).toBe(3);
-  // });
+    const args2 = new Args(args1.serialize());
+    expect(args2.nextF64()).toBe(3);
+  });
+
+  it('With negative numbers and decimal ones', () => {
+    const args1 = new Args();
+    args1.add(3.4648 as f64);
+    args1.add(-2.4783 as f64);
+    args1.add(-9 as i64);
+
+    expect(args1.nextF64()).toBe(3.4648);
+    expect(args1.nextF64()).toBe(-2.4783);
+    expect(args1.nextI64()).toBe(-9);
+
+    const args2 = new Args(args1.serialize());
+    expect(args2.nextF64()).toBe(3.4648);
+    expect(args2.nextF64()).toBe(-2.4783);
+    expect(args2.nextI64()).toBe(-9);
+  });
 
   it('With byteArray', () => {
     const args1 = new Args();
