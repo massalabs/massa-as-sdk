@@ -359,7 +359,7 @@ export class Args {
    * @return {u64}
    */
   private toU64(byteArray: Uint8Array, offset: u8 = 0): u64 {
-    if (byteArray.length - offset < 8) {
+    if (byteArray.length - offset < sizeof<u64>()) {
       return <u64>NaN;
     }
 
@@ -377,7 +377,7 @@ export class Args {
    * @return {u32}
    */
   private toU32(byteArray: Uint8Array, offset: u8 = 0): u32 {
-    if (byteArray.length - offset < 4) {
+    if (byteArray.length - offset < sizeof<u32>()) {
       return <u32>NaN;
     }
 

@@ -119,6 +119,33 @@ describe('Args tests', () => {
     expect(args2.nextU64()).toBe(11356323656733);
   });
 
+  it('With u32', () => {
+    const args1 = new Args();
+    args1.add(97 as u32);
+
+    expect(args1.nextU32()).toBe(97 as u32);
+
+    const args2 = new Args(args1.serialize());
+    expect(args2.nextU32()).toBe(97 as u32);
+  });
+
+  it('With string and u32', () => {
+    const args1 = new Args();
+    args1
+      .add(97 as u32)
+      .add('my string')
+      .add(112 as u32);
+
+    expect(args1.nextU32()).toBe(97 as u32);
+    expect(args1.nextString()).toBe('my string');
+    expect(args1.nextU32()).toBe(112 as u32);
+
+    const args2 = new Args(args1.serialize());
+    expect(args2.nextU32()).toBe(97 as u32);
+    expect(args2.nextString()).toBe('my string');
+    expect(args2.nextU32()).toBe(112 as u32);
+  });
+
   it('With string and 0 and max number', () => {
     const args1 = new Args();
     args1
