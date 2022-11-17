@@ -44,14 +44,11 @@ export class Args {
    * @return {Address} the address
    */
   nextAddress(): Address {
-    const length = this.serialized[this.offset as i32];
+    const length = this.nextU32();
     let address = Address.fromByteArray(
-      this.serialized.slice(
-        (this.offset as i32) + 1,
-        (this.offset as i32) + length + 1,
-      ),
+      this.serialized.slice(this.offset as i32, (this.offset as i32) + length),
     );
-    this.offset += length + 1;
+    this.offset += length;
     return address;
   }
 
@@ -182,12 +179,9 @@ export class Args {
    */
   add<T>(arg: T): Args {
     if (arg instanceof Address) {
-      let length = new Uint8Array(1);
-      length[0] = arg._value.length;
-      this.serialized = this.concatArrays(
-        this.concatArrays(this.serialized, length),
-        arg.toByteArray(),
-      );
+      let str = arg.toByteString();
+      this.add<u32>(str.length);
+      this.serialized = this.concatArrays(this.serialized, arg.toByteArray());
     } else if (arg instanceof String) {
       const str: string = arg.toString();
       this.add<u32>(str.length);
