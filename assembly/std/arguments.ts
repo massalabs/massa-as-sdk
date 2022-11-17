@@ -72,12 +72,12 @@ export class Args {
    * @return {Uint8Array}
    */
   nextUint8Array(): Uint8Array {
-    const length = this.serialized[this.offset as i32];
+    const length = this.nextU32();
     let byteArray = this.serialized.slice(
-      (this.offset as i32) + 1,
-      (this.offset as i32) + length + 1,
+      this.offset as i32,
+      (this.offset as i32) + length,
     );
-    this.offset += length + 1;
+    this.offset += length;
     return byteArray;
   }
 
@@ -190,12 +190,8 @@ export class Args {
         this.fromByteString(arg as string),
       );
     } else if (arg instanceof Uint8Array) {
-      let length = new Uint8Array(1);
-      length[0] = arg.length;
-      this.serialized = this.concatArrays(
-        this.concatArrays(this.serialized, length),
-        arg,
-      );
+      this.add<u32>(arg.length);
+      this.serialized = this.concatArrays(this.serialized, arg);
     } else if (arg instanceof u32) {
       this.serialized = this.concatArrays(
         this.serialized,
