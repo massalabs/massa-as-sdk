@@ -259,17 +259,17 @@ export class TokenWrapper {
    *
    * @return {boolean} true on success
    */
-  delegate(
-    delegatee: Address,
-  ): boolean {
-    return (
-      call(
-        this._origin,
-        'delegate',
-            delegatee.toByteString(),0)
-          )
-  }
-  return this.toAmount(
-    call(this._origin, 'balanceOf', account.toByteString(), 0),
-  );
+  // delegate(
+  //   delegatee: Address,
+  // ): boolean {
+  //   return (
+  //     call(
+  //       this._origin,
+  //       'delegate',
+  //           delegatee.toByteString(),0)
+  //         )
+  // }
+  // return this.toAmount(
+  //   call(this._origin, 'balanceOf', account.toByteString(), 0),
+  // );
 }
