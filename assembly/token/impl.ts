@@ -883,7 +883,7 @@ export function cancelProposal(proposalId: string): string {
     globalProposal.slice(globalProposal.length);
   }
   Storage.set(
-    "proposal",globalProposal)
+    "proposal",globalProposal);
 
   // Get actual Args of the proposal
   const Dataparams = new Args(Storage.get("Data".concat(proposalId)));
@@ -914,7 +914,7 @@ export function cancelProposal(proposalId: string): string {
   params.add(votingPeriod);
   params.add(threshold);
   params.add(launchDate);
-  params.add(Date.now().toString())
+  params.add(Date.now().toString());
 
   Storage.set("Data".concat(proposalId), params.serialize());
   return "1";
