@@ -398,16 +398,27 @@ export function delegate(stringifyArgs: string): string {
   const ownerAddress = args.nextAddress();
   const recipientAddress = args.nextAddress();
   const amount = args.nextU64();
+  
   if (!ownerAddress.isValid() || !recipientAddress.isValid() || isNaN(amount)) {
     return '0';
   }
 
-  updateVotingPower(args.serialize());
+  const ownerBalance = _balance(ownerAddress);
+  if (ownerBalance < amount) {
+    return '0';
+  }
+  // fetch staked balance of owner
+  const ownerStakedBalance = new Args(Storage.get("StakedPower")).nextI64();
+  if ((ownerStakedBalance - ownerBalance) < amount) {
+    return '0';
+  }
+
+  addVotingPower(args.serialize());
   return 'address';
 }
 
 /**
- * This function is to delegate voting power from one Address to Another Addres
+ * This function is to update voting power from one Address to Another Addres
  * @param {string} stringifyArgs - byte string with the following format:
  * - the owner's account (address);
  * - the recipient's account (address);
@@ -415,7 +426,7 @@ export function delegate(stringifyArgs: string): string {
  *
  * @return {string} - boolean value ("1" or "0")
  * */
-export function updateVotingPower(stringifyArgs: string): string {
+export function addVotingPower(stringifyArgs: string): string {
   const args = new Args(stringifyArgs);
   const ownerAddress = args.nextAddress();
   const recipientAddress = args.nextAddress();
@@ -427,16 +438,22 @@ export function updateVotingPower(stringifyArgs: string): string {
 
   const ownerBalance = _balance(ownerAddress);
   const recipientBalance = _balance(recipientAddress);
+  
+  const delegatedPowerRecipient = new Args(Storage.getOf(recipientAddress, 'DelegatedPower')).nextU64();
 
-  Storage.setOf(
-    ownerAddress,
-    'DelegatedPower',
-    (amount + ownerBalance).toString(),
-  );
+  const stakedPowerRecipient = new Args(Storage.getOf(recipientAddress, 'StakedPower')).nextU64();
+
+  const stakedPowerOwner = new Args(Storage.getOf(ownerAddress, 'StakedPower')).nextU64();
+
   Storage.setOf(
     recipientAddress,
     'DelegatedPower',
-    (recipientBalance - amount).toString(),
+    (amount + delegatedPowerRecipient + recipientBalance - stakedPowerRecipient).toString(),
+  );
+  Storage.setOf(
+    ownerAddress,
+    'StakedPower',
+    (stakedPowerOwner + amount).toString(),
   );
   return '1';
 }
@@ -508,6 +525,8 @@ export function castVote(stringifyArgs: string): string {
       proposalOwner,
       'VotingData'.concat(proposalId),
     );
+    
+    // getDelegatedPower
 
     // Push DataStore Proposal to local variables
     const argsVotingDataProposal = new Args(votingDataProposal);
@@ -602,7 +621,17 @@ function getVotingPowerForAProposal(stringifyArgs: string): u64 {
   const voter = Context.caller();
   const bal = _balance(voter);
 
-  // Fetch VotingData
+  // Fetch DelegatedPower from Storage
+  const delegatedPower = new Args(Storage.get(
+    'DelegatedPower'.concat(voter.toByteString()),
+  )).nextU64();
+
+  // fetch StakedPower from user Storage
+  const stakedPower = new Args(Storage.get(
+    'StakedPower'.concat(voter.toByteString()),
+  )).nextU64();
+
+  // Fetch VotingData from user from Storage
   const votingData = Storage.get(
     'VotingData'.concat(id).concat(voter.toByteString()),
   );
@@ -615,7 +644,7 @@ function getVotingPowerForAProposal(stringifyArgs: string): u64 {
 
   // Sum of all voting power from this address involved in this proposal to define the voting power available
   if (bal > 0) {
-    return forCount + againstCount + abstainCount - bal;
+    return forCount + againstCount + abstainCount + stakedPower - (bal + delegatedPower);
   }
   return 0;
 }
