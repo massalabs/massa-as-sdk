@@ -481,13 +481,13 @@ export function castVote(stringifyArgs: string): string {
     const owner = argsproposal.nextAddress();
     const id = argsproposal.nextString();
     const title = argsproposal.nextString();
-    const state = argsproposal.nextString();
+    const state = argsproposal.nextI32();
     // Using the voter address to get VotinData for User
     const votingDataString = 'VotingData'.concat(
       proposalId.concat(voter.toByteString()),
     );
 
-    if (owner != proposalOwner || id != proposalId || state != 'Active') {
+    if (owner != proposalOwner || id != proposalId || state != ProposalState.Active) {
       return 'Voting : Invalid proposal';
     }
     const argsFuncVotingPower = new Args();
@@ -684,7 +684,7 @@ export function getProposalVotingData(stringifyArgs: string): string {
  * - proposalId {string} String containing the proposalId to retrieve data
  * - title {string} String containing the title of the proposal
  * - description {string} String containing the description of the proposal
- * - state {string} String containing the state of the proposal
+ * - state {i32} String containing the state of the proposal
  * - tokenName {string} String containing the tokenName of the proposal
  * - tokenSybmol {string} String containing the tokenSymbol of the proposal
  * - votingDelay {u64} Containing the votingDelay of the proposal
@@ -693,20 +693,20 @@ export function getProposalVotingData(stringifyArgs: string): string {
  * - launchDate {u64} Containing the launchDate of the proposal
  * @return {string} - ProposalState
  */
-function proposalState(stringifyArgs: string): string {
+function proposalState(stringifyArgs: string): i32 {
   const args = new Args(stringifyArgs);
   const owner = args.nextAddress();
   const proposalId = args.nextString();
   // Fetch the proposal
   const proposalData = Storage.getOf(owner, 'Data'.concat(proposalId));
   if (proposalData == null) {
-    return 'Governor: unknown proposal id';
+    return 0;
   }
   const argsFromData = new Args(proposalData);
   const ownerProposal = argsFromData.nextAddress();
   const id = argsFromData.nextString();
   const title = argsFromData.nextString();
-  const state = argsFromData.nextString();
+  const state = argsFromData.nextI32();
   const description = argsFromData.nextString();
   const tokenName = argsFromData.nextString();
   const tokenSymbol = argsFromData.nextString();
@@ -715,15 +715,15 @@ function proposalState(stringifyArgs: string): string {
   const treshold = argsFromData.nextU64();
   const launchDate = argsFromData.nextU64();
 
-  if (launchDate + votingPeriod > Date.now() && state != 'Canceled') {
+  if (launchDate + votingPeriod > Date.now() && state != ProposalState.Canceled) {
     return ProposalState.Executed;
   }
 
-  if (state == 'Canceled') {
+  if (state == ProposalState.Canceled) {
     return ProposalState.Canceled;
   }
 
-  if (Date.now() < launchDate || state == 'Created') {
+  if (Date.now() < launchDate || ProposalState.Created) {
     return ProposalState.Pending;
   }
 
@@ -815,7 +815,7 @@ export function createProposal(stringifyArgs: string): string {
  * - the Owner of Proposal                 (Address);
  * - the ProposalId                        (string);
  * - the title of Proposal                 (string);
- * - state of the Proposal                 (string);
+ * - state of the Proposal                 (i32);
  * - the description of Proposal           (string);
  * - the tokenName of the Token            (string);
  * - the symbol of the Token               (string);
@@ -838,7 +838,7 @@ export function editProposal(stringifyArgs: string): string {
   const proposalId = args.nextString();
   const title = args.nextString();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const state = args.nextString();
+  const state = args.nextI32();
   const description = args.nextString();
   const tokenName = args.nextString();
   const tokenSymbol = args.nextString();
@@ -934,7 +934,7 @@ export function cancelProposal(proposalId: string): string {
   params.add(owner);
   params.add(proposalId);
   params.add(title);
-  params.add('Canceled');
+  params.add(ProposalState.Canceled);
   params.add(description);
   params.add(tokenName);
   params.add(tokenSymbol);
