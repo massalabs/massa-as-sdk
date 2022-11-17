@@ -8,9 +8,9 @@ export namespace env {
   export declare function call(
     address: string,
     func: string,
-    param: string,
+    param: StaticArray<u8>,
     coins: u64,
-  ): string;
+  ): StaticArray<u8>;
 
   // @ts-ignore
   @external("massa", "assembly_script_get_remaining_gas")
@@ -149,7 +149,7 @@ export namespace env {
     maxGas: u64,
     gasPrice: u64,
     coins: u64,
-    data: string,
+    data: StaticArray<u8>,
   ): void;
 
   // @ts-ignore

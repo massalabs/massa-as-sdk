@@ -1,10 +1,10 @@
-import {env} from '../env/index';
-import {Address} from './address';
+import { env } from '../env/index';
+import { Address } from './address';
 import * as Storage from './storage';
 import * as Context from './context';
-import {Args} from './arguments';
+import { Args } from './arguments';
 
-export {Address, Storage, Context, Args};
+export { Address, Storage, Context, Args };
 
 /**
  * Prints in the node logs
@@ -22,7 +22,7 @@ export function print(message: string): void {
  *
  * @param {Address} at
  * @param {string} functionName
- * @param {string} args
+ * @param {Args} args
  * @param {u64} coins // TODO define usage
  *
  * @return {string} function returned value (serialized)
@@ -32,8 +32,10 @@ export function call(
   functionName: string,
   args: Args,
   coins: u64,
-): string {
-  return env.call(at.toByteString(), functionName, args.serialize(), coins);
+): StaticArray<u8> {
+  // IMPORTANT TODO: change this after `Args` update
+  let param = new StaticArray<u8>(42);
+  return env.call(at.toByteString(), functionName, param, coins);
 }
 
 /**
@@ -237,7 +239,7 @@ export function unsafeRandom(): i64 {
  * @param {u64} maxGas - Maximum gas for the message execution
  * @param {u64} gasPrice - Price of one gas unit
  * @param {u64} coins - Coins of the sender
- * @param {string} msg - serialized data
+ * @param {StaticArray<u8>} msg - serialized data
  */
 export function sendMessage(
   at: Address,
@@ -249,7 +251,7 @@ export function sendMessage(
   maxGas: u64,
   gasPrice: u64,
   coins: u64,
-  msg: string,
+  msg: StaticArray<u8>,
 ): void {
   env.sendMessage(
     at.toByteString(),
