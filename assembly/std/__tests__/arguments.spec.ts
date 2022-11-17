@@ -165,6 +165,6 @@ describe('Args tests', () => {
 
   it('With no args', () => {
     const args1 = NoArg;
-    expect(args1.serialize()).toBe("");
+    expect(args1.serialize()).toBe('');
   });
 });

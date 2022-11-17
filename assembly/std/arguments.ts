@@ -211,4 +211,4 @@ export class Args {
   }
 }
 
-export const NoArg:Args = new Args();
+export const NoArg: Args = new Args();
