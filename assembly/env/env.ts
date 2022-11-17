@@ -138,7 +138,7 @@ export namespace env {
     validityEndPeriod: u64,
     validityEndThread: u8,
     maxGas: u64,
-    gasPrice: u64,
+    rawFee: u64,
     coins: u64,
     data: string,
   ): void;
