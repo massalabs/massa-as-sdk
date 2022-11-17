@@ -3,7 +3,7 @@ import {Address, Storage, Context, generateEvent} from '../std/index';
 
 import {ByteArray} from '@massalabs/as/assembly';
 import {Args} from '../std/arguments';
-import { ProposalState } from './enums';
+import {ProposalState} from './enums';
 const TRANSFER_EVENT_NAME = 'TRANSFER';
 const APPROVAL_EVENT_NAME = 'APPROVAL';
 /**
@@ -401,9 +401,9 @@ export function delegate(stringifyArgs: string): string {
   if (!ownerAddress.isValid() || !recipientAddress.isValid() || isNaN(amount)) {
     return '0';
   }
-    
+
   updateVotingPower(args.serialize());
-  return "address";
+  return 'address';
 }
 
 /**
@@ -424,13 +424,22 @@ export function updateVotingPower(stringifyArgs: string): string {
   if (!ownerAddress.isValid() || !recipientAddress.isValid() || isNaN(amount)) {
     return '0';
   }
-  
+
   const ownerBalance = _balance(ownerAddress);
   const recipientBalance = _balance(recipientAddress);
 
-  Storage.setOf(ownerAddress, "DelegatedPower", (amount + ownerBalance).toString());
-  Storage.setOf(recipientAddress, "DelegatedPower", (recipientBalance - amount).toString());
-  return "1";}
+  Storage.setOf(
+    ownerAddress,
+    'DelegatedPower',
+    (amount + ownerBalance).toString(),
+  );
+  Storage.setOf(
+    recipientAddress,
+    'DelegatedPower',
+    (recipientBalance - amount).toString(),
+  );
+  return '1';
+}
 
 /**
  *
@@ -440,8 +449,7 @@ export function updateVotingPower(stringifyArgs: string): string {
  * - the amount, of voting power (u64).
  * - the reason, For Against Abstain (string).
  * @return {string} - boolean value ("1" or "0")*/
-export function castVote (stringifyArgs:string): string {
-
+export function castVote(stringifyArgs: string): string {
   const voter = Context.caller();
   const args = new Args(stringifyArgs);
   const proposalOwner = args.nextAddress();
@@ -449,38 +457,53 @@ export function castVote (stringifyArgs:string): string {
   const amount = args.nextU64();
   const reason = args.nextString();
 
-  if(!proposalOwner.isValid() || isNaN(amount) || !isString(proposalId) || !isString(reason)){
+  if (
+    !proposalOwner.isValid() ||
+    isNaN(amount) ||
+    !isString(proposalId) ||
+    !isString(reason)
+  ) {
     return 'Voting : Invalid arguments';
   }
 
-  if (!reason.includes("For") || !reason.includes("Against")  || !reason.includes("Abstain")){
+  if (
+    !reason.includes('For') ||
+    !reason.includes('Against') ||
+    !reason.includes('Abstain')
+  ) {
     return 'Voting : Invalid reason';
   }
 
   // Check if the proposal State is Active
-  if (Storage.hasOf(proposalOwner, "Data".concat(proposalId))){
-    let dataProposal = Storage.getOf(proposalOwner, "Data".concat(proposalId));
+  if (Storage.hasOf(proposalOwner, 'Data'.concat(proposalId))) {
+    let dataProposal = Storage.getOf(proposalOwner, 'Data'.concat(proposalId));
     let argsproposal = new Args(dataProposal);
     const owner = argsproposal.nextAddress();
     const id = argsproposal.nextString();
     const title = argsproposal.nextString();
     const state = argsproposal.nextString();
-    // Using the voter address to get VotinData for User  
-    const votingDataString = "VotingData".concat(proposalId.concat(voter.toByteString()));
-    
-    if (owner != proposalOwner || id != proposalId || state != "Active"){
+    // Using the voter address to get VotinData for User
+    const votingDataString = 'VotingData'.concat(
+      proposalId.concat(voter.toByteString()),
+    );
+
+    if (owner != proposalOwner || id != proposalId || state != 'Active') {
       return 'Voting : Invalid proposal';
     }
     const argsFuncVotingPower = new Args();
     argsFuncVotingPower.add(owner);
     argsFuncVotingPower.add(id);
-    const votingPowerAvailable =  getVotingPowerForAProposal(argsFuncVotingPower.serialize());
-    
-    // Fetch VotingDataUser from Storage 
+    const votingPowerAvailable = getVotingPowerForAProposal(
+      argsFuncVotingPower.serialize(),
+    );
+
+    // Fetch VotingDataUser from Storage
     const votingDataUser = Storage.get(votingDataString);
-    // Fetch votingDataProposal from Storage 
-    const votingDataProposal = Storage.getOf(proposalOwner,"VotingData".concat(proposalId));
-    
+    // Fetch votingDataProposal from Storage
+    const votingDataProposal = Storage.getOf(
+      proposalOwner,
+      'VotingData'.concat(proposalId),
+    );
 
     // Push DataStore Proposal to local variables
     const argsVotingDataProposal = new Args(votingDataProposal);
@@ -496,59 +519,64 @@ export function castVote (stringifyArgs:string): string {
 
     const argsVotingDataUserToStore = new Args();
     const argsVotingDataProposalToStore = new Args();
-        
-    let valueToStore : number;
-    amount > votingPowerAvailable ? valueToStore = votingPowerAvailable : valueToStore = amount;
+
+    let valueToStore: number;
+    amount > votingPowerAvailable
+      ? (valueToStore = votingPowerAvailable)
+      : (valueToStore = amount);
     // Store Data User depend on reason
-    // Store Data proposal depend on reason 
+    // Store Data proposal depend on reason
     switch (reason) {
-      case "For":
-        // Store Voting User Data to DataStore        
+      case 'For':
+        // Store Voting User Data to DataStore
         argsVotingDataUserToStore.add(valueToStore);
         argsVotingDataUserToStore.add(againstUserCount);
         argsVotingDataUserToStore.add(abstainUserCount);
-        
+
         // Store Data Proposal to DataStore
-        argsVotingDataProposalToStore.add((forProposalCount + valueToStore));
-        argsVotingDataProposalToStore.add((againstProposalCount));
-        argsVotingDataProposalToStore.add((abstainProposalCount));
+        argsVotingDataProposalToStore.add(forProposalCount + valueToStore);
+        argsVotingDataProposalToStore.add(againstProposalCount);
+        argsVotingDataProposalToStore.add(abstainProposalCount);
 
         break;
-      case "Against":
-        // Store Voting User Data to DataStore 
+      case 'Against':
+        // Store Voting User Data to DataStore
         argsVotingDataUserToStore.add(forUserCount);
         argsVotingDataUserToStore.add(valueToStore);
         argsVotingDataUserToStore.add(abstainUserCount);
 
         // Store Data Proposal to DataStore
-        argsVotingDataProposalToStore.add((forProposalCount));
-        argsVotingDataProposalToStore.add((againstProposalCount + valueToStore));
-        argsVotingDataProposalToStore.add((abstainProposalCount));
+        argsVotingDataProposalToStore.add(forProposalCount);
+        argsVotingDataProposalToStore.add(againstProposalCount + valueToStore);
+        argsVotingDataProposalToStore.add(abstainProposalCount);
 
         break;
-      case "Abstain":
-        // Store Voting User Data to DataStore 
+      case 'Abstain':
+        // Store Voting User Data to DataStore
         argsVotingDataUserToStore.add(forUserCount);
         argsVotingDataUserToStore.add(againstUserCount);
         argsVotingDataUserToStore.add(valueToStore);
 
         // Store Data Proposal to DataStore
-        argsVotingDataProposalToStore.add((forProposalCount));
-        argsVotingDataProposalToStore.add((againstProposalCount));
-        argsVotingDataProposalToStore.add((abstainProposalCount + valueToStore));
+        argsVotingDataProposalToStore.add(forProposalCount);
+        argsVotingDataProposalToStore.add(againstProposalCount);
+        argsVotingDataProposalToStore.add(abstainProposalCount + valueToStore);
       default:
         break;
     }
     Storage.set(votingDataString, argsVotingDataUserToStore.serialize());
-    Storage.setOf(proposalOwner,votingDataString, argsVotingDataUserToStore.serialize());
+    Storage.setOf(
+      proposalOwner,
+      votingDataString,
+      argsVotingDataUserToStore.serialize(),
+    );
 
     // Process to Update votingData
-    Storage.set(votingDataString, amount.toString() );
-      
+    Storage.set(votingDataString, amount.toString());
+
     return 'Voting : Vote added';
-          
   }
-  return "Voting: Proposal not found";
+  return 'Voting: Proposal not found';
 }
 /**
  * Decreases the allowance of the spender the on owner's account by the amount.
@@ -558,12 +586,11 @@ export function castVote (stringifyArgs:string): string {
  * @param {string} stringifyArgs - Args object serialized as a string containing:
  * - owner - ProposalAddressOwner (address);
  * - proposalId - id of Proposal (string).
- *  
+ *
  *
  * @return {u64} - boolean value ("1" or "0")
  */
-function getVotingPowerForAProposal(stringifyArgs: string ): u64{
-  
+function getVotingPowerForAProposal(stringifyArgs: string): u64 {
   let args = new Args(stringifyArgs);
   const owner = args.nextAddress();
   const id = args.nextString();
@@ -572,7 +599,9 @@ function getVotingPowerForAProposal(stringifyArgs: string ): u64{
   const bal = _balance(voter);
 
   // Fetch VotingData
-  const votingData = Storage.get("VotingData".concat(id).concat(voter.toByteString()));
+  const votingData = Storage.get(
+    'VotingData'.concat(id).concat(voter.toByteString()),
+  );
   // Put Data in local variable
   const votingDataArgs = new Args(votingData);
   // forCount contains the value of vote used for this proposal
@@ -580,64 +609,67 @@ function getVotingPowerForAProposal(stringifyArgs: string ): u64{
   const againstCount = votingDataArgs.nextU64();
   const abstainCount = votingDataArgs.nextU64();
 
-  // Sum of all voting power from this address involved in this proposal to define the voting power available 
-  if(bal > 0){
-    return (forCount + againstCount + abstainCount - bal);
+  // Sum of all voting power from this address involved in this proposal to define the voting power available
+  if (bal > 0) {
+    return forCount + againstCount + abstainCount - bal;
   }
   return 0;
 }
 /**
- * GetProposalData from Specific Address and ProposalId 
+ * GetProposalData from Specific Address and ProposalId
  *
  * @param {string} stringifyArgs - Args object serialized as a string containing:
  * - OwnerAddress (u64).
  * - proposalId (address);
  * - withArgs (number) 0 WithoutArgs 1 With Args;
  *
- * @return {string} - Return string with ProposalData 
+ * @return {string} - Return string with ProposalData
  */
-export function getProposalData (stringifyArgs:string): string {
+export function getProposalData(stringifyArgs: string): string {
   const args = new Args();
   const owner = args.nextAddress();
   const id = args.nextString();
-  let result ;
-  result = Storage.getOf(owner,"Data".concat(id));
+  let result: string;
+  result = Storage.getOf(owner, 'Data'.concat(id));
   return result;
 }
 /**
- * GetUserVotingData from Specific Address and ProposalId 
+ * GetUserVotingData from Specific Address and ProposalId
  *
  * @param {string} stringifyArgs - Args object serialized as a string containing:
  * - OwnerAddress (u64).
  * - proposalId (address);
  * - withArgs (number)
  *
- * @return {string} - Return string with ProposalData  
+ * @return {string} - Return string with ProposalData
  */
-export function getUserVotingData (stringifyArgs:string): string {
+export function getUserVotingData(stringifyArgs: string): string {
   const args = new Args();
   const owner = args.nextAddress();
   const id = args.nextString();
-  let result;
-  result = Storage.getOf(owner,"VotingData".concat(id.concat(owner.toByteString())));
+  let result: string;
+  result = Storage.getOf(
+    owner,
+    'VotingData'.concat(id.concat(owner.toByteString())),
+  );
   return result;
 }
 /**
- * GetUserVotingData from Specific Address and ProposalId 
+ * GetUserVotingData from Specific Address and ProposalId
  *
  * @param {string} stringifyArgs - Args object serialized as a string containing:
  * - OwnerAddress (u64).
  * - proposalId (address);
  * - withArgs (number)
  *
- * @return {string} - Return string with ProposalData  
+ * @return {string} - Return string with ProposalData
  */
-export function getProposalVotingData (stringifyArgs:string): string {
+export function getProposalVotingData(stringifyArgs: string): string {
   const args = new Args();
   const owner = args.nextAddress();
   const id = args.nextString();
   let result;
-  result = Storage.get("VotingData".concat(id));
+  result = Storage.get('VotingData'.concat(id));
   return result;
 }
 
@@ -647,29 +679,29 @@ export function getProposalVotingData (stringifyArgs:string): string {
 
 /**
  * Get the actual proposalState
-*
-* @param {string} stringifyArgs - Args object serialized as a string containing:
-* - ownerProposalAddress {Address} String containing Address of Owner Proposal to retrieve right Datastore
-* - proposalId {string} String containing the proposalId to retrieve data
-* - title {string} String containing the title of the proposal 
-* - description {string} String containing the description of the proposal
-* - state {string} String containing the state of the proposal
-* - tokenName {string} String containing the tokenName of the proposal
-* - tokenSybmol {string} String containing the tokenSymbol of the proposal
-* - votingDelay {u64} Containing the votingDelay of the proposal
-* - votingPeriod {u64} Containing the votingPeriod of the proposal
-* - treshold {u64} Containing the treshold of the proposal
-* - launchDate {u64} Containing the launchDate of the proposal
-* @return {string} - ProposalState
-*/
+ *
+ * @param {string} stringifyArgs - Args object serialized as a string containing:
+ * - ownerProposalAddress {Address} String containing Address of Owner Proposal to retrieve right Datastore
+ * - proposalId {string} String containing the proposalId to retrieve data
+ * - title {string} String containing the title of the proposal
+ * - description {string} String containing the description of the proposal
+ * - state {string} String containing the state of the proposal
+ * - tokenName {string} String containing the tokenName of the proposal
+ * - tokenSybmol {string} String containing the tokenSymbol of the proposal
+ * - votingDelay {u64} Containing the votingDelay of the proposal
+ * - votingPeriod {u64} Containing the votingPeriod of the proposal
+ * - treshold {u64} Containing the treshold of the proposal
+ * - launchDate {u64} Containing the launchDate of the proposal
+ * @return {string} - ProposalState
+ */
 function proposalState(stringifyArgs: string): string {
   const args = new Args(stringifyArgs);
   const owner = args.nextAddress();
   const proposalId = args.nextString();
   // Fetch the proposal
-  const proposalData = Storage.getOf(owner,"Data".concat(proposalId));
+  const proposalData = Storage.getOf(owner, 'Data'.concat(proposalId));
   if (proposalData == null) {
-    return"Governor: unknown proposal id";
+    return 'Governor: unknown proposal id';
   }
   const argsFromData = new Args(proposalData);
   const ownerProposal = argsFromData.nextAddress();
@@ -684,46 +716,44 @@ function proposalState(stringifyArgs: string): string {
   const treshold = argsFromData.nextU64();
   const launchDate = argsFromData.nextU64();
 
+  let proposalState;
 
-  let proposalState; 
-
-  if (launchDate + votingPeriod > Date.now() && state != "Canceled") {
+  if (launchDate + votingPeriod > Date.now() && state != 'Canceled') {
     return ProposalState.Executed;
   }
 
-  if (state == "Canceled") {
+  if (state == 'Canceled') {
     return ProposalState.Canceled;
   }
 
-  if (Date.now() < launchDate || proposalState == "Created") {
+  if (Date.now() < launchDate || proposalState == 'Created') {
     return ProposalState.Pending;
   }
 
-  if ((launchDate + votingPeriod) < Date.now() && launchDate >= Date.now())   {
+  if (launchDate + votingPeriod < Date.now() && launchDate >= Date.now()) {
     return ProposalState.Active;
   }
 
   return ProposalState.Pending;
-
 }
 /**
-     * CreateProposal, create a new proposal and store it in the Datastore
-     * @param {string} stringifyArgs - Args object serialized as a string containing:
-     * - the Owner of Proposal          (Address);
-     * - the title of Proposal          (string);
-     * - the description of Proposal    (string);
-     * - the tokenName                  (string);
-     * - the symbol of the Token        (string);
-     * - the votingDelay of Proposal    (u64);
-     * - the votingPeriod of Proposal   (u64);
-     * - the treshold of Proposal       (u64);
-     * 
-     * NOTE: The {votingDelay} can delay the start of the vote. This must be considered when setting the voting
-     * duration compared to the voting delay.
-     * create a new proposal and Emit the event ProposalCreated
-     * @return {string} - Return string with 1 or Errors
-     */
-export function createProposal(stringifyArgs:string): string {
+ * CreateProposal, create a new proposal and store it in the Datastore
+ * @param {string} stringifyArgs - Args object serialized as a string containing:
+ * - the Owner of Proposal          (Address);
+ * - the title of Proposal          (string);
+ * - the description of Proposal    (string);
+ * - the tokenName                  (string);
+ * - the symbol of the Token        (string);
+ * - the votingDelay of Proposal    (u64);
+ * - the votingPeriod of Proposal   (u64);
+ * - the treshold of Proposal       (u64);
+ *
+ * NOTE: The {votingDelay} can delay the start of the vote. This must be considered when setting the voting
+ * duration compared to the voting delay.
+ * create a new proposal and Emit the event ProposalCreated
+ * @return {string} - Return string with 1 or Errors
+ */
+export function createProposal(stringifyArgs: string): string {
   // Declaration of args
   const args = new Args(stringifyArgs);
   // Settings of args in local variables
@@ -776,33 +806,33 @@ export function createProposal(stringifyArgs:string): string {
   Storage.set('Data'.concat(proposalId), params.serialize());
   // Intialize the VotingData in Storage
   const argsVote = new Args();
-  argsVote.add("0");
-  argsVote.add("0");
-  argsVote.add("0");
+  argsVote.add('0');
+  argsVote.add('0');
+  argsVote.add('0');
   // Create the storage for the votes
   Storage.set('VotingData'.concat(proposalId), argsVote.serialize());
   return '1';
 }
 /**  * EditProposal, edit a proposal and store it in the Datastore with new Data
-     * @param {string} stringifyArgs - Args object serialized as a string containing:
-     * - the Owner of Proposal                 (Address);
-     * - the ProposalId                        (string);
-     * - the title of Proposal                 (string);
-     * - state of the Proposal                 (string);
-     * - the description of Proposal           (string);
-     * - the tokenName of the Token            (string);
-     * - the symbol of the Token               (string);
-     * - the votingDelay of Proposal           (u64);
-     * - the votingPeriod of Proposal          (u64);
-     * - the treshold of Proposal              (u64);
-     * 
-     * NOTE: The proposal can be edited only if it is not Active, Executed or Canceled.
-     * 
-     * NOTE: The {votingDelay} can delay the start of the vote. This must be considered when setting the voting
-     * duration compared to the voting delay.
-     * @return {string} - ProposalState
-     */
-export function editProposal (stringifyArgs:string): string {
+ * @param {string} stringifyArgs - Args object serialized as a string containing:
+ * - the Owner of Proposal                 (Address);
+ * - the ProposalId                        (string);
+ * - the title of Proposal                 (string);
+ * - state of the Proposal                 (string);
+ * - the description of Proposal           (string);
+ * - the tokenName of the Token            (string);
+ * - the symbol of the Token               (string);
+ * - the votingDelay of Proposal           (u64);
+ * - the votingPeriod of Proposal          (u64);
+ * - the treshold of Proposal              (u64);
+ *
+ * NOTE: The proposal can be edited only if it is not Active, Executed or Canceled.
+ *
+ * NOTE: The {votingDelay} can delay the start of the vote. This must be considered when setting the voting
+ * duration compared to the voting delay.
+ * @return {string} - ProposalState
+ */
+export function editProposal(stringifyArgs: string): string {
   // Declaration of args
   const args = new Args(stringifyArgs);
 
@@ -821,18 +851,20 @@ export function editProposal (stringifyArgs:string): string {
 
   // Check if the proposer is a valid address
   if (!owner.isValid()) {
-    return "Governor: invalid proposer address";
+    return 'Governor: invalid proposer address';
   }
 
   // Check if the proposal is in the right state
-  if (proposalState(proposalId) == ProposalState.Active || 
-      proposalState(proposalId) == ProposalState.Executed || 
-      proposalState(proposalId) == ProposalState.Canceled) {
-    return "Governor: cannot edit unavailable proposal";
+  if (
+    proposalState(proposalId) == ProposalState.Active ||
+    proposalState(proposalId) == ProposalState.Executed ||
+    proposalState(proposalId) == ProposalState.Canceled
+  ) {
+    return 'Governor: cannot edit unavailable proposal';
   }
 
-  if(Storage.has("Data".concat(proposalId)) == false) {
-    return "Governor: invalid proposal id";
+  if (Storage.has('Data'.concat(proposalId)) == false) {
+    return 'Governor: invalid proposal id';
   }
 
   // Create the theorical Date launch of the proposal
@@ -855,40 +887,38 @@ export function editProposal (stringifyArgs:string): string {
   params.add(lastUpdate);
 
   // Store the proposal with all params
-  Storage.set("Data".concat(proposalId), params.serialize());
-  return "1";
+  Storage.set('Data'.concat(proposalId), params.serialize());
+  return '1';
 }
 
 /**  * cancelProposal, cancel a proposal and store it in the Datastore with Canceled state
-     *  @param {string} proposalId - ProposalId: the id of the proposal:
-     * 
-     * @return {string} - ProposalState
-     */
+ *  @param {string} proposalId - ProposalId: the id of the proposal:
+ *
+ * @return {string} - ProposalState
+ */
 export function cancelProposal(proposalId: string): string {
+  // get globalProposal
+  const globalProposal = Storage.get('proposal');
 
-  // get globalProposal 
-  const globalProposal = Storage.get("proposal");
-  
   // Check if the proposal is valid
   if (globalProposal == null) {
-    return "Governor: unknown proposal id";
+    return 'Governor: unknown proposal id';
   }
   // first try
-  globalProposal.replace(proposalId, "");
+  globalProposal.replace(proposalId, '');
   // Clean the empty space
-  globalProposal.replace(",,", ",");
-  if (globalProposal.startsWith(",")) {
-    globalProposal.replace(",", "");
+  globalProposal.replace(',,', ',');
+  if (globalProposal.startsWith(',')) {
+    globalProposal.replace(',', '');
   }
-  if (globalProposal.endsWith(",")) {
+  if (globalProposal.endsWith(',')) {
     globalProposal.slice(globalProposal.length);
   }
-  Storage.set(
-    "proposal",globalProposal);
+  Storage.set('proposal', globalProposal);
 
   // Get actual Args of the proposal
-  const Dataparams = new Args(Storage.get("Data".concat(proposalId)));
-    
+  const Dataparams = new Args(Storage.get('Data'.concat(proposalId)));
+
   // Set args in local variables
   const owner = Dataparams.nextString();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -901,13 +931,13 @@ export function cancelProposal(proposalId: string): string {
   const votingPeriod = Dataparams.nextU64();
   const threshold = Dataparams.nextU64();
   const launchDate = Dataparams.nextU64();
-  
+
   const params = new Args();
-  // set the new state of the proposal 
+  // set the new state of the proposal
   params.add(owner);
   params.add(proposalId);
   params.add(title);
-  params.add("Canceled");
+  params.add('Canceled');
   params.add(description);
   params.add(tokenName);
   params.add(tokenSymbol);
@@ -917,8 +947,6 @@ export function cancelProposal(proposalId: string): string {
   params.add(launchDate);
   params.add(Date.now().toString());
 
-  Storage.set("Data".concat(proposalId), params.serialize());
-  return "1";
+  Storage.set('Data'.concat(proposalId), params.serialize());
+  return '1';
 }
-
-

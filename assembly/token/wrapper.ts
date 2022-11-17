@@ -245,7 +245,7 @@ export class TokenWrapper {
       ) == '1'
     );
   }
-  
+
   /**
    * Transfers token ownership from the owner's account to
    * the recipient's account using the spender's allowance.
@@ -255,7 +255,7 @@ export class TokenWrapper {
    * - both allowance and transfer are executed if possible;
    * - or if allowance or transfer is not possible, both are discarded.
    *
-   * @param {Address} delegatee   
+   * @param {Address} delegatee
    *
    * @return {boolean} true on success
    */
