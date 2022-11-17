@@ -668,8 +668,7 @@ export function getProposalVotingData(stringifyArgs: string): string {
   const args = new Args();
   const owner = args.nextAddress();
   const id = args.nextString();
-  let result;
-  result = Storage.get('VotingData'.concat(id));
+  let result = Storage.get('VotingData'.concat(id));
   return result;
 }
 
@@ -716,8 +715,6 @@ function proposalState(stringifyArgs: string): string {
   const treshold = argsFromData.nextU64();
   const launchDate = argsFromData.nextU64();
 
-  let proposalState;
-
   if (launchDate + votingPeriod > Date.now() && state != 'Canceled') {
     return ProposalState.Executed;
   }
@@ -726,7 +723,7 @@ function proposalState(stringifyArgs: string): string {
     return ProposalState.Canceled;
   }
 
-  if (Date.now() < launchDate || proposalState == 'Created') {
+  if (Date.now() < launchDate || state == 'Created') {
     return ProposalState.Pending;
   }
 
