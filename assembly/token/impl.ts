@@ -625,7 +625,6 @@ function getVotingPowerForAProposal(stringifyArgs: string): u64 {
  * @param {string} stringifyArgs - Args object serialized as a string containing:
  * - OwnerAddress (u64).
  * - proposalId (address);
- * - withArgs (number) 0 WithoutArgs 1 With Args;
  *
  * @return {string} - Return string with ProposalData
  */
@@ -643,7 +642,6 @@ export function getProposalData(stringifyArgs: string): string {
  * @param {string} stringifyArgs - Args object serialized as a string containing:
  * - OwnerAddress (u64).
  * - proposalId (address);
- * - withArgs (number)
  *
  * @return {string} - Return string with ProposalData
  */

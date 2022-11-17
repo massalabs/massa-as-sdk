@@ -254,22 +254,250 @@ export class TokenWrapper {
    * This function is atomic:
    * - both allowance and transfer are executed if possible;
    * - or if allowance or transfer is not possible, both are discarded.
-   *
-   * @param {Address} delegatee
+   * @param {Address} ownerAccount
+   * @param {Address} recipientAddress
+   * @param {u64} amount
    *
    * @return {boolean} true on success
    */
-  // delegate(
-  //   delegatee: Address,
-  // ): boolean {
-  //   return (
-  //     call(
-  //       this._origin,
-  //       'delegate',
-  //           delegatee.toByteString(),0)
-  //         )
-  // }
-  // return this.toAmount(
-  //   call(this._origin, 'balanceOf', account.toByteString(), 0),
-  // );
+  delegate(
+    ownerAccount: Address,
+    recipientAddress: Address,
+    amount: u64,
+  ): boolean {
+    return (
+      call(
+        this._origin,
+        'delegate',
+        new Args().add(ownerAccount).add(recipientAddress).add(amount),
+        0,
+      ) == '1'
+    );
+  }
+
+  /**
+   * Update Voting power of the owner's account to the recipient's
+   * account of the amount of tokens.
+   *
+   * This function can only be called by the spender.
+   * This function is atomic:
+   * - both allowance and transfer are executed if possible;
+   * - or if allowance or transfer is not possible, both are discarded.
+   * @param {Address} ownerAccount
+   * @param {Address} recipientAddress
+   * @param {u64} amount
+   *
+   * @return {boolean} true on success
+   */
+  updateVotingPower(
+    ownerAccount: Address,
+    recipientAddress: Address,
+    amount: u64,
+  ): boolean {
+    return (
+      call(
+        this._origin,
+        'updateVotingPower',
+        new Args().add(ownerAccount).add(recipientAddress).add(amount),
+        0,
+      ) == '1'
+    );
+  }
+
+  /**
+   * Castvote for the caller to a proposal with the given amount of tokens.
+   * using reason as the reason for the vote.
+   * This function can only be called by the spender.
+   * This function is atomic:
+   * - both allowance and transfer are executed if possible;
+   * - or if allowance or transfer is not possible, both are discarded.
+   * @param {Address} proposalOwner
+   * @param {string} proposalId
+   * @param {u64} amount
+   * @param {string} reason
+   *
+   * @return {boolean} true on success
+   */
+  castVote(
+    proposalOwner: Address,
+    proposalId: string,
+    amount: u64,
+    reason: string,
+  ): boolean {
+    return (
+      call(
+        this._origin,
+        'castVote',
+        new Args().add(proposalOwner).add(proposalId).add(amount).add(reason),
+        0,
+      ) == '1'
+    );
+  }
+  /**
+   * getProposalData for the caller to a proposal with the given amount of tokens.
+   * using reason as the reason for the vote.
+   * This function can only be called by the spender.
+   * This function is atomic:
+   * - both allowance and transfer are executed if possible;
+   * - or if allowance or transfer is not possible, both are discarded.
+   * @param {Address} proposalOwner
+   * @param {string} proposalId
+   *
+   * @return {boolean} true on success
+   */
+  getProposalData(proposalOwner: Address, proposalId: string): string {
+    return call(
+      this._origin,
+      'getProposalData',
+      new Args().add(proposalOwner).add(proposalId),
+      0,
+    );
+  }
+
+  /**
+   * getUserVotingData for the caller to a proposal with the given amount of tokens.
+   * using reason as the reason for the vote.
+   * This function can only be called by the spender.
+   * This function is atomic:
+   * - both allowance and transfer are executed if possible;
+   * - or if allowance or transfer is not possible, both are discarded.
+   * @param {Address} proposalOwner
+   * @param {string} proposalId
+   *
+   * @return {boolean} true on success
+   */
+  getUserVotingData(proposalOwner: Address, proposalId: string): string {
+    return call(
+      this._origin,
+      'getUserVotingData',
+      new Args().add(proposalOwner).add(proposalId),
+      0,
+    );
+  }
+  /**
+   * getProposalVotingData for the caller to a proposal with the given amount of tokens.
+   * using reason as the reason for the vote.
+   * This function can only be called by the spender.
+   * This function is atomic:
+   * - both allowance and transfer are executed if possible;
+   * - or if allowance or transfer is not possible, both are discarded.
+   * @param {Address} proposalOwner
+   * @param {string} proposalId
+   *
+   * @return {boolean} true on success
+   */
+  getProposalVotingData(proposalOwner: Address, proposalId: string): string {
+    return call(
+      this._origin,
+      'getProposalVotingData',
+      new Args().add(proposalOwner).add(proposalId),
+      0,
+    );
+  }
+  /**
+   * createProposal for the caller to a proposal with the given amount of tokens.
+   * using reason as the reason for the vote.
+   * This function can only be called by the spender.
+   * This function is atomic:
+   * - both allowance and transfer are executed if possible;
+   * - or if allowance or transfer is not possible, both are discarded.
+   * @param {Address} proposalOwner
+   * @param {string} title
+   * @param {string} description
+   * @param {string} tokenName
+   * @param {string} tokenSymbol
+   * @param {u64} votingDelay
+   * @param {u64} votingPeriod
+   * @param {u64} treshold
+   *
+   * @return {boolean} true on success
+   */
+  createProposal(
+    proposalOwner: Address,
+    title: string,
+    description: string,
+    tokenName: string,
+    tokenSymbol: string,
+    votingDelay: u64,
+    votingPeriod: u64,
+    treshold: u64,
+  ): boolean {
+    return (
+      call(
+        this._origin,
+        'createProposal',
+        new Args()
+          .add(proposalOwner)
+          .add(title)
+          .add(description)
+          .add(tokenName)
+          .add(tokenSymbol)
+          .add(votingDelay)
+          .add(votingPeriod)
+          .add(treshold),
+        0,
+      ) == '1'
+    );
+  }
+  /**
+   * EditProposal for the caller to a proposal with the given amount of tokens.
+   * using reason as the reason for the vote.
+   * This function can only be called by the spender.
+   * This function is atomic:
+   * - both allowance and transfer are executed if possible;
+   * - or if allowance or transfer is not possible, both are discarded.
+   * @param {Address} proposalOwner
+   * @param {string} title
+   * @param {string} description
+   * @param {string} tokenName
+   * @param {string} tokenSymbol
+   * @param {u64} votingDelay
+   * @param {u64} votingPeriod
+   * @param {u64} treshold
+   *
+   * @return {boolean} true on success
+   */
+  editProposal(
+    proposalOwner: Address,
+    title: string,
+    description: string,
+    tokenName: string,
+    tokenSymbol: string,
+    votingDelay: u64,
+    votingPeriod: u64,
+    treshold: u64,
+  ): boolean {
+    return (
+      call(
+        this._origin,
+        'editProposal',
+        new Args()
+          .add(proposalOwner)
+          .add(title)
+          .add(description)
+          .add(tokenName)
+          .add(tokenSymbol)
+          .add(votingDelay)
+          .add(votingPeriod)
+          .add(treshold),
+        0,
+      ) == '1'
+    );
+  }
+  /**
+   * CancelProposal for the caller to a proposal with the given amount of tokens.
+   * using reason as the reason for the vote.
+   * This function can only be called by the spender.
+   * This function is atomic:
+   * - both allowance and transfer are executed if possible;
+   * - or if allowance or transfer is not possible, both are discarded.
+   * @param {Address} proposalId
+   *
+   * @return {boolean} true on success
+   */
+  cancelProposal(proposalId: string): boolean {
+    return (
+      call(this._origin, 'cancelProposal', new Args().add(proposalId), 0) == '1'
+    );
+  }
 }
