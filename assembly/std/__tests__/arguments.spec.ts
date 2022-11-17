@@ -203,10 +203,10 @@ describe('Args tests', () => {
     test[8] = 9;
     test[9] = 10;
     args1.add(test);
-    expect(args1.nextByteArray()).toStrictEqual(test);
+    expect(args1.nextUint8Array()).toStrictEqual(test);
 
     const args2 = new Args(args1.serialize());
-    expect(args2.nextByteArray()).toStrictEqual(test);
+    expect(args2.nextUint8Array()).toStrictEqual(test);
   });
 
   it('With byteArray, string and number', () => {
@@ -226,12 +226,12 @@ describe('Args tests', () => {
     args1.add(test);
     args1.add(300 as u64);
     expect(args1.nextString()).toBe('my string');
-    expect(args1.nextByteArray()).toStrictEqual(test);
+    expect(args1.nextUint8Array()).toStrictEqual(test);
     expect(args1.nextU64()).toBe(300);
 
     const args2 = new Args(args1.serialize());
     expect(args2.nextString()).toBe('my string');
-    expect(args2.nextByteArray()).toStrictEqual(test);
+    expect(args2.nextUint8Array()).toStrictEqual(test);
     expect(args2.nextU64()).toBe(300);
   });
 });

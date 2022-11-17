@@ -70,11 +70,11 @@ export class Args {
   }
 
   /**
-   * Returns the deserialized bytearray.
+   * Returns the deserialized Uint8Array.
    *
    * @return {Uint8Array}
    */
-  nextByteArray(): Uint8Array {
+  nextUint8Array(): Uint8Array {
     const length = this.serialized[this.offset as i32];
     let byteArray = this.serialized.slice(
       (this.offset as i32) + 1,
@@ -91,7 +91,7 @@ export class Args {
    */
   nextU64(): u64 {
     const value = this.toU64(this.serialized, this.offset as u8);
-    this.offset += 8;
+    this.offset += sizeof<u64>();
     return value;
   }
 
@@ -104,7 +104,7 @@ export class Args {
     const value = changetype<i64>(
       this.toU64(this.serialized, this.offset as u8),
     );
-    this.offset += 8;
+    this.offset += sizeof<u64>();
     return value;
   }
 
@@ -115,7 +115,7 @@ export class Args {
    */
   nextF64(): f64 {
     const value = this.toF64(this.serialized, this.offset as u8);
-    this.offset += 8;
+    this.offset += sizeof<u64>();
     return value;
   }
 
@@ -126,7 +126,7 @@ export class Args {
    */
   nextF32(): f32 {
     const value = this.toF32(this.serialized, this.offset as u8);
-    this.offset += 4;
+    this.offset += sizeof<u32>();
     return value;
   }
 
@@ -137,7 +137,7 @@ export class Args {
    */
   nextU32(): u32 {
     const value = this.toU32(this.serialized, this.offset as u8);
-    this.offset += 4;
+    this.offset += sizeof<u32>();
     return value;
   }
 
@@ -150,7 +150,7 @@ export class Args {
     const value = changetype<i32>(
       this.toU32(this.serialized, this.offset as u8),
     );
-    this.offset += 4;
+    this.offset += sizeof<u32>();
     return value;
   }
 
@@ -210,7 +210,7 @@ export class Args {
     } else if (arg instanceof i64) {
       this.serialized = this.concatArrays(
         this.serialized,
-        this.fromU64(changetype<i64>(arg)),
+        this.fromU64(changetype<u64>(arg)),
       );
     } else if (arg instanceof u64) {
       this.serialized = this.concatArrays(
@@ -277,7 +277,6 @@ export class Args {
    * @return {Uint8Array} the converted bytearray
    */
   private fromF64(number: f64): Uint8Array {
-    log(number);
     return this.fromU64(bswap<u64>(reinterpret<u64>(number)));
   }
 
