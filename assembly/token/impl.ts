@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {Address, Storage, Context, generateEvent} from '../std/index';
 
 import {ByteArray} from '@massalabs/as/assembly';
