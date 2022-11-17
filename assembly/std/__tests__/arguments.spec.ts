@@ -1,5 +1,5 @@
 import {Address} from '../address';
-import {Args} from '../arguments';
+import {Args, NoArg} from '../arguments';
 
 const ADDR0 = 'A12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M';
 const ADDR1 = 'A1nsqw9mCcYLyyMJx5f4in4NXDoe4B1LzV9pQdvX5Wrxq9ehf6h';
@@ -233,5 +233,10 @@ describe('Args tests', () => {
     expect(args2.nextString()).toBe('my string');
     expect(args2.nextUint8Array()).toStrictEqual(test);
     expect(args2.nextU64()).toBe(300);
+  });
+
+  it('With no args', () => {
+    const args1 = NoArg;
+    expect(args1.serialize()).toBe('');
   });
 });
