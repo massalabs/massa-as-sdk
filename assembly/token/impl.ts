@@ -487,7 +487,11 @@ export function castVote(stringifyArgs: string): string {
       proposalId.concat(voter.toByteString()),
     );
 
-    if (owner != proposalOwner || id != proposalId || state != ProposalState.Active) {
+    if (
+      owner != proposalOwner ||
+      id != proposalId ||
+      state != ProposalState.Active
+    ) {
       return 'Voting : Invalid proposal';
     }
     const argsFuncVotingPower = new Args();
@@ -715,7 +719,10 @@ function proposalState(stringifyArgs: string): i32 {
   const treshold = argsFromData.nextU64();
   const launchDate = argsFromData.nextU64();
 
-  if (launchDate + votingPeriod > Date.now() && state != ProposalState.Canceled) {
+  if (
+    launchDate + votingPeriod > Date.now() &&
+    state != ProposalState.Canceled
+  ) {
     return ProposalState.Executed;
   }
 
