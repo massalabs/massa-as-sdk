@@ -1,5 +1,6 @@
-import {Address, call} from '../std';
+import {Address, call, Args} from '../std';
 import {ByteArray} from '@massalabs/as/assembly';
+import { NoArg } from '../std/arguments';
 
 /**
  * The Massa's standard NFT implementation wrapper.
@@ -28,10 +29,10 @@ export class NFTWrapper {
    */
   constructor(at: Address) {
     this._origin = at;
-    this._name = call(this._origin, 'name', '', 0);
-    this._symbol = call(this._origin, 'symbol', '', 0);
-    this._limitSupply = call(this._origin, 'limitSupply', '', 0);
-    call(this._origin, 'setNFT', '', 0);
+    this._name = call(this._origin, 'name', NoArg, 0);
+    this._symbol = call(this._origin, 'symbol', NoArg, 0);
+    this._limitSupply = call(this._origin, 'limitSupply', NoArg, 0);
+    call(this._origin, 'setNFT', NoArg, 0);
   }
 
   /**
@@ -54,8 +55,11 @@ export class NFTWrapper {
    * @param {u64} tokenId
    * @return {string}
    */
-  tokenURI(tokenId: u64): string {
-    return call(this._origin, 'baseURI', '', 0) + tokenId.toString();
+  tokenURI(_args: string): string {
+    const args = new Args(_args)
+    const tokenId = args.nextU64()
+
+    return call(this._origin, 'baseURI', NoArg, 0) + tokenId.toString();
   }
 
   /**
@@ -63,7 +67,7 @@ export class NFTWrapper {
    * @return {string}
    */
   baseURI(): string {
-    return call(this._origin, 'baseURI', '', 0);
+    return call(this._origin, 'baseURI', NoArg, 0);
   }
 
   /**
@@ -79,7 +83,7 @@ export class NFTWrapper {
    * @return {u64}
    */
   currentSupply(): string {
-    return call(this._origin, 'currentSupply', '', 0);
+    return call(this._origin, 'currentSupply', NoArg, 0);
   }
 
   /**
@@ -87,8 +91,8 @@ export class NFTWrapper {
    * @param {u64} tokenId
    * @return {string}
    */
-  ownerOf(tokenId: u64): string {
-    return call(this._origin, 'ownerOf', tokenId.toString(), 0);
+  ownerOf(_args: string): string {
+    return call(this._origin, 'ownerOf', new Args(_args), 0);
   }
 
   /**
@@ -97,8 +101,8 @@ export class NFTWrapper {
    * @param {Address} to
    * @return {string}
    */
-  mint(to: Address): string {
-    return call(this._origin, 'mint', to.toByteString(), 0);
+  mint(_args: string): string {
+    return call(this._origin, 'mint', new Args(_args), 0);
   }
 
   /**
@@ -108,11 +112,11 @@ export class NFTWrapper {
    * @param {u64} tokenId
    * @return {void}
    */
-  transfer(to: Address, tokenId: u64): string {
+  transfer(_args: string): string {
     return call(
       this._origin,
       'transfer',
-      to.toStringSegment().concat(ByteArray.fromU64(tokenId).toByteString()),
+      new Args(_args),
       0,
     );
   }
