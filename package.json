@@ -1,6 +1,6 @@
 {
   "name": "@massalabs/massa-as-sdk",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Massa assemblyscript sdk",
   "main": "assembly/index.ts",
   "types": "assembly/index.ts",
