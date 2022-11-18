@@ -5,6 +5,7 @@
     "ignorePatterns": ["assembly/abi.ts"],
     "extends": [
         "eslint:recommended",
+        "plugin:json/recommended",
         "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended",
         "google",
@@ -15,10 +16,14 @@
         "sourceType": "module",
         "ecmaFeatures": {}
     },
+    "env": {
+        "node": true
+    },
 
     // === General rules =========================================================
 
     "rules": {
+        "max-len" : ["error", 120],
         // Omitted semicolons are hugely popular, yet within the compiler it makes
         // sense to be better safe than sorry.
         "semi": "error",
@@ -85,7 +90,9 @@
         "no-underscore-dangle": ["off"],
 
         // Allow us to use 0xffffffffffffffff for edge case tests
-        "@typescript-eslint/no-loss-of-precision": "warn"
+        "@typescript-eslint/no-loss-of-precision": "warn",
+
+        "valid-jsdoc": "off"
     },
     "overrides": [
         // === TypeScript rules ====================================================
