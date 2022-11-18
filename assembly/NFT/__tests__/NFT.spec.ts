@@ -21,66 +21,73 @@ const transferAddress = new Address(
   'A123gSiqHfXDtoAdKLPv8ojhXga23WP6QCmjHqRNsWq2pmom7xxQ',
 );
 
-describe('NFT contract TEST', () => {
-  test('setNFT call', () => {
+describe('NFT contract TEST', () : i32 => {
+  test('setNFT call', (): i32 => {
     setNFT('');
     const got = Storage.get('Counter');
     const want = '0';
     if (got != want) {
       error(got.toString() + ', ' + want.toString() + ' was expected.');
-      return;
+      return TestResult.Failure;
     }
+    return TestResult.Success;
   });
-  test('name call', () => {
+  test('name call', (): i32 => {
     const got = name('');
     const want = 'MASSA_NFT';
     if (got != want) {
       error(got.toString() + ', ' + want.toString() + ' was expected.');
-      return;
+      return TestResult.Failure;
     }
+    return TestResult.Success;
   });
-  test('symbol call', () => {
+  test('symbol call', (): i32 => {
     const got = symbol('');
     const want = 'NFT';
     if (got != want) {
       error(got.toString() + ', ' + want.toString() + ' was expected.');
-      return;
+      return TestResult.Failure;
     }
+    return TestResult.Success;
   });
-  test('TokenURI call', () => {
+  test('TokenURI call', (): i32 => {
     const got = tokenURI('1');
     const want = 'massa.net/nft/1';
     if (got != want) {
       error(got.toString() + ', ' + want.toString() + ' was expected.');
-      return;
+      return TestResult.Failure;
     }
+    return TestResult.Success;
   });
-  test('BaseURI call', () => {
+  test('BaseURI call', (): i32 => {
     const got = baseURI('');
     const want = 'massa.net/nft/';
     if (got != want) {
       error(got.toString() + ', ' + want.toString() + ' was expected.');
-      return;
+      return TestResult.Failure;
     }
+    return TestResult.Success;
   });
-  test('Limitsupply call', () => {
+  test('Limitsupply call', (): i32 => {
     const got = limitSupply('');
     const want = '3';
     if (got != want) {
       error(got.toString() + ', ' + want.toString() + ' was expected.');
-      return;
+      return TestResult.Failure;
     }
+    return TestResult.Success;
   });
-  test('Current supply call', () => {
+  test('Current supply call', (): i32 => {
     const got = currentSupply('');
     const want = '0';
     if (got != want) {
       error(got.toString() + ', ' + want.toString() + ' was expected.');
-      return;
+      return TestResult.Failure;
     }
+    return TestResult.Success;
   });
 
-  test('Mint test', () => {
+  test('Mint test', (): i32 => {
     for (let i = 0; i < 4; i++) {
       mint(toAddress.toByteString());
     }
@@ -88,10 +95,11 @@ describe('NFT contract TEST', () => {
     const want = toAddress.toByteString();
     if (got != want) {
       error(got.toString() + ', ' + want.toString() + ' was expected.');
-      return;
+      return TestResult.Failure;
     }
+    return TestResult.Success;
   });
-  test('transfer test', () => {
+  test('transfer test', (): i32 => {
     const args = transferAddress
       .toStringSegment()
       .concat(ByteArray.fromU64(2).toByteString());
@@ -100,17 +108,20 @@ describe('NFT contract TEST', () => {
     const want = transferAddress.toByteString();
     if (got != want) {
       error(got.toString() + ', ' + want.toString() + ' was expected.');
-      return;
+      return TestResult.Failure;
     }
+    return TestResult.Success;
   });
-  test('Change URI', () => {
+  test('Change URI', (): i32 => {
     const newURI = 'my.massa/';
     setURI(newURI);
     const got = baseURI('');
     const want = newURI;
     if (got != want) {
       error(got.toString() + ', ' + want.toString() + ' was expected.');
-      return;
+      return TestResult.Failure;
     }
-  });
+    return TestResult.Success;
+});
+return TestResult.Success;
 });
