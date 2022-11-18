@@ -6,8 +6,7 @@
 ////////////////////////////
 ///////////////////////////////
 
-import {Address, Storage, Context, generateEvent, Args} from '../std/index';
-import {ByteArray} from '@massalabs/as/assembly';
+import {Storage, Context, generateEvent, Args} from '../std/index';
 const ownerTokenKey: string = 'ownerOf_';
 const counterKey: string = 'Counter';
 const ownerKey: string = 'Owner';

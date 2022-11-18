@@ -13,7 +13,6 @@ import {
   ownerOf,
 } from '../NFT';
 
-import {ByteArray} from '@massalabs/as/assembly';
 const toAddress = new Address(
   'A12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq',
 );

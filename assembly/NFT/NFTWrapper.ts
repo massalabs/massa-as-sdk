@@ -1,5 +1,4 @@
 import {Address, call, Args} from '../std';
-import {ByteArray} from '@massalabs/as/assembly';
 import {NoArg} from '../std/arguments';
 
 /**
