@@ -6,8 +6,7 @@
 ////////////////////////////
 ///////////////////////////////
 
-import {Address, Storage, Context, generateEvent} from '../std';
-import {ByteArray} from '@massalabs/as/assembly';
+import {Storage, Context, generateEvent, Args} from '../std/index';
 const ownerTokenKey: string = 'ownerOf_';
 const counterKey: string = 'Counter';
 const ownerKey: string = 'Owner';
@@ -49,7 +48,10 @@ export function setNFT(_: string): string {
  * @param {string} newBaseURI new link include in the NFTs
  * @return {string}
  */
-export function setURI(newBaseURI: string): string {
+export function setURI(_args: string): string {
+  const args = new Args(_args);
+  const newBaseURI = args.nextString();
+
   if (_onlyOwner('')) {
     Storage.set(baseURIKey, newBaseURI);
     generateEvent(`new base URI ${newBaseURI} well setted`);
@@ -86,9 +88,12 @@ export function symbol(_: string): string {
  * @param {string} tokenId
  * @return {string}
  */
-export function tokenURI(tokenId: string): string {
+export function tokenURI(_args: string): string {
+  const args = new Args(_args);
+  const tokenId = args.nextU64();
+
   if (Storage.has(baseURIKey)) {
-    return Storage.get(baseURIKey) + tokenId;
+    return Storage.get(baseURIKey) + tokenId.toString();
   } else {
     return '';
   }
@@ -134,7 +139,10 @@ export function currentSupply(_: string): string {
  * @param {string} tokenId
  * @return {string}
  */
-export function ownerOf(tokenId: string): string {
+export function ownerOf(_args: string): string {
+  const args = new Args(_args);
+  const tokenId = args.nextU64();
+
   if (Storage.has(ownerTokenKey + tokenId.toString())) {
     return Storage.get(ownerTokenKey + tokenId.toString());
   } else {
@@ -152,9 +160,10 @@ export function ownerOf(tokenId: string): string {
  * @param {string} args - byte string containing an owner's account (Address).
  * @return {string}
  */
-export function mint(args: string): string {
+export function mint(_args: string): string {
   if (u32(parseInt(limitSupply(''))) > u32(parseInt(currentSupply('')))) {
-    const addr = Address.fromByteString(args);
+    const args = new Args(_args);
+    const addr = args.nextAddress();
     _increment();
     const tokenID: string = currentSupply('');
     const key = ownerTokenKey + tokenID;
@@ -207,10 +216,10 @@ function _onlyTokenOwner(tokenId: u64): bool {
  * - the tokenID (u64).
  * @return {string}
  */
-export function transfer(args: string): string {
-  const toAddress = new Address();
-  const offset = toAddress.fromStringSegment(args);
-  const tokenId: u64 = ByteArray.fromByteString(args.substr(offset, 8)).toU64();
+export function transfer(_args: string): string {
+  const args = new Args(_args);
+  const toAddress = args.nextAddress();
+  const tokenId = args.nextU64();
 
   if (!Storage.has(ownerTokenKey + tokenId.toString())) {
     generateEvent(`token ${tokenId.toString()} not yet minted`);

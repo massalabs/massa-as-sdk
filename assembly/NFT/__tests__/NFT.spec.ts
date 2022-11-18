@@ -1,4 +1,4 @@
-import {Storage, Address} from '../../std/index';
+import {Storage, Address, Args} from '../../std/index';
 import {
   setNFT,
   name,
@@ -13,7 +13,6 @@ import {
   ownerOf,
 } from '../NFT';
 
-import {ByteArray} from '@massalabs/as/assembly';
 const toAddress = new Address(
   'A12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq',
 );
@@ -51,7 +50,8 @@ describe('NFT contract TEST', (): i32 => {
     return TestResult.Success;
   });
   test('TokenURI call', (): i32 => {
-    const got = tokenURI('1');
+    const args = new Args().add(u64(1));
+    const got = tokenURI(args.serialize());
     const want = 'massa.net/nft/1';
     if (got != want) {
       error(got.toString() + ', ' + want.toString() + ' was expected.');
@@ -70,7 +70,7 @@ describe('NFT contract TEST', (): i32 => {
   });
   test('Limitsupply call', (): i32 => {
     const got = limitSupply('');
-    const want = '3';
+    const want = '10000';
     if (got != want) {
       error(got.toString() + ', ' + want.toString() + ' was expected.');
       return TestResult.Failure;
@@ -89,9 +89,12 @@ describe('NFT contract TEST', (): i32 => {
 
   test('Mint test', (): i32 => {
     for (let i = 0; i < 4; i++) {
-      mint(toAddress.toByteString());
+      const args = new Args().add(toAddress);
+
+      mint(args.serialize());
     }
-    const got = ownerOf('3');
+    const ownerOfArgs = new Args().add(3);
+    const got = ownerOf(ownerOfArgs.serialize());
     const want = toAddress.toByteString();
     if (got != want) {
       error(got.toString() + ', ' + want.toString() + ' was expected.');
@@ -100,11 +103,11 @@ describe('NFT contract TEST', (): i32 => {
     return TestResult.Success;
   });
   test('transfer test', (): i32 => {
-    const args = transferAddress
-      .toStringSegment()
-      .concat(ByteArray.fromU64(2).toByteString());
-    transfer(args);
-    const got = ownerOf('2');
+    const args = new Args().add(transferAddress).add(u64(2));
+
+    transfer(args.serialize());
+    const ownerOfArgs = new Args().add(3);
+    const got = ownerOf(ownerOfArgs.serialize());
     const want = transferAddress.toByteString();
     if (got != want) {
       error(got.toString() + ', ' + want.toString() + ' was expected.');
@@ -114,7 +117,8 @@ describe('NFT contract TEST', (): i32 => {
   });
   test('Change URI', (): i32 => {
     const newURI = 'my.massa/';
-    setURI(newURI);
+    const args = new Args().add(newURI);
+    setURI(args.serialize());
     const got = baseURI('');
     const want = newURI;
     if (got != want) {
