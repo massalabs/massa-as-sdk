@@ -139,7 +139,10 @@ export function currentSupply(_: string): string {
  * @param {string} tokenId
  * @return {string}
  */
-export function ownerOf(tokenId: string): string {
+export function ownerOf(_args: string): string {
+  const args = new Args(_args);
+  const tokenId = args.nextU64();
+
   if (Storage.has(ownerTokenKey + tokenId.toString())) {
     return Storage.get(ownerTokenKey + tokenId.toString());
   } else {

@@ -93,7 +93,8 @@ describe('NFT contract TEST', (): i32 => {
 
       mint(args.serialize());
     }
-    const got = ownerOf('3');
+    const ownerOfArgs = new Args().add(3)
+    const got = ownerOf(ownerOfArgs.serialize());
     const want = toAddress.toByteString();
     if (got != want) {
       error(got.toString() + ', ' + want.toString() + ' was expected.');
@@ -105,7 +106,8 @@ describe('NFT contract TEST', (): i32 => {
     const args = new Args().add(transferAddress).add(u64(2));
 
     transfer(args.serialize());
-    const got = ownerOf('2');
+    const ownerOfArgs = new Args().add(3)
+    const got = ownerOf(ownerOfArgs.serialize());
     const want = transferAddress.toByteString();
     if (got != want) {
       error(got.toString() + ', ' + want.toString() + ' was expected.');
