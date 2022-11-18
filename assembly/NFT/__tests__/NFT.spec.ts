@@ -21,7 +21,7 @@ const transferAddress = new Address(
   'A123gSiqHfXDtoAdKLPv8ojhXga23WP6QCmjHqRNsWq2pmom7xxQ',
 );
 
-describe('NFT contract TEST', () : i32 => {
+describe('NFT contract TEST', (): i32 => {
   test('setNFT call', (): i32 => {
     setNFT('');
     const got = Storage.get('Counter');
@@ -122,6 +122,6 @@ describe('NFT contract TEST', () : i32 => {
       return TestResult.Failure;
     }
     return TestResult.Success;
-});
-return TestResult.Success;
+  });
+  return TestResult.Success;
 });
