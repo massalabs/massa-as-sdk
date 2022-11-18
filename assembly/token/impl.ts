@@ -398,7 +398,7 @@ export function delegate(stringifyArgs: string): string {
   const ownerAddress = args.nextAddress();
   const recipientAddress = args.nextAddress();
   const amount = args.nextU64();
-  
+
   if (!ownerAddress.isValid() || !recipientAddress.isValid() || isNaN(amount)) {
     return '0';
   }
@@ -408,8 +408,8 @@ export function delegate(stringifyArgs: string): string {
     return '0';
   }
   // fetch staked balance of owner
-  const ownerStakedBalance = new Args(Storage.get("StakedPower")).nextI64();
-  if ((ownerStakedBalance - ownerBalance) < amount) {
+  const ownerStakedBalance = new Args(Storage.get('StakedPower')).nextI64();
+  if (ownerStakedBalance - ownerBalance < amount) {
     return '0';
   }
 
@@ -435,20 +435,29 @@ export function addVotingPower(stringifyArgs: string): string {
   if (!ownerAddress.isValid() || !recipientAddress.isValid() || isNaN(amount)) {
     return '0';
   }
-
-  const ownerBalance = _balance(ownerAddress);
   const recipientBalance = _balance(recipientAddress);
-  
-  const delegatedPowerRecipient = new Args(Storage.getOf(recipientAddress, 'DelegatedPower')).nextU64();
 
-  const stakedPowerRecipient = new Args(Storage.getOf(recipientAddress, 'StakedPower')).nextU64();
+  const delegatedPowerRecipient = new Args(
+    Storage.getOf(recipientAddress, 'DelegatedPower'),
+  ).nextU64();
 
-  const stakedPowerOwner = new Args(Storage.getOf(ownerAddress, 'StakedPower')).nextU64();
+  const stakedPowerRecipient = new Args(
+    Storage.getOf(recipientAddress, 'StakedPower'),
+  ).nextU64();
+
+  const stakedPowerOwner = new Args(
+    Storage.getOf(ownerAddress, 'StakedPower'),
+  ).nextU64();
 
   Storage.setOf(
     recipientAddress,
     'DelegatedPower',
-    (amount + delegatedPowerRecipient + recipientBalance - stakedPowerRecipient).toString(),
+    (
+      amount +
+      delegatedPowerRecipient +
+      recipientBalance -
+      stakedPowerRecipient
+    ).toString(),
   );
   Storage.setOf(
     ownerAddress,
@@ -525,7 +534,7 @@ export function castVote(stringifyArgs: string): string {
       proposalOwner,
       'VotingData'.concat(proposalId),
     );
-    
+
     // getDelegatedPower
 
     // Push DataStore Proposal to local variables
@@ -622,14 +631,14 @@ function getVotingPowerForAProposal(stringifyArgs: string): u64 {
   const bal = _balance(voter);
 
   // Fetch DelegatedPower from Storage
-  const delegatedPower = new Args(Storage.get(
-    'DelegatedPower'.concat(voter.toByteString()),
-  )).nextU64();
+  const delegatedPower = new Args(
+    Storage.get('DelegatedPower'.concat(voter.toByteString())),
+  ).nextU64();
 
   // fetch StakedPower from user Storage
-  const stakedPower = new Args(Storage.get(
-    'StakedPower'.concat(voter.toByteString()),
-  )).nextU64();
+  const stakedPower = new Args(
+    Storage.get('StakedPower'.concat(voter.toByteString())),
+  ).nextU64();
 
   // Fetch VotingData from user from Storage
   const votingData = Storage.get(
@@ -644,7 +653,13 @@ function getVotingPowerForAProposal(stringifyArgs: string): u64 {
 
   // Sum of all voting power from this address involved in this proposal to define the voting power available
   if (bal > 0) {
-    return forCount + againstCount + abstainCount + stakedPower - (bal + delegatedPower);
+    return (
+      forCount +
+      againstCount +
+      abstainCount +
+      stakedPower -
+      (bal + delegatedPower)
+    );
   }
   return 0;
 }

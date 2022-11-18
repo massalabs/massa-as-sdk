@@ -22,6 +22,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
+    "astester": "astester --imports ./astester.imports.js ./assembly/token/**/*.spec.ts",
     "test": "asp --verbose",
     "test:ci": "asp --summary",
     "test:asp": "asp --verbose",
@@ -41,6 +42,7 @@
   "devDependencies": {
     "@as-pect/cli": "^7.0.7",
     "@assemblyscript/loader": "^0.21.2",
+    "@massalabs/as-tester": "^0.0.2-dev",
     "@massalabs/as": "^1.0.2",
     "@typescript-eslint/eslint-plugin": "^5.29.0",
     "@typescript-eslint/parser": "^5.29.0",
