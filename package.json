@@ -24,7 +24,7 @@
   "scripts": {
     "test": "asp --verbose",
     "test:ci": "asp --summary",
-    "test:as": "astester --imports ./astester.imports.js  ./assembly/NFT/**/*.spec.ts ./assembly/token/**/*.spec.ts",
+    "test:as": "astester --imports ./astester.imports.js  ./assembly/NFT/**/*.spec.ts",
     "prettier": "as-prettier --check assembly",
     "prettier:fix": "as-prettier --write assembly",
     "lint": "eslint .",
