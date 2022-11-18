@@ -6,7 +6,7 @@
 ////////////////////////////
 ///////////////////////////////
 
-import {Address, Storage, Context, generateEvent, Args} from '../std/index'
+import {Address, Storage, Context, generateEvent, Args} from '../std/index';
 import {ByteArray} from '@massalabs/as/assembly';
 const ownerTokenKey: string = 'ownerOf_';
 const counterKey: string = 'Counter';
@@ -50,8 +50,8 @@ export function setNFT(_: string): string {
  * @return {string}
  */
 export function setURI(_args: string): string {
-  const args = new Args(_args)
-  const newBaseURI = args.nextString()
+  const args = new Args(_args);
+  const newBaseURI = args.nextString();
 
   if (_onlyOwner('')) {
     Storage.set(baseURIKey, newBaseURI);
@@ -90,8 +90,8 @@ export function symbol(_: string): string {
  * @return {string}
  */
 export function tokenURI(_args: string): string {
-  const args = new Args(_args)
-  const tokenId = args.nextU64()
+  const args = new Args(_args);
+  const tokenId = args.nextU64();
 
   if (Storage.has(baseURIKey)) {
     return Storage.get(baseURIKey) + tokenId.toString();
@@ -160,7 +160,7 @@ export function ownerOf(tokenId: string): string {
  */
 export function mint(_args: string): string {
   if (u32(parseInt(limitSupply(''))) > u32(parseInt(currentSupply('')))) {
-    const args = new Args(_args)
+    const args = new Args(_args);
     const addr = args.nextAddress();
     _increment();
     const tokenID: string = currentSupply('');

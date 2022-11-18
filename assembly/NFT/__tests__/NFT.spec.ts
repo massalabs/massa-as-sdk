@@ -51,7 +51,7 @@ describe('NFT contract TEST', (): i32 => {
     return TestResult.Success;
   });
   test('TokenURI call', (): i32 => {
-    const args = new Args().add(u64(1))
+    const args = new Args().add(u64(1));
     const got = tokenURI(args.serialize());
     const want = 'massa.net/nft/1';
     if (got != want) {
@@ -115,7 +115,7 @@ describe('NFT contract TEST', (): i32 => {
     return TestResult.Success;
   });
   test('Change URI', (): i32 => {
-    const newURI = 'my.massa/'
+    const newURI = 'my.massa/';
     const args = new Args().add(newURI);
     setURI(args.serialize());
     const got = baseURI('');
@@ -124,7 +124,7 @@ describe('NFT contract TEST', (): i32 => {
       error(got.toString() + ', ' + want.toString() + ' was expected.');
       return TestResult.Failure;
     }
-    return TestResult.Success;      
+    return TestResult.Success;
   });
   return TestResult.Success;
 });

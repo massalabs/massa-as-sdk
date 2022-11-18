@@ -1,6 +1,6 @@
 import {Address, call, Args} from '../std';
 import {ByteArray} from '@massalabs/as/assembly';
-import { NoArg } from '../std/arguments';
+import {NoArg} from '../std/arguments';
 
 /**
  * The Massa's standard NFT implementation wrapper.
@@ -56,8 +56,8 @@ export class NFTWrapper {
    * @return {string}
    */
   tokenURI(_args: string): string {
-    const args = new Args(_args)
-    const tokenId = args.nextU64()
+    const args = new Args(_args);
+    const tokenId = args.nextU64();
 
     return call(this._origin, 'baseURI', NoArg, 0) + tokenId.toString();
   }
@@ -113,11 +113,6 @@ export class NFTWrapper {
    * @return {void}
    */
   transfer(_args: string): string {
-    return call(
-      this._origin,
-      'transfer',
-      new Args(_args),
-      0,
-    );
+    return call(this._origin, 'transfer', new Args(_args), 0);
   }
 }
