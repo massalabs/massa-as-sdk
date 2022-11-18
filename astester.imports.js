@@ -2,7 +2,7 @@
 let exports;
 
 export function setExports(xpt) {
-  exports = xpt;
+    exports = xpt;
 }
 
 function mixRandomChars(length) {
@@ -52,11 +52,12 @@ export function local(memory) {
   const SIZE_OFFSET = -4;
   const utf16 = new TextDecoder('utf-16le', { fatal: true });
 
-  const getString = (ptr) => {
-    const len = new Uint32Array(memory.buffer)[(ptr + SIZE_OFFSET) >>> 2] >>> 1;
-    const wtf16 = new Uint16Array(memory.buffer, ptr, len);
-    return utf16.decode(wtf16);
-  };
+    const getString = (ptr) => {
+        const len =
+            new Uint32Array(memory.buffer)[(ptr + SIZE_OFFSET) >>> 2] >>> 1;
+        const wtf16 = new Uint16Array(memory.buffer, ptr, len);
+        return utf16.decode(wtf16);
+    };
 
   // from assemblyscript/loader/index
   function newString(str) {
