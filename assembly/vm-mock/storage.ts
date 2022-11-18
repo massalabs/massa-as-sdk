@@ -32,3 +32,6 @@ export declare function changeCallStack(callStack: string): void;
 // @ts-ignore: decorator
 @external("massa", "assembly_script_reset_storage")
 export declare function resetStorage(): void;
+// @ts-ignore
+@external("massa", "assembly_script_get_date")
+export declare function getDate(): f64;

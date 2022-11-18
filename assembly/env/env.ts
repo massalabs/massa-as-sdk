@@ -1,5 +1,9 @@
 export namespace env {
   // @ts-ignore
+  @external("massa", "assembly_script_get_date")
+  export declare function getDate(): f64;
+
+  // @ts-ignore
   @external("massa", "assembly_script_print")
   export declare function print(message: string): void;
 

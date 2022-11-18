@@ -54,6 +54,16 @@ export function createSC(bytecode: StaticArray<u8>): Address {
 }
 
 /**
+ * Return the current date in miliseconds
+ *
+ *
+ * @return {f64} Date.now() in miliseconds
+ */
+export function getDate(): f64 {
+  return env.getDate();
+}
+
+/**
  * Generates an event
  *
  * @param {string} event - stringified

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {Address, Storage, Context, generateEvent} from '../std/index';
+import {Address, Storage, Context, generateEvent, getDate} from '../std/index';
 
 import {ByteArray} from '@massalabs/as/assembly';
 import {Args} from '../std/arguments';
@@ -397,7 +397,7 @@ export function delegate(stringifyArgs: string): string {
   const args = new Args(stringifyArgs);
   const ownerAddress = args.nextAddress();
   const recipientAddress = args.nextAddress();
-  const amount = args.nextU64();
+  const amount = args.nextU32();
 
   if (!ownerAddress.isValid() || !recipientAddress.isValid() || isNaN(amount)) {
     return '0';
@@ -408,7 +408,7 @@ export function delegate(stringifyArgs: string): string {
     return '0';
   }
   // fetch staked balance of owner
-  const ownerStakedBalance = new Args(Storage.get('StakedPower')).nextI64();
+  const ownerStakedBalance = new Args(Storage.get('StakedPower')).nextI32();
   if (ownerStakedBalance - ownerBalance < amount) {
     return '0';
   }
@@ -422,7 +422,7 @@ export function delegate(stringifyArgs: string): string {
  * @param {string} stringifyArgs - byte string with the following format:
  * - the owner's account (address);
  * - the recipient's account (address);
- * - the amount (u64).
+ * - the amount (u32).
  *
  * @return {string} - boolean value ("1" or "0")
  * */
@@ -430,7 +430,7 @@ export function addVotingPower(stringifyArgs: string): string {
   const args = new Args(stringifyArgs);
   const ownerAddress = args.nextAddress();
   const recipientAddress = args.nextAddress();
-  const amount = args.nextU64();
+  const amount = args.nextU32();
 
   if (!ownerAddress.isValid() || !recipientAddress.isValid() || isNaN(amount)) {
     return '0';
@@ -439,15 +439,15 @@ export function addVotingPower(stringifyArgs: string): string {
 
   const delegatedPowerRecipient = new Args(
     Storage.getOf(recipientAddress, 'DelegatedPower'),
-  ).nextU64();
+  ).nextU32();
 
   const stakedPowerRecipient = new Args(
     Storage.getOf(recipientAddress, 'StakedPower'),
-  ).nextU64();
+  ).nextU32();
 
   const stakedPowerOwner = new Args(
     Storage.getOf(ownerAddress, 'StakedPower'),
-  ).nextU64();
+  ).nextU32();
 
   Storage.setOf(
     recipientAddress,
@@ -472,7 +472,7 @@ export function addVotingPower(stringifyArgs: string): string {
  * @param {string} stringifyArgs - Args object serialized as a string containing:
  * - the proposalOwner, to find in the right datastore  (address);
  * - the proposalId, to find id in datastore (string);
- * - the amount, of voting power (u64).
+ * - the amount, of voting power (u32).
  * - the reason, For Against Abstain (string).
  * @return {string} - boolean value ("1" or "0")*/
 export function castVote(stringifyArgs: string): string {
@@ -480,7 +480,7 @@ export function castVote(stringifyArgs: string): string {
   const args = new Args(stringifyArgs);
   const proposalOwner = args.nextAddress();
   const proposalId = args.nextString();
-  const amount = args.nextU64();
+  const amount = args.nextU32();
   const reason = args.nextString();
 
   if (
@@ -516,7 +516,7 @@ export function castVote(stringifyArgs: string): string {
     if (
       owner != proposalOwner ||
       id != proposalId ||
-      state != ProposalState.Active
+      state != (ProposalState.Active as u32)
     ) {
       return 'Voting : Invalid proposal';
     }
@@ -539,15 +539,15 @@ export function castVote(stringifyArgs: string): string {
 
     // Push DataStore Proposal to local variables
     const argsVotingDataProposal = new Args(votingDataProposal);
-    let forUserCount = argsVotingDataProposal.nextU64();
-    let againstUserCount = argsVotingDataProposal.nextU64();
-    let abstainUserCount = argsVotingDataProposal.nextU64();
+    let forUserCount = argsVotingDataProposal.nextU32();
+    let againstUserCount = argsVotingDataProposal.nextU32();
+    let abstainUserCount = argsVotingDataProposal.nextU32();
 
     // Push DataStoreUser to local variables
     const argsVotingDataUser = new Args(votingDataUser);
-    let forProposalCount = argsVotingDataUser.nextU64();
-    let againstProposalCount = argsVotingDataUser.nextU64();
-    let abstainProposalCount = argsVotingDataUser.nextU64();
+    let forProposalCount = argsVotingDataUser.nextU32();
+    let againstProposalCount = argsVotingDataUser.nextU32();
+    let abstainProposalCount = argsVotingDataUser.nextU32();
 
     const argsVotingDataUserToStore = new Args();
     const argsVotingDataProposalToStore = new Args();
@@ -620,9 +620,9 @@ export function castVote(stringifyArgs: string): string {
  * - proposalId - id of Proposal (string).
  *
  *
- * @return {u64} - boolean value ("1" or "0")
+ * @return {u32} - boolean value ("1" or "0")
  */
-function getVotingPowerForAProposal(stringifyArgs: string): u64 {
+function getVotingPowerForAProposal(stringifyArgs: string): u32 {
   let args = new Args(stringifyArgs);
   const owner = args.nextAddress();
   const id = args.nextString();
@@ -633,12 +633,12 @@ function getVotingPowerForAProposal(stringifyArgs: string): u64 {
   // Fetch DelegatedPower from Storage
   const delegatedPower = new Args(
     Storage.get('DelegatedPower'.concat(voter.toByteString())),
-  ).nextU64();
+  ).nextU32();
 
   // fetch StakedPower from user Storage
   const stakedPower = new Args(
     Storage.get('StakedPower'.concat(voter.toByteString())),
-  ).nextU64();
+  ).nextU32();
 
   // Fetch VotingData from user from Storage
   const votingData = Storage.get(
@@ -647,9 +647,9 @@ function getVotingPowerForAProposal(stringifyArgs: string): u64 {
   // Put Data in local variable
   const votingDataArgs = new Args(votingData);
   // forCount contains the value of vote used for this proposal
-  const forCount = votingDataArgs.nextU64();
-  const againstCount = votingDataArgs.nextU64();
-  const abstainCount = votingDataArgs.nextU64();
+  const forCount = votingDataArgs.nextU32();
+  const againstCount = votingDataArgs.nextU32();
+  const abstainCount = votingDataArgs.nextU32();
 
   // Sum of all voting power from this address involved in this proposal to define the voting power available
   if (bal > 0) {
@@ -667,7 +667,7 @@ function getVotingPowerForAProposal(stringifyArgs: string): u64 {
  * GetProposalData from Specific Address and ProposalId
  *
  * @param {string} stringifyArgs - Args object serialized as a string containing:
- * - OwnerAddress (u64).
+ * - OwnerAddress (u32).
  * - proposalId (address);
  *
  * @return {string} - Return string with ProposalData
@@ -684,7 +684,7 @@ export function getProposalData(stringifyArgs: string): string {
  * GetUserVotingData from Specific Address and ProposalId
  *
  * @param {string} stringifyArgs - Args object serialized as a string containing:
- * - OwnerAddress (u64).
+ * - OwnerAddress (u32).
  * - proposalId (address);
  *
  * @return {string} - Return string with ProposalData
@@ -704,7 +704,7 @@ export function getUserVotingData(stringifyArgs: string): string {
  * GetUserVotingData from Specific Address and ProposalId
  *
  * @param {string} stringifyArgs - Args object serialized as a string containing:
- * - OwnerAddress (u64).
+ * - OwnerAddress (u32).
  * - proposalId (address);
  * - withArgs (number)
  *
@@ -733,10 +733,10 @@ export function getProposalVotingData(stringifyArgs: string): string {
  * - state {i32} String containing the state of the proposal
  * - tokenName {string} String containing the tokenName of the proposal
  * - tokenSybmol {string} String containing the tokenSymbol of the proposal
- * - votingDelay {u64} Containing the votingDelay of the proposal
- * - votingPeriod {u64} Containing the votingPeriod of the proposal
- * - treshold {u64} Containing the treshold of the proposal
- * - launchDate {u64} Containing the launchDate of the proposal
+ * - votingDelay {f32} Containing the votingDelay of the proposal
+ * - votingPeriod {f32} Containing the votingPeriod of the proposal
+ * - treshold {u32} Containing the treshold of the proposal
+ * - launchDate {f32} Containing the launchDate of the proposal
  * @return {string} - ProposalState
  */
 function proposalState(stringifyArgs: string): i32 {
@@ -756,31 +756,31 @@ function proposalState(stringifyArgs: string): i32 {
   const description = argsFromData.nextString();
   const tokenName = argsFromData.nextString();
   const tokenSymbol = argsFromData.nextString();
-  const votingDelay = argsFromData.nextU64();
-  const votingPeriod = argsFromData.nextU64();
-  const treshold = argsFromData.nextU64();
-  const launchDate = argsFromData.nextU64();
+  const votingDelay = argsFromData.nextF32();
+  const votingPeriod = argsFromData.nextF32();
+  const treshold = argsFromData.nextU32();
+  const launchDate = argsFromData.nextF32();
 
   if (
-    launchDate + votingPeriod > Date.now() &&
-    state != ProposalState.Canceled
+    launchDate + votingPeriod > getDate() &&
+    state != (ProposalState.Canceled as u32)
   ) {
-    return ProposalState.Executed;
+    return ProposalState.Executed as u32;
   }
 
-  if (state == ProposalState.Canceled) {
-    return ProposalState.Canceled;
+  if (state == (ProposalState.Canceled as u32)) {
+    return ProposalState.Canceled as u32;
   }
 
-  if (Date.now() < launchDate || ProposalState.Created) {
-    return ProposalState.Pending;
+  if (getDate() < launchDate || (ProposalState.Created as u32)) {
+    return ProposalState.Pending as u32;
   }
 
-  if (launchDate + votingPeriod < Date.now() && launchDate >= Date.now()) {
-    return ProposalState.Active;
+  if (launchDate + votingPeriod < getDate() && launchDate >= getDate()) {
+    return ProposalState.Active as u32;
   }
 
-  return ProposalState.Pending;
+  return ProposalState.Pending as u32;
 }
 /**
  * CreateProposal, create a new proposal and store it in the Datastore
@@ -790,9 +790,9 @@ function proposalState(stringifyArgs: string): i32 {
  * - the description of Proposal    (string);
  * - the tokenName                  (string);
  * - the symbol of the Token        (string);
- * - the votingDelay of Proposal    (u64);
- * - the votingPeriod of Proposal   (u64);
- * - the treshold of Proposal       (u64);
+ * - the votingDelay of Proposal    (f32);
+ * - the votingPeriod of Proposal   (f32);
+ * - the treshold of Proposal       (u32);
  *
  * NOTE: The {votingDelay} can delay the start of the vote. This must be considered when setting the voting
  * duration compared to the voting delay.
@@ -808,9 +808,9 @@ export function createProposal(stringifyArgs: string): string {
   const description = args.nextString();
   const tokenName = args.nextString();
   const tokenSymbol = args.nextString();
-  const votingDelay = args.nextU64();
-  const votingPeriod = args.nextU64();
-  const threshold = args.nextU64();
+  const votingDelay = args.nextF32();
+  const votingPeriod = args.nextF32();
+  const threshold = args.nextU32();
 
   // Check if the proposer is a valid address
   if (!owner.isValid()) {
@@ -820,41 +820,46 @@ export function createProposal(stringifyArgs: string): string {
   // Generate the proposal id
   let proposalId = 'proposal';
   let exit = false;
-  for (let index = 1; exit == true; index++) {
+  let index = 1;
+  while (exit != true) {
     if (Storage.has(proposalId.concat(index.toString())) == false) {
-      exit = true;
       proposalId = proposalId.concat(index.toString());
+      exit = true;
     }
+    index++;
   }
 
   // Create the theorical Date launch of the proposal
-  const lastUpdate = Date.now();
+  const lastUpdate = getDate();
   const launchDate = lastUpdate + votingDelay;
   // Store the proposal ID
-  Storage.append('proposal', proposalId);
+
+  const proposals = Storage.get('proposal');
+  // Cut the crap this can be change to a simple Storage.append("proposal", proposalId) But test u are broken :(
+  Storage.set('proposal', proposals + ',' + proposalId);
 
   // Concat params to store in datastore
   const params = new Args();
   params.add(owner);
   params.add(proposalId);
   params.add(title);
-  params.add('Created');
+  params.add(ProposalState.Created as u32);
   params.add(description);
   params.add(tokenName);
   params.add(tokenSymbol);
-  params.add(votingDelay);
-  params.add(votingPeriod);
-  params.add(threshold);
-  params.add(launchDate);
-  params.add(lastUpdate);
+  params.add(votingDelay as f32);
+  params.add(votingPeriod as f32);
+  params.add(threshold as u32);
+  params.add(launchDate as f32);
+  params.add(lastUpdate as f32);
 
   // Store the proposal with all params
   Storage.set('Data'.concat(proposalId), params.serialize());
   // Intialize the VotingData in Storage
   const argsVote = new Args();
-  argsVote.add('0');
-  argsVote.add('0');
-  argsVote.add('0');
+  argsVote.add(0);
+  argsVote.add(0);
+  argsVote.add(0);
   // Create the storage for the votes
   Storage.set('VotingData'.concat(proposalId), argsVote.serialize());
   return '1';
@@ -868,15 +873,15 @@ export function createProposal(stringifyArgs: string): string {
  * - the description of Proposal           (string);
  * - the tokenName of the Token            (string);
  * - the symbol of the Token               (string);
- * - the votingDelay of Proposal           (u64);
- * - the votingPeriod of Proposal          (u64);
- * - the treshold of Proposal              (u64);
+ * - the votingDelay of Proposal           (u32);
+ * - the votingPeriod of Proposal          (u32);
+ * - the treshold of Proposal              (u32);
  *
  * NOTE: The proposal can be edited only if it is not Active, Executed or Canceled.
  *
  * NOTE: The {votingDelay} can delay the start of the vote. This must be considered when setting the voting
  * duration compared to the voting delay.
- * @return {string} - ProposalState
+ * @return {string} - ProposalState as u32
  */
 export function editProposal(stringifyArgs: string): string {
   // Declaration of args
@@ -891,9 +896,9 @@ export function editProposal(stringifyArgs: string): string {
   const description = args.nextString();
   const tokenName = args.nextString();
   const tokenSymbol = args.nextString();
-  const votingDelay = args.nextU64();
-  const votingPeriod = args.nextU64();
-  const threshold = args.nextU64();
+  const votingDelay = args.nextF32();
+  const votingPeriod = args.nextF32();
+  const threshold = args.nextU32();
 
   // Check if the proposer is a valid address
   if (!owner.isValid()) {
@@ -902,9 +907,9 @@ export function editProposal(stringifyArgs: string): string {
 
   // Check if the proposal is in the right state
   if (
-    proposalState(proposalId) == ProposalState.Active ||
-    proposalState(proposalId) == ProposalState.Executed ||
-    proposalState(proposalId) == ProposalState.Canceled
+    proposalState(proposalId) == (ProposalState.Active as u32) ||
+    proposalState(proposalId) == (ProposalState.Executed as u32) ||
+    proposalState(proposalId) == (ProposalState.Canceled as u32)
   ) {
     return 'Governor: cannot edit unavailable proposal';
   }
@@ -914,7 +919,7 @@ export function editProposal(stringifyArgs: string): string {
   }
 
   // Create the theorical Date launch of the proposal
-  const lastUpdate = Date.now();
+  const lastUpdate = getDate();
   const launchDate = lastUpdate + votingDelay;
 
   // Concat params to store in datastore
@@ -926,11 +931,11 @@ export function editProposal(stringifyArgs: string): string {
   params.add(description);
   params.add(tokenName);
   params.add(tokenSymbol);
-  params.add(votingDelay);
-  params.add(votingPeriod);
-  params.add(threshold);
-  params.add(launchDate);
-  params.add(lastUpdate);
+  params.add(votingDelay as f32);
+  params.add(votingPeriod as f32);
+  params.add(threshold as u32);
+  params.add(launchDate as f32);
+  params.add(lastUpdate as f32);
 
   // Store the proposal with all params
   Storage.set('Data'.concat(proposalId), params.serialize());
@@ -973,10 +978,10 @@ export function cancelProposal(proposalId: string): string {
   const description = Dataparams.nextString();
   const tokenName = Dataparams.nextString();
   const tokenSymbol = Dataparams.nextString();
-  const votingDelay = Dataparams.nextU64();
-  const votingPeriod = Dataparams.nextU64();
-  const threshold = Dataparams.nextU64();
-  const launchDate = Dataparams.nextU64();
+  const votingDelay = Dataparams.nextF32();
+  const votingPeriod = Dataparams.nextF32();
+  const threshold = Dataparams.nextU32();
+  const launchDate = Dataparams.nextF32();
 
   const params = new Args();
   // set the new state of the proposal
@@ -987,11 +992,11 @@ export function cancelProposal(proposalId: string): string {
   params.add(description);
   params.add(tokenName);
   params.add(tokenSymbol);
-  params.add(votingDelay);
-  params.add(votingPeriod);
-  params.add(threshold);
-  params.add(launchDate);
-  params.add(Date.now().toString());
+  params.add(votingDelay as f32);
+  params.add(votingPeriod as f32);
+  params.add(threshold as u32);
+  params.add(launchDate as f32);
+  params.add(getDate().toString());
 
   Storage.set('Data'.concat(proposalId), params.serialize());
   return '1';

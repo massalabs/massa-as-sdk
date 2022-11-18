@@ -81,6 +81,10 @@ export function local(memory) {
       assembly_script_reset_storage() {
         resetLedger();
       },
+      assembly_script_get_date() {
+        return Date.now();
+      },
+
       assembly_script_change_call_stack(callstackPtr) {
         const callStackToString = getString(callstackPtr);
         callStack = callStackToString;
