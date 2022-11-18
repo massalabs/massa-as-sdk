@@ -1,5 +1,6 @@
 import {Address, call} from '../std/index';
-import {Currency, Amount, ByteArray} from '@massalabs/as/assembly';
+import {Currency, Amount} from '@massalabs/as/assembly';
+import {Args} from '../std/arguments';
 
 /**
  * The Massa's standard token implementation wrapper.
@@ -29,10 +30,10 @@ export class TokenWrapper {
    */
   constructor(at: Address) {
     this._origin = at;
-    this._name = call(this._origin, 'name', '', 0);
+    this._name = call(this._origin, 'name', new Args(), 0);
     this._currency = new Currency(
       this._name,
-      U8.parseInt(call(this._origin, 'decimals', '', 0)),
+      U8.parseInt(call(this._origin, 'decimals', new Args(), 0)),
     );
   }
 
@@ -43,7 +44,7 @@ export class TokenWrapper {
    * @return {string}
    */
   version(): string {
-    return call(this._origin, 'version', '', 0);
+    return call(this._origin, 'version', new Args(), 0);
   }
 
   /**
@@ -60,7 +61,7 @@ export class TokenWrapper {
    * @return {string} token symbol.
    */
   symbol(): string {
-    return call(this._origin, 'symbol', '', 0);
+    return call(this._origin, 'symbol', new Args(), 0);
   }
 
   /**
@@ -71,7 +72,7 @@ export class TokenWrapper {
    * @return {Amount} number of minted tokens.
    */
   totalSupply(): Amount {
-    return this.toAmount(call(this._origin, 'totalSupply', '', 0));
+    return this.toAmount(call(this._origin, 'totalSupply', new Args(), 0));
   }
 
   /**
@@ -110,7 +111,7 @@ export class TokenWrapper {
    */
   balanceOf(account: Address): Amount {
     return this.toAmount(
-      call(this._origin, 'balanceOf', account.toByteString(), 0),
+      call(this._origin, 'balanceOf', new Args().add(account), 0),
     );
   }
 
@@ -131,9 +132,7 @@ export class TokenWrapper {
       call(
         this._origin,
         'transfer',
-        toAccount
-          .toStringSegment()
-          .concat(ByteArray.fromU64(nbTokens.value()).toByteString()),
+        new Args().add(toAccount).add(nbTokens.value()),
         0,
       ) == '1'
     );
@@ -152,7 +151,7 @@ export class TokenWrapper {
       call(
         this._origin,
         'allowance',
-        ownerAccount.toStringSegment().concat(spenderAccount.toStringSegment()),
+        new Args().add(ownerAccount).add(spenderAccount),
         0,
       ),
     );
@@ -178,9 +177,7 @@ export class TokenWrapper {
       call(
         this._origin,
         'increaseAllowance',
-        spenderAccount
-          .toStringSegment()
-          .concat(ByteArray.fromU64(nbTokens.value()).toByteString()),
+        new Args().add(spenderAccount).add(nbTokens.value()),
         0,
       ) == '1'
     );
@@ -206,9 +203,7 @@ export class TokenWrapper {
       call(
         this._origin,
         'decreaseAllowance',
-        spenderAccount
-          .toStringSegment()
-          .concat(ByteArray.fromU64(nbTokens.value()).toByteString()),
+        new Args().add(spenderAccount).add(nbTokens.value()),
         0,
       ) == '1'
     );
@@ -242,13 +237,10 @@ export class TokenWrapper {
       call(
         this._origin,
         'transferFrom',
-        ownerAccount
-          .toStringSegment()
-          .concat(
-            recipientAccount
-              .toStringSegment()
-              .concat(ByteArray.fromU64(nbTokens.value()).toByteString()),
-          ),
+        new Args()
+          .add(ownerAccount)
+          .add(recipientAccount)
+          .add(nbTokens.value()),
         0,
       ) == '1'
     );

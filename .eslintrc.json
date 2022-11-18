@@ -82,7 +82,10 @@
         "@typescript-eslint/no-unused-vars": "off",
 
         // Too problematic because of AssemblyScript methods like __pin and __unpin.
-        "no-underscore-dangle": ["off"]
+        "no-underscore-dangle": ["off"],
+
+        // Allow us to use 0xffffffffffffffff for edge case tests
+        "@typescript-eslint/no-loss-of-precision": "warn"
     },
     "overrides": [
         // === TypeScript rules ====================================================
