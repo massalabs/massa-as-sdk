@@ -24,6 +24,7 @@
   "scripts": {
     "test": "asp --verbose",
     "test:ci": "asp --summary",
+    "test:as": "astester --imports ./astester.imports.js  ./assembly/NFT/**/*.spec.ts ./assembly/token/**/*.spec.ts",
     "prettier": "as-prettier --check assembly",
     "prettier:fix": "as-prettier --write assembly",
     "lint": "eslint .",
@@ -43,6 +44,7 @@
     "@typescript-eslint/parser": "^5.29.0",
     "as-console": "^6.0.2",
     "assemblyscript-prettier": "^1.0.5",
+    "@massalabs/as-tester": "^0.0.2",
     "eslint": "^8.27.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^8.5.0",
