@@ -1,10 +1,10 @@
-import { env } from '../env/index';
-import { Address } from './address';
+import {env} from '../env/index';
+import {Address} from './address';
 import * as Storage from './storage';
 import * as Context from './context';
-import { Args } from './arguments';
+import {Args} from './arguments';
 
-export { Address, Storage, Context, Args };
+export {Address, Storage, Context, Args};
 
 /**
  * Prints in the node logs
