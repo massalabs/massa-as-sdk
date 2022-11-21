@@ -60,31 +60,31 @@ test('CreateProposal', (): i32 => {
   const launchDateWait = wait.nextF32();
   const lastUpdateWait = wait.nextF32();
 
-  error(
-    addrwait +
-      ' ' +
-      proposalwait +
-      ' ' +
-      titlewait +
-      ' ' +
-      statewait.toString() +
-      ' ' +
-      descriwait +
-      ' ' +
-      tokenNamewait +
-      ' ' +
-      tokenSymbolwait +
-      ' ' +
-      votingDelaywait.toString() +
-      ' ' +
-      votingPeriodWait.toString() +
-      ' ' +
-      tresholdWait.toString() +
-      ' ' +
-      launchDateWait.toString() +
-      ' ' +
-      lastUpdateWait.toString(),
-  );
+  // error(
+  //   addrwait +
+  //     ' ' +
+  //     proposalwait +
+  //     ' ' +
+  //     titlewait +
+  //     ' ' +
+  //     statewait.toString() +
+  //     ' ' +
+  //     descriwait +
+  //     ' ' +
+  //     tokenNamewait +
+  //     ' ' +
+  //     tokenSymbolwait +
+  //     ' ' +
+  //     votingDelaywait.toString() +
+  //     ' ' +
+  //     votingPeriodWait.toString() +
+  //     ' ' +
+  //     tresholdWait.toString() +
+  //     ' ' +
+  //     launchDateWait.toString() +
+  //     ' ' +
+  //     lastUpdateWait.toString(),
+  // );
 
   const addr = want.nextAddress().toByteString();
   const proposal = want.nextString();
@@ -99,31 +99,31 @@ test('CreateProposal', (): i32 => {
   const launchDate = want.nextF32();
   const lastUpdate = want.nextF32();
 
-  error(
-    addr +
-      ' ' +
-      proposal +
-      ' ' +
-      title +
-      ' ' +
-      state.toString() +
-      ' ' +
-      descri +
-      ' ' +
-      tokenName +
-      ' ' +
-      tokenSymbol +
-      ' ' +
-      votingDelay.toString() +
-      ' ' +
-      votingPeriod.toString() +
-      ' ' +
-      treshold.toString() +
-      ' ' +
-      launchDate.toString() +
-      ' ' +
-      lastUpdate.toString(),
-  );
+  // error(
+  //   addr +
+  //     ' ' +
+  //     proposal +
+  //     ' ' +
+  //     title +
+  //     ' ' +
+  //     state.toString() +
+  //     ' ' +
+  //     descri +
+  //     ' ' +
+  //     tokenName +
+  //     ' ' +
+  //     tokenSymbol +
+  //     ' ' +
+  //     votingDelay.toString() +
+  //     ' ' +
+  //     votingPeriod.toString() +
+  //     ' ' +
+  //     treshold.toString() +
+  //     ' ' +
+  //     launchDate.toString() +
+  //     ' ' +
+  //     lastUpdate.toString(),
+  // );
 
   if (addr != addrwait) {
     error('a  ITS HERE  wasnt expected.');
@@ -188,7 +188,7 @@ test('CreateProposal', (): i32 => {
 });
 
 describe('editProposal tests', (): i32 => {
-  test('should return proposalState', () => {
+  test('should return proposal update status 1 or 0 ', () => {
     const args = new Args()
       .add(dumbAddress1)
       .add('SuperProposal')
