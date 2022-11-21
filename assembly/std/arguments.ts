@@ -1,5 +1,5 @@
 import {Address} from './address';
-import {encode, decode} from './base64';
+import {encode, decode} from 'as-base64';
 
 /**
  * Args for remote function call.
