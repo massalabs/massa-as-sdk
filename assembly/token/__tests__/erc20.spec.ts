@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable max-len */
-import {Args, generateEvent, Storage} from '../../std';
+import {Address, Args, Context, generateEvent, Storage} from '../../std';
+import {caller} from '../../std/context';
 import {getDate} from '../../vm-mock/storage';
 import {ProposalState} from '../enums';
 import * as token from '../impl';
@@ -187,7 +188,7 @@ test('CreateProposal', (): i32 => {
   return TestResult.Success as i32;
 });
 
-describe('editProposal tests', (): i32 => {
+test('editProposal tests', (): i32 => {
   test('should return proposal update status 1 or 0 ', () => {
     const args = new Args()
       .add(dumbAddress1)
@@ -213,25 +214,27 @@ describe('editProposal tests', (): i32 => {
       .add(255 as f32)
       .add(255 as f32)
       .add(250 as u32)
-      .add(2555 as f32)
-      .add(2500 as f32);
+      .add((getDate() + 15) as f32)
+      .add(getDate() as f32);
+    error('editProposal try !');
     token.editProposal(argsEdit.serialize());
+    error('editProposal done !');
 
     // WANT
 
     let want = new Args();
     want.add(dumbAddress1);
-    want.add('DataProposal1');
+    want.add('proposal1');
     want.add('SuperProposalDDDD');
-    want.add(ProposalState.Created as u32);
+    want.add(ProposalState.Pending as u32);
     want.add('im the descriptionAA of the year');
     want.add('MoonToken');
     want.add('MOOIN');
     want.add(255 as f32);
     want.add(255 as f32);
     want.add(250 as u32);
-    want.add((2500 + 2555) as f32);
-    want.add(2555 as f32);
+    want.add((getDate() + 15) as f32);
+    want.add(getDate() as f32);
 
     const addr = want.nextAddress();
     const proposal = want.nextString();
@@ -246,6 +249,7 @@ describe('editProposal tests', (): i32 => {
     const launchDate = want.nextF32();
     const lastUpdate = want.nextF32();
 
+    // GOT
     let got = Storage.get('Dataproposal1');
     let wait = new Args(got);
     const addrwait = wait.nextAddress();
@@ -328,6 +332,162 @@ describe('editProposal tests', (): i32 => {
       );
       return TestResult.Failure as i32;
     }
+    return TestResult.Success as i32;
+  });
+  return TestResult.Success as i32;
+});
+
+test('castVote', (): i32 => {
+  test('should return vote status 1 or 0 ', (): i32 => {
+    const proposalOwner = Context.caller();
+    error('proposalOwner : ' + proposalOwner.toByteString());
+    const args = new Args()
+      .add(proposalOwner)
+      .add('SuperProposal')
+      .add('im the description of the year')
+      .add('MoonToken')
+      .add('MOON')
+      .add(15 as f32)
+      .add(100 as f32)
+      .add(5 as u32);
+    token.createProposal(args.serialize());
+
+    const proposalId = 'proposal1';
+
+    const argsVote = new Args()
+      .add(proposalOwner)
+      .add(proposalId)
+      .add(20 as u32)
+      .add(0 as u32);
+    token.castVote(argsVote.serialize());
+
+    const argsVote2 = new Args()
+      .add(proposalOwner)
+      .add(proposalId)
+      .add(10 as u32)
+      .add(0 as u32);
+    token.castVote(argsVote2.serialize());
+
+    const argsVote3 = new Args()
+      .add(proposalOwner)
+      .add(proposalId)
+      .add(2 as u32)
+      .add(0 as u32);
+    token.castVote(argsVote3.serialize());
+
+    const argsVote4 = new Args()
+      .add(proposalOwner)
+      .add(proposalId)
+      .add(10 as u32)
+      .add(0 as u32);
+    token.castVote(argsVote4.serialize());
+
+    const argsVote5 = new Args()
+      .add(proposalOwner)
+      .add(proposalId)
+      .add(30 as u32)
+      .add(2 as u32);
+    token.castVote(argsVote5.serialize());
+
+    const argsVote6 = new Args()
+      .add(proposalOwner)
+      .add(proposalId)
+      .add(20 as u32)
+      .add(1 as u32);
+    token.castVote(argsVote6.serialize());
+
+    // GOT
+    const votingDataProposal = Storage.getOf(
+      proposalOwner,
+      'VotingData'.concat(proposalId),
+    );
+    error('VotingData'.concat(proposalId));
+
+    const votingDataProposalArgs = new Args(votingDataProposal);
+    const forVoteGot = votingDataProposalArgs.nextU32();
+    const againstVoteGot = votingDataProposalArgs.nextU32();
+    const abstainVoteGot = votingDataProposalArgs.nextU32();
+
+    const votingDataString = 'VotingData'.concat(
+      proposalId.concat(dumbAddress1),
+    );
+    error('VotingData'.concat(proposalId).concat(dumbAddress1));
+
+    const votingDataUser = Storage.getOf(
+      new Address(dumbAddress1),
+      votingDataString,
+    );
+    const votingDataUserArgs = new Args(votingDataUser);
+    const forVoteUserGot = votingDataUserArgs.nextU32();
+    const againstVoteUserGot = votingDataUserArgs.nextU32();
+    const abstainVoteUserGot = votingDataUserArgs.nextU32();
+
+    // WANT
+    const wantDataProposal = new Args()
+      .add(42 as u32)
+      .add(20 as u32)
+      .add(30 as u32);
+    const wantDataUser = new Args()
+      .add(0 as u32)
+      .add(0 as u32)
+      .add(30 as u32);
+
+    const wantDataForVote = wantDataProposal.nextU32();
+    const wantDataAgainstVote = wantDataProposal.nextU32();
+    const wantDataAbstainVote = wantDataProposal.nextU32();
+    const wantDataForVoteUser = wantDataUser.nextU32();
+    const wantDataAgainstVoteUser = wantDataUser.nextU32();
+    const wantDataAbstainVoteUser = wantDataUser.nextU32();
+
+    if (
+      forVoteGot != wantDataForVote ||
+      againstVoteGot != wantDataAgainstVote ||
+      abstainVoteGot != wantDataAbstainVote ||
+      forVoteUserGot != wantDataForVoteUser ||
+      againstVoteUserGot != wantDataAgainstVoteUser ||
+      abstainVoteUserGot != wantDataAbstainVoteUser
+    ) {
+      error(
+        'got:' +
+          forVoteGot.toString() +
+          ', ' +
+          'want :' +
+          wantDataForVote.toString() +
+          ' ---- ' +
+          'got:' +
+          againstVoteGot.toString() +
+          ', ' +
+          'want :' +
+          wantDataAgainstVote.toString() +
+          ' ---- ' +
+          'got:' +
+          abstainVoteGot.toString() +
+          ', ' +
+          'want :' +
+          wantDataAbstainVote.toString() +
+          ' ---- ' +
+          'got:' +
+          forVoteUserGot.toString() +
+          ', ' +
+          'want :' +
+          wantDataForVoteUser.toString() +
+          ' ---- ' +
+          'got:' +
+          againstVoteUserGot.toString() +
+          ', ' +
+          'want :' +
+          wantDataAgainstVoteUser.toString() +
+          ' ---- ' +
+          'got:' +
+          abstainVoteUserGot.toString() +
+          ', ' +
+          'want :' +
+          wantDataAbstainVoteUser.toString() +
+          ' wasnt expected.',
+      );
+      return TestResult.Failure as i32;
+    }
+
     return TestResult.Success as i32;
   });
   return TestResult.Success as i32;

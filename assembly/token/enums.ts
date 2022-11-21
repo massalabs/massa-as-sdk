@@ -9,3 +9,9 @@ export enum ProposalState {
   Executed,
   Created,
 }
+
+export enum Reason {
+  FOR,
+  AGAINST,
+  ABSTAIN,
+}
