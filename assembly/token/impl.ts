@@ -414,7 +414,7 @@ export function delegate(stringifyArgs: string): string {
   }
 
   addVotingPower(args.serialize());
-  return 'address';
+  return '1';
 }
 
 /**
@@ -437,17 +437,15 @@ export function addVotingPower(stringifyArgs: string): string {
   }
   const recipientBalance = _balance(recipientAddress);
 
-  const delegatedPowerRecipient = new Args(
+  const delegatedPowerRecipient = u32(
     Storage.getOf(recipientAddress, 'DelegatedPower'),
-  ).nextU32();
+  );
 
-  const stakedPowerRecipient = new Args(
+  const stakedPowerRecipient = u32(
     Storage.getOf(recipientAddress, 'StakedPower'),
-  ).nextU32();
+  );
 
-  const stakedPowerOwner = new Args(
-    Storage.getOf(ownerAddress, 'StakedPower'),
-  ).nextU32();
+  const stakedPowerOwner = u32(Storage.getOf(ownerAddress, 'StakedPower'));
 
   Storage.setOf(
     recipientAddress,
@@ -516,7 +514,7 @@ export function castVote(stringifyArgs: string): string {
     if (
       owner != proposalOwner ||
       id != proposalId ||
-      state != (ProposalState.Active as u32)
+      state != u32(ProposalState.Active)
     ) {
       return 'Voting : Invalid proposal';
     }
@@ -763,24 +761,24 @@ function proposalState(stringifyArgs: string): i32 {
 
   if (
     launchDate + votingPeriod > getDate() &&
-    state != (ProposalState.Canceled as u32)
+    state != u32(ProposalState.Canceled)
   ) {
-    return ProposalState.Executed as u32;
+    return u32(ProposalState.Executed);
   }
 
-  if (state == (ProposalState.Canceled as u32)) {
-    return ProposalState.Canceled as u32;
+  if (state == u32(ProposalState.Canceled)) {
+    return u32(ProposalState.Canceled);
   }
 
-  if (getDate() < launchDate || (ProposalState.Created as u32)) {
-    return ProposalState.Pending as u32;
+  if (getDate() < launchDate || u32(ProposalState.Created)) {
+    return u32(ProposalState.Pending);
   }
 
   if (launchDate + votingPeriod < getDate() && launchDate >= getDate()) {
-    return ProposalState.Active as u32;
+    return u32(ProposalState.Active);
   }
 
-  return ProposalState.Pending as u32;
+  return u32(ProposalState.Pending);
 }
 /**
  * CreateProposal, create a new proposal and store it in the Datastore
@@ -843,15 +841,15 @@ export function createProposal(stringifyArgs: string): string {
   params.add(owner);
   params.add(proposalId);
   params.add(title);
-  params.add(ProposalState.Created as u32);
+  params.add(u32(ProposalState.Created));
   params.add(description);
   params.add(tokenName);
   params.add(tokenSymbol);
-  params.add(votingDelay as f32);
-  params.add(votingPeriod as f32);
-  params.add(threshold as u32);
-  params.add(launchDate as f32);
-  params.add(lastUpdate as f32);
+  params.add(f32(votingDelay));
+  params.add(f32(votingPeriod));
+  params.add(u32(threshold));
+  params.add(f32(launchDate));
+  params.add(f32(lastUpdate));
 
   // Store the proposal with all params
   Storage.set('Data'.concat(proposalId), params.serialize());
@@ -907,9 +905,9 @@ export function editProposal(stringifyArgs: string): string {
 
   // Check if the proposal is in the right state
   if (
-    proposalState(proposalId) == (ProposalState.Active as u32) ||
-    proposalState(proposalId) == (ProposalState.Executed as u32) ||
-    proposalState(proposalId) == (ProposalState.Canceled as u32)
+    proposalState(proposalId) == u32(ProposalState.Active) ||
+    proposalState(proposalId) == u32(ProposalState.Executed) ||
+    proposalState(proposalId) == u32(ProposalState.Canceled)
   ) {
     return 'Governor: cannot edit unavailable proposal';
   }
@@ -931,11 +929,11 @@ export function editProposal(stringifyArgs: string): string {
   params.add(description);
   params.add(tokenName);
   params.add(tokenSymbol);
-  params.add(votingDelay as f32);
-  params.add(votingPeriod as f32);
-  params.add(threshold as u32);
-  params.add(launchDate as f32);
-  params.add(lastUpdate as f32);
+  params.add(f32(votingDelay));
+  params.add(f32(votingPeriod));
+  params.add(u32(threshold));
+  params.add(f32(launchDate));
+  params.add(f32(lastUpdate));
 
   // Store the proposal with all params
   Storage.set('Data'.concat(proposalId), params.serialize());
@@ -992,10 +990,10 @@ export function cancelProposal(proposalId: string): string {
   params.add(description);
   params.add(tokenName);
   params.add(tokenSymbol);
-  params.add(votingDelay as f32);
-  params.add(votingPeriod as f32);
-  params.add(threshold as u32);
-  params.add(launchDate as f32);
+  params.add(f32(votingDelay));
+  params.add(f32(votingPeriod));
+  params.add(u32(threshold));
+  params.add(f32(launchDate));
   params.add(getDate().toString());
 
   Storage.set('Data'.concat(proposalId), params.serialize());

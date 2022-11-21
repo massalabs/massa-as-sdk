@@ -182,9 +182,9 @@ test('CreateProposal', (): i32 => {
     lastUpdate != lastUpdateWait
   ) {
     error('error one property in wait wasnt expected.');
-    return TestResult.Failure;
+    return TestResult.Failure as i32;
   }
-  return TestResult.Success;
+  return TestResult.Success as i32;
 });
 
 describe('editProposal tests', (): i32 => {
@@ -326,9 +326,9 @@ describe('editProposal tests', (): i32 => {
           want.serialize() +
           ' wasnt expected.',
       );
-      return TestResult.Failure;
+      return TestResult.Failure as i32;
     }
-    return TestResult.Success;
+    return TestResult.Success as i32;
   });
-  return TestResult.Success;
+  return TestResult.Success as i32;
 });
