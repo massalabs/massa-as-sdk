@@ -25,11 +25,10 @@ export declare function setData(k: string, v: string): void;
 export declare function changeCallStack(callStack: string): void;
 
 /**
- *  Reset the mocked Storage for unittests 
+ *  Reset the mocked Storage for unittests
  *
  * @returns {void}
  */
 // @ts-ignore: decorator
 @external("massa", "assembly_script_reset_storage")
 export declare function resetStorage(): void;
-
