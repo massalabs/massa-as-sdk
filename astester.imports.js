@@ -39,16 +39,20 @@ export function local(memory) {
 
   let callStack = callerAddress + ' , ' + contractAddress;
 
-  const ledger = new Map();
-  ledger.set(callerAddress, {
-    storage: new Map(),
-    contract: '',
-  });
-  ledger.set(contractAddress, {
-    storage: new Map(),
-    contract: '',
-  });
+  let ledger;
 
+  function resetLedger() {
+    ledger = new Map();
+    ledger.set(callerAddress, {
+        storage: new Map(),
+        contract: '',
+    });
+    ledger.set(contractAddress, {
+        storage: new Map(),
+        contract: '',
+    });
+  
+  }
   const SIZE_OFFSET = -4;
   const utf16 = new TextDecoder('utf-16le', { fatal: true });
 
@@ -71,9 +75,14 @@ export function local(memory) {
     return ptr;
   }
 
+  resetLedger();
+
   return {
     massa: {
       memory,
+      assembly_script_reset_storage() {
+        resetLedger();
+      },
       assembly_script_change_call_stack(callstackPtr) {
         const callStackToString = getString(callstackPtr);
         callStack = callStackToString;
