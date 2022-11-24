@@ -33,9 +33,7 @@ export function call(
   args: Args,
   coins: u64,
 ): StaticArray<u8> {
-  // IMPORTANT TODO: change this after `Args` update
-  let param = new StaticArray<u8>(42);
-  return env.call(at.toByteString(), functionName, param, coins);
+  return env.call(at.toByteString(), functionName, args.serialize(), coins);
 }
 
 /**

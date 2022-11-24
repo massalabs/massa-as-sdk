@@ -1,5 +1,4 @@
 import {Address} from './address';
-import {encode, decode} from './base64';
 
 /**
  * Args for remote function call.
@@ -23,8 +22,11 @@ export class Args {
    *
    * @param {string} serialized
    */
-  constructor(serialized: string = '') {
-    this.serialized = decode(serialized);
+  constructor(serialized: StaticArray<u8> = new StaticArray<u8>(0)) {
+    this.serialized = new Uint8Array(serialized.length);
+    for (let i = 0; i < serialized.length; i++) {
+      this.serialized[i] = serialized[i];
+    }
   }
 
   /**
@@ -32,8 +34,12 @@ export class Args {
    *
    * @return {string} the serialized string
    */
-  serialize(): string {
-    return encode(this.serialized);
+  serialize(): StaticArray<u8> {
+    let array: Array<u8> = new Array(this.serialized.length);
+    for (let i = 0; i < this.serialized.length; i++) {
+      array[i] = this.serialized[i];
+    }
+    return StaticArray.fromArray(array);
   }
 
   // getters
