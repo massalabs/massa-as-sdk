@@ -21,6 +21,10 @@ export namespace env {
   export declare function createSC(bytecode: string): string;
 
   // @ts-ignore
+  @external("massa", "assembly_script_get_keys")
+  export declare function getKeys(address: string): StaticArray<u8>;
+
+  // @ts-ignore
   @external("massa", "assembly_script_set_data")
   export declare function set(key: string, value: string): void;
 
