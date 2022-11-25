@@ -201,7 +201,8 @@ function _onlyOwner(_: string): bool {
  * @return {bool}
  */
 function _onlyTokenOwner(tokenId: u64): bool {
-  return ownerOf(tokenId.toString()) == Context.caller().toByteString();
+  const args = new Args().add(tokenId).serialize();
+  return ownerOf(args) == Context.caller().toByteString();
 }
 
 // ==================================================== //
@@ -220,12 +221,14 @@ export function transfer(_args: string): string {
   const args = new Args(_args);
   const toAddress = args.nextAddress();
   const tokenId = args.nextU64();
-
+  generateEvent(`${tokenId.toString()}`);
   if (!Storage.has(ownerTokenKey + tokenId.toString())) {
+    generateEvent(`not minted`);
     generateEvent(`token ${tokenId.toString()} not yet minted`);
     return '';
   }
   if (_onlyTokenOwner(tokenId)) {
+    generateEvent(`minted`);
     Storage.set(ownerTokenKey + tokenId.toString(), toAddress.toByteString());
     generateEvent(
       `token ${tokenId.toString()} sent from ${Context.caller().toByteString()} to ${toAddress.toByteString()}`,

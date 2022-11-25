@@ -93,7 +93,7 @@ describe('NFT contract TEST', (): i32 => {
 
       mint(args.serialize());
     }
-    const ownerOfArgs = new Args().add(3);
+    const ownerOfArgs = new Args().add(u64(3));
     const got = ownerOf(ownerOfArgs.serialize());
     const want = toAddress.toByteString();
     if (got != want) {
@@ -103,10 +103,9 @@ describe('NFT contract TEST', (): i32 => {
     return TestResult.Success;
   });
   test('transfer test', (): i32 => {
-    const args = new Args().add(transferAddress).add(u64(2));
-
+    const args = new Args().add(transferAddress).add(u64(3));
     transfer(args.serialize());
-    const ownerOfArgs = new Args().add(3);
+    const ownerOfArgs = new Args().add(u64(3));
     const got = ownerOf(ownerOfArgs.serialize());
     const want = transferAddress.toByteString();
     if (got != want) {
