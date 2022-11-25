@@ -165,7 +165,9 @@ describe('Args tests', () => {
 
   it('With no args', () => {
     const args1 = NoArg;
-    expect(args1.serialize()).toBe('');
+    const expectedArray = new StaticArray<u8>(0);
+    expect(args1.serialize()).toHaveLength(0);
+    expect(args1.serialize()).toStrictEqual(expectedArray);
   });
 
   it('With float numbers', () => {

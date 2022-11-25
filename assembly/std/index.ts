@@ -22,7 +22,7 @@ export function print(message: string): void {
  *
  * @param {Address} at
  * @param {string} functionName
- * @param {string} args
+ * @param {Args} args
  * @param {u64} coins // TODO define usage
  *
  * @return {string} function returned value (serialized)
@@ -32,7 +32,7 @@ export function call(
   functionName: string,
   args: Args,
   coins: u64,
-): string {
+): StaticArray<u8> {
   return env.call(at.toByteString(), functionName, args.serialize(), coins);
 }
 
@@ -45,11 +45,11 @@ export function call(
  * The context allow you to write in this smart contract while you're executing
  * the current bytecode.
  *
- * @param {string} bytecode - base64 encoded
+ * @param {StaticArray<u8>} bytecode
  *
  * @return {string} Smart contract address
  */
-export function createSC(bytecode: string): Address {
+export function createSC(bytecode: StaticArray<u8>): Address {
   return Address.fromByteString(env.createSC(bytecode));
 }
 
@@ -237,7 +237,7 @@ export function unsafeRandom(): i64 {
  * @param {u64} maxGas - Maximum gas for the message execution
  * @param {u64} rawFee - Fee to be paid for message execution
  * @param {u64} coins - Coins of the sender
- * @param {string} msg - serialized data
+ * @param {StaticArray<u8>} msg - serialized data
  */
 export function sendMessage(
   at: Address,
@@ -249,7 +249,7 @@ export function sendMessage(
   maxGas: u64,
   rawFee: u64,
   coins: u64,
-  msg: string,
+  msg: StaticArray<u8>,
 ): void {
   env.sendMessage(
     at.toByteString(),
