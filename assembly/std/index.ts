@@ -298,3 +298,16 @@ export function currentPeriod(): u64 {
 export function currentThread(): u8 {
   return env.currentThread();
 }
+
+/**
+ * Helper function to transform a string to a StaticArray<u8>
+ * @param {string} str
+ * @return {StaticArray<u8>}
+ */
+export function stringToStaticArray(str: string): StaticArray<u8> {
+  let arr = new StaticArray<u8>(str.length);
+  for (let i = 0; i < str.length; i++) {
+    arr[i] = str.charCodeAt(i);
+  }
+  return arr;
+}
