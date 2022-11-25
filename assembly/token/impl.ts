@@ -417,6 +417,90 @@ export function delegate(stringifyArgs: string): string {
   addVotingPower(args.serialize());
   return '1';
 }
+/** cancelDelegate
+ * */
+export function cancelDelegate(stringifyArgs: string): string {
+  const args = new Args(stringifyArgs);
+  // To receive delegate power from the owner
+  const ownerAddress = args.nextAddress();
+  // To take delegate power from the recipient
+  const targetAddress = args.nextAddress();
+  const amount = args.nextI32();
+
+  if (!ownerAddress.isValid() || !targetAddress.isValid() || isNaN(amount)) {
+    return '0';
+  }
+
+  const ownerBalance = _balance(ownerAddress);
+  if (ownerBalance < amount) {
+    return '0';
+  }
+  if (Context.caller().toByteString() == ownerAddress.toByteString()) {
+    removeVotingPower(args.serialize());
+  }
+  return '1';
+}
+
+/**
+ * This function is to update voting power from one Address to Another Addres
+ * @param {string} stringifyArgs - byte string with the following format:
+ * - the owner's account (address);
+ * - the recipient's account (address);
+ * - the amount (u32).
+ *
+ * @return {string} - boolean value ("1" or "0")
+ * */
+export function removeVotingPower(stringifyArgs: string): string {
+  const args = new Args(stringifyArgs);
+  const ownerAddress = args.nextAddress();
+  const recipientAddress = args.nextAddress();
+  let amount = args.nextU32();
+  let amountToTransfer = amount;
+  let votinPowerOwner;
+  let votingPowerTarget;
+  const votingPowers = Storage.get('VotingPower').split(',');
+
+  const delegatePowerTxGlobal = Storage.get('DelegatePowerTx').split(',');
+
+  for (let index = 0; index < delegatePowerTxGlobal.length; index++) {
+    const element = new DelegatePowerTx(delegatePowerTxGlobal[index]);
+    if (
+      element.owner.toByteString() == Context.caller().toByteString() &&
+      element.recipient.toByteString() == recipientAddress.toByteString()
+    ) {
+      // Amount of Tx is greater than delegate power to be removed
+      if (element.amount >= amount) {
+        element.amount -= amount;
+        delegatePowerTxGlobal[index] = element.serialize();
+        Storage.set('DelegatePowerTx', delegatePowerTxGlobal.join(','));
+        break;
+      }
+      // Tx amount is less than delegate power to be removed
+      if (element.amount <= amount) {
+        amount -= amount;
+        delegatePowerTxGlobal.splice(index, 1);
+        Storage.set('DelegatePowerTx', delegatePowerTxGlobal.join(','));
+      }
+    }
+  }
+
+  for (let index = 0; index < votingPowers.length; index++) {
+    const votingPower = new VotingPower(votingPowers[index]);
+    if ((votingPower.owner = ownerAddress)) {
+      votingPower.stakedPower += amountToTransfer - amount;
+      votingPowers[index] = votingPower.serialize();
+    }
+    if ((votingPower.owner = recipientAddress)) {
+      votingPower.delegatedPower += amountToTransfer - amount;
+      votingPowers[index] = votingPower.serialize();
+    }
+  }
+
+  if (!ownerAddress.isValid() || !recipientAddress.isValid() || isNaN(amount)) {
+    return '0';
+  }
+  return '1';
+}
 
 /**
  * This function is to update voting power from one Address to Another Addres
@@ -432,37 +516,30 @@ export function addVotingPower(stringifyArgs: string): string {
   const ownerAddress = args.nextAddress();
   const recipientAddress = args.nextAddress();
   const amount = args.nextU32();
+  const votingPowers = Storage.get('VotingPower').split(',');
 
+  for (let index = 0; index < votingPowers.length; index++) {
+    const votingPower = new VotingPower(votingPowers[index]);
+    if ((votingPower.owner = ownerAddress)) {
+      votingPower.stakedPower += amount;
+      votingPowers[index] = votingPower.serialize();
+    }
+    if ((votingPower.owner = recipientAddress)) {
+      votingPower.delegatedPower += amount;
+      votingPowers[index] = votingPower.serialize();
+    }
+  }
   if (!ownerAddress.isValid() || !recipientAddress.isValid() || isNaN(amount)) {
     return '0';
   }
-  const recipientBalance = _balance(recipientAddress);
+  // register DelegatePowerTx
+  const argsTx = new Args();
+  argsTx.add(ownerAddress);
+  argsTx.add(recipientAddress);
+  argsTx.add(amount);
+  argsTx.add(f32(getDate()));
 
-  const delegatedPowerRecipient = u32(
-    Storage.getOf(recipientAddress, 'DelegatedPower'),
-  );
-
-  const stakedPowerRecipient = u32(
-    Storage.getOf(recipientAddress, 'StakedPower'),
-  );
-
-  const stakedPowerOwner = u32(Storage.getOf(ownerAddress, 'StakedPower'));
-
-  Storage.setOf(
-    recipientAddress,
-    'DelegatedPower',
-    (
-      amount +
-      delegatedPowerRecipient +
-      recipientBalance -
-      stakedPowerRecipient
-    ).toString(),
-  );
-  Storage.setOf(
-    ownerAddress,
-    'StakedPower',
-    (stakedPowerOwner + amount).toString(),
-  );
+  Storage.append('DelegatePowerTx', argsTx.serialize());
   return '1';
 }
 
@@ -496,18 +573,10 @@ export function castVote(stringifyArgs: string): string {
   // Check if the proposal State is Active
   const argsproposal = new Proposal(getProposal(proposalId));
 
-  // // Fetch Voting Power of the voter
-  // const votingPowerUser = new VotingPower(Storage.get('VotingPower '+voter));
-
   // Fetch VotingDataUser from Storage
   const votingDataUser = new VotingData(
     Storage.get('VotingData'.concat(proposalId).concat(voter.toByteString())),
   );
-
-  // // Fetch votingDataProposal from Storage
-  // const votingDataProposal = new VotingData(
-  //   Storage.get('VotingData '+proposalId)
-  // );
 
   if (
     argsproposal.id != proposalId ||
@@ -516,23 +585,6 @@ export function castVote(stringifyArgs: string): string {
     return 'Voting : Invalid proposal';
   }
   const votingPowerAvailable = getVotingPowerForAProposal(argsproposal.id);
-
-  // getDelegatedPower
-
-  // // Push DataStore Proposal to local variables
-  // const argsVotingDataProposal = new Args(votingDataProposal);
-  // let forUserCount = argsVotingDataProposal.nextU32();
-  // let againstUserCount = argsVotingDataProposal.nextU32();
-  // let abstainUserCount = argsVotingDataProposal.nextU32();
-
-  // // Push DataStoreUser to local variables
-  // const argsVotingDataUser = new Args(votingDataUser);
-  // let forProposalCount = argsVotingDataUser.nextU32();
-  // let againstProposalCount = argsVotingDataUser.nextU32();
-  // let abstainProposalCount = argsVotingDataUser.nextU32();
-
-  // const argsVotingDataUserToStore = new Args();
-  // const argsVotingDataProposalToStore = new Args();
 
   let valueToStore: number;
   amount > votingPowerAvailable
@@ -596,31 +648,30 @@ function getVotingPowerForAProposal(proposalId: string): u32 {
   let votingPowerUser = 0;
 
   // Fetch Voting Power of the voter
-  const votingPowerForProposal = Storage.get('VotingPower'.concat(proposalId));
-  votingPowerForProposal.split(',').forEach((votingPower) => {
-    const argsVotingPower = new Args(votingPower);
-    const voterAddress = argsVotingPower.nextAddress();
-    const votingDelegatedPower = argsVotingPower.nextU32();
-    const votingStakedPower = argsVotingPower.nextU32();
-    if (voterAddress == voter) {
+  const votingPowers = Storage.get('VotingPower'.concat(proposalId)).split(',');
+
+  for (let index = 0; index < votingPowers.length; index++) {
+    const argsVotingPower = new VotingPower(votingPowers[index]);
+    if (argsVotingPower.owner == voter) {
       // Calculate Voting Power
-      return (votingPowerUser = votingDelegatedPower + bal - votingStakedPower);
+      votingPowerUser =
+        argsVotingPower.delegatedPower + bal - argsVotingPower.stakedPower;
     }
-    return votingPowerUser;
-  });
+  }
+
   // Fetch Actual VotingData from Storage
   let votingPowerNonAvailable = 0;
-  const votingDataUserForProposal = Storage.get('VotingData'.concat(proposalId))
-    .split(',')
-    .forEach((votingData) => {
-      const userVotingData = new VotingData(votingData);
-      if (userVotingData.owner == voter) {
-        return (votingPowerNonAvailable =
-          userVotingData.voteFor +
-          userVotingData.voteAgainst +
-          userVotingData.voteAbstain);
-      }
-    });
+  const votingDatas = Storage.get('VotingData'.concat(proposalId)).split(',');
+
+  for (let index = 0; index < votingDatas.length; index++) {
+    const userVotingData = new VotingData(votingDatas[index]);
+    if (userVotingData.owner == voter) {
+      votingPowerNonAvailable =
+        userVotingData.voteFor +
+        userVotingData.voteAgainst +
+        userVotingData.voteAbstain;
+    }
+  }
   return votingPowerUser - votingPowerNonAvailable;
 }
 
@@ -657,67 +708,67 @@ function getVotingPowerForAProposal(proposalId: string): u32 {
 //   }
 //   return 0;
 // }
-/**
- * GetProposalData from Specific Address and ProposalId
- *
- * @param {string} stringifyArgs - Args object serialized as a string containing:
- * - OwnerAddress (u32).
- * - proposalId (address);
- *
- * @return {string} - Return string with ProposalData
- */
-export function getProposalData(stringifyArgs: string): string {
-  const args = new Args();
-  const owner = args.nextAddress();
-  const id = args.nextString();
-  let result: string;
-  result = Storage.getOf(owner, 'Data'.concat(id));
-  return result;
-}
-/**
- * GetUserVotingData from Specific Address and ProposalId
- *
- * @param {string} stringifyArgs - Args object serialized as a string containing:
- * - OwnerAddress (u32).
- * - proposalId (address);
- *
- * @return {string} - Return string with ProposalData
- */
-export function getUserVotingData(stringifyArgs: string): string {
-  const args = new Args();
-  const owner = args.nextAddress();
-  const id = args.nextString();
-  let result: string;
-  result = Storage.getOf(
-    owner,
-    'VotingData'.concat(id.concat(owner.toByteString())),
-  );
-  return result;
-}
-/**
- * GetUserVotingData from Specific Address and ProposalId
- *
- * @param {string} stringifyArgs - Args object serialized as a string containing:
- * - OwnerAddress (u32).
- * - proposalId (address);
- * - withArgs (number)
- *
- * @return {string} - Return string with ProposalData
- */
-export function getProposalVotingData(stringifyArgs: string): string {
-  const args = new Args();
-  const owner = args.nextAddress();
-  const id = args.nextString();
-  let result = Storage.get('VotingData'.concat(id));
-  return result;
-}
+// /**
+//  * GetProposalData from Specific Address and ProposalId
+//  * OLD
+//  * @param {string} stringifyArgs - Args object serialized as a string containing:
+//  * - OwnerAddress (u32).
+//  * - proposalId (address);
+//  *
+//  * @return {string} - Return string with ProposalData
+//  */
+// export function getProposalData(stringifyArgs: string): string {
+//   const args = new Args();
+//   const owner = args.nextAddress();
+//   const id = args.nextString();
+//   let result: string;
+//   result = Storage.getOf(owner, 'Data'.concat(id));
+//   return result;
+// }
+// /**
+//  * GetUserVotingData from Specific Address and ProposalId
+//  * OLD
+//  * @param {string} stringifyArgs - Args object serialized as a string containing:
+//  * - OwnerAddress (u32).
+//  * - proposalId (address);
+//  *
+//  * @return {string} - Return string with ProposalData
+//  */
+// export function getUserVotingData(stringifyArgs: string): string {
+//   const args = new Args();
+//   const owner = args.nextAddress();
+//   const id = args.nextString();
+//   let result: string;
+//   result = Storage.getOf(
+//     owner,
+//     'VotingData'.concat(id.concat(owner.toByteString())),
+//   );
+//   return result;
+// }
+// /**
+//  * GetUserVotingData from Specific Address and ProposalId
+//  * OLD
+//  * @param {string} stringifyArgs - Args object serialized as a string containing:
+//  * - OwnerAddress (u32).
+//  * - proposalId (address);
+//  * - withArgs (number)
+//  *
+//  * @return {string} - Return string with ProposalData
+//  */
+// export function getProposalVotingData(stringifyArgs: string): string {
+//   const args = new Args();
+//   const owner = args.nextAddress();
+//   const id = args.nextString();
+//   let result = Storage.get('VotingData'.concat(id));
+//   return result;
+// }
 
 // ==================================================== //
 // ====                 GOVERNANCE                 ==== //
 // ==================================================== //
 
 /**
- * Create a new Proposal
+ * Proposal Class
  * @param {string} stringifyArgs - Args object serialized as a string containing:
  * - proposalId - id of Proposal (string);
  * - proposalType - type of Proposal (string);
@@ -903,7 +954,6 @@ export class VotingPower {
   owner: Address;
   delegatedPower: u32;
   stakedPower: u32;
-
   /**
    *
    * @param stringifyArgs
@@ -941,6 +991,52 @@ export class VotingPower {
     return new VotingPower(stringifyArgs);
   }
 }
+/**
+ * DelegatePowerTx contains the data for a delegate power transaction.
+ * @param {string} stringifyArgs - Args object serialized as a string containing:
+ * - owner - address of owner (address);
+ * - delegate - address of delegate (address);
+ * - amount - amount of power to delegate (u32);
+ * - start - start of delegation (f32);
+ */
+export class DelegatePowerTx {
+  owner: Address;
+  recipient: Address;
+  amount: u32;
+  start: f32;
+
+  /**
+   *
+   * @param stringifyArgs
+   */
+  constructor(stringifyArgs: string) {
+    const args = new Args(stringifyArgs);
+    this.owner = args.nextAddress();
+    this.recipient = args.nextAddress();
+    this.amount = args.nextU32();
+    this.start = args.nextF32();
+  }
+  /**
+   *
+   * @returns
+   */
+  serialize(): string {
+    const args = new Args();
+    args.add(this.owner);
+    args.add(this.recipient);
+    args.add(this.amount);
+    args.add(this.start);
+    return args.serialize();
+  }
+  /**
+   *
+   * @param stringifyArgs
+   * @returns
+   */
+  static deserialize(stringifyArgs: string): DelegatePowerTx {
+    return new DelegatePowerTx(stringifyArgs);
+  }
+}
 
 /**
  * Get the actual proposalState
@@ -959,30 +1055,29 @@ export class VotingPower {
  * - launchDate {f32} Containing the launchDate of the proposal
  * @return {string} - ProposalState
  */
-function proposalState(stringifyArgs: string): i32 {
-  const args = new Args(stringifyArgs);
-  const owner = args.nextAddress();
-  const proposalId = args.nextString();
+function proposalState(proposalId: string): i32 {
   // Fetch the proposal
-  const proposalData = Storage.getOf(owner, 'Data'.concat(proposalId));
-  if (proposalData == null) {
+  if (proposalId == null) {
     return 0;
   }
 
-  const proposal = new Proposal(stringifyArgs);
+  const proposal = new Proposal(getProposal(proposalId));
 
   if (
     proposal.start + proposal.votingPeriod > getDate() &&
     proposal.proposalState != u32(ProposalState.Canceled)
   ) {
+    generateEvent(createEvent('proposalState', [proposalId, 'Executed']));
     return u32(ProposalState.Executed);
   }
 
   if (proposal.proposalState == u32(ProposalState.Canceled)) {
+    generateEvent(createEvent('proposalState', [proposalId, 'Canceled']));
     return u32(ProposalState.Canceled);
   }
 
   if (getDate() < proposal.start || u32(ProposalState.Created)) {
+    generateEvent(createEvent('proposalState', [proposalId, 'Pending']));
     return u32(ProposalState.Pending);
   }
 
@@ -990,8 +1085,10 @@ function proposalState(stringifyArgs: string): i32 {
     proposal.start + proposal.votingDelay + proposal.votingPeriod < getDate() &&
     proposal.start + proposal.votingDelay >= getDate()
   ) {
+    generateEvent(createEvent('proposalState', [proposalId, 'Active']));
     return u32(ProposalState.Active);
   }
+  generateEvent(createEvent('proposalState', [proposalId, 'Pending']));
   return u32(ProposalState.Pending);
 }
 /**
@@ -1030,11 +1127,6 @@ export function createProposal(stringifyArgs: string): string {
   // Create the theorical Date launch of the proposal
   const lastUpdate = getDate();
   const launchDate = lastUpdate + proposal.votingDelay;
-  // Store the proposal ID
-
-  // const proposals = Storage.get('proposal');
-  // // Cut the crap this can be change to a simple Storage.append("proposal", proposalId) But test u are broken :(
-  // Storage.set('proposal', proposals + ',' + proposalId);
 
   proposal.id = proposalId;
   proposal.start = launchDate;
@@ -1042,29 +1134,25 @@ export function createProposal(stringifyArgs: string): string {
   proposal.proposalState = u32(ProposalState.Created);
 
   Storage.append('proposal', proposal.serialize());
-
-  // Store the proposal with all params
-  // Storage.append('proposal', proposalId.concat(Context.caller().toStringSegment()));
+  generateEvent(createEvent('createProposal', [proposalId]));
   return '1';
 }
 /** getProposal - Get the proposal
  *
- * @param {string} stringifyArgs - Args object serialized as a string containing:
+ * @param {string} proposalId - String containing the proposalId to retrieve data
  * -  proposalId {string} String containing the proposalId to retrieve data
  * @return {string} - Proposal
  *
  */
-export function getProposal(stringifyArgs: string): string {
-  const args = new Args(stringifyArgs);
-  const proposalId = args.nextString();
-  const proposals = Storage.get('proposal');
-  proposals.split(',').forEach((proposal) => {
-    const propo = new Proposal(proposal);
+export function getProposal(proposalId: string): string {
+  const proposals = Storage.get('proposal').split(',');
+  for (let index = 0; index < proposals.length; index++) {
+    const propo = new Proposal(proposals[index]);
     if (propo.id == proposalId) {
       return propo.serialize();
     }
     return '0';
-  });
+  }
   return '0';
 }
 
@@ -1076,18 +1164,20 @@ export function getProposal(stringifyArgs: string): string {
 export function deleteProposalFromStorage(stringifyArgs: string): string {
   const args = new Args(stringifyArgs);
   const proposalId = args.nextString();
-  const proposals = Storage.get('proposal');
-  const proposalsArray = proposals.split(',');
+  const proposals = Storage.get('proposal').split(',');
 
-  proposalsArray.forEach((proposal) => {
-    const propo = new Proposal(proposal);
+  for (let index = 0; index < proposals.length; index++) {
+    const propo = new Proposal(proposals[index]);
     if (propo.id == proposalId) {
-      proposalsArray.filter((value) => value != proposal);
-      Storage.set('proposal', proposalsArray.join(','));
+      proposals.filter((value) => value != proposals[index]);
+      Storage.set('proposal', proposals.join(','));
+      generateEvent(
+        createEvent('deleteProposalFromStorage', [proposalId, stringifyArgs]),
+      );
       return '1';
     }
     return '0';
-  });
+  }
 
   return '0';
 }
@@ -1096,47 +1186,79 @@ export function deleteProposalFromStorage(stringifyArgs: string): string {
 function updateProposalFromStorage(stringifyArgs: string): string {
   const args = new Args(stringifyArgs);
   const proposalId = args.nextString();
-  const proposals = Storage.get('proposal');
-  const proposalsArray = proposals.split(',');
+  const proposals = Storage.get('proposal').split(',');
 
-  proposalsArray.forEach((proposal) => {
-    const propo = new Proposal(proposal);
+  for (let index = 0; index < proposals.length; index++) {
+    const propo = new Proposal(proposals[index]);
     if (propo.id == proposalId) {
-      proposalsArray.fill(
+      proposals.fill(
         stringifyArgs,
-        proposalsArray.indexOf(proposal),
-        proposalsArray.indexOf(proposal),
+        proposals.indexOf(proposals[index]),
+        proposals.indexOf(proposals[index]),
       );
-      Storage.set('proposal', proposalsArray.join(','));
+      Storage.set('proposal', proposals.join(','));
+      generateEvent(
+        createEvent('updateProposalFromStorage', [proposalId, stringifyArgs]),
+      );
       return '1';
     }
-    return '0';
-  });
-
+  }
   return '0';
 }
+/*
+    proposal  : stringSerialized "proposal1Serialized,proposal2Serialized,proposal3Serialized"
 
+
+*/
 /**
- * updateElementFromStorage - Update the element in the storage
+ * updateElementFromStorage - Update the element in the storage | Generic function with limitations
+ * you have to send the exact same object as the one in the storage.
  *
  * @param {string} stringifyArgs - Args object serialized as a string containing:
- * -  keyElement {string} String containing the element to retrieve data
- * -  valueElement {string} String containing the value to update
+ * -  keyElement {string} String containing the element to get data in Storage
+ * -  valueElement {string} String containing the value to update in the Element
+ * -  keyOwner {string} String containing the owner of the valueElement to compare with the addressOwner
+ * -  addressOwner {string} String containing the value to compare at keyOwner
+ * -  valueToSet {string} String containing the value to set in the Element
+ *
+ *
  * @return {string} - Return string with 1 or Errors
  * */
-function updateElementFromStorage(stringifyArgs: string): string {
-  const args = new Args(stringifyArgs);
-  const keyElement = args.nextString();
-  const valueElement = args.nextString();
-  const element = Storage.get(keyElement);
-  element.split(',').forEach((value) => {
-    if (value == keyElement) {
-      Storage.set(keyElement, valueElement);
-    }
-  });
+// function updateElementFromStorageWithDoubleDepth(stringifyArgs: string): string {
+//   const args = new Args(stringifyArgs);
+//   const keyElement = args.nextString();
+//   const valueElement = args.nextString();
+//   const addressOwner = args.nextAddress();
+//   const valueToSet = args.nextString();
 
-  return '1';
-}
+//   const elementArray = Storage.get(keyElement).split(',');
+//   // Each Line is an element
+//   elementArray.forEach((value) => {
+//     // Each line is a key/value from the element
+//     // not working
+//     const valueSplitted = value.split(',');
+//     valueSplitted.forEach((valuefromElement) => {
+//       if (valuefromElement == addressOwner.toByteString()) {
+//         if (valueToSet.split(',').length == valueSplitted.length) {
+
+//           // Replace the value at the key at same position
+//           elementArray.fill(valueToSet, elementArray.indexOf(value), elementArray.indexOf(value));
+//           // Update the global storage
+//           Storage.set(keyElement,elementArray.join(','));
+
+//           generateEvent(createEvent('updateElementFromStorageWithDoubleDepth', [keyElement,valueToSet]));
+//           return '1';}
+//         return '0';
+//       }
+//       return '0';
+//     });
+//     if (value == keyElement) {
+//       Storage.set(keyElement, valueElement);
+//     }
+//   });
+
+//   return '1';
+// }
 
 /**  * EditProposal, edit a proposal and store it in the Datastore with new Data
  * @param {string} stringifyArgs - Args object serialized as a string containing:
@@ -1187,21 +1309,7 @@ export function editProposal(stringifyArgs: string): string {
   ) {
     return 'Governor: cannot edit unavailable proposal';
   }
-
-  createProposal(proposalChange.serialize());
-  // dataProposal.id = proposalChange.id;
-  // dataProposal.title = proposalChange.title;
-  // dataProposal.description = proposalChange.description;
-  // dataProposal.tokenName = proposalChange.tokenName;
-  // dataProposal.tokenSymbol = proposalChange.tokenSymbol;
-  // dataProposal.start = launchDate;
-  // dataProposal.lastUpdate = lastUpdate;
-  // dataProposal.proposalState = proposalState(dataProposal.serialize());
-  // dataProposal.proposalTreshold = proposalChange.proposalTreshold;
-  // dataProposal.votingDelay = proposalChange.votingDelay;
-  // dataProposal.votingPeriod = proposalChange.votingPeriod;
-
-  deleteProposalFromStorage(dataProposal.id);
+  updateProposalFromStorage(proposalChange.serialize());
   return '1';
 }
 
@@ -1212,55 +1320,14 @@ export function editProposal(stringifyArgs: string): string {
  */
 export function cancelProposal(proposalId: string): string {
   // get globalProposal
-  const globalProposal = Storage.get('proposal');
-
-  // Check if the proposal is valid
-  if (globalProposal == null) {
-    return 'Governor: unknown proposal id';
-  }
-  // first try
-  globalProposal.replace(proposalId, '');
-  // Clean the empty space
-  globalProposal.replace(',,', ',');
-  if (globalProposal.startsWith(',')) {
-    globalProposal.replace(',', '');
-  }
-  if (globalProposal.endsWith(',')) {
-    globalProposal.slice(globalProposal.length);
-  }
-  Storage.set('proposal', globalProposal);
-
-  // Get actual Args of the proposal
-  const Dataparams = new Args(Storage.get('Data'.concat(proposalId)));
-
-  // Set args in local variables
-  const owner = Dataparams.nextString();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const proposalIdd = Dataparams.nextString();
-  const title = Dataparams.nextString();
-  const description = Dataparams.nextString();
-  const tokenName = Dataparams.nextString();
-  const tokenSymbol = Dataparams.nextString();
-  const votingDelay = Dataparams.nextF32();
-  const votingPeriod = Dataparams.nextF32();
-  const threshold = Dataparams.nextU32();
-  const launchDate = Dataparams.nextF32();
-
-  const params = new Args();
-  // set the new state of the proposal
-  params.add(owner);
-  params.add(proposalId);
-  params.add(title);
-  params.add(ProposalState.Canceled);
-  params.add(description);
-  params.add(tokenName);
-  params.add(tokenSymbol);
-  params.add(f32(votingDelay));
-  params.add(f32(votingPeriod));
-  params.add(u32(threshold));
-  params.add(f32(launchDate));
-  params.add(getDate().toString());
-
-  Storage.set('Data'.concat(proposalId), params.serialize());
+  const proposal = new Proposal(getProposal(proposalId));
+  proposal.proposalState = ProposalState.Canceled;
+  editProposal(proposal.serialize());
+  generateEvent(
+    createEvent('cancelProposal', [
+      proposalId,
+      proposal.proposalState.toString(),
+    ]),
+  );
   return '1';
 }
