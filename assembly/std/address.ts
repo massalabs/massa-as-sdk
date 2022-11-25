@@ -103,7 +103,7 @@ export class Address implements Valider {
   }
 
   /**
-   * Tests if two adresses are identical.
+   * Tests if two addresses are identical.
    *
    * @param {Address} other
    * @return {boolean}

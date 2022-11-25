@@ -15,7 +15,7 @@ import {Address} from './address';
  *
  */
 export class Args {
-  private offset: i64 = 0;
+  private offset: i32 = 0;
   private serialized: Uint8Array = new Uint8Array(0);
 
   /**
@@ -52,7 +52,7 @@ export class Args {
   nextAddress(): Address {
     const length = this.nextU32();
     let address = Address.fromByteArray(
-      this.serialized.slice(this.offset as i32, (this.offset as i32) + length),
+      this.serialized.slice(this.offset, this.offset + length),
     );
     this.offset += length;
     return address;
@@ -65,7 +65,7 @@ export class Args {
    */
   nextString(): string {
     const length = this.nextU32();
-    let offset: i32 = this.offset as i32;
+    let offset = this.offset;
     const end = offset + length;
     const result = this.serialized.slice(offset, end);
     this.offset = end;
@@ -79,10 +79,7 @@ export class Args {
    */
   nextUint8Array(): Uint8Array {
     const length = this.nextU32();
-    let byteArray = this.serialized.slice(
-      this.offset as i32,
-      (this.offset as i32) + length,
-    );
+    let byteArray = this.serialized.slice(this.offset, this.offset + length);
     this.offset += length;
     return byteArray;
   }
@@ -158,18 +155,12 @@ export class Args {
   }
 
   /**
-   * Internal function to concat to Uint8Array.
+   * Returns the deserialized boolean
    *
-   * @param {Uint8Array} a first array to concat
-   * @param {Uint8Array} b second array to concat
-   *
-   * @return {Uint8Array} the concatenated array
+   * @return {bool}
    */
-  private concatArrays(a: Uint8Array, b: Uint8Array): Uint8Array {
-    var c = new Uint8Array(a.length + b.length);
-    c.set(a, 0);
-    c.set(b, a.length);
-    return c;
+  nextBool(): bool {
+    return this.serialized[this.offset++] === 0x01;
   }
 
   // Setter
@@ -184,7 +175,11 @@ export class Args {
    * @return {Args} the modified Arg instance
    */
   add<T>(arg: T): Args {
-    if (arg instanceof Address) {
+    if (arg instanceof bool) {
+      const value = new Uint8Array(1);
+      value[0] = u8(arg === true);
+      this.serialized = this.concatArrays(this.serialized, value);
+    } else if (arg instanceof Address) {
       let str = arg.toByteString();
       this.add<u32>(str.length);
       this.serialized = this.concatArrays(this.serialized, arg.toByteArray());
@@ -235,6 +230,21 @@ export class Args {
   }
 
   // Utils
+
+  /**
+   * Internal function to concat to Uint8Array.
+   *
+   * @param {Uint8Array} a first array to concat
+   * @param {Uint8Array} b second array to concat
+   *
+   * @return {Uint8Array} the concatenated array
+   */
+  private concatArrays(a: Uint8Array, b: Uint8Array): Uint8Array {
+    var c = new Uint8Array(a.length + b.length);
+    c.set(a, 0);
+    c.set(b, a.length);
+    return c;
+  }
 
   /**
    * Converts a string into a byte array.
