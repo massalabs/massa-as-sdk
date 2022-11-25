@@ -45,8 +45,10 @@ export class Args {
    */
   nextAddress(): Address {
     const length = this.nextU32();
+    const isValid = this.nextBool();
     let address = Address.fromByteArray(
       this.serialized.slice(this.offset, this.offset + length),
+      isValid,
     );
     this.offset += length;
     return address;
@@ -178,6 +180,7 @@ export class Args {
     } else if (arg instanceof Address) {
       let str = arg.toByteString();
       this.add<u32>(str.length);
+      this.add<bool>(arg.isValid());
       this.serialized = this.concatArrays(this.serialized, arg.toByteArray());
     } else if (arg instanceof String) {
       const str: string = arg.toString();

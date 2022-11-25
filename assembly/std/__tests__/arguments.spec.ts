@@ -11,7 +11,7 @@ describe('Args tests', () => {
     // add some arguments
     args1
       .add(new Address(ADDR0))
-      .add(new Address(ADDR1))
+      .add(new Address(ADDR1, false))
       .add(97 as u64);
 
     // use serialize to get the byte string
@@ -23,9 +23,13 @@ describe('Args tests', () => {
     const args2 = new Args(byteString);
     // assert that the first address is same we provide
     // in the first call to add function
-    expect(args2.nextAddress().toByteString()).toBe(ADDR0);
+    const actualAddress1 = args2.nextAddress();
+    expect(actualAddress1.toByteString()).toBe(ADDR0);
+    expect(actualAddress1.isValid()).toBe(true);
     // and so on with the 2 following arguments
-    expect(args2.nextAddress().toByteString()).toBe(ADDR1);
+    const actualAddress2 = args2.nextAddress();
+    expect(actualAddress2.toByteString()).toBe(ADDR1);
+    expect(actualAddress2.isValid()).toBe(false);
     expect(args2.nextU64()).toBe(97);
   });
 
