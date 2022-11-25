@@ -221,7 +221,6 @@ export function transfer(_args: string): string {
   const args = new Args(_args);
   const toAddress = args.nextAddress();
   const tokenId = args.nextU64();
-  generateEvent(`${tokenId.toString()}`);
   if (!Storage.has(ownerTokenKey + tokenId.toString())) {
     generateEvent(`not minted`);
     generateEvent(`token ${tokenId.toString()} not yet minted`);
