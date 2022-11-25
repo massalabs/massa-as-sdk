@@ -29,6 +29,16 @@ describe('Args tests', () => {
     expect(args2.nextU64()).toBe(97);
   });
 
+  it('With booleans and number', () => {
+    const args1 = new Args();
+    args1.add(true).add(false).add(83);
+
+    const args2 = new Args(args1.serialize());
+    expect(args2.nextBool()).toBe(true);
+    expect(args2.nextBool()).toBe(false);
+    expect(args2.nextI32()).toBe(83);
+  });
+
   it('With a number and an address', () => {
     const args1 = new Args();
     args1.add(97 as u32).add(new Address(ADDR0));

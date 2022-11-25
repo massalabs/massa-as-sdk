@@ -152,18 +152,14 @@ export class Args {
   }
 
   /**
-   * Internal function to concat to Uint8Array.
+   * Returns the deserialized boolean
    *
-   * @param {Uint8Array} a first array to concat
-   * @param {Uint8Array} b second array to concat
-   *
-   * @return {Uint8Array} the concatenated array
+   * @return {bool}
    */
-  private concatArrays(a: Uint8Array, b: Uint8Array): Uint8Array {
-    var c = new Uint8Array(a.length + b.length);
-    c.set(a, 0);
-    c.set(b, a.length);
-    return c;
+  nextBool(): bool {
+    const value = this.serialized[this.offset] === 1 ? true : false;
+    this.offset += 1;
+    return value;
   }
 
   // Setter
@@ -178,7 +174,11 @@ export class Args {
    * @return {Args} the modified Arg instance
    */
   add<T>(arg: T): Args {
-    if (arg instanceof Address) {
+    if (arg instanceof bool) {
+      const value = new Uint8Array(1);
+      value[0] = arg === true ? 1 : 0;
+      this.serialized = this.concatArrays(this.serialized, value);
+    } else if (arg instanceof Address) {
       let str = arg.toByteString();
       this.add<u32>(str.length);
       this.serialized = this.concatArrays(this.serialized, arg.toByteArray());
@@ -229,6 +229,21 @@ export class Args {
   }
 
   // Utils
+
+  /**
+   * Internal function to concat to Uint8Array.
+   *
+   * @param {Uint8Array} a first array to concat
+   * @param {Uint8Array} b second array to concat
+   *
+   * @return {Uint8Array} the concatenated array
+   */
+  private concatArrays(a: Uint8Array, b: Uint8Array): Uint8Array {
+    var c = new Uint8Array(a.length + b.length);
+    c.set(a, 0);
+    c.set(b, a.length);
+    return c;
+  }
 
   /**
    * Converts a string into a byte array.
