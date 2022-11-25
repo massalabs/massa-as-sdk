@@ -16,7 +16,7 @@ import {encode, decode} from './base64';
  *
  */
 export class Args {
-  private offset: i64 = 0;
+  private offset: i32 = 0;
   private serialized: Uint8Array = new Uint8Array(0);
 
   /**
@@ -46,7 +46,7 @@ export class Args {
   nextAddress(): Address {
     const length = this.nextU32();
     let address = Address.fromByteArray(
-      this.serialized.slice(this.offset as i32, (this.offset as i32) + length),
+      this.serialized.slice(this.offset, this.offset + length),
     );
     this.offset += length;
     return address;
@@ -59,7 +59,7 @@ export class Args {
    */
   nextString(): string {
     const length = this.nextU32();
-    let offset: i32 = this.offset as i32;
+    let offset = this.offset;
     const end = offset + length;
     const result = this.serialized.slice(offset, end);
     this.offset = end;
@@ -73,10 +73,7 @@ export class Args {
    */
   nextUint8Array(): Uint8Array {
     const length = this.nextU32();
-    let byteArray = this.serialized.slice(
-      this.offset as i32,
-      (this.offset as i32) + length,
-    );
+    let byteArray = this.serialized.slice(this.offset, this.offset + length);
     this.offset += length;
     return byteArray;
   }
