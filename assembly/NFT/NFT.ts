@@ -201,8 +201,8 @@ function _onlyOwner(_: string): bool {
  * @return {bool}
  */
 function _onlyTokenOwner(tokenId: u64): bool {
-  const args = new Args().add(tokenId).serialize();
-  return ownerOf(args) == Context.caller().toByteString();
+  const argsOwnerOf = new Args().add(tokenId).serialize();
+  return ownerOf(argsOwnerOf) == Context.caller().toByteString();
 }
 
 // ==================================================== //
