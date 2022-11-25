@@ -453,11 +453,9 @@ export function cancelDelegate(stringifyArgs: string): string {
 export function removeVotingPower(stringifyArgs: string): string {
   const args = new Args(stringifyArgs);
   const ownerAddress = args.nextAddress();
-  const recipientAddress = args.nextAddress();
+  const targetAddress = args.nextAddress();
   let amount = args.nextU32();
   let amountToTransfer = amount;
-  let votinPowerOwner;
-  let votingPowerTarget;
   const votingPowers = Storage.get('VotingPower').split(',');
 
   const delegatePowerTxGlobal = Storage.get('DelegatePowerTx').split(',');
@@ -466,7 +464,7 @@ export function removeVotingPower(stringifyArgs: string): string {
     const element = new DelegatePowerTx(delegatePowerTxGlobal[index]);
     if (
       element.owner.toByteString() == Context.caller().toByteString() &&
-      element.recipient.toByteString() == recipientAddress.toByteString()
+      element.recipient.toByteString() == targetAddress.toByteString()
     ) {
       // Amount of Tx is greater than delegate power to be removed
       if (element.amount >= amount) {
@@ -487,18 +485,19 @@ export function removeVotingPower(stringifyArgs: string): string {
   for (let index = 0; index < votingPowers.length; index++) {
     const votingPower = new VotingPower(votingPowers[index]);
     if ((votingPower.owner = ownerAddress)) {
-      votingPower.stakedPower += amountToTransfer - amount;
+      votingPower.stakedPower - amountToTransfer - amount;
       votingPowers[index] = votingPower.serialize();
     }
-    if ((votingPower.owner = recipientAddress)) {
-      votingPower.delegatedPower += amountToTransfer - amount;
+    if ((votingPower.owner = targetAddress)) {
+      votingPower.delegatedPower - amountToTransfer - amount;
       votingPowers[index] = votingPower.serialize();
     }
   }
 
-  if (!ownerAddress.isValid() || !recipientAddress.isValid() || isNaN(amount)) {
+  if (!ownerAddress.isValid() || !targetAddress.isValid() || isNaN(amount)) {
     return '0';
   }
+  Storage.set('VotingPower', votingPowers.join(','));
   return '1';
 }
 
@@ -532,6 +531,7 @@ export function addVotingPower(stringifyArgs: string): string {
   if (!ownerAddress.isValid() || !recipientAddress.isValid() || isNaN(amount)) {
     return '0';
   }
+  Storage.set('VotingPower', votingPowers.join(','));
   // register DelegatePowerTx
   const argsTx = new Args();
   argsTx.add(ownerAddress);
