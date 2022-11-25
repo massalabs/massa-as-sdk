@@ -70,8 +70,8 @@ export class Address implements Valider {
    *
    * @return {Address}
    */
-  static fromByteString(bs: string): Address {
-    return new Address(bs);
+  static fromByteString(bs: string, isValid: bool = true): Address {
+    return new Address(bs, isValid);
   }
 
   /**
@@ -90,8 +90,11 @@ export class Address implements Valider {
    *
    * @return {Address}
    */
-  static fromByteArray(a: Uint8Array): Address {
-    return this.fromByteString(ByteArray.fromUint8Array(a).toByteString());
+  static fromByteArray(a: Uint8Array, isValid: bool = true): Address {
+    return this.fromByteString(
+      ByteArray.fromUint8Array(a).toByteString(),
+      isValid,
+    );
   }
 
   /**
@@ -103,7 +106,7 @@ export class Address implements Valider {
   }
 
   /**
-   * Tests if two adresses are identical.
+   * Tests if two addresses are identical.
    *
    * @param {Address} other
    * @return {boolean}
