@@ -154,9 +154,7 @@ export class Args {
    * @return {bool}
    */
   nextBool(): bool {
-    const value = this.serialized[this.offset] === 1 ? true : false;
-    this.offset += 1;
-    return value;
+    return this.serialized[this.offset++] === 0x01;
   }
 
   // Setter
@@ -173,7 +171,7 @@ export class Args {
   add<T>(arg: T): Args {
     if (arg instanceof bool) {
       const value = new Uint8Array(1);
-      value[0] = arg === true ? 1 : 0;
+      value[0] = u8(arg === true);
       this.serialized = this.concatArrays(this.serialized, value);
     } else if (arg instanceof Address) {
       let str = arg.toByteString();
