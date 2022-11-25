@@ -305,9 +305,7 @@ export function currentThread(): u8 {
  * @return {StaticArray<u8>}
  */
 export function stringToStaticArray(str: string): StaticArray<u8> {
-  let arr = new StaticArray<u8>(str.length);
-  for (let i = 0; i < str.length; i++) {
-    arr[i] = u8(str.charCodeAt(i));
-  }
+  let arr = new StaticArray<u8>(str.length << 1);
+  memory.copy(changetype<usize>(arr), changetype<usize>(str), arr.length);
   return arr;
 }
