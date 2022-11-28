@@ -309,3 +309,16 @@ export function stringToStaticArray(str: string): StaticArray<u8> {
   memory.copy(changetype<usize>(arr), changetype<usize>(str), arr.length);
   return arr;
 }
+
+/**
+ * Helper function to transform a string to a StaticArray<u8>
+ * @param {string} str
+ * @return {StaticArray<u8>}
+ */
+export function staticArrayToStringUTF8(arr: StaticArray<u8>): string {
+  let str = '';
+  for (let i = 0; i < arr.length; i++) {
+    str += String.fromCharCode(arr[i]);
+  }
+  return str;
+}
