@@ -22,7 +22,11 @@ export namespace env {
 
   // @ts-ignore
   @external("massa", "assembly_script_get_keys")
-  export declare function getKeys(address: string): StaticArray<u8>;
+  export declare function getKeys(): StaticArray<u8>;
+
+  // @ts-ignore
+  @external("massa", "assembly_script_get_keys_for")
+  export declare function getKeysOf(address: string): StaticArray<u8>;
 
   // @ts-ignore
   @external("massa", "assembly_script_set_data")
