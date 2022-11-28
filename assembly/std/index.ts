@@ -266,21 +266,21 @@ export function sendMessage(
 }
 
 /**
- * Convert given file content to base64.
+ * Convert given file content to byteArray.
  *
  * Note: this function shall never be called but is dynamically
- * replace using base64 transformer.
+ * replace using byteArray transformer.
  * More info here:
  *
  * @param {string} filePath
  *
- *@return {string}
+ * @return {StaticArray<u8>}
  */
-export function fileToBase64(
+export function fileToByteArray(
   filePath: string, // eslint-disable-line @typescript-eslint/no-unused-vars
-): string {
-  abort('Please use base64 transformer to dynamically include the file.');
-  return '';
+): StaticArray<u8> {
+  abort('Please use transformer to dynamically include the file.');
+  return [];
 }
 
 /**
