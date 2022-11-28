@@ -315,10 +315,10 @@ export function stringToStaticArray(str: string): StaticArray<u8> {
  * @param {StaticArray<u8>} arr
  * @return {string}
  */
-export function staticArrayToStringUTF8(arr: StaticArray<u8>): string {
+export function staticArrayToStringUTF16le(arr: StaticArray<u8>): string {
   let str = '';
-  for (let i = 0; i < arr.length; i++) {
-    str += String.fromCharCode(arr[i]);
+  for (let i = 0; i < arr.length; i += 2) {
+    str += String.fromCharCode(arr[i], arr[i + 1]);
   }
   return str;
 }
