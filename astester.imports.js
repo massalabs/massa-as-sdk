@@ -172,6 +172,9 @@ export function local(memory) {
         ledger.set(newAddress._value, newAddressLedger);
         return newString(newAddress._value);
       },
+      assembly_script_get_time(){
+        return BigInt(Date.now());  
+      }
     },
   };
 }
