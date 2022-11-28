@@ -136,7 +136,7 @@ export function getOpData(key: StaticArray<u8>): StaticArray<u8> {
  */
 export function getOpKeys(): Array<StaticArray<u8>> {
   let keysSer = env.getOpKeys();
-  return derOpKeys(keysSer);
+  return derKeys(keysSer);
 }
 
 /**
@@ -146,7 +146,7 @@ export function getOpKeys(): Array<StaticArray<u8>> {
  */
 export function getKeys(address: string): Array<StaticArray<u8>> {
   let keysSer = env.getKeys(address);
-  return derOpKeys(keysSer);
+  return derKeys(keysSer);
 }
 
 /**
@@ -155,7 +155,7 @@ export function getKeys(address: string): Array<StaticArray<u8>> {
  * @param {StaticArray<u8>} keysSer TBD
  * @return {Array<StaticArray<u8>>} TBD
  */
-export function derOpKeys(keysSer: StaticArray<u8>): Array<StaticArray<u8>> {
+export function derKeys(keysSer: StaticArray<u8>): Array<StaticArray<u8>> {
   if (keysSer.length == 0) {
     return [];
   }
