@@ -311,9 +311,9 @@ export function stringToStaticArray(str: string): StaticArray<u8> {
 }
 
 /**
- * Helper function to transform a string to a StaticArray<u8>
- * @param {string} str
- * @return {StaticArray<u8>}
+ * Helper function to transform a StaticArray<u8> to a string
+ * @param {StaticArray<u8>} arr
+ * @return {string}
  */
 export function staticArrayToStringUTF8(arr: StaticArray<u8>): string {
   let str = '';
