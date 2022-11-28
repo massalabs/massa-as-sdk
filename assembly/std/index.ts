@@ -274,7 +274,7 @@ export function sendMessage(
  *
  * @param {string} filePath
  *
- * @return {string}
+ *@return {string}
  */
 export function fileToBase64(
   filePath: string, // eslint-disable-line @typescript-eslint/no-unused-vars
