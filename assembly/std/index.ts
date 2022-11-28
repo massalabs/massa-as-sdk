@@ -316,9 +316,7 @@ export function stringToStaticArray(str: string): StaticArray<u8> {
  * @return {string}
  */
 export function staticArrayToStringUTF16le(arr: StaticArray<u8>): string {
-  let str = '';
-  for (let i = 0; i < arr.length; i += 2) {
-    str += String.fromCharCode(arr[i], arr[i + 1]);
-  }
+  let str = changetype<string>(__new(arr.length, idof<string>()));
+  memory.copy(changetype<usize>(str), changetype<usize>(arr), arr.length);
   return str;
 }
