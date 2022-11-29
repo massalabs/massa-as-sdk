@@ -130,13 +130,33 @@ export function getOpData(key: StaticArray<u8>): StaticArray<u8> {
 }
 
 /**
- * Get all keys from datastore
+ * Get all keys from operation datastore
  *
  * @return {StaticArray<u8>} - a list of key (e.g. a list of bytearray)
  */
 export function getOpKeys(): Array<StaticArray<u8>> {
   let keysSer = env.getOpKeys();
-  return derOpKeys(keysSer);
+  return derKeys(keysSer);
+}
+
+/**
+ * Get all keys from datastore
+ *
+ * @return {StaticArray<u8>} - a list of key (e.g. a list of bytearray)
+ */
+export function getKeys(): Array<StaticArray<u8>> {
+  let keysSer = env.getKeys();
+  return derKeys(keysSer);
+}
+
+/**
+ * Get all keys from datastore
+ *
+ * @return {StaticArray<u8>} - a list of key (e.g. a list of bytearray)
+ */
+export function getKeysOf(address: string): Array<StaticArray<u8>> {
+  let keysSer = env.getKeysOf(address);
+  return derKeys(keysSer);
 }
 
 /**
@@ -145,7 +165,7 @@ export function getOpKeys(): Array<StaticArray<u8>> {
  * @param {StaticArray<u8>} keysSer TBD
  * @return {Array<StaticArray<u8>>} TBD
  */
-export function derOpKeys(keysSer: StaticArray<u8>): Array<StaticArray<u8>> {
+export function derKeys(keysSer: StaticArray<u8>): Array<StaticArray<u8>> {
   if (keysSer.length == 0) {
     return [];
   }
