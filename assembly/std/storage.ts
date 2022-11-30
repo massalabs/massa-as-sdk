@@ -1,25 +1,28 @@
+import {toBytes} from '.';
 import {env} from '../env';
 import {Address} from './address';
-import {toBytes} from '@massalabs/massa-as-sdk/assembly/std';
 
 /**
  * Sets (key, value) in the datastore of the callee's address.
  *
  * Note: Existing entries are overwritten and missing ones are created.
  *
- * @param {StaticArray<u8> | string} key
- * @param {StaticArray<u8> | string} value
+ * @param {T} key
+ * @param {T} value
  */
-export function set(
-  key: StaticArray<u8> | string,
-  value: StaticArray<u8> | string,
-): void {
+export function set<T>(key: T, value: T): void {
   let keyByte =
-    key instanceof String ? toBytes(key.toString()) : (key as StaticArray<u8>);
+    key instanceof String
+      ? toBytes(key.toString())
+      : key instanceof StaticArray<u8>
+      ? (key as StaticArray<u8>)
+      : new StaticArray<u8>(0);
   let valueByte =
     value instanceof String
       ? toBytes(value.toString())
-      : (value as StaticArray<u8>);
+      : value instanceof StaticArray<u8>
+      ? (value as StaticArray<u8>)
+      : new StaticArray<u8>(0);
   env.set(keyByte, valueByte);
 }
 
@@ -30,20 +33,22 @@ export function set(
  * TODO: explains security mecanisms
  *
  * @param {Address} address
- * @param {StaticArray<u8> | string } key
- * @param {StaticArray<u8> | string} value
+ * @param {T } key
+ * @param {T} value
  */
-export function setOf(
-  address: Address,
-  key: StaticArray<u8> | string,
-  value: StaticArray<u8> | string,
-): void {
+export function setOf<T>(address: Address, key: T, value: T): void {
   let keyByte =
-    key instanceof String ? toBytes(key.toString()) : (key as StaticArray<u8>);
+    key instanceof String
+      ? toBytes(key.toString())
+      : key instanceof StaticArray<u8>
+      ? (key as StaticArray<u8>)
+      : new StaticArray<u8>(0);
   let valueByte =
     value instanceof String
       ? toBytes(value.toString())
-      : (value as StaticArray<u8>);
+      : value instanceof StaticArray<u8>
+      ? (value as StaticArray<u8>)
+      : new StaticArray<u8>(0);
   env.setOf(address.toByteString(), keyByte, valueByte);
 }
 
@@ -52,13 +57,18 @@ export function setOf(
  *
  * TODO: explains what happens on missing key.
  *
- * @param {StaticArray<u8> | string} key
+ * @param {T} key
  *
  * @return {StaticArray<u8>}
  */
-export function get(key: StaticArray<u8> | string): StaticArray<u8> {
+export function get<T>(key: T): StaticArray<u8> {
   let keyByte =
-    key instanceof String ? toBytes(key.toString()) : (key as StaticArray<u8>);
+    key instanceof String
+      ? toBytes(key.toString())
+      : key instanceof StaticArray<u8>
+      ? (key as StaticArray<u8>)
+      : new StaticArray<u8>(0);
+
   return env.get(keyByte);
 }
 
@@ -68,16 +78,18 @@ export function get(key: StaticArray<u8> | string): StaticArray<u8> {
  * TODO: explains what happens on missing key.
  *
  * @param {Address} address
- * @param {StaticArray<u8> | string} key
+ * @param {T} key
  *
  * @return {StaticArray<u8>}
  */
-export function getOf(
-  address: Address,
-  key: StaticArray<u8> | string,
-): StaticArray<u8> {
+export function getOf<T>(address: Address, key: T): StaticArray<u8> {
   let keyByte =
-    key instanceof String ? toBytes(key.toString()) : (key as StaticArray<u8>);
+    key instanceof String
+      ? toBytes(key.toString())
+      : key instanceof StaticArray<u8>
+      ? (key as StaticArray<u8>)
+      : new StaticArray<u8>(0);
+
   return env.getOf(address.toByteString(), keyByte);
 }
 
@@ -87,11 +99,16 @@ export function getOf(
  * TODO: explains what happens on missing key.
  * TODO: explains security mecanisms
  *
- * @param {StaticArray<u8> | string} key
+ * @param {T} key
  */
-export function del(key: StaticArray<u8> | string): void {
+export function del<T>(key: T): void {
   let keyByte =
-    key instanceof String ? toBytes(key.toString()) : (key as StaticArray<u8>);
+    key instanceof String
+      ? toBytes(key.toString())
+      : key instanceof StaticArray<u8>
+      ? (key as StaticArray<u8>)
+      : new StaticArray<u8>(0);
+
   env.del(keyByte);
 }
 
@@ -102,14 +119,16 @@ export function del(key: StaticArray<u8> | string): void {
  * TODO: explains security mecanisms
  *
  * @param {Address} address
- * @param {StaticArray<u8> | string} key
+ * @param {T} key
  */
-export function deleteOf(
-  address: Address,
-  key: StaticArray<u8> | string,
-): void {
+export function deleteOf<T>(address: Address, key: T): void {
   let keyByte =
-    key instanceof String ? toBytes(key.toString()) : (key as StaticArray<u8>);
+    key instanceof String
+      ? toBytes(key.toString())
+      : key instanceof StaticArray<u8>
+      ? (key as StaticArray<u8>)
+      : new StaticArray<u8>(0);
+
   env.deleteOf(address.toByteString(), keyByte);
 }
 
@@ -119,19 +138,22 @@ export function deleteOf(
  *
  * Note: do nothing if key is absent.
  *
- * @param {StaticArray<u8> | string} key
- * @param {StaticArray<u8> | string} value
+ * @param {T} key
+ * @param {T} value
  */
-export function append(
-  key: StaticArray<u8> | string,
-  value: StaticArray<u8> | string,
-): void {
+export function append<T>(key: T, value: T): void {
   let keyByte =
-    key instanceof String ? toBytes(key.toString()) : (key as StaticArray<u8>);
+    key instanceof String
+      ? toBytes(key.toString())
+      : key instanceof StaticArray<u8>
+      ? (key as StaticArray<u8>)
+      : new StaticArray<u8>(0);
   let valueByte =
     value instanceof String
       ? toBytes(value.toString())
-      : (value as StaticArray<u8>);
+      : value instanceof StaticArray<u8>
+      ? (value as StaticArray<u8>)
+      : new StaticArray<u8>(0);
   env.append(keyByte, valueByte);
 }
 
@@ -143,20 +165,22 @@ export function append(
  * TODO: explains security mecanisms
  *
  * @param {Address} address target address
- * @param {StaticArray<u8> | string} key
- * @param {StaticArray<u8> | string} value value to append
+ * @param {T} key
+ * @param {T} value value to append
  */
-export function appendOf(
-  address: Address,
-  key: StaticArray<u8> | string,
-  value: StaticArray<u8> | string,
-): void {
+export function appendOf<T>(address: Address, key: T, value: T): void {
   let keyByte =
-    key instanceof String ? toBytes(key.toString()) : (key as StaticArray<u8>);
+    key instanceof String
+      ? toBytes(key.toString())
+      : key instanceof StaticArray<u8>
+      ? (key as StaticArray<u8>)
+      : new StaticArray<u8>(0);
   let valueByte =
     value instanceof String
       ? toBytes(value.toString())
-      : (value as StaticArray<u8>);
+      : value instanceof StaticArray<u8>
+      ? (value as StaticArray<u8>)
+      : new StaticArray<u8>(0);
   env.appendOf(address.toByteString(), keyByte, valueByte);
 }
 
@@ -164,12 +188,17 @@ export function appendOf(
  * Checks if the (key, value) exists in the datastore
  * of the callee's address.
  *
- * @param {StaticArray<u8> | string} key
+ * @param {T} key
  * @return {bool}
  */
-export function has(key: StaticArray<u8> | string): bool {
+export function has<T>(key: T): bool {
   let keyByte =
-    key instanceof String ? toBytes(key.toString()) : (key as StaticArray<u8>);
+    key instanceof String
+      ? toBytes(key.toString())
+      : key instanceof StaticArray<u8>
+      ? (key as StaticArray<u8>)
+      : new StaticArray<u8>(0);
+
   return env.has(keyByte);
 }
 
@@ -178,13 +207,18 @@ export function has(key: StaticArray<u8> | string): bool {
  * of the given address.
  *
  * @param {Address} address
- * @param {StaticArray<u8> | string} key
+ * @param {T} key
  *
  * @return {bool}
  */
-export function hasOf(address: Address, key: StaticArray<u8> | string): bool {
+export function hasOf<T>(address: Address, key: T): bool {
   let keyByte =
-    key instanceof String ? toBytes(key.toString()) : (key as StaticArray<u8>);
+    key instanceof String
+      ? toBytes(key.toString())
+      : key instanceof StaticArray<u8>
+      ? (key as StaticArray<u8>)
+      : new StaticArray<u8>(0);
+
   return env.hasOf(address.toByteString(), keyByte);
 }
 
