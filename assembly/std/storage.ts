@@ -1,6 +1,7 @@
-import {toBytes} from '.';
-import {env} from '../env';
-import {Address} from './address';
+import { toBytes } from '.';
+import { env } from '../env';
+import { Address } from './address';
+
 
 /**
  * Sets (key, value) in the datastore of the callee's address.
@@ -11,19 +12,7 @@ import {Address} from './address';
  * @param {T} value
  */
 export function set<T>(key: T, value: T): void {
-  let keyByte =
-    key instanceof String
-      ? toBytes(key.toString())
-      : key instanceof StaticArray<u8>
-      ? (key as StaticArray<u8>)
-      : new StaticArray<u8>(0);
-  let valueByte =
-    value instanceof String
-      ? toBytes(value.toString())
-      : value instanceof StaticArray<u8>
-      ? (value as StaticArray<u8>)
-      : new StaticArray<u8>(0);
-  env.set(keyByte, valueByte);
+  env.set(checkAndTransformInputTypes(key), checkAndTransformInputTypes(value));
 }
 
 /**
@@ -37,19 +26,7 @@ export function set<T>(key: T, value: T): void {
  * @param {T} value
  */
 export function setOf<T>(address: Address, key: T, value: T): void {
-  let keyByte =
-    key instanceof String
-      ? toBytes(key.toString())
-      : key instanceof StaticArray<u8>
-      ? (key as StaticArray<u8>)
-      : new StaticArray<u8>(0);
-  let valueByte =
-    value instanceof String
-      ? toBytes(value.toString())
-      : value instanceof StaticArray<u8>
-      ? (value as StaticArray<u8>)
-      : new StaticArray<u8>(0);
-  env.setOf(address.toByteString(), keyByte, valueByte);
+  env.setOf(address.toByteString(), checkAndTransformInputTypes(key), checkAndTransformInputTypes(value));
 }
 
 /**
@@ -62,14 +39,7 @@ export function setOf<T>(address: Address, key: T, value: T): void {
  * @return {StaticArray<u8>}
  */
 export function get<T>(key: T): StaticArray<u8> {
-  let keyByte =
-    key instanceof String
-      ? toBytes(key.toString())
-      : key instanceof StaticArray<u8>
-      ? (key as StaticArray<u8>)
-      : new StaticArray<u8>(0);
-
-  return env.get(keyByte);
+  return env.get(checkAndTransformInputTypes(key));
 }
 
 /**
@@ -83,14 +53,7 @@ export function get<T>(key: T): StaticArray<u8> {
  * @return {StaticArray<u8>}
  */
 export function getOf<T>(address: Address, key: T): StaticArray<u8> {
-  let keyByte =
-    key instanceof String
-      ? toBytes(key.toString())
-      : key instanceof StaticArray<u8>
-      ? (key as StaticArray<u8>)
-      : new StaticArray<u8>(0);
-
-  return env.getOf(address.toByteString(), keyByte);
+  return env.getOf(address.toByteString(), checkAndTransformInputTypes(key));
 }
 
 /**
@@ -102,14 +65,7 @@ export function getOf<T>(address: Address, key: T): StaticArray<u8> {
  * @param {T} key
  */
 export function del<T>(key: T): void {
-  let keyByte =
-    key instanceof String
-      ? toBytes(key.toString())
-      : key instanceof StaticArray<u8>
-      ? (key as StaticArray<u8>)
-      : new StaticArray<u8>(0);
-
-  env.del(keyByte);
+  env.del(checkAndTransformInputTypes(key));
 }
 
 /**
@@ -122,14 +78,7 @@ export function del<T>(key: T): void {
  * @param {T} key
  */
 export function deleteOf<T>(address: Address, key: T): void {
-  let keyByte =
-    key instanceof String
-      ? toBytes(key.toString())
-      : key instanceof StaticArray<u8>
-      ? (key as StaticArray<u8>)
-      : new StaticArray<u8>(0);
-
-  env.deleteOf(address.toByteString(), keyByte);
+  env.deleteOf(address.toByteString(), checkAndTransformInputTypes(key));
 }
 
 /**
@@ -142,19 +91,7 @@ export function deleteOf<T>(address: Address, key: T): void {
  * @param {T} value
  */
 export function append<T>(key: T, value: T): void {
-  let keyByte =
-    key instanceof String
-      ? toBytes(key.toString())
-      : key instanceof StaticArray<u8>
-      ? (key as StaticArray<u8>)
-      : new StaticArray<u8>(0);
-  let valueByte =
-    value instanceof String
-      ? toBytes(value.toString())
-      : value instanceof StaticArray<u8>
-      ? (value as StaticArray<u8>)
-      : new StaticArray<u8>(0);
-  env.append(keyByte, valueByte);
+  env.append(checkAndTransformInputTypes(key), checkAndTransformInputTypes(value));
 }
 
 /**
@@ -169,19 +106,7 @@ export function append<T>(key: T, value: T): void {
  * @param {T} value value to append
  */
 export function appendOf<T>(address: Address, key: T, value: T): void {
-  let keyByte =
-    key instanceof String
-      ? toBytes(key.toString())
-      : key instanceof StaticArray<u8>
-      ? (key as StaticArray<u8>)
-      : new StaticArray<u8>(0);
-  let valueByte =
-    value instanceof String
-      ? toBytes(value.toString())
-      : value instanceof StaticArray<u8>
-      ? (value as StaticArray<u8>)
-      : new StaticArray<u8>(0);
-  env.appendOf(address.toByteString(), keyByte, valueByte);
+  env.appendOf(address.toByteString(), checkAndTransformInputTypes(key), checkAndTransformInputTypes(value));
 }
 
 /**
@@ -192,14 +117,7 @@ export function appendOf<T>(address: Address, key: T, value: T): void {
  * @return {bool}
  */
 export function has<T>(key: T): bool {
-  let keyByte =
-    key instanceof String
-      ? toBytes(key.toString())
-      : key instanceof StaticArray<u8>
-      ? (key as StaticArray<u8>)
-      : new StaticArray<u8>(0);
-
-  return env.has(keyByte);
+  return env.has(checkAndTransformInputTypes(key));
 }
 
 /**
@@ -212,14 +130,7 @@ export function has<T>(key: T): bool {
  * @return {bool}
  */
 export function hasOf<T>(address: Address, key: T): bool {
-  let keyByte =
-    key instanceof String
-      ? toBytes(key.toString())
-      : key instanceof StaticArray<u8>
-      ? (key as StaticArray<u8>)
-      : new StaticArray<u8>(0);
-
-  return env.hasOf(address.toByteString(), keyByte);
+  return env.hasOf(address.toByteString(), checkAndTransformInputTypes(key));
 }
 
 /**
@@ -246,4 +157,21 @@ export function setBytecodeOf(
   bytecode: StaticArray<u8>,
 ): void {
   env.setBytecodeOf(address.toByteString(), bytecode);
+}
+
+function checkAndTransformInputTypes<T>(param: T): StaticArray<u8> {
+  let paramBytes: StaticArray<u8>;
+
+  const isTString = isString<T>(param);
+  const isTStaticArrayU8 = idof<T>() == idof<StaticArray<u8>>();
+  const isValid = !isTString && !isTStaticArrayU8;
+
+  if (isValid) {
+    paramBytes = isTString ? toBytes(param as string) : param as StaticArray<u8>
+  }
+  else {
+    abort("Error : Param is not a string nor a StaticArray<u8>")
+  }
+
+  return paramBytes;
 }
