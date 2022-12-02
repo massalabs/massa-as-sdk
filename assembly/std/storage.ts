@@ -1,6 +1,6 @@
-import { toBytes } from '.';
-import { env } from '../env';
-import { Address } from './address';
+import {toBytes} from '.';
+import {env} from '../env';
+import {Address} from './address';
 
 /**
  * Sets (key, value) in the datastore of the callee's address.
