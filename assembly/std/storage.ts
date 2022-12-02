@@ -1,7 +1,6 @@
-import { toBytes } from '.';
-import { env } from '../env';
-import { Address } from './address';
-
+import {toBytes} from '.';
+import {env} from '../env';
+import {Address} from './address';
 
 /**
  * Sets (key, value) in the datastore of the callee's address.
@@ -26,7 +25,11 @@ export function set<T>(key: T, value: T): void {
  * @param {T} value
  */
 export function setOf<T>(address: Address, key: T, value: T): void {
-  env.setOf(address.toByteString(), checkAndTransformInputTypes(key), checkAndTransformInputTypes(value));
+  env.setOf(
+    address.toByteString(),
+    checkAndTransformInputTypes(key),
+    checkAndTransformInputTypes(value),
+  );
 }
 
 /**
@@ -91,7 +94,10 @@ export function deleteOf<T>(address: Address, key: T): void {
  * @param {T} value
  */
 export function append<T>(key: T, value: T): void {
-  env.append(checkAndTransformInputTypes(key), checkAndTransformInputTypes(value));
+  env.append(
+    checkAndTransformInputTypes(key),
+    checkAndTransformInputTypes(value),
+  );
 }
 
 /**
@@ -106,7 +112,11 @@ export function append<T>(key: T, value: T): void {
  * @param {T} value value to append
  */
 export function appendOf<T>(address: Address, key: T, value: T): void {
-  env.appendOf(address.toByteString(), checkAndTransformInputTypes(key), checkAndTransformInputTypes(value));
+  env.appendOf(
+    address.toByteString(),
+    checkAndTransformInputTypes(key),
+    checkAndTransformInputTypes(value),
+  );
 }
 
 /**
@@ -167,10 +177,11 @@ function checkAndTransformInputTypes<T>(param: T): StaticArray<u8> {
   const isValid = !isTString && !isTStaticArrayU8;
 
   if (isValid) {
-    paramBytes = isTString ? toBytes(param as string) : param as StaticArray<u8>
-  }
-  else {
-    abort("Error : Param is not a string nor a StaticArray<u8>")
+    paramBytes = isTString
+      ? toBytes(param as string)
+      : (param as StaticArray<u8>);
+  } else {
+    abort('Error : Param is not a string nor a StaticArray<u8>');
   }
 
   return paramBytes;
