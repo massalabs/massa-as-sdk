@@ -1,6 +1,6 @@
-import {toBytes} from '.';
-import {env} from '../env';
-import {Address} from './address';
+import { toBytes } from '.';
+import { env } from '../env';
+import { Address } from './address';
 
 /**
  * Sets (key, value) in the datastore of the callee's address.
@@ -169,6 +169,16 @@ export function setBytecodeOf(
   env.setBytecodeOf(address.toByteString(), bytecode);
 }
 
+/**
+ *  Check if a parameter is a String OR a StaticArray<u8>
+ *  fails otherwise
+ *
+ * TODO: explains security mecanisms.
+ *
+ * @param {T} param
+ *
+ * @return {StaticArray<u8>}
+ */
 function checkAndTransformInputTypes<T>(param: T): StaticArray<u8> {
   let paramBytes: StaticArray<u8>;
 
@@ -183,6 +193,5 @@ function checkAndTransformInputTypes<T>(param: T): StaticArray<u8> {
   } else {
     abort('Error : Param is not a string nor a StaticArray<u8>');
   }
-
   return paramBytes;
 }
