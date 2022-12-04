@@ -1,3 +1,5 @@
+// XXX : Is it used?
+
 /**
  * Set data in mocked storage
  *
@@ -10,7 +12,7 @@
  */
 // @ts-ignore: decorator
 @external("massa-sc-std", "set")
-export declare function setData(k: string, v: string): void;
+export declare function setData(k: StaticArray<u8>, v: StaticArray<u8>): void;
 
 /**
  *  Change the callstack until the next call on this function

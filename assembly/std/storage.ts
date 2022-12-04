@@ -1,17 +1,77 @@
-import {toBytes} from '.';
+import {toBytes, fromBytes} from '.';
 import {env} from '../env';
 import {Address} from './address';
+import {Args} from './arguments';
+
+/**
+ * Converts given value to StaticArray<u8> to match datastore expected format.
+ *
+ * @template {string|Args|StaticArray<u8>} T - string, Args or StaticArray<u8>
+ * @param {T} value
+ * @returns {StaticArray<u8>}
+ */
+function toDatastoreFormat<T>(value: T): StaticArray<u8> {
+  if (idof<T>() == idof<StaticArray<u8>>()) {
+    return changetype<StaticArray<u8>>(value);
+  }
+
+  if (isString<T>()) {
+    return toBytes(changetype<string>(value));
+  }
+
+  if (idof<T>() == idof<Args>()) {
+    return changetype<Args>(value).serialize();
+  }
+
+  // eslint-disable-next-line new-cap
+  ERROR('type must be one of string, StaticArray<u8> or Args'); // this function call stop the compilation.
+
+  // Not necessary, but when giving an unsupported type, avoid
+  // `ERROR TS2355: A function whose declared type is not 'void' must return a value.`
+  // which can be misleading when you try to figure out what caused the error.
+  return new StaticArray<u8>(0);
+}
+
+/**
+ * Converts given datastore retreived value to wanted format.
+ *
+ * @template {string|Args|StaticArray<u8>} T - string, Args or StaticArray<u8>
+ * @param {StaticArray<u8>} value
+ * @returns {T}
+ */
+function fromDatastoreFormat<T>(value: StaticArray<u8>): T {
+  if (idof<T>() == idof<StaticArray<u8>>()) {
+    return changetype<T>(value);
+  }
+
+  if (isString<T>()) {
+    return changetype<T>(fromBytes(value));
+  }
+
+  if (idof<T>() == idof<Args>()) {
+    return changetype<T>(new Args(value));
+  }
+
+  // eslint-disable-next-line new-cap
+  ERROR('type must be one of string, StaticArray<u8> or Args'); // this function call stop the compilation.
+
+  // Not necessary, but when giving an unsupported type, avoid
+  // `ERROR TS2355: A function whose declared type is not 'void' must return a value.`
+  // which can be misleading when you try to figure out what caused the error.
+  return changetype<T>(0);
+}
 
 /**
  * Sets (key, value) in the datastore of the callee's address.
  *
  * Note: Existing entries are overwritten and missing ones are created.
  *
+ * @template {string|Args|StaticArray<u8>} T - string, Args or StaticArray<u8>
  * @param {T} key
  * @param {T} value
  */
 export function set<T>(key: T, value: T): void {
-  env.set(checkAndTransformInputTypes(key), checkAndTransformInputTypes(value));
+  env.set(toDatastoreFormat(key), toDatastoreFormat<T>(value));
 }
 
 /**
@@ -20,6 +80,7 @@ export function set<T>(key: T, value: T): void {
  *
  * TODO: explains security mecanisms
  *
+ * @template {string|Args|StaticArray<u8>} T - string, Args or StaticArray<u8>
  * @param {Address} address
  * @param {T } key
  * @param {T} value
@@ -27,8 +88,8 @@ export function set<T>(key: T, value: T): void {
 export function setOf<T>(address: Address, key: T, value: T): void {
   env.setOf(
     address.toByteString(),
-    checkAndTransformInputTypes(key),
-    checkAndTransformInputTypes(value),
+    toDatastoreFormat(key),
+    toDatastoreFormat(value),
   );
 }
 
@@ -37,12 +98,14 @@ export function setOf<T>(address: Address, key: T, value: T): void {
  *
  * TODO: explains what happens on missing key.
  *
+ * @template {string|Args|StaticArray<u8>} T - string, Args or StaticArray<u8>
  * @param {T} key
- *
- * @return {StaticArray<u8>}
+ * @return {T}
  */
-export function get<T>(key: T): StaticArray<u8> {
-  return env.get(checkAndTransformInputTypes(key));
+export function get<T>(key: T): T {
+  const value: StaticArray<u8> = env.get(toDatastoreFormat(key));
+
+  return fromDatastoreFormat<T>(value);
 }
 
 /**
@@ -50,13 +113,19 @@ export function get<T>(key: T): StaticArray<u8> {
  *
  * TODO: explains what happens on missing key.
  *
+ * @template {string|Args|StaticArray<u8>} T - string, Args or StaticArray<u8>
  * @param {Address} address
  * @param {T} key
  *
- * @return {StaticArray<u8>}
+ * @return {T}
  */
-export function getOf<T>(address: Address, key: T): StaticArray<u8> {
-  return env.getOf(address.toByteString(), checkAndTransformInputTypes(key));
+export function getOf<T>(address: Address, key: T): T {
+  const value: StaticArray<u8> = env.getOf(
+    address.toByteString(),
+    toDatastoreFormat(key),
+  );
+
+  return fromDatastoreFormat<T>(value);
 }
 
 /**
@@ -65,10 +134,11 @@ export function getOf<T>(address: Address, key: T): StaticArray<u8> {
  * TODO: explains what happens on missing key.
  * TODO: explains security mecanisms
  *
+ * @template {string|Args|StaticArray<u8>} T - string, Args or StaticArray<u8>
  * @param {T} key
  */
 export function del<T>(key: T): void {
-  env.del(checkAndTransformInputTypes(key));
+  env.del(toDatastoreFormat(key));
 }
 
 /**
@@ -77,11 +147,12 @@ export function del<T>(key: T): void {
  * TODO: explains what happens on missing key.
  * TODO: explains security mecanisms
  *
+ * @template {string|Args|StaticArray<u8>} T - string, Args or StaticArray<u8>
  * @param {Address} address
  * @param {T} key
  */
 export function deleteOf<T>(address: Address, key: T): void {
-  env.deleteOf(address.toByteString(), checkAndTransformInputTypes(key));
+  env.deleteOf(address.toByteString(), toDatastoreFormat(key));
 }
 
 /**
@@ -90,14 +161,12 @@ export function deleteOf<T>(address: Address, key: T): void {
  *
  * Note: do nothing if key is absent.
  *
+ * @template {string|Args|StaticArray<u8>} T - string, Args or StaticArray<u8>
  * @param {T} key
  * @param {T} value
  */
 export function append<T>(key: T, value: T): void {
-  env.append(
-    checkAndTransformInputTypes(key),
-    checkAndTransformInputTypes(value),
-  );
+  env.append(toDatastoreFormat(key), toDatastoreFormat(value));
 }
 
 /**
@@ -107,6 +176,7 @@ export function append<T>(key: T, value: T): void {
  * Note: do nothing if key is absent.
  * TODO: explains security mecanisms
  *
+ * @template {string|Args|StaticArray<u8>} T - string, Args or StaticArray<u8>
  * @param {Address} address target address
  * @param {T} key
  * @param {T} value value to append
@@ -114,8 +184,8 @@ export function append<T>(key: T, value: T): void {
 export function appendOf<T>(address: Address, key: T, value: T): void {
   env.appendOf(
     address.toByteString(),
-    checkAndTransformInputTypes(key),
-    checkAndTransformInputTypes(value),
+    toDatastoreFormat(key),
+    toDatastoreFormat(value),
   );
 }
 
@@ -123,24 +193,26 @@ export function appendOf<T>(address: Address, key: T, value: T): void {
  * Checks if the (key, value) exists in the datastore
  * of the callee's address.
  *
+ * @template {string|Args|StaticArray<u8>} T - string, Args or StaticArray<u8>
  * @param {T} key
  * @return {bool}
  */
 export function has<T>(key: T): bool {
-  return env.has(checkAndTransformInputTypes(key));
+  return env.has(toDatastoreFormat(key));
 }
 
 /**
  * Checks if the (key, value) exists in the datastore
  * of the given address.
  *
+ * @template {string|Args|StaticArray<u8>} T - string, Args or StaticArray<u8>
  * @param {Address} address
  * @param {T} key
  *
  * @return {bool}
  */
 export function hasOf<T>(address: Address, key: T): bool {
-  return env.hasOf(address.toByteString(), checkAndTransformInputTypes(key));
+  return env.hasOf(address.toByteString(), toDatastoreFormat(key));
 }
 
 /**
@@ -167,31 +239,4 @@ export function setBytecodeOf(
   bytecode: StaticArray<u8>,
 ): void {
   env.setBytecodeOf(address.toByteString(), bytecode);
-}
-
-/**
- *  Check if a parameter is a String OR a StaticArray<u8>
- *  fails otherwise
- *
- * TODO: explains security mecanisms.
- *
- * @param {T} param
- *
- * @return {StaticArray<u8>}
- */
-function checkAndTransformInputTypes<T>(param: T): StaticArray<u8> {
-  let paramBytes: StaticArray<u8>;
-
-  const isTString = isString<T>(param);
-  const isTStaticArrayU8 = idof<T>() == idof<StaticArray<u8>>();
-  const isValid = !isTString && !isTStaticArrayU8;
-
-  if (isValid) {
-    paramBytes = isTString
-      ? toBytes(param as string)
-      : (param as StaticArray<u8>);
-  } else {
-    abort('Error : Param is not a string nor a StaticArray<u8>');
-  }
-  return paramBytes;
 }
