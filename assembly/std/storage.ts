@@ -82,7 +82,7 @@ export function set<T>(key: T, value: T): void {
  *
  * @template {string|Args|StaticArray<u8>} T - string, Args or StaticArray<u8>
  * @param {Address} address
- * @param {T } key
+ * @param {T} key
  * @param {T} value
  */
 export function setOf<T>(address: Address, key: T, value: T): void {
