@@ -173,7 +173,7 @@ export function local(memory) {
         return newString(newAddress._value);
       },
       assembly_script_get_time(){
-        return BigInt.asUintN(64, Date.now());  
+        return BigInt(Date.now()); 
       }
     },
   };
