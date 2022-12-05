@@ -16,7 +16,7 @@ describe('Storage tests', () => {
     Storage.get('1');
     Storage.get(new Args());
 
-    // TODO: Define an implement how to test that.
+    // TODO: Define and implement how to test that.
     // Storage.get(new Uint8Array(0)); // doesn't compile with user error as expected.
   });
 
