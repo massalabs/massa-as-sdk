@@ -116,7 +116,6 @@ export function get<T>(key: T): T {
  * @template {string|Args|StaticArray<u8>} T - string, Args or StaticArray<u8>
  * @param {Address} address
  * @param {T} key
- *
  * @return {T}
  */
 export function getOf<T>(address: Address, key: T): T {
