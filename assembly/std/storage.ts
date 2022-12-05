@@ -78,7 +78,7 @@ export function set<T>(key: T, value: T): void {
  * Sets (key, value) in the datastore of the given address.
  * Existing entries are overwritten and missing ones are created.
  *
- * TODO: explains security mecanisms
+ * TODO: explains security mechanisms
  *
  * @template {string|Args|StaticArray<u8>} T - string, Args or StaticArray<u8>
  * @param {Address} address
