@@ -270,6 +270,8 @@ export function sendMessage(
   rawFee: u64,
   coins: u64,
   msg: StaticArray<u8>,
+  filterAddress?: Address,
+  filterKey?: StaticArray<u8>,
 ): void {
   env.sendMessage(
     at.toByteString(),
@@ -282,6 +284,8 @@ export function sendMessage(
     rawFee,
     coins,
     msg,
+    filterAddress ? filterAddress.toByteString() : '',
+    filterKey ? filterKey : new StaticArray<u8>(0),
   );
 }
 

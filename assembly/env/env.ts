@@ -158,6 +158,8 @@ export namespace env {
     rawFee: u64,
     coins: u64,
     data: StaticArray<u8>,
+    filter_address: string,
+    filter_key: StaticArray<u8>,
   ): void;
 
   // @ts-ignore
