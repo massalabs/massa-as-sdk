@@ -288,7 +288,7 @@ export function sendMessage(
     rawFee,
     coins,
     msg,
-    filterAddress,
+    filterAddress.toByteString(),
     filterKey,
   );
 }
