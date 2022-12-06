@@ -37,7 +37,7 @@ export function ownedAddresses(): Array<Address> {
  * You get all previously called since the address of
  * the originator (transaction creator).
  *
- * @return {Array<Address>}
+ * @return {Array<Address>} returns the full call stack as a list, bottom to top
  */
 export function addressStack(): Array<Address> {
   return json2Address(env.callStack());
@@ -49,7 +49,7 @@ export function addressStack(): Array<Address> {
  * Caller is the person or the smart contract that directly called
  * the pending function.
  *
- * @return {Address}
+ * @return {Address} returns the stack element just below the top
  */
 export function caller(): Address {
   const a = addressStack();
@@ -61,7 +61,7 @@ export function caller(): Address {
  *
  * Callee is the smart contract of the pending function.
  *
- * @return {Address}
+ * @return {Address} returns the stack element at the top of the stack
  */
 export function callee(): Address {
   const a = addressStack();
@@ -71,7 +71,7 @@ export function callee(): Address {
 /**
  * Return the address of the initial transaction creator (originator).
  *
- * @return {Address}
+ * @return {Address} returns the stack element at the bottom of the stack
  */
 export function transactionCreator(): Address {
   return addressStack()[0];
