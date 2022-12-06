@@ -33,7 +33,7 @@ function toDatastoreFormat<T>(value: T): StaticArray<u8> {
 }
 
 /**
- * Converts given datastore retreived value to wanted format.
+ * Converts given datastore retrieved value to wanted format.
  *
  * @template {string|Args|StaticArray<u8>} T - string, Args or StaticArray<u8>
  * @param {StaticArray<u8>} value
