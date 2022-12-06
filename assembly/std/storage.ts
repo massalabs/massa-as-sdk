@@ -131,7 +131,7 @@ export function getOf<T>(address: Address, key: T): T {
  * Removes (key, value) from the datastore of the callee's address.
  *
  * TODO: explains what happens on missing key.
- * TODO: explains security mecanisms
+ * TODO: explains security mechanisms
  *
  * @template {string|Args|StaticArray<u8>} T - string, Args or StaticArray<u8>
  * @param {T} key
