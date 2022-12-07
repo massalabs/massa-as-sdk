@@ -258,6 +258,10 @@ export function unsafeRandom(): i64 {
  * @param {u64} rawFee - Fee to be paid for message execution
  * @param {u64} coins - Coins of the sender
  * @param {StaticArray<u8>} msg - serialized data
+ * @param {Address} filterAddress - If you want your message to be trigger only
+ * if a modification is made on a specific address precise it here
+ * @param {StaticArray<u8>} filterKey - If you want your message to be trigger only
+ * if a modification is made on a specific storage key of the `filterAddress` precise it here
  */
 export function sendMessage(
   at: Address,
@@ -270,6 +274,8 @@ export function sendMessage(
   rawFee: u64,
   coins: u64,
   msg: StaticArray<u8>,
+  filterAddress: Address = new Address(),
+  filterKey: StaticArray<u8> = new StaticArray<u8>(0),
 ): void {
   env.sendMessage(
     at.toByteString(),
@@ -282,6 +288,8 @@ export function sendMessage(
     rawFee,
     coins,
     msg,
+    filterAddress.toByteString(),
+    filterKey,
   );
 }
 
