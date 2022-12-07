@@ -48,7 +48,7 @@ export function setNFT(_: string): string {
  * @param {string} newBaseURI new link include in the NFTs
  * @return {string}
  */
-export function setURI(_args: string): string {
+export function setURI(_args: StaticArray<u8>): string {
   const args = new Args(_args);
   const newBaseURI = args.nextString();
 
@@ -88,10 +88,9 @@ export function symbol(_: string): string {
  * @param {string} tokenId
  * @return {string}
  */
-export function tokenURI(_args: string): string {
+export function tokenURI(_args: StaticArray<u8>): string {
   const args = new Args(_args);
   const tokenId = args.nextU64();
-
   if (Storage.has(baseURIKey)) {
     return Storage.get(baseURIKey) + tokenId.toString();
   } else {
@@ -139,7 +138,7 @@ export function currentSupply(_: string): string {
  * @param {string} tokenId
  * @return {string}
  */
-export function ownerOf(_args: string): string {
+export function ownerOf(_args: StaticArray<u8>): string {
   const args = new Args(_args);
   const tokenId = args.nextU64();
 
@@ -160,7 +159,7 @@ export function ownerOf(_args: string): string {
  * @param {string} args - byte string containing an owner's account (Address).
  * @return {string}
  */
-export function mint(_args: string): string {
+export function mint(_args: StaticArray<u8>): string {
   if (u32(parseInt(limitSupply(''))) > u32(parseInt(currentSupply('')))) {
     const args = new Args(_args);
     const addr = args.nextAddress();
@@ -217,7 +216,7 @@ function _onlyTokenOwner(tokenId: u64): bool {
  * - the tokenID (u64).
  * @return {string}
  */
-export function transfer(_args: string): string {
+export function transfer(_args: StaticArray<u8>): string {
   const args = new Args(_args);
   const toAddress = args.nextAddress();
   const tokenId = args.nextU64();
