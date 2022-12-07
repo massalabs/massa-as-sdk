@@ -22,11 +22,8 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "test": "asp --verbose",
+    "test": "asp",
     "test:ci": "asp --summary",
-    "test:asp": "asp --verbose",
-    "test:asp:ci": "asp --summary",
-    "test:as": "astester --imports ./astester.imports.js ./assembly/NFT/**/*.spec.ts",
     "prettier": "as-prettier --check assembly",
     "prettier:fix": "as-prettier --write assembly",
     "lint": "eslint .",
@@ -39,14 +36,12 @@
     "prepare": "husky install"
   },
   "devDependencies": {
-    "@as-pect/cli": "^7.0.7",
-    "@assemblyscript/loader": "^0.21.2",
-    "@massalabs/as": "^1.0.2",
+    "@as-pect/cli": "^8.0.0",
+    "@assemblyscript/loader": "^0.24.1",
+    "@massalabs/as": "^1.1.1-dev",
     "@typescript-eslint/eslint-plugin": "^5.29.0",
     "@typescript-eslint/parser": "^5.29.0",
-    "as-console": "^6.0.2",
     "assemblyscript-prettier": "^1.0.5",
-    "@massalabs/as-tester": "^0.0.2",
     "eslint": "^8.27.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^8.5.0",
@@ -57,7 +52,7 @@
     "typescript": "^4.8.3"
   },
   "overrides": {
-    "assemblyscript": "^0.21.7"
+    "assemblyscript": "^0.24.1"
   },
   "keywords": [
     "massa",
