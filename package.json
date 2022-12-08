@@ -64,9 +64,8 @@
     "sdk"
   ],
   "exports": {
-    ".": {
-      "import": "./build/release.js",
-      "types": "./build/release.d.ts"
+    "./vm-mock": {
+      "import": "./vm-mock/vm.js"
     }
   }
 }

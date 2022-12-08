@@ -24,7 +24,7 @@ function mixRandomChars(length) {
   return result;
 }
 
-// Generates a 50 chars length address
+// Generates a 50 chars lengh address
 function generateDumbAddress() {
   return 'A12' + mixRandomChars(47);
 }
@@ -74,7 +74,7 @@ let webModule;
  *
  * @returns {?} ?
  */
-export function createMockedABI(memory, createImports, instantiate, binary) {
+export default function createMockedABI(memory, createImports, instantiate, binary) {
 
   resetLedger();
 

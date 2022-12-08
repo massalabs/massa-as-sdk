@@ -1,4 +1,4 @@
-import {createMockedABI} from './vm.js';
+import createMockedABI from './vm-mock/vm.js';
 export default {
   /**
    * A set of globs passed to the glob package that qualify typescript files for testing.
