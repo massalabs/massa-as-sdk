@@ -1,5 +1,5 @@
 /* eslint-disable require-jsdoc */
-/* 
+/*
 XXX: Only the following ABI were tested:
  - assembly_script_get_data
  - assembly_script_set_data
@@ -23,12 +23,12 @@ function mixRandomChars(length) {
   }
   return result;
 }
-  
-// Generates a 50 chars lengh address
+
+// Generates a 50 chars length address
 function generateDumbAddress() {
   return 'A12' + mixRandomChars(47);
 }
-  
+
 let callStack = callerAddress + ' , ' + contractAddress;
 
 /**
@@ -55,7 +55,7 @@ function resetLedger() {
     storage: new Map(),
     contract: '',
   });
-  
+
   ledger.set(contractAddress, {
     storage: new Map(),
     contract: '',
@@ -75,7 +75,7 @@ let webModule;
  * @returns {?} ?
  */
 export function createMockedABI(memory, createImports, instantiate, binary) {
-  
+
   resetLedger();
 
   const myImports = {
@@ -110,7 +110,7 @@ export function createMockedABI(memory, createImports, instantiate, binary) {
       // XXX: Untested ABI, directly migrated from as-tester
 
       // TODO: Please move the ABIs to the previous section once you have confirmed
-      //        that they are functional. 
+      //        that they are functional.
       // This action can be done on the fly.
 
       assembly_script_reset_storage() {
@@ -193,7 +193,7 @@ export function createMockedABI(memory, createImports, instantiate, binary) {
         return webModule.__newArrayBuffer(newAddress._value);
       },
       assembly_script_get_time(){
-        return BigInt.asUintN(64, Date.now());  
+        return BigInt(Date.now());
       }
     },
   };
