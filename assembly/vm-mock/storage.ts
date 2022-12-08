@@ -5,7 +5,7 @@
  *
  * @returns {void}
  */
-// @ts-ignore: decorator
+
 @external("massa", "assembly_script_change_call_stack")
 export declare function changeCallStack(callStack: string): void;
 
@@ -14,6 +14,5 @@ export declare function changeCallStack(callStack: string): void;
  *
  * @returns {void}
  */
-// @ts-ignore: decorator
 @external("massa", "assembly_script_reset_storage")
 export declare function resetStorage(): void;
