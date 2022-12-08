@@ -1,8 +1,8 @@
 {
     "*.{js,ts,jsx,tsx,json,cjs}": [
-        "npm run lint"
+        "npx eslint"
     ],
     "*.ts": [
-        "npm run prettier"
+        "npx as-prettier --check"
     ]
 }
