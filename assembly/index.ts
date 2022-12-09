@@ -14,7 +14,3 @@ export * from './std';
 // massa erc20-alike token
 import * as token from './token/index';
 export {token};
-
-// massa NFT token
-import * as NFT from './NFT/index';
-export {NFT};
