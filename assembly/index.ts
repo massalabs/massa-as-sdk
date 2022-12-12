@@ -10,5 +10,3 @@ export {env};
 
 // massa std functionalities
 export * from './std';
-
-
