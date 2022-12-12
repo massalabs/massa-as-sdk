@@ -67,19 +67,6 @@ let webModule;
  * @returns {?} ?
  */
 export default function createMockedABI(memory, createImports, instantiate, binary) {
-
-  // from assemblyscript/loader/index
-  function newString(str) {
-    if (str == null) return 0;
-    const length = str.length;
-    const ptr = exports.__new(length << 1, 1);
-    const U16 = new Uint16Array(memory.buffer);
-    for (let i = 0, p = ptr >>> 1; i < length; ++i) {
-      U16[p + i] = str.charCodeAt(i);
-    }
-    return ptr;
-  }
-
   const byteArrToString = (arr) => {
     return new TextDecoder("utf-8").decode(arr);
   };
@@ -188,8 +175,7 @@ export default function createMockedABI(memory, createImports, instantiate, bina
       },
 
       assembly_script_get_call_stack() {
-        const callStackJSON = '[ ' + callStack + ' ]';
-        return newString(callStackJSON);
+        return webModule.__newString('[ ' + callStack + ' ]');
       },
 
       assembly_script_unsafe_random() {
