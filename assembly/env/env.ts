@@ -11,14 +11,14 @@ export namespace env {
   ): StaticArray<u8>;
 
   @external("massa", "assembly_script_local_call")
-  export declare function local_call(
+  export declare function localCall(
     address: string,
     func: string,
     param: StaticArray<u8>,
   ): StaticArray<u8>;
 
   @external("massa", "assembly_script_local_execution")
-  export declare function local_execution(
+  export declare function localExecution(
     bytecode: StaticArray<u8>,
     func: string,
     param: StaticArray<u8>,

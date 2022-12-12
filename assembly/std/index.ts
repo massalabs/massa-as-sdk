@@ -1,10 +1,10 @@
-import { env } from '../env/index';
-import { Address } from './address';
+import {env} from '../env/index';
+import {Address} from './address';
 import * as Storage from './storage';
 import * as Context from './context';
-import { Args } from './arguments';
+import {Args} from './arguments';
 
-export { Address, Storage, Context, Args };
+export {Address, Storage, Context, Args};
 
 /**
  * Prints in the node logs
@@ -47,12 +47,12 @@ export function call(
  *
  * @return {StaticArray<u8>} function returned value
  */
-export function local_call(
+export function localCall(
   at: Address,
   functionName: string,
   args: Args,
 ): StaticArray<u8> {
-  return env.local_call(at.toByteString(), functionName, args.serialize());
+  return env.localCall(at.toByteString(), functionName, args.serialize());
 }
 
 /**
@@ -66,12 +66,12 @@ export function local_call(
  *
  * @return {StaticArray<u8>} function returned value
  */
-export function local_execution(
+export function localExecution(
   bytecode: StaticArray<u8>,
   functionName: string,
   args: Args,
 ): StaticArray<u8> {
-  return env.local_execution(bytecode, functionName, args.serialize());
+  return env.localExecution(bytecode, functionName, args.serialize());
 }
 
 /**
@@ -86,12 +86,12 @@ export function getBytecode(): Array<StaticArray<u8>> {
 /**
  * Get the bytecode of the current address
  *
- * @param {Address} target_address
- * 
+ * @param {Address} targetAddress
+ *
  * @return {StaticArray<u8>} bytecode
  */
-export function getBytecodeFor(target_address: Address): Array<StaticArray<u8>> {
-  return derKeys(env.getBytecodeFor(target_address.toByteString()));
+export function getBytecodeFor(targetAddress: Address): Array<StaticArray<u8>> {
+  return derKeys(env.getBytecodeFor(targetAddress.toByteString()));
 }
 
 /**
