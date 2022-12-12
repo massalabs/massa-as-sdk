@@ -68,24 +68,36 @@ let webModule;
  */
 export default function createMockedABI(memory, createImports, instantiate, binary) {
 
+  // from assemblyscript/loader/index
+  function newString(str) {
+    if (str == null) return 0;
+    const length = str.length;
+    const ptr = exports.__new(length << 1, 1);
+    const U16 = new Uint16Array(memory.buffer);
+    for (let i = 0, p = ptr >>> 1; i < length; ++i) {
+      U16[p + i] = str.charCodeAt(i);
+    }
+    return ptr;
+  }
+
   const byteArrToString = (arr) => {
     return new TextDecoder("utf-8").decode(arr);
   };
 
-  const getString = (ptr) => {
+  const ptrToString = (ptr) => {
     return byteArrToString(webModule.__getArrayBuffer(ptr));
   };
 
-  const getKey = (ptr) => {
+  function ptrToUint8ArrayString(ptr) {
     return new Uint8Array(webModule.__getArrayBuffer(ptr)).toString();
-  };
+  }
 
-  const getValue = (ptr) => {
+  const getArrayBuffer = (ptr) => {
     return webModule.__getArrayBuffer(ptr);
   };
 
-  const getResult = (str) => {
-    return webModule.__newArrayBuffer(str);
+  const newArrayBuffer = (buffer) => {
+    return webModule.__newArrayBuffer(buffer);
   };
 
   resetLedger();
@@ -96,8 +108,8 @@ export default function createMockedABI(memory, createImports, instantiate, bina
 
 
       assembly_script_set_data(kPtr, vPtr) {
-        const k = getKey(kPtr);
-        const v = getValue(vPtr);
+        const k = ptrToUint8ArrayString(kPtr);
+        const v = getArrayBuffer(vPtr);
 
         const addressStorage = ledger.get(contractAddress).storage;
         addressStorage.set(k, v);
@@ -105,7 +117,7 @@ export default function createMockedABI(memory, createImports, instantiate, bina
 
       assembly_script_get_data(kPtr) {
         let v = '';
-        const k = getKey(kPtr);
+        const k = ptrToUint8ArrayString(kPtr);
 
         if (ledger.has(contractAddress)) {
           const addressStorage = ledger.get(contractAddress).storage;
@@ -115,7 +127,7 @@ export default function createMockedABI(memory, createImports, instantiate, bina
           }
         }
 
-        return getResult(v);
+        return newArrayBuffer(v);
       },
 
       assembly_script_reset_storage() {
@@ -123,18 +135,17 @@ export default function createMockedABI(memory, createImports, instantiate, bina
       },
 
       assembly_script_change_call_stack(callstackPtr) {
-        const callStackToString = getString(callstackPtr);
-        callStack = callStackToString;
+        callStack = ptrToString(callstackPtr);
       },
 
       assembly_script_generate_event(string) {
-        console.log('event: ', getString(string));
+        console.log('event: ', ptrToString(string));
       },
 
       assembly_script_set_data_for(aPtr, kPtr, vPtr) {
-        const a = getString(aPtr);
-        const k = getKey(kPtr);
-        const v = getValue(vPtr);
+        const a = ptrToString(aPtr);
+        const k = ptrToUint8ArrayString(kPtr);
+        const v = getArrayBuffer(vPtr);
         if (!ledger.has(a)) {
           ledger.set(a, {
             storage: new Map(),
@@ -148,26 +159,26 @@ export default function createMockedABI(memory, createImports, instantiate, bina
 
       assembly_script_get_data_for(aPtr, kPtr) {
         let v = '';
-        const a = getString(aPtr);
-        const k = getKey(kPtr);
+        const a = ptrToString(aPtr);
+        const k = ptrToUint8ArrayString(kPtr);
         if (ledger.has(a)) {
           const addressStorage = ledger.get(a).storage;
           if (addressStorage.has(k)) {
             v = addressStorage.get(k);
           }
         }
-        return getResult(v);
+        return newArrayBuffer(v);
       },
 
       assembly_script_has_data(kPtr) {
-        const k = getKey(kPtr);
+        const k = ptrToUint8ArrayString(kPtr);
         const addressStorage = ledger.get(contractAddress).storage;
         return addressStorage.has(k);
       },
 
       assembly_script_has_data_for(aPtr, kPtr) {
-        const a = getString(aPtr);
-        const k = getKey(kPtr);
+        const a = ptrToString(aPtr);
+        const k = ptrToUint8ArrayString(kPtr);
         if (ledger.has(a)) {
           const addressStorage = ledger.get(a).storage;
           return addressStorage.has(k);
@@ -177,7 +188,8 @@ export default function createMockedABI(memory, createImports, instantiate, bina
       },
 
       assembly_script_get_call_stack() {
-        return '[ ' + callStack + ']';
+        const callStackJSON = '[ ' + callStack + ' ]';
+        return newString(callStackJSON);
       },
 
       assembly_script_unsafe_random() {
@@ -194,7 +206,7 @@ export default function createMockedABI(memory, createImports, instantiate, bina
           contract: '',
         };
         ledger.set(newAddress._value, newAddressLedger);
-        return getResult(newAddress._value);
+        return newArrayBuffer(newAddress._value);
       },
 
       assembly_script_get_time(){
