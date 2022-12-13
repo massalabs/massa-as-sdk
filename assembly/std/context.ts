@@ -75,7 +75,7 @@ export function addressStack(): Array<Address> {
  */
 export function caller(): Address {
   const a = addressStack();
-  return a.length < 2 ? new Address('', false) : a[a.length - 2];
+  return a.length < 2 ? callee() : a[a.length - 2];
 }
 
 /**
