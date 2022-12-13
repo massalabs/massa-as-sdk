@@ -1,4 +1,4 @@
-import {Address} from './address';
+import { Address } from "./address";
 
 /**
  * Args for remote function call.
@@ -52,7 +52,7 @@ export class Args {
   nextAddress(): Address {
     const length = this.nextU32();
     let address = Address.fromByteArray(
-      this.serialized.slice(this.offset, this.offset + length),
+      this.serialized.slice(this.offset, this.offset + length)
     );
     this.offset += length;
     return address;
@@ -102,7 +102,7 @@ export class Args {
    */
   nextI64(): i64 {
     const value = changetype<i64>(
-      this.toU64(this.serialized, this.offset as u8),
+      this.toU64(this.serialized, this.offset as u8)
     );
     this.offset += sizeof<u64>();
     return value;
@@ -148,7 +148,7 @@ export class Args {
    */
   nextI32(): i32 {
     const value = changetype<i32>(
-      this.toU32(this.serialized, this.offset as u8),
+      this.toU32(this.serialized, this.offset as u8)
     );
     this.offset += sizeof<u32>();
     return value;
@@ -188,7 +188,7 @@ export class Args {
       this.add<u32>(str.length);
       this.serialized = this.concatArrays(
         this.serialized,
-        this.fromByteString(arg as string),
+        this.fromByteString(arg as string)
       );
     } else if (arg instanceof Uint8Array) {
       this.add<u32>(arg.length);
@@ -196,34 +196,34 @@ export class Args {
     } else if (arg instanceof u32) {
       this.serialized = this.concatArrays(
         this.serialized,
-        this.fromU32(changetype<u32>(arg)),
+        this.fromU32(changetype<u32>(arg))
       );
     } else if (arg instanceof i64) {
       this.serialized = this.concatArrays(
         this.serialized,
-        this.fromU64(changetype<u64>(arg)),
+        this.fromU64(changetype<u64>(arg))
       );
     } else if (arg instanceof u64) {
       this.serialized = this.concatArrays(
         this.serialized,
-        this.fromU64(changetype<u64>(arg)),
+        this.fromU64(changetype<u64>(arg))
       );
     } else if (arg instanceof f32) {
       this.serialized = this.concatArrays(
         this.serialized,
-        this.fromF32(changetype<f32>(arg)),
+        this.fromF32(changetype<f32>(arg))
       );
     } else if (arg instanceof f64) {
       this.serialized = this.concatArrays(
         this.serialized,
-        this.fromF64(changetype<f64>(arg)),
+        this.fromF64(changetype<f64>(arg))
       );
-    } else if (arg instanceof i32 || typeof arg == 'number') {
+    } else if (arg instanceof i32 || typeof arg == "number") {
       // doing this `const one = 1;`, variable one is instance of i32
       // and typeof number
       this.serialized = this.concatArrays(
         this.serialized,
-        this.fromU32(changetype<i32>(arg)),
+        this.fromU32(changetype<i32>(arg))
       );
     }
     return this;
@@ -268,7 +268,7 @@ export class Args {
    * @return {string}
    */
   private toByteString(byteArray: Uint8Array): string {
-    let byteString = '';
+    let byteString = "";
     for (let i = 0; i < byteArray.length; i++) {
       byteString += String.fromCharCode(byteArray[i]);
     }

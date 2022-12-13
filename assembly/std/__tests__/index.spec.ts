@@ -1,4 +1,4 @@
-import {derKeys} from '../index';
+import { derKeys } from "../index";
 
 // Ok: 1 entry; 1st vec len = 2; data: [255, 0]
 const keysSerOk1: StaticArray<u8> = [1, 0, 0, 0, 2, 255, 0];
@@ -18,8 +18,8 @@ const keysSerOk2ExpectedLenSub2: i32 = 1;
 
 const keysSerKo8: StaticArray<u8> = []; // edge case
 
-describe('index tests', () => {
-  it('derOpKeys ok 1', () => {
+describe("index tests", () => {
+  it("derOpKeys ok 1", () => {
     // log<string>("hello world");
     let res = derKeys(keysSerOk1);
 
@@ -32,7 +32,7 @@ describe('index tests', () => {
     expect(res[0][1]).toBe(0);
   });
 
-  it('derOpKeys ok 2', () => {
+  it("derOpKeys ok 2", () => {
     let res = derKeys(keysSerOk2);
     expect(res.length).toBe(keysSerOk2ExpectedLen);
     expect(res[0].length).toBe(keysSerOk2ExpectedLenSub1);
@@ -42,7 +42,7 @@ describe('index tests', () => {
     expect(res[1][0]).toBe(99);
   });
 
-  it('derOpKeys ko 8', () => {
+  it("derOpKeys ko 8", () => {
     let res8 = derKeys(keysSerKo8);
     expect(res8.length).toBe(0);
   });

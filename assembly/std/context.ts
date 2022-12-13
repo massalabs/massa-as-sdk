@@ -1,5 +1,5 @@
-import {env} from '../env/index';
-import {Address} from './address';
+import { env } from "../env/index";
+import { Address } from "./address";
 
 /**
  * Returns an array of addresses.
@@ -11,9 +11,9 @@ import {Address} from './address';
 function json2Address(str: string): Array<Address> {
   str = str.substr(1, str.length - 2);
 
-  const a = str.split(',');
+  const a = str.split(",");
   return a.map<Address>((x) =>
-    Address.fromByteString(x.substring(1, x.length - 1)),
+    Address.fromByteString(x.substring(1, x.length - 1))
   );
 }
 
