@@ -59,7 +59,7 @@ export function caller(): Address {
 /**
  * Returns callee's address.
  *
- * Callee is the smart contract of the pending function.
+ * Callee is the current smart-contract address.
  *
  * @return {Address} returns the stack element at the top of the stack
  */
