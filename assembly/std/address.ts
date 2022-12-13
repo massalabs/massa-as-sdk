@@ -1,4 +1,4 @@
-import {Valider, ByteArray} from '@massalabs/as/assembly';
+import {Valider, ByteArray} from '@massalabs/as';
 
 /**
  * A Massa's blockchain address.
