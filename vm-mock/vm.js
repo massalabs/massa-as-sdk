@@ -18,7 +18,7 @@ function mixRandomChars(length) {
   return result;
 }
 
-// Generates a 50 char length address
+// Generates a probably invalid address of 50 base58 characters
 function generateDumbAddress() {
   return 'A12' + mixRandomChars(47);
 }
