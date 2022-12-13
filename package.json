@@ -36,8 +36,7 @@
     "prepare": "husky install"
   },
   "devDependencies": {
-    "@as-pect/cli": "^8.0.0",
-    "@assemblyscript/loader": "^0.24.1",
+    "@as-pect/cli": "^8.0.1",
     "@massalabs/as": "^1.1.1-dev",
     "@typescript-eslint/eslint-plugin": "^5.29.0",
     "@typescript-eslint/parser": "^5.29.0",
