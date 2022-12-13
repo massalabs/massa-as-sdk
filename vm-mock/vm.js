@@ -67,11 +67,11 @@ let webModule;
  * @returns {?} ?
  */
 export default function createMockedABI(memory, createImports, instantiate, binary) {
-  const byteArrToString = (arr) => {
+  function byteArrToString(arr) {
     return new TextDecoder("utf-8").decode(arr);
   };
 
-  const ptrToString = (ptr) => {
+  function ptrToString(ptr) {
     return byteArrToString(webModule.__getArrayBuffer(ptr));
   };
 
@@ -79,13 +79,17 @@ export default function createMockedABI(memory, createImports, instantiate, bina
     return new Uint8Array(webModule.__getArrayBuffer(ptr)).toString();
   }
 
-  const getArrayBuffer = (ptr) => {
+  function getArrayBuffer(ptr) {
     return webModule.__getArrayBuffer(ptr);
   };
 
-  const newArrayBuffer = (buffer) => {
+  function newArrayBuffer(buffer) {
     return webModule.__newArrayBuffer(buffer);
   };
+
+  function newString(buffer) {
+    return webModule.__newString(buffer);
+  }
 
   resetLedger();
 
@@ -125,8 +129,8 @@ export default function createMockedABI(memory, createImports, instantiate, bina
         callStack = ptrToString(callstackPtr);
       },
 
-      assembly_script_generate_event(string) {
-        console.log('event: ', ptrToString(string));
+      assembly_script_generate_event(msgPtr) {
+        console.log('event: ', ptrToString(msgPtr));
       },
 
       assembly_script_set_data_for(aPtr, kPtr, vPtr) {
@@ -175,7 +179,7 @@ export default function createMockedABI(memory, createImports, instantiate, bina
       },
 
       assembly_script_get_call_stack() {
-        return webModule.__newString('[ ' + callStack + ' ]');
+        return newString('[ ' + callStack + ' ]');
       },
 
       assembly_script_unsafe_random() {
