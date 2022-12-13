@@ -348,3 +348,154 @@ export function fromBytes(arr: StaticArray<u8>): string {
   memory.copy(changetype<usize>(str), changetype<usize>(arr), arr.length);
   return str;
 }
+
+/**
+ * Converts a string into a UTF8 byte array.
+ *
+ * @param {string} byteString
+ * @return {Uint8Array}
+ */
+export function toBytesUTF8(byteString: string): Uint8Array {
+  const byteArray = new Uint8Array(byteString.length);
+  for (let i = 0; i < byteArray.length; i++) {
+    byteArray[i] = u8(byteString.charCodeAt(i));
+  }
+  return byteArray;
+}
+
+/**
+ * Converts a byte array in a string.
+ *
+ * @param {Uint8Array} byteArray the UTF8 byte array to convert
+ *
+ * @return {string}
+ */
+export function fromBytesUTF8(byteArray: Uint8Array): string {
+  let byteString = '';
+  for (let i = 0; i < byteArray.length; i++) {
+    byteString += String.fromCharCode(byteArray[i]);
+  }
+  return byteString;
+}
+
+/**
+ * Converts a f64 in a bytearray.
+ *
+ * @param {f64} number the number to convert
+ *
+ * @return {Uint8Array} the converted bytearray
+ */
+export function fromF64(number: f64): Uint8Array {
+  return fromU64(bswap<u64>(reinterpret<u64>(number)));
+}
+
+/**
+ * Converts a f32 in a bytearray.
+ *
+ * @param {f32} number the number to convert
+ *
+ * @return {Uint8Array} the converted bytearray
+ */
+export function fromF32(number: f32): Uint8Array {
+  return fromU32(bswap<u32>(reinterpret<u32>(number)));
+}
+
+/**
+ * Converts a u64 in a bytearray.
+ *
+ * @param {u64} number the number to convert
+ *
+ * @return {Uint8Array} the converted bytearray
+ */
+export function fromU64(number: u64): Uint8Array {
+  let byteArray = new Uint8Array(8);
+  let firstPart: u32 = (number >> 32) as u32;
+  byteArray.set(fromU32(firstPart), 4);
+  byteArray.set(fromU32(number as u32));
+  return byteArray;
+}
+
+/**
+ * Converts a u32 in a bytearray.
+ *
+ * @param {u32} number the number to convert
+ *
+ * @return {Uint8Array} the converted bytearray
+ */
+export function fromU32(number: u32): Uint8Array {
+  const byteArray = new Uint8Array(4);
+  for (let i = 0; i < 4; i++) {
+    byteArray[i] = u8(number >> (i * 8));
+  }
+  return byteArray;
+}
+
+/**
+ * Converts a byte array into a f64.
+ *
+ * @param {Uint8Array} byteArray
+ * @param {u8} offset
+ * @return {f64}
+ */
+export function toF64(byteArray: Uint8Array, offset: u8 = 0): f64 {
+  if (byteArray.length - offset < 8) {
+    return <f64>NaN;
+  }
+
+  return reinterpret<f64>(bswap<u64>(toU64(byteArray, offset)));
+}
+
+/**
+ * Converts a byte array into a f32.
+ *
+ * @param {Uint8Array} byteArray
+ * @param {u8} offset
+ * @return {f32}
+ */
+export function toF32(byteArray: Uint8Array, offset: u8 = 0): f32 {
+  if (byteArray.length - offset < 4) {
+    return <f32>NaN;
+  }
+
+  return reinterpret<f32>(bswap<u32>(toU32(byteArray, offset)));
+}
+
+/**
+ * Converts a byte array into a u64.
+ *
+ * @param {Uint8Array} byteArray
+ * @param {u8} offset
+ * @return {u64}
+ */
+export function toU64(byteArray: Uint8Array, offset: u8 = 0): u64 {
+  if (byteArray.length - offset < sizeof<u64>()) {
+    return <u64>NaN;
+  }
+
+  let x: u64 = 0;
+  x = (x | toU32(byteArray, offset + 4)) << 32;
+  x = x | toU32(byteArray, offset);
+  return x;
+}
+
+/**
+ * Converts a byte array into a u32.
+ *
+ * @param {Uint8Array} byteArray
+ * @param {u8} offset
+ * @return {u32}
+ */
+export function toU32(byteArray: Uint8Array, offset: u8 = 0): u32 {
+  if (byteArray.length - offset < sizeof<u32>()) {
+    return <u32>NaN;
+  }
+
+  let x: u32 = 0;
+  for (let i = 3; i >= 1; --i) {
+    x = (x | byteArray[offset + i]) << 8;
+  }
+  x = x | byteArray[offset];
+  return x;
+}
+
+export const NoArg: Args = new Args();

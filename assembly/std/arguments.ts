@@ -1,5 +1,16 @@
 import {Address} from './address';
-
+import {
+  fromBytesUTF8,
+  fromF32,
+  fromF64,
+  fromU32,
+  fromU64,
+  toBytesUTF8,
+  toF32,
+  toF64,
+  toU32,
+  toU64,
+} from './index';
 /**
  * Args for remote function call.
  *
@@ -69,7 +80,7 @@ export class Args {
     const end = offset + length;
     const result = this.serialized.slice(offset, end);
     this.offset = end;
-    return this.toByteString(result);
+    return fromBytesUTF8(result);
   }
 
   /**
@@ -90,7 +101,7 @@ export class Args {
    * @return {u64}
    */
   nextU64(): u64 {
-    const value = this.toU64(this.serialized, this.offset as u8);
+    const value = toU64(this.serialized, this.offset as u8);
     this.offset += sizeof<u64>();
     return value;
   }
@@ -101,9 +112,7 @@ export class Args {
    * @return {i64}
    */
   nextI64(): i64 {
-    const value = changetype<i64>(
-      this.toU64(this.serialized, this.offset as u8),
-    );
+    const value = changetype<i64>(toU64(this.serialized, this.offset as u8));
     this.offset += sizeof<u64>();
     return value;
   }
@@ -114,7 +123,7 @@ export class Args {
    * @return {f64}
    */
   nextF64(): f64 {
-    const value = this.toF64(this.serialized, this.offset as u8);
+    const value = toF64(this.serialized, this.offset as u8);
     this.offset += sizeof<u64>();
     return value;
   }
@@ -125,7 +134,7 @@ export class Args {
    * @return {f32}
    */
   nextF32(): f32 {
-    const value = this.toF32(this.serialized, this.offset as u8);
+    const value = toF32(this.serialized, this.offset as u8);
     this.offset += sizeof<u32>();
     return value;
   }
@@ -136,7 +145,7 @@ export class Args {
    * @return {u32}
    */
   nextU32(): u32 {
-    const value = this.toU32(this.serialized, this.offset as u8);
+    const value = toU32(this.serialized, this.offset as u8);
     this.offset += sizeof<u32>();
     return value;
   }
@@ -147,9 +156,7 @@ export class Args {
    * @return {i32}
    */
   nextI32(): i32 {
-    const value = changetype<i32>(
-      this.toU32(this.serialized, this.offset as u8),
-    );
+    const value = changetype<i32>(toU32(this.serialized, this.offset as u8));
     this.offset += sizeof<u32>();
     return value;
   }
@@ -188,7 +195,7 @@ export class Args {
       this.add<u32>(str.length);
       this.serialized = this.concatArrays(
         this.serialized,
-        this.fromByteString(arg as string),
+        toBytesUTF8(arg as string),
       );
     } else if (arg instanceof Uint8Array) {
       this.add<u32>(arg.length);
@@ -196,34 +203,34 @@ export class Args {
     } else if (arg instanceof u32) {
       this.serialized = this.concatArrays(
         this.serialized,
-        this.fromU32(changetype<u32>(arg)),
+        fromU32(changetype<u32>(arg)),
       );
     } else if (arg instanceof i64) {
       this.serialized = this.concatArrays(
         this.serialized,
-        this.fromU64(changetype<u64>(arg)),
+        fromU64(changetype<u64>(arg)),
       );
     } else if (arg instanceof u64) {
       this.serialized = this.concatArrays(
         this.serialized,
-        this.fromU64(changetype<u64>(arg)),
+        fromU64(changetype<u64>(arg)),
       );
     } else if (arg instanceof f32) {
       this.serialized = this.concatArrays(
         this.serialized,
-        this.fromF32(changetype<f32>(arg)),
+        fromF32(changetype<f32>(arg)),
       );
     } else if (arg instanceof f64) {
       this.serialized = this.concatArrays(
         this.serialized,
-        this.fromF64(changetype<f64>(arg)),
+        fromF64(changetype<f64>(arg)),
       );
     } else if (arg instanceof i32 || typeof arg == 'number') {
       // doing this `const one = 1;`, variable one is instance of i32
       // and typeof number
       this.serialized = this.concatArrays(
         this.serialized,
-        this.fromU32(changetype<i32>(arg)),
+        fromU32(changetype<i32>(arg)),
       );
     }
     return this;
@@ -245,155 +252,4 @@ export class Args {
     c.set(b, a.length);
     return c;
   }
-
-  /**
-   * Converts a string into a byte array.
-   *
-   * @param {string} byteString
-   * @return {Uint8Array}
-   */
-  private fromByteString(byteString: string): Uint8Array {
-    const byteArray = new Uint8Array(byteString.length);
-    for (let i = 0; i < byteArray.length; i++) {
-      byteArray[i] = u8(byteString.charCodeAt(i));
-    }
-    return byteArray;
-  }
-
-  /**
-   * Converts a byte array in a string.
-   *
-   * @param {Uint8Array} byteArray the byte array to convert
-   *
-   * @return {string}
-   */
-  private toByteString(byteArray: Uint8Array): string {
-    let byteString = '';
-    for (let i = 0; i < byteArray.length; i++) {
-      byteString += String.fromCharCode(byteArray[i]);
-    }
-    return byteString;
-  }
-
-  /**
-   * Converts a f64 in a bytearray.
-   *
-   * @param {f64} number the number to convert
-   *
-   * @return {Uint8Array} the converted bytearray
-   */
-  private fromF64(number: f64): Uint8Array {
-    return this.fromU64(bswap<u64>(reinterpret<u64>(number)));
-  }
-
-  /**
-   * Converts a f32 in a bytearray.
-   *
-   * @param {f32} number the number to convert
-   *
-   * @return {Uint8Array} the converted bytearray
-   */
-  private fromF32(number: f32): Uint8Array {
-    return this.fromU32(bswap<u32>(reinterpret<u32>(number)));
-  }
-
-  /**
-   * Converts a u64 in a bytearray.
-   *
-   * @param {u64} number the number to convert
-   *
-   * @return {Uint8Array} the converted bytearray
-   */
-  private fromU64(number: u64): Uint8Array {
-    let byteArray = new Uint8Array(8);
-    let firstPart: u32 = (number >> 32) as u32;
-    byteArray.set(this.fromU32(firstPart), 4);
-    byteArray.set(this.fromU32(number as u32));
-    return byteArray;
-  }
-
-  /**
-   * Converts a u32 in a bytearray.
-   *
-   * @param {u32} number the number to convert
-   *
-   * @return {Uint8Array} the converted bytearray
-   */
-  private fromU32(number: u32): Uint8Array {
-    const byteArray = new Uint8Array(4);
-    for (let i = 0; i < 4; i++) {
-      byteArray[i] = u8(number >> (i * 8));
-    }
-    return byteArray;
-  }
-
-  /**
-   * Converts a byte array into a f64.
-   *
-   * @param {Uint8Array} byteArray
-   * @param {u8} offset
-   * @return {f64}
-   */
-  private toF64(byteArray: Uint8Array, offset: u8 = 0): f64 {
-    if (byteArray.length - offset < 8) {
-      return <f64>NaN;
-    }
-
-    return reinterpret<f64>(bswap<u64>(this.toU64(byteArray, offset)));
-  }
-
-  /**
-   * Converts a byte array into a f32.
-   *
-   * @param {Uint8Array} byteArray
-   * @param {u8} offset
-   * @return {f32}
-   */
-  private toF32(byteArray: Uint8Array, offset: u8 = 0): f32 {
-    if (byteArray.length - offset < 4) {
-      return <f32>NaN;
-    }
-
-    return reinterpret<f32>(bswap<u32>(this.toU32(byteArray, offset)));
-  }
-
-  /**
-   * Converts a byte array into a u64.
-   *
-   * @param {Uint8Array} byteArray
-   * @param {u8} offset
-   * @return {u64}
-   */
-  private toU64(byteArray: Uint8Array, offset: u8 = 0): u64 {
-    if (byteArray.length - offset < sizeof<u64>()) {
-      return <u64>NaN;
-    }
-
-    let x: u64 = 0;
-    x = (x | this.toU32(byteArray, offset + 4)) << 32;
-    x = x | this.toU32(byteArray, offset);
-    return x;
-  }
-
-  /**
-   * Converts a byte array into a u32.
-   *
-   * @param {Uint8Array} byteArray
-   * @param {u8} offset
-   * @return {u32}
-   */
-  private toU32(byteArray: Uint8Array, offset: u8 = 0): u32 {
-    if (byteArray.length - offset < sizeof<u32>()) {
-      return <u32>NaN;
-    }
-
-    let x: u32 = 0;
-    for (let i = 3; i >= 1; --i) {
-      x = (x | byteArray[offset + i]) << 8;
-    }
-    x = x | byteArray[offset];
-    return x;
-  }
 }
-
-export const NoArg: Args = new Args();
