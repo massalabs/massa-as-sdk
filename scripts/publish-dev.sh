@@ -1,9 +1,6 @@
 #!/bin/bash
 set -e
 
-source ./scripts/enable-git-ssh.sh
-set-git-ssh
-
 npm version --preid dev --no-git-tag-version --no-commit-hooks prepatch
 #Use timestamp as package suffix
 TIME=$(date -u +%Y%m%d%H%M%S)
@@ -14,4 +11,4 @@ echo publishing @massalabs/massa-as-sdk@$PUBLISH_VERSION
 # disable husky
 npm pkg delete scripts.prepare
 
-npm publish --tag dev
+npm publish --access public --tag dev

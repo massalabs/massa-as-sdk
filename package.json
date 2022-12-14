@@ -16,11 +16,6 @@
     "type": "git",
     "url": "git+https://github.com/massalabs/massa-as-sdk"
   },
-  "private": false,
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
-  },
   "scripts": {
     "test": "asp",
     "test:ci": "asp --summary",
@@ -38,6 +33,7 @@
   "devDependencies": {
     "@as-pect/cli": "^8.0.1",
     "@massalabs/as": "^1.1.1-dev",
+    "@massalabs/as-transformer": "^0.1.1-dev",
     "@typescript-eslint/eslint-plugin": "^5.29.0",
     "@typescript-eslint/parser": "^5.29.0",
     "assemblyscript-prettier": "^1.0.6",
