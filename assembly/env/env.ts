@@ -10,6 +10,26 @@ export namespace env {
     coins: u64,
   ): StaticArray<u8>;
 
+  @external("massa", "assembly_script_local_call")
+  export declare function localCall(
+    address: string,
+    func: string,
+    param: StaticArray<u8>,
+  ): StaticArray<u8>;
+
+  @external("massa", "assembly_script_local_execution")
+  export declare function localExecution(
+    bytecode: StaticArray<u8>,
+    func: string,
+    param: StaticArray<u8>,
+  ): StaticArray<u8>;
+
+  @external("massa", "assembly_script_get_bytecode")
+  export declare function getBytecode(): StaticArray<u8>;
+
+  @external("massa", "assembly_script_get_bytecode_for")
+  export declare function getBytecodeFor(address: string): StaticArray<u8>;
+
   @external("massa", "assembly_script_get_remaining_gas")
   export declare function remainingGas(): u64;
 

@@ -25,7 +25,7 @@ export function print(message: string): void {
  * @param {Args} args
  * @param {u64} coins // TODO define usage
  *
- * @return {string} function returned value (serialized)
+ * @return {StaticArray<u8>} function returned value
  */
 export function call(
   at: Address,
@@ -34,6 +34,64 @@ export function call(
   coins: u64,
 ): StaticArray<u8> {
   return env.call(at.toByteString(), functionName, args.serialize(), coins);
+}
+
+/**
+ * Calls a remote function located at given address within the current context.
+ *
+ * Note: arguments serialization is to be handled by the caller and the callee.
+ *
+ * @param {Address} at
+ * @param {string} functionName
+ * @param {Args} args
+ *
+ * @return {StaticArray<u8>} function returned value
+ */
+export function localCall(
+  at: Address,
+  functionName: string,
+  args: Args,
+): StaticArray<u8> {
+  return env.localCall(at.toByteString(), functionName, args.serialize());
+}
+
+/**
+ * Executes a given bytecode within the current context.
+ *
+ * Note: arguments serialization is to be handled by the caller and the callee.
+ *
+ * @param {StaticArray<u8>} bytecode
+ * @param {string} functionName
+ * @param {Args} args
+ *
+ * @return {StaticArray<u8>} function returned value
+ */
+export function localExecution(
+  bytecode: StaticArray<u8>,
+  functionName: string,
+  args: Args,
+): StaticArray<u8> {
+  return env.localExecution(bytecode, functionName, args.serialize());
+}
+
+/**
+ * Get the bytecode of the current address
+ *
+ * @return {StaticArray<u8>} bytecode
+ */
+export function getBytecode(): Array<StaticArray<u8>> {
+  return derKeys(env.getBytecode());
+}
+
+/**
+ * Get the bytecode of the current address
+ *
+ * @param {Address} targetAddress
+ *
+ * @return {StaticArray<u8>} bytecode
+ */
+export function getBytecodeFor(targetAddress: Address): Array<StaticArray<u8>> {
+  return derKeys(env.getBytecodeFor(targetAddress.toByteString()));
 }
 
 /**
