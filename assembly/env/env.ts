@@ -1,3 +1,5 @@
+import {Address} from '../std';
+
 export namespace env {
   @external("massa", "assembly_script_print")
   export declare function print(message: string): void;
@@ -29,6 +31,12 @@ export namespace env {
 
   @external("massa", "assembly_script_get_bytecode_for")
   export declare function getBytecodeFor(address: string): StaticArray<u8>;
+
+  @external("massa", "assembly_caller_has_write_access")
+  export declare function callerHasWriteAccess(): bool;
+
+  @external("massa", "assembly_function_exists")
+  export declare function functionExists(address: string, func: string): bool;
 
   @external("massa", "assembly_script_get_remaining_gas")
   export declare function remainingGas(): u64;
