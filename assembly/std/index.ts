@@ -95,20 +95,20 @@ export function getBytecodeFor(address: Address): StaticArray<u8> {
 }
 
 /**
- * Get the bytecode of the current address
+ * Check if the SC caller has a write access on it
  *
- * @return {StaticArray<u8>} bytecode
+ * @return {bool}
  */
 export function callerHasWriteAccess(): bool {
   return env.callerHasWriteAccess();
 }
 
 /**
- * Get the bytecode of the current address
+ * Check if `function` exists in the bytecode stored at `address`
  *
  * @param {Address} addr
  *
- * @return {StaticArray<u8>} bytecode
+ * @return {bool}
  */
 export function functionExists(address: Address, func: string): bool {
   return env.functionExists(address.toByteString(), func);

@@ -1,5 +1,3 @@
-import {Address} from '../std';
-
 export namespace env {
   @external("massa", "assembly_script_print")
   export declare function print(message: string): void;
