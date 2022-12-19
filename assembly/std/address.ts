@@ -1,4 +1,4 @@
-import {Valider, ByteArray} from '@massalabs/as';
+import { Valider, ByteArray } from "@massalabs/as";
 
 /**
  * A Massa's blockchain address.
@@ -14,7 +14,7 @@ export class Address implements Valider {
    * @param {string} bs - Byte string.
    * @param {bool} isValid - default true
    */
-  constructor(bs: string = '', isValid: bool = true) {
+  constructor(bs: string = "", isValid: bool = true) {
     this._value = bs;
     this._isValid = isValid;
   }
@@ -44,7 +44,7 @@ export class Address implements Valider {
     const length = u8(bs.codePointAt(begin));
     // return length;
     this._value = Address.fromByteString(
-      bs.slice(begin + 1, begin + length + 1),
+      bs.slice(begin + 1, begin + length + 1)
     ).toByteString();
     return begin + length + 1;
   }
@@ -59,7 +59,7 @@ export class Address implements Valider {
    */
   toStringSegment(): string {
     return String.fromCharCode(u8(this._value.length)).concat(
-      this.toByteString(),
+      this.toByteString()
     );
   }
 

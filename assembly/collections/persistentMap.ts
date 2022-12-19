@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
-import {Storage} from '../std/index';
+import { Storage } from "../std/index";
 
-export const _KEY_ELEMENT_SUFFIX = '::';
+export const _KEY_ELEMENT_SUFFIX = "::";
 
 /**
  * This class is one of several convenience collections built on top of the `Storage` class
@@ -126,7 +126,7 @@ export class PersistentMap<K, V> {
       return parseFloat(Storage.get(this._key(key)));
     } else if (isBoolean<V>()) {
       // @ts-ignore
-      return Storage.get(this._key(key)).toLowerCase() == 'true' ? true : false;
+      return Storage.get(this._key(key)).toLowerCase() == "true" ? true : false;
     } else {
       // @ts-ignore
       return null;
@@ -152,9 +152,9 @@ export class PersistentMap<K, V> {
    * @return {V} Value for the given key or the default value.
    */
   getSome(key: K): V {
-    assert(this.contains(key), 'key not found');
+    assert(this.contains(key), "key not found");
     const res = this.get(key, null);
-    assert(res, 'bad result');
+    assert(res, "bad result");
     return <V>res;
   }
 
