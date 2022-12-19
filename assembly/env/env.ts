@@ -14,14 +14,14 @@ export namespace env {
   export declare function localCall(
     address: string,
     func: string,
-    param: StaticArray<u8>,
+    param: StaticArray<u8>
   ): StaticArray<u8>;
 
   @external("massa", "assembly_script_local_execution")
   export declare function localExecution(
     bytecode: StaticArray<u8>,
     func: string,
-    param: StaticArray<u8>,
+    param: StaticArray<u8>
   ): StaticArray<u8>;
 
   @external("massa", "assembly_script_get_bytecode")

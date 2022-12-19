@@ -50,7 +50,7 @@ export function call(
 export function localCall(
   at: Address,
   functionName: string,
-  args: Args,
+  args: Args
 ): StaticArray<u8> {
   return env.localCall(at.toByteString(), functionName, args.serialize());
 }
@@ -69,7 +69,7 @@ export function localCall(
 export function localExecution(
   bytecode: StaticArray<u8>,
   functionName: string,
-  args: Args,
+  args: Args
 ): StaticArray<u8> {
   return env.localExecution(bytecode, functionName, args.serialize());
 }
