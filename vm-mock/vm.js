@@ -68,7 +68,7 @@ let webModule;
  */
 export default function createMockedABI(memory, createImports, instantiate, binary) {
   function byteArrToString(arr) {
-    return new TextDecoder("utf-8").decode(arr);
+    return new TextDecoder("utf-16").decode(arr);
   };
 
   function ptrToString(ptr) {
