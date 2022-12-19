@@ -79,19 +79,39 @@ export function localExecution(
  *
  * @return {StaticArray<u8>} bytecode
  */
-export function getBytecode(): Array<StaticArray<u8>> {
-  return derKeys(env.getBytecode());
+export function getBytecode(): StaticArray<u8> {
+  return env.getBytecode();
 }
 
 /**
  * Get the bytecode of the current address
  *
- * @param {Address} targetAddress
+ * @param {Address} address
  *
  * @return {StaticArray<u8>} bytecode
  */
-export function getBytecodeFor(targetAddress: Address): Array<StaticArray<u8>> {
-  return derKeys(env.getBytecodeFor(targetAddress.toByteString()));
+export function getBytecodeFor(address: Address): StaticArray<u8> {
+  return env.getBytecodeFor(address.toByteString());
+}
+
+/**
+ * Check if the SC caller has a write access on it
+ *
+ * @return {bool}
+ */
+export function callerHasWriteAccess(): bool {
+  return env.callerHasWriteAccess();
+}
+
+/**
+ * Check if `function` exists in the bytecode stored at `address`
+ *
+ * @param {Address} addr
+ *
+ * @return {bool}
+ */
+export function functionExists(address: Address, func: string): bool {
+  return env.functionExists(address.toByteString(), func);
 }
 
 /**
