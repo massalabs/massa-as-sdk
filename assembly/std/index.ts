@@ -2,7 +2,7 @@ import { env } from "../env/index";
 import { Address } from "./address";
 import * as Storage from "./storage";
 import * as Context from "./context";
-import { Args } from "./arguments";
+import { Args } from "@massalabs/as/assembly/argument";
 
 export { Address, Storage, Context, Args };
 
