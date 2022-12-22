@@ -20,6 +20,7 @@ const valueTest = toBytes("value");
 
 describe("Testing mocked Storage and CallStack", () => {
   test("Testing the callstack", () => {
+    // By convention addressStack returns always the two addresses.
     const callStack = Context.addressStack();
     expect(callStack[0].toByteString()).toBe(
       "A12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq"
