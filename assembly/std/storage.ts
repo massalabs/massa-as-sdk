@@ -1,7 +1,7 @@
 import { toBytes, fromBytes } from ".";
 import { env } from "../env";
 import { Address } from "./address";
-import { Args } from "@massalabs/as/assembly/argument";
+import { Args } from "@massalabs/as-types";
 
 /**
  * Converts given value to StaticArray<u8> to match datastore expected format.
