@@ -54,6 +54,6 @@ describe("Persistent Map tests", () => {
     assert<bool>(map.size() === 1, "size must be 1");
 
     // key should not be there anymore
-    assert<bool>(!map.get(key), "key must have been deleted");
+    assert<bool>(!map.get(key), `key must have been deleted`);
   });
 });

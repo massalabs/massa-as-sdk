@@ -178,6 +178,16 @@ export default function createMockedABI(memory, createImports, instantiate, bina
         }
       },
 
+      assembly_script_delete_data(kPtr) {
+        const k = ptrToUint8ArrayString(kPtr);
+        if (ledger.has(contractAddress)) {
+          const addressStorage = ledger.get(contractAddress).storage;
+          if (addressStorage.has(k)) {
+            addressStorage.delete(k);
+          }
+        }
+      },
+
       assembly_script_get_call_stack() {
         return newString('[ ' + callStack + ' ]');
       },
