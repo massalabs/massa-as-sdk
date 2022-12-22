@@ -1,5 +1,5 @@
 import { Storage } from "..";
-import { Args } from "../arguments";
+import { Args } from "@massalabs/as/assembly/argument";
 
 describe("Storage tests", () => {
   it("checks the set command", () => {
