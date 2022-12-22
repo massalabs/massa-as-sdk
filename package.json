@@ -32,7 +32,6 @@
   },
   "devDependencies": {
     "@as-pect/cli": "^8.0.1",
-    "@massalabs/as": "^1.1.1-dev",
     "@massalabs/as-transformer": "^0.1.1-dev",
     "@massalabs/prettier-config-as": "^0.0.2",
     "@typescript-eslint/eslint-plugin": "^5.29.0",
