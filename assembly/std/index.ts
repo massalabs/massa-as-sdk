@@ -4,7 +4,7 @@ import * as Storage from "./storage";
 import * as Context from "./context";
 import { Args } from "@massalabs/as-types";
 
-export { Address, Storage, Context, Args };
+export { Address, Storage, Context };
 
 /**
  * Prints in the node logs
