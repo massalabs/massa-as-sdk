@@ -57,7 +57,7 @@ export function ownedAddresses(): Array<Address> {
  * of the execution of the target function: bottom [C, D] top. Note: C and D can be the same.
  *
  * Local execution
- * local executions don’t change the stack: they allow executing foreign code in the current context.
+ * local executions don’t change the stack, they allow executing foreign code in the current context.
  *
  * @return {Array<Address>}
  */
