@@ -5,9 +5,9 @@ import {
   toBytes,
   Context,
   fromBytes,
-  Args,
 } from "../std";
 import { resetStorage } from "../vm-mock/storage";
+import { Args } from "@massalabs/as-types";
 
 const testAddress = new Address(
   "A12E6N5BFAdC2wyiBV6VJjqkWhpz1kLVp2XpbRdSnL1mKjCWT6oR"
