@@ -109,7 +109,6 @@ node_modules/
 *.map
 *.wat
 *.wasm
-
+docs
 # Jetbrains IDE
 .idea
-

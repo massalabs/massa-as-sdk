@@ -28,7 +28,8 @@
     "release:patch": "npm version patch -m 'Release version %s'",
     "release:minor": "npm version minor -m 'Release version %s'",
     "release:major": "npm version major -m 'Release version %s'",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "doc": "npx typedoc assembly/index.ts --name test --excludeExternals --includeVersion --out docs/documentation/html --plugin none --tsconfig assembly/tsconfig.json --skipErrorChecking"
   },
   "devDependencies": {
     "@as-pect/cli": "^8.0.1",
