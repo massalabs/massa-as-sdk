@@ -64,7 +64,7 @@ let webModule;
  * @param {?} instantiate
  * @param {?} binary
  *
- * @returns {?} ?
+ * @return {?} ?
  */
 export default function createMockedABI(memory, createImports, instantiate, binary) {
   function byteArrToString(arr) {

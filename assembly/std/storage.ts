@@ -6,9 +6,8 @@ import { Args } from '@massalabs/as-types';
 /**
  * Converts given value to StaticArray<u8> to match datastore expected format.
  *
- * @template {string|Args|StaticArray<u8>} T - string, Args or StaticArray<u8>
- * @param {T} value
- * @returns {StaticArray<u8>}
+ * @typeParam T - `string`, `Args` or `StaticArray<u8>`
+ * @param value -
  */
 function toDatastoreFormat<T>(value: T): StaticArray<u8> {
   if (idof<T>() == idof<StaticArray<u8>>()) {
@@ -35,9 +34,8 @@ function toDatastoreFormat<T>(value: T): StaticArray<u8> {
 /**
  * Converts given datastore retrieved value to wanted format.
  *
- * @template {string|Args|StaticArray<u8>} T - string, Args or StaticArray<u8>
- * @param {StaticArray<u8>} value
- * @returns {T}
+ * @typeParam T - `string`, `Args` or `StaticArray<u8>`
+ * @param value -
  */
 function fromDatastoreFormat<T>(value: StaticArray<u8>): T {
   if (idof<T>() == idof<StaticArray<u8>>()) {
@@ -66,9 +64,9 @@ function fromDatastoreFormat<T>(value: StaticArray<u8>): T {
  *
  * Note: Existing entries are overwritten and missing ones are created.
  *
- * @template {string|Args|StaticArray<u8>} T - string, Args or StaticArray<u8>
- * @param {T} key
- * @param {T} value
+ * @typeParam T - `string`, `Args` or `StaticArray<u8>`
+ * @param key -
+ * @param value -
  */
 export function set<T>(key: T, value: T): void {
   env.set(toDatastoreFormat(key), toDatastoreFormat<T>(value));
@@ -80,10 +78,10 @@ export function set<T>(key: T, value: T): void {
  *
  * TODO: explains security mechanisms
  *
- * @template {string|Args|StaticArray<u8>} T - string, Args or StaticArray<u8>
- * @param {Address} address
- * @param {T} key
- * @param {T} value
+ * @typeParam T - `string`, `Args` or `StaticArray<u8>`
+ * @param address -
+ * @param key -
+ * @param value -
  */
 export function setOf<T>(address: Address, key: T, value: T): void {
   env.setOf(
@@ -98,9 +96,8 @@ export function setOf<T>(address: Address, key: T, value: T): void {
  *
  * TODO: explains what happens on missing key.
  *
- * @template {string|Args|StaticArray<u8>} T - string, Args or StaticArray<u8>
- * @param {T} key
- * @return {T}
+ * @typeParam T - `string`, `Args` or `StaticArray<u8>`
+ * @param key -
  */
 export function get<T>(key: T): T {
   const value: StaticArray<u8> = env.get(toDatastoreFormat(key));
@@ -113,10 +110,9 @@ export function get<T>(key: T): T {
  *
  * TODO: explains what happens on missing key.
  *
- * @template {string|Args|StaticArray<u8>} T - string, Args or StaticArray<u8>
- * @param {Address} address
- * @param {T} key
- * @return {T}
+ * @typeParam T - `string`, `Args` or `StaticArray<u8>`
+ * @param address -
+ * @param key -
  */
 export function getOf<T>(address: Address, key: T): T {
   const value: StaticArray<u8> = env.getOf(
@@ -133,8 +129,8 @@ export function getOf<T>(address: Address, key: T): T {
  * TODO: explains what happens on missing key.
  * TODO: explains security mechanisms
  *
- * @template {string|Args|StaticArray<u8>} T - string, Args or StaticArray<u8>
- * @param {T} key
+ * @typeParam T - `string`, `Args` or `StaticArray<u8>`
+ * @param key -
  */
 export function del<T>(key: T): void {
   env.del(toDatastoreFormat(key));
@@ -146,9 +142,9 @@ export function del<T>(key: T): void {
  * TODO: explains what happens on missing key.
  * TODO: explains security mechanisms
  *
- * @template {string|Args|StaticArray<u8>} T - string, Args or StaticArray<u8>
- * @param {Address} address
- * @param {T} key
+ * @typeParam T - `string`, `Args` or `StaticArray<u8>`
+ * @param address -
+ * @param key -
  */
 export function deleteOf<T>(address: Address, key: T): void {
   env.deleteOf(address.toByteString(), toDatastoreFormat(key));
@@ -160,9 +156,9 @@ export function deleteOf<T>(address: Address, key: T): void {
  *
  * Note: do nothing if key is absent.
  *
- * @template {string|Args|StaticArray<u8>} T - string, Args or StaticArray<u8>
- * @param {T} key
- * @param {T} value
+ * @typeParam T - `string`, `Args` or `StaticArray<u8>`
+ * @param key -
+ * @param value -
  */
 export function append<T>(key: T, value: T): void {
   env.append(toDatastoreFormat(key), toDatastoreFormat(value));
@@ -175,10 +171,10 @@ export function append<T>(key: T, value: T): void {
  * Note: do nothing if key is absent.
  * TODO: explains security mechanisms
  *
- * @template {string|Args|StaticArray<u8>} T - string, Args or StaticArray<u8>
- * @param {Address} address target address
- * @param {T} key
- * @param {T} value value to append
+ * @typeParam T - `string`, `Args` or `StaticArray<u8>`
+ * @param address - target address -
+ * @param key -
+ * @param value - value to append -
  */
 export function appendOf<T>(address: Address, key: T, value: T): void {
   env.appendOf(
@@ -192,9 +188,8 @@ export function appendOf<T>(address: Address, key: T, value: T): void {
  * Checks if the (key, value) exists in the datastore
  * of the callee's address.
  *
- * @template {string|Args|StaticArray<u8>} T - string, Args or StaticArray<u8>
- * @param {T} key
- * @return {bool}
+ * @typeParam T - `string`, `Args` or `StaticArray<u8>`
+ * @param key -
  */
 export function has<T>(key: T): bool {
   return env.has(toDatastoreFormat(key));
@@ -204,11 +199,10 @@ export function has<T>(key: T): bool {
  * Checks if the (key, value) exists in the datastore
  * of the given address.
  *
- * @template {string|Args|StaticArray<u8>} T - string, Args or StaticArray<u8>
- * @param {Address} address
- * @param {T} key
+ * @typeParam T - `string`, `Args` or `StaticArray<u8>`
+ * @param address -
+ * @param key -
  *
- * @return {bool}
  */
 export function hasOf<T>(address: Address, key: T): bool {
   return env.hasOf(address.toByteString(), toDatastoreFormat(key));
@@ -219,7 +213,7 @@ export function hasOf<T>(address: Address, key: T): bool {
  *
  * TODO: explains failure consequences.
  *
- * @param {StaticArray<u8>} bytecode
+ * @param bytecode -
  */
 export function setBytecode(bytecode: StaticArray<u8>): void {
   env.setBytecode(bytecode);
@@ -228,10 +222,10 @@ export function setBytecode(bytecode: StaticArray<u8>): void {
 /**
  *  Sets the executable bytecode of the given address.
  *
- * TODO: explains security mecanisms.
+ * TODO: explains security mechanisms.
  *
- * @param {Address} address target address
- * @param {StaticArray<u8>} bytecode
+ * @param address - target address -
+ * @param bytecode -
  */
 export function setBytecodeOf(
   address: Address,

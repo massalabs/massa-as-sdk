@@ -11,8 +11,8 @@ export class Address implements Valider {
   /**
    * Creates a new Address;
    *
-   * @param {string} bs - Byte string.
-   * @param {bool} isValid - default true
+   * @param bs - Byte string.
+   * @param isValid - default true
    */
   constructor(bs: string = '', isValid: bool = true) {
     this._value = bs;
@@ -23,8 +23,6 @@ export class Address implements Valider {
    * Returns if the Address is still valid.
    *
    * see https://github.com/massalabs/massa-sc-runtime/issues/142
-   *
-   * @return {bool}
    */
   isValid(): bool {
     return this._isValid;
@@ -36,9 +34,8 @@ export class Address implements Valider {
    *
    * The string segment can contains more thant on serialized element.
    *
-   * @param {string} bs
-   * @param {i32} begin
-   * @return {i32}
+   * @param bs -
+   * @param begin -
    */
   fromStringSegment(bs: string, begin: i32 = 0): i32 {
     const length = u8(bs.codePointAt(begin));
@@ -54,8 +51,6 @@ export class Address implements Valider {
    *
    * The string segment can be concatenated with others
    * to serialize multiple elements.
-   *
-   * @return {string}
    */
   toStringSegment(): string {
     return String.fromCharCode(u8(this._value.length)).concat(
@@ -66,9 +61,7 @@ export class Address implements Valider {
   /**
    * Returns an Address from a byte string.
    *
-   * @param {string} bs - Byte string
-   *
-   * @return {Address}
+   * @param bs - Byte string
    */
   static fromByteString(bs: string): Address {
     return new Address(bs);
@@ -76,8 +69,6 @@ export class Address implements Valider {
 
   /**
    * Serialize to byte string.
-   *
-   * @return {string}
    */
   toByteString(): string {
     return this._value;
@@ -86,9 +77,7 @@ export class Address implements Valider {
   /**
    * Returns an Address from a byte array.
    *
-   * @param {string} a - Byte array
-   *
-   * @return {Address}
+   * @param a - Byte array
    */
   static fromByteArray(a: Uint8Array): Address {
     return this.fromByteString(ByteArray.fromUint8Array(a).toByteString());
@@ -96,7 +85,6 @@ export class Address implements Valider {
 
   /**
    * Serialize to ByteArray.
-   * @return {ByteArray}
    */
   toByteArray(): ByteArray {
     return ByteArray.fromByteString(this._value);
@@ -105,8 +93,7 @@ export class Address implements Valider {
   /**
    * Tests if two addresses are identical.
    *
-   * @param {Address} other
-   * @return {boolean}
+   * @param other -
    */
   @operator('==')
   equals(other: Address): boolean {
@@ -116,8 +103,7 @@ export class Address implements Valider {
   /**
    * Tests if two addresses are different.
    *
-   * @param {Address} other
-   * @return {boolean}
+   * @param other -
    */
   @operator('!=')
   notEqual(other: Address): boolean {
