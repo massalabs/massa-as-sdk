@@ -7,6 +7,8 @@
     "exclude": "assembly/__tests__",
     "excludePrivate": true,
     "excludeProtected": true,
-    "excludeExternals": true
+    "excludeExternals": true,
+    "includeVersion": true,
+    "skipErrorChecking": true
   }
 }
