@@ -24,13 +24,8 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**Thyra version**
-The version of Thyra the bug is present in.
-
-**Desktop (please complete the following information):**
- - OS: [e.g. MacOS, Windows...]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+**Version**
+The versions of software and packages the bug is present in (massa-as-sdk, thyra, web browser...).
 
 **Additional context**
 Add any other context about the problem here.
