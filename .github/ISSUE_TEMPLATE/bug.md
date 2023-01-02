@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a bug report to report a bug and help us to improve as-sdk
+about: Create a bug report to report a bug and help us to improve massa-as-sdk
 title: ''
 labels: 'issue:bug'
 assignees: ''
