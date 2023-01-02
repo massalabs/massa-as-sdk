@@ -21,5 +21,5 @@ assignees: ''
 *Give the technical insights so anyone in the team can tackle the tasks - Dev*
 
 **QA testing**
-*Does this task require some QA tests ?*
+*Does this task require some QA tests?*
 *If yes, explain how to validate it*
