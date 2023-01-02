@@ -7,21 +7,21 @@ export namespace env {
     address: string,
     func: string,
     param: StaticArray<u8>,
-    coins: u64
+    coins: u64,
   ): StaticArray<u8>;
 
   @external("massa", "assembly_script_local_call")
   export declare function localCall(
     address: string,
     func: string,
-    param: StaticArray<u8>
+    param: StaticArray<u8>,
   ): StaticArray<u8>;
 
   @external("massa", "assembly_script_local_execution")
   export declare function localExecution(
     bytecode: StaticArray<u8>,
     func: string,
-    param: StaticArray<u8>
+    param: StaticArray<u8>,
   ): StaticArray<u8>;
 
   @external("massa", "assembly_script_get_bytecode")
@@ -51,14 +51,14 @@ export namespace env {
   @external("massa", "assembly_script_set_data")
   export declare function set(
     key: StaticArray<u8>,
-    value: StaticArray<u8>
+    value: StaticArray<u8>,
   ): void;
 
   @external("massa", "assembly_script_set_data_for")
   export declare function setOf(
     address: string,
     key: StaticArray<u8>,
-    value: StaticArray<u8>
+    value: StaticArray<u8>,
   ): void;
 
   @external("massa", "assembly_script_get_data")
@@ -67,7 +67,7 @@ export namespace env {
   @external("massa", "assembly_script_get_data_for")
   export declare function getOf(
     address: string,
-    key: StaticArray<u8>
+    key: StaticArray<u8>,
   ): StaticArray<u8>;
 
   @external("massa", "assembly_script_delete_data")
@@ -79,14 +79,14 @@ export namespace env {
   @external("massa", "assembly_script_append_data")
   export declare function append(
     key: StaticArray<u8>,
-    value: StaticArray<u8>
+    value: StaticArray<u8>,
   ): void;
 
   @external("massa", "assembly_script_append_data_for")
   export declare function appendOf(
     address: string,
     key: StaticArray<u8>,
-    value: StaticArray<u8>
+    value: StaticArray<u8>,
   ): void;
 
   @external("massa", "assembly_script_has_data")
@@ -111,7 +111,7 @@ export namespace env {
   export declare function transferCoinsOf(
     from: string,
     to: string,
-    amount: u64
+    amount: u64,
   ): void;
 
   @external("massa", "assembly_script_get_balance")
@@ -130,7 +130,7 @@ export namespace env {
   export declare function isSignatureValid(
     digest: string,
     signature: string,
-    publicKey: string
+    publicKey: string,
   ): bool;
 
   @external("massa", "assembly_script_address_from_public_key")
@@ -155,7 +155,7 @@ export namespace env {
     coins: u64,
     data: StaticArray<u8>,
     filter_address: string,
-    filter_key: StaticArray<u8>
+    filter_key: StaticArray<u8>,
   ): void;
 
   @external("massa", "assembly_script_get_current_period")
@@ -170,7 +170,7 @@ export namespace env {
   @external("massa", "assembly_script_set_bytecode_for")
   export declare function setBytecodeOf(
     address: string,
-    bytecode: StaticArray<u8>
+    bytecode: StaticArray<u8>,
   ): void;
 
   @external("massa", "assembly_script_get_op_keys")

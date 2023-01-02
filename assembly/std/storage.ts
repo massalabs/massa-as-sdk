@@ -1,7 +1,7 @@
-import { toBytes, fromBytes } from ".";
-import { env } from "../env";
-import { Address } from "./address";
-import { Args } from "@massalabs/as-types";
+import { toBytes, fromBytes } from '.';
+import { env } from '../env';
+import { Address } from './address';
+import { Args } from '@massalabs/as-types';
 
 /**
  * Converts given value to StaticArray<u8> to match datastore expected format.
@@ -24,7 +24,7 @@ function toDatastoreFormat<T>(value: T): StaticArray<u8> {
   }
 
   // eslint-disable-next-line new-cap
-  ERROR("type must be one of string, StaticArray<u8> or Args"); // this function call stop the compilation.
+  ERROR('type must be one of string, StaticArray<u8> or Args'); // this function call stop the compilation.
 
   // Not necessary, but when giving an unsupported type, avoid
   // `ERROR TS2355: A function whose declared type is not 'void' must return a value.`
@@ -53,7 +53,7 @@ function fromDatastoreFormat<T>(value: StaticArray<u8>): T {
   }
 
   // eslint-disable-next-line new-cap
-  ERROR("type must be one of string, StaticArray<u8> or Args"); // this function call stop the compilation.
+  ERROR('type must be one of string, StaticArray<u8> or Args'); // this function call stop the compilation.
 
   // Not necessary, but when giving an unsupported type, avoid
   // `ERROR TS2355: A function whose declared type is not 'void' must return a value.`
@@ -89,7 +89,7 @@ export function setOf<T>(address: Address, key: T, value: T): void {
   env.setOf(
     address.toByteString(),
     toDatastoreFormat(key),
-    toDatastoreFormat(value)
+    toDatastoreFormat(value),
   );
 }
 
@@ -121,7 +121,7 @@ export function get<T>(key: T): T {
 export function getOf<T>(address: Address, key: T): T {
   const value: StaticArray<u8> = env.getOf(
     address.toByteString(),
-    toDatastoreFormat(key)
+    toDatastoreFormat(key),
   );
 
   return fromDatastoreFormat<T>(value);
@@ -184,7 +184,7 @@ export function appendOf<T>(address: Address, key: T, value: T): void {
   env.appendOf(
     address.toByteString(),
     toDatastoreFormat(key),
-    toDatastoreFormat(value)
+    toDatastoreFormat(value),
   );
 }
 
@@ -235,7 +235,7 @@ export function setBytecode(bytecode: StaticArray<u8>): void {
  */
 export function setBytecodeOf(
   address: Address,
-  bytecode: StaticArray<u8>
+  bytecode: StaticArray<u8>,
 ): void {
   env.setBytecodeOf(address.toByteString(), bytecode);
 }

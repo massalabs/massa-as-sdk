@@ -1,1 +1,1 @@
-export * from "./persistentMap";
+export * from './persistentMap';
