@@ -426,3 +426,14 @@ export function fromBytes(arr: StaticArray<u8>): string {
   memory.copy(changetype<usize>(str), changetype<usize>(arr), arr.length);
   return str;
 }
+
+/**
+ * Constructs an event given a key and arguments
+ *
+ * @param key - event key
+ * @param args - array of string arguments.
+ * @returns stringified event.
+ */
+export function createEvent(key: string, args: Array<string>): string {
+  return `${key}:`.concat(args.join(","));
+}
