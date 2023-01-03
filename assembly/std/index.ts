@@ -1,8 +1,8 @@
-import { env } from "../env/index";
-import { Address } from "./address";
-import * as Storage from "./storage";
-import * as Context from "./context";
-import { Args } from "@massalabs/as-types";
+import { env } from '../env/index';
+import { Address } from './address';
+import * as Storage from './storage';
+import * as Context from './context';
+import { Args } from '@massalabs/as-types';
 
 export { Address, Storage, Context };
 
@@ -31,7 +31,7 @@ export function call(
   at: Address,
   functionName: string,
   args: Args,
-  coins: u64
+  coins: u64,
 ): StaticArray<u8> {
   return env.call(at.toByteString(), functionName, args.serialize(), coins);
 }
@@ -50,7 +50,7 @@ export function call(
 export function localCall(
   at: Address,
   functionName: string,
-  args: Args
+  args: Args,
 ): StaticArray<u8> {
   return env.localCall(at.toByteString(), functionName, args.serialize());
 }
@@ -69,7 +69,7 @@ export function localCall(
 export function localExecution(
   bytecode: StaticArray<u8>,
   functionName: string,
-  args: Args
+  args: Args,
 ): StaticArray<u8> {
   return env.localExecution(bytecode, functionName, args.serialize());
 }
@@ -294,7 +294,7 @@ export function toBase58(data: string): string {
 export function isSignatureValid(
   publicKey: string,
   digest: string,
-  signature: string
+  signature: string,
 ): bool {
   return env.isSignatureValid(digest, signature, publicKey);
 }
@@ -353,7 +353,7 @@ export function sendMessage(
   coins: u64,
   msg: StaticArray<u8>,
   filterAddress: Address = new Address(),
-  filterKey: StaticArray<u8> = new StaticArray<u8>(0)
+  filterKey: StaticArray<u8> = new StaticArray<u8>(0),
 ): void {
   env.sendMessage(
     at.toByteString(),
@@ -367,7 +367,7 @@ export function sendMessage(
     coins,
     msg,
     filterAddress.toByteString(),
-    filterKey
+    filterKey,
   );
 }
 
@@ -383,9 +383,9 @@ export function sendMessage(
  * @return {StaticArray<u8>}
  */
 export function fileToByteArray(
-  filePath: string // eslint-disable-line @typescript-eslint/no-unused-vars
+  filePath: string, // eslint-disable-line @typescript-eslint/no-unused-vars
 ): StaticArray<u8> {
-  abort("Please use transformer to dynamically include the file.");
+  abort('Please use transformer to dynamically include the file.');
   return [];
 }
 
