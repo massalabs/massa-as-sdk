@@ -430,9 +430,9 @@ export function fromBytes(arr: StaticArray<u8>): string {
 /**
  * Constructs an event given a key and arguments
  *
- * @param {string} key - event key
- * @param {Array} args - array of string arguments.
- * @return {string} stringified event.
+ * @param key - event key
+ * @param args - array of string arguments.
+ * @returns stringified event.
  */
 export function createEvent(key: string, args: Array<string>): string {
   return `${key}:`.concat(args.join(","));
