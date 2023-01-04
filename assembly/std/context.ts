@@ -4,9 +4,7 @@ import { Address } from './address';
 /**
  * Returns an array of addresses.
  *
- * @param {string} str - json encode
- *
- * @return {Array<Address>}
+ * @param str - json encode
  */
 function json2Address(str: string): Array<Address> {
   str = str.substr(1, str.length - 2);
@@ -24,7 +22,6 @@ function json2Address(str: string): Array<Address> {
  * - explain function purpose
  * - explain format
  *
- * @return {Array<Address>}
  */
 export function ownedAddresses(): Array<Address> {
   return json2Address(env.ownedAddresses());
@@ -59,7 +56,6 @@ export function ownedAddresses(): Array<Address> {
  * Local execution
  * local executions don’t change the stack, they allow executing foreign code in the current context.
  *
- * @return {Array<Address>}
  */
 export function addressStack(): Array<Address> {
   return json2Address(env.callStack());
@@ -71,7 +67,7 @@ export function addressStack(): Array<Address> {
  * Caller is the person or the smart contract that directly called
  * the pending function.
  *
- * @return {Address} returns the stack element just below the top of the address stack
+ * @returns the caller's address
  */
 export function caller(): Address {
   const a = addressStack();
@@ -83,7 +79,7 @@ export function caller(): Address {
  *
  * Callee is the current smart-contract address.
  *
- * @return {Address} returns the stack element at the top of the address stack
+ * @returns the called smart contract address
  */
 export function callee(): Address {
   const a = addressStack();
@@ -93,7 +89,7 @@ export function callee(): Address {
 /**
  * Return the address of the initial transaction creator (originator).
  *
- * @return {Address} returns the stack element at the bottom of the address stack
+ * @returns returns the stack element at the bottom of the address stack
  */
 export function transactionCreator(): Address {
   return addressStack()[0];
@@ -102,24 +98,21 @@ export function transactionCreator(): Address {
 /**
  * Returns the amount transferred in the current call.
  *
- * @return {u64} - value in the smallest unit.
+ * @returns value in the smallest unit.
  */
 export function transferedCoins(): u64 {
   return env.callCoins();
 }
 
 /**
- * Returns the slot unix timestamp in milliseconds
- *
- * @return {u64}
+ * @returns the slot unix timestamp in milliseconds
  */
 export function timestamp(): u64 {
   return env.time();
 }
 
 /**
- * Returns the remaining gas.
- * @return {u64}
+ * @returns the remaining gas
  */
 export function remainingGas(): u64 {
   return env.remainingGas();

@@ -1,8 +1,11 @@
 module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint'],
-  ignorePatterns: ['assembly/abi.ts'],
+  plugins: [
+    '@typescript-eslint/eslint-plugin',
+    'eslint-plugin-tsdoc'
+  ],
+  ignorePatterns: ['assembly/abi.ts', 'docs/**'],
   extends: [
     'eslint:recommended',
     'plugin:json/recommended',
@@ -91,8 +94,6 @@ module.exports = {
 
     // Allow us to use 0xffffffffffffffff for edge case tests
     '@typescript-eslint/no-loss-of-precision': 'warn',
-
-    'valid-jsdoc': 'off',
   },
   overrides: [
     // === TypeScript rules ====================================================
@@ -126,6 +127,12 @@ module.exports = {
 
         // Type conversions require an explicit cast in AssemblyScript.
         '@typescript-eslint/no-unnecessary-type-assertion': 'off',
+
+        // Disable jsdoc
+        'require-jsdoc': 'off',
+        'valid-jsdoc': 'off',
+        // Enable typedoc
+        'tsdoc/syntax': 'error',
       },
     },
 

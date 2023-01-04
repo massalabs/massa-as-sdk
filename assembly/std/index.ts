@@ -9,7 +9,7 @@ export { Address, Storage, Context };
 /**
  * Prints in the node logs
  *
- * @param {string} message Message string
+ * @param message - Message string
  */
 export function print(message: string): void {
   env.print(message);
@@ -20,12 +20,12 @@ export function print(message: string): void {
  *
  * Note: arguments serialization is to be handled by the caller and the callee.
  *
- * @param {Address} at
- * @param {string} functionName
- * @param {Args} args
- * @param {u64} coins // TODO define usage
+ * @param at -
+ * @param functionName -
+ * @param args -
+ * @param coins - // TODO define usage
  *
- * @return {StaticArray<u8>} function returned value
+ * @returns function returned value
  */
 export function call(
   at: Address,
@@ -41,11 +41,11 @@ export function call(
  *
  * Note: arguments serialization is to be handled by the caller and the callee.
  *
- * @param {Address} at
- * @param {string} functionName
- * @param {Args} args
+ * @param at -
+ * @param functionName -
+ * @param args -
  *
- * @return {StaticArray<u8>} function returned value
+ * @returns function returned value
  */
 export function localCall(
   at: Address,
@@ -60,11 +60,11 @@ export function localCall(
  *
  * Note: arguments serialization is to be handled by the caller and the callee.
  *
- * @param {StaticArray<u8>} bytecode
- * @param {string} functionName
- * @param {Args} args
+ * @param bytecode -
+ * @param functionName -
+ * @param args -
  *
- * @return {StaticArray<u8>} function returned value
+ * @returns function returned value
  */
 export function localExecution(
   bytecode: StaticArray<u8>,
@@ -77,7 +77,7 @@ export function localExecution(
 /**
  * Get the bytecode of the current address
  *
- * @return {StaticArray<u8>} bytecode
+ * @returns bytecode
  */
 export function getBytecode(): StaticArray<u8> {
   return env.getBytecode();
@@ -86,9 +86,9 @@ export function getBytecode(): StaticArray<u8> {
 /**
  * Get the bytecode of the current address
  *
- * @param {Address} address
+ * @param address -
  *
- * @return {StaticArray<u8>} bytecode
+ * @returns bytecode
  */
 export function getBytecodeFor(address: Address): StaticArray<u8> {
   return env.getBytecodeFor(address.toByteString());
@@ -97,18 +97,15 @@ export function getBytecodeFor(address: Address): StaticArray<u8> {
 /**
  * Check if the SC caller has a write access on it
  *
- * @return {bool}
  */
 export function callerHasWriteAccess(): bool {
   return env.callerHasWriteAccess();
 }
 
 /**
- * Check if `function` exists in the bytecode stored at `address`
- *
- * @param {Address} addr
- *
- * @return {bool}
+ * Checks if `function` exists in the bytecode stored at `address`
+ * @param address -
+ * @param func -
  */
 export function functionExists(address: Address, func: string): bool {
   return env.functionExists(address.toByteString(), func);
@@ -123,9 +120,9 @@ export function functionExists(address: Address, func: string): bool {
  * The context allow you to write in this smart contract while you're executing
  * the current bytecode.
  *
- * @param {StaticArray<u8>} bytecode
+ * @param bytecode -
  *
- * @return {string} Smart contract address
+ * @returns Smart contract address
  */
 export function createSC(bytecode: StaticArray<u8>): Address {
   return Address.fromByteString(env.createSC(bytecode));
@@ -134,7 +131,7 @@ export function createSC(bytecode: StaticArray<u8>): Address {
 /**
  * Generates an event
  *
- * @param {string} event - stringified
+ * @param event - stringified
  */
 export function generateEvent(event: string): void {
   env.generateEvent(event);
@@ -143,8 +140,8 @@ export function generateEvent(event: string): void {
 /**
  * Transfers SCE coins from the current address to given address.
  *
- * @param {Address} to
- * @param {u64} amount - value in the smallest unit.
+ * @param to -
+ * @param amount - value in the smallest unit.
  */
 export function transferCoins(to: Address, amount: u64): void {
   env.transferCoins(to.toByteString(), amount);
@@ -153,9 +150,9 @@ export function transferCoins(to: Address, amount: u64): void {
 /**
  * Transfers SCE coins of the `from` address to the `to` address.
  *
- * @param {Address} from
- * @param {Address} to
- * @param {u64} amount - value in the smallest unit.
+ * @param from -
+ * @param to -
+ * @param amount - value in the smallest unit.
  */
 export function transferCoinsOf(from: Address, to: Address, amount: u64): void {
   env.transferCoinsOf(from.toByteString(), to.toByteString(), amount);
@@ -164,7 +161,7 @@ export function transferCoinsOf(from: Address, to: Address, amount: u64): void {
 /**
  * Gets the balance of the current address
  *
- * @return {u64} - value in the smallest unit.
+ * @returns - value in the smallest unit.
  */
 export function balance(): u64 {
   return env.balance();
@@ -173,9 +170,9 @@ export function balance(): u64 {
 /**
  * Gets the balance of the specified address.
  *
- * @param {string} address
+ * @param address -
  *
- * @return {u64} - value in the smallest unit.
+ * @returns - value in the smallest unit.
  */
 export function balanceOf(address: string): u64 {
   return env.balanceOf(address);
@@ -184,9 +181,9 @@ export function balanceOf(address: string): u64 {
 /**
  * Check for key in datastore
  *
- * @param {StaticArray<u8>} key
+ * @param key -
  *
- * @return {bool} - true if key is present in datastore, false otherwise.
+ * @returns - true if key is present in datastore, false otherwise.
  */
 export function hasOpKey(key: StaticArray<u8>): bool {
   let result = env.hasOpKey(key);
@@ -199,9 +196,9 @@ export function hasOpKey(key: StaticArray<u8>): bool {
 /**
  * Get data associated with the given key from datastore
  *
- * @param {StaticArray<u8>} key
+ * @param key -
  *
- * @return {StaticArray<u8>} - data as a byte array
+ * @returns - data as a byte array
  */
 export function getOpData(key: StaticArray<u8>): StaticArray<u8> {
   return env.getOpData(key);
@@ -210,7 +207,7 @@ export function getOpData(key: StaticArray<u8>): StaticArray<u8> {
 /**
  * Get all keys from operation datastore
  *
- * @return {StaticArray<u8>} - a list of key (e.g. a list of bytearray)
+ * @returns - a list of key (e.g. a list of byte array)
  */
 export function getOpKeys(): Array<StaticArray<u8>> {
   let keysSer = env.getOpKeys();
@@ -220,7 +217,7 @@ export function getOpKeys(): Array<StaticArray<u8>> {
 /**
  * Get all keys from datastore
  *
- * @return {StaticArray<u8>} - a list of key (e.g. a list of bytearray)
+ * @returns - a list of key (e.g. a list of byte array)
  */
 export function getKeys(): Array<StaticArray<u8>> {
   let keysSer = env.getKeys();
@@ -230,7 +227,8 @@ export function getKeys(): Array<StaticArray<u8>> {
 /**
  * Get all keys from datastore
  *
- * @return {StaticArray<u8>} - a list of key (e.g. a list of bytearray)
+ * @param address - the address in the datastore
+ * @returns - a list of key (e.g. a list of byte array)
  */
 export function getKeysOf(address: string): Array<StaticArray<u8>> {
   let keysSer = env.getKeysOf(address);
@@ -240,8 +238,8 @@ export function getKeysOf(address: string): Array<StaticArray<u8>> {
 /**
  * Internal function - used by getOpKeys
  *
- * @param {StaticArray<u8>} keysSer TBD
- * @return {Array<StaticArray<u8>>} TBD
+ * @param keysSer - TBD
+ * @returns - TBD
  */
 export function derKeys(keysSer: StaticArray<u8>): Array<StaticArray<u8>> {
   if (keysSer.length == 0) {
@@ -274,9 +272,8 @@ export function derKeys(keysSer: StaticArray<u8>): Array<StaticArray<u8>> {
 /**
  * Converts data to base58.
  *
- * @param {string} data
+ * @param data -
  *
- * @return {string}
  */
 export function toBase58(data: string): string {
   return env.toBase58(data);
@@ -285,11 +282,10 @@ export function toBase58(data: string): string {
 /**
  * Tests if the signature is valid.
  *
- * @param {string} publicKey - base58check encoded
- * @param {string} digest
- * @param {string} signature - base58check encoded
+ * @param publicKey - base58check encoded
+ * @param digest -
+ * @param signature - base58check encoded
 
- * @return {bool}
  */
 export function isSignatureValid(
   publicKey: string,
@@ -302,9 +298,7 @@ export function isSignatureValid(
 /**
  * Converts a public key to an address
  *
- * @param {string} pubKey -  Base58check endoded
- *
- * @return {Address}
+ * @param pubKey - Base58check encoded
  */
 export function publicKeyToAddress(pubKey: string): Address {
   return Address.fromByteString(env.publicKeyToAddress(pubKey));
@@ -313,9 +307,7 @@ export function publicKeyToAddress(pubKey: string): Address {
 /**
  * Returns an unsafe random.
  *
- * /!\ This function is unsafe because the random draws is predictable.
- *
- * @return {i64}
+ * Warning: this function is unsafe because the random draws is predictable.
  */
 export function unsafeRandom(): i64 {
   return env.unsafeRandom();
@@ -326,19 +318,19 @@ export function unsafeRandom(): i64 {
  *
  * Note: serialization is to be handled at the caller and the callee level.
  *
- * @param {string} at
- * @param {string} functionName
- * @param {u64} validityStartPeriod - Period of the validity start slot
- * @param {u8} validityStartThread - Thread of the validity start slot
- * @param {u64} validityEndPeriod - Period of the validity end slot
- * @param {u8} validityEndThread - Thread of the validity end slot
- * @param {u64} maxGas - Maximum gas for the message execution
- * @param {u64} rawFee - Fee to be paid for message execution
- * @param {u64} coins - Coins of the sender
- * @param {StaticArray<u8>} msg - serialized data
- * @param {Address} filterAddress - If you want your message to be trigger only
+ * @param at -
+ * @param functionName -
+ * @param validityStartPeriod - Period of the validity start slot
+ * @param validityStartThread - Thread of the validity start slot
+ * @param validityEndPeriod - Period of the validity end slot
+ * @param validityEndThread - Thread of the validity end slot
+ * @param maxGas - Maximum gas for the message execution
+ * @param rawFee - Fee to be paid for message execution
+ * @param coins - Coins of the sender
+ * @param msg - serialized data
+ * @param filterAddress - If you want your message to be trigger only
  * if a modification is made on a specific address precise it here
- * @param {StaticArray<u8>} filterKey - If you want your message to be trigger only
+ * @param filterKey - If you want your message to be trigger only
  * if a modification is made on a specific storage key of the `filterAddress` precise it here
  */
 export function sendMessage(
@@ -378,9 +370,7 @@ export function sendMessage(
  * replace using byteArray transformer.
  * More info here:
  *
- * @param {string} filePath
- *
- * @return {StaticArray<u8>}
+ * @param filePath -
  */
 export function fileToByteArray(
   filePath: string, // eslint-disable-line @typescript-eslint/no-unused-vars
@@ -391,7 +381,6 @@ export function fileToByteArray(
 
 /**
  * Returns the current period
- * @return {u8}
  */
 export function currentPeriod(): u64 {
   return env.currentPeriod();
@@ -399,7 +388,6 @@ export function currentPeriod(): u64 {
 
 /**
  * Returns the current thread
- * @return {u8}
  */
 export function currentThread(): u8 {
   return env.currentThread();
@@ -407,8 +395,7 @@ export function currentThread(): u8 {
 
 /**
  * Helper function to transform a string to a StaticArray<u8>
- * @param {string} str
- * @return {StaticArray<u8>}
+ * @param str -
  */
 export function toBytes(str: string): StaticArray<u8> {
   let arr = new StaticArray<u8>(str.length << 1);
@@ -418,8 +405,7 @@ export function toBytes(str: string): StaticArray<u8> {
 
 /**
  * Helper function to transform a StaticArray<u8> to a string
- * @param {StaticArray<u8>} arr
- * @return {string}
+ * @param arr -
  */
 export function fromBytes(arr: StaticArray<u8>): string {
   let str = changetype<string>(__new(arr.length, idof<string>()));

@@ -27,8 +27,8 @@ export const _KEY_ELEMENT_SUFFIX = '::';
  * (2) Since all data stored on the blockchain is kept in a single key-value store under the contract account,
  * you must always use a *unique storage prefix* for different collections to avoid data collision.
  *
- * @typeParam K The generic type parameter `K` can be any [valid AssemblyScript type](https://docs.assemblyscript.org/basics/types).
- * @typeParam V The generic type parameter `V` can be any [valid AssemblyScript type](https://docs.assemblyscript.org/basics/types).
+ * @typeParam K - The generic type parameter `K` can be any [valid AssemblyScript type](https://docs.assemblyscript.org/basics/types).
+ * @typeParam V - The generic type parameter `V` can be any [valid AssemblyScript type](https://docs.assemblyscript.org/basics/types).
  */
 export class PersistentMap<K, V> {
   private _elementPrefix: string;
@@ -43,7 +43,7 @@ export class PersistentMap<K, V> {
    * ```ts
    * let map = new PersistentMap<string, string>("m") // note the prefix must be unique (per NEAR account)
    * ```
-   * @param {string} prefix A prefix to use for every key of this map.
+   * @param prefix - A prefix to use for every key of this map.
    */
   constructor(prefix: string) {
     this._elementPrefix = prefix + _KEY_ELEMENT_SUFFIX;
@@ -51,8 +51,8 @@ export class PersistentMap<K, V> {
   }
 
   /**
-   * @param {string} key - Search key.
-   * @return {string} An internal string key for a given key of type K.
+   * @param key - Search key.
+   * @returns An internal string key for a given key of type K.
    */
   private _key(key: K): string {
     // @ts-ignore: TODO: Add interface that forces all K types to have toString
@@ -70,8 +70,8 @@ export class PersistentMap<K, V> {
    * map.contains("hello")      // true
    * ```
    *
-   * @param {string} key Key to check.
-   * @return {bool} True if the given key present in the map.
+   * @param key - Key to check.
+   * @returns True if the given key present in the map.
    */
   contains(key: K): bool {
     return Storage.has(this._key(key));
@@ -80,12 +80,13 @@ export class PersistentMap<K, V> {
   /**
    * Returns the map size
    *
+   * @example
    * ```ts
-   * let map = new PersistentMap<string, string>("m")
+   * let map = new PersistentMap<string, string> ("m")
    *
    * map.size()
-   *
-   * @return {usize} the map size
+   * ```
+   * @returns the map size
    */
   size(): usize {
     return this._size;
@@ -102,7 +103,7 @@ export class PersistentMap<K, V> {
    * ```
    *
    * Removes value and the key from the map.
-   * @param {string} key Key to remove.
+   * @param key - Key to remove.
    */
   delete(key: K): void {
     Storage.del(this._key(key));
@@ -111,7 +112,7 @@ export class PersistentMap<K, V> {
 
   /**
    * Increases the internal map size counter
-   * @param {string} key Key to remove.
+   * @param key - Key to remove.
    */
   _increaseSize(key: K): void {
     if (!this.contains(key)) {
@@ -142,9 +143,9 @@ export class PersistentMap<K, V> {
    * assert(notFound == "cruel world")
    * ```
    *
-   * @param {K} key Key of the element.
-   * @param {V} defaultValue The default value if the key is not present.
-   * @return {V | null} Value for the given key or the default value.
+   * @param key - Key of the element.
+   * @param defaultValue - The default value if the key is not present.
+   * @returns Value for the given key or the default value.
    */
   get(key: K, defaultValue: V | null = null): V | null {
     if (!this.contains(key)) {
@@ -184,8 +185,8 @@ export class PersistentMap<K, V> {
    * assert(result == "world")
    * ```
    *
-   * @param {K} key Key of the element.
-   * @return {V} Value for the given key or the default value.
+   * @param key - Key of the element.
+   * @returns Value for the given key or the default value.
    */
   getSome(key: K): V {
     assert(this.contains(key), 'key not found');
@@ -202,8 +203,8 @@ export class PersistentMap<K, V> {
    * ```
    *
    * Sets the new value for the given key.
-   * @param {K} key Key of the element.
-   * @param {V} value The new value of the element.
+   * @param key - Key of the element.
+   * @param value - The new value of the element.
    */
   set(key: K, value: V): void {
     // assert map size wont overflow
