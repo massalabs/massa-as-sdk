@@ -2,8 +2,8 @@ module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
   plugins: [
-    "@typescript-eslint/eslint-plugin",
-    "eslint-plugin-tsdoc"
+    '@typescript-eslint/eslint-plugin',
+    'eslint-plugin-tsdoc'
   ],
   ignorePatterns: ['assembly/abi.ts', 'docs/**'],
   extends: [
@@ -132,7 +132,7 @@ module.exports = {
         'require-jsdoc': 'off',
         'valid-jsdoc': 'off',
         // Enable typedoc
-        "tsdoc/syntax": "error",
+        'tsdoc/syntax': 'error',
       },
     },
 
