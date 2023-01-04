@@ -79,6 +79,8 @@ export class PersistentMap<K, V> {
 
   /**
    * Returns the map size
+   *
+   * @example
    * ```ts
    * let map = new PersistentMap<string, string> ("m")
    *
