@@ -67,7 +67,7 @@ export function addressStack(): Array<Address> {
  * Caller is the person or the smart contract that directly called
  * the pending function.
  *
- * @returns the caller address
+ * @returns the caller's address
  */
 export function caller(): Address {
   const a = addressStack();
@@ -79,7 +79,7 @@ export function caller(): Address {
  *
  * Callee is the current smart-contract address.
  *
- * @returns the callee address
+ * @returns the called smart contract address
  */
 export function callee(): Address {
   const a = addressStack();
