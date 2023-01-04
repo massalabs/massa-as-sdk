@@ -20,6 +20,11 @@ npm run fmt
 npm run test
 ```
 
+## To generate doc
+```sh
+npm run doc
+```
+
 #Example
 
 For instance here is a smart contract example generating an event "Hello World" on the blockchain 
