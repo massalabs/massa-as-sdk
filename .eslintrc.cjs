@@ -132,7 +132,7 @@ module.exports = {
         'require-jsdoc': 'off',
         'valid-jsdoc': 'off',
         // Enable typedoc
-        "tsdoc/syntax": "error"
+        "tsdoc/syntax": "error",
       },
     },
 

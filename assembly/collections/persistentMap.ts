@@ -79,13 +79,12 @@ export class PersistentMap<K, V> {
 
   /**
    * Returns the map size
-   *
    * ```ts
-   * let map = new PersistentMap<string, string>("m")
+   * let map = new PersistentMap<string, string> ("m")
    *
    * map.size()
-   *
-   * @return {usize} the map size
+   * ```
+   * @returns the map size
    */
   size(): usize {
     return this._size;
@@ -111,7 +110,7 @@ export class PersistentMap<K, V> {
 
   /**
    * Increases the internal map size counter
-   * @param {string} key Key to remove.
+   * @param key - Key to remove.
    */
   _increaseSize(key: K): void {
     if (!this.contains(key)) {

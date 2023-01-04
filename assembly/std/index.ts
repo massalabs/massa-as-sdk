@@ -421,5 +421,5 @@ export function fromBytes(arr: StaticArray<u8>): string {
  * @returns stringified event.
  */
 export function createEvent(key: string, args: Array<string>): string {
-  return `${key}:`.concat(args.join(","));
+  return `${key}:`.concat(args.join(','));
 }
