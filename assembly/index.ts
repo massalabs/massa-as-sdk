@@ -10,3 +10,6 @@ export { env };
 
 // massa std functionalities
 export * from './std';
+
+// mock utilities for testing purpose
+export * from './vm-mock';
