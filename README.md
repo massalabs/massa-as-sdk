@@ -1,5 +1,7 @@
 # Massa-as-sdk
 
+_Massa Assemblyscript SDK_
+
 Collection of tools, objects and functions, that are specific in usage only for Massa smart contracts in AssemblyScript 
 
 Complete doc of all functions and object can be found here : 
