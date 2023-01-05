@@ -6,7 +6,7 @@ Collection of tools, objects and functions, that are specific in usage only for 
 
 Complete doc of all functions and object can be found here : 
 
-- [`massa-as-sdk documentation`](http://as-sdk.docs.massa.net)
+- [`massa-as-sdk documentation`](https://as-sdk.docs.massa.net)
 
 ## To Install
 ```sh
