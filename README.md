@@ -25,7 +25,7 @@ npm run test
 npm run doc
 ```
 
-#Example
+# Example
 
 For instance here is a smart contract example generating an event "Hello World" on the blockchain 
 
