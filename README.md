@@ -29,8 +29,8 @@ npm run doc
 
 For instance here is a smart contract example generating an event "Hello World" on the blockchain 
 
-import { generateEvent } from '@massalabs/massa-as-sdk';
 ```sh
+import { generateEvent } from '@massalabs/massa-as-sdk';
 export function main(_: StaticArray<u8>): void {
   generateEvent(`Hello World`);
 }
