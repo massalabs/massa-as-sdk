@@ -10,7 +10,7 @@ It allows you to use Massa's ABI functions.
 
 Contract standards (ERC-20, etc) have been removed from it.
 
-Complete doc of all functions and object can be found here : 
+Complete documentation of all available functions and objects is here: 
 
 - [`massa-as-sdk documentation`](https://as-sdk.docs.massa.net)
 
