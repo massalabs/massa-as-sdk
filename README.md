@@ -8,8 +8,6 @@ SDK enables us to import object classes (address, storage objects, etc), and use
 
 It allows you to use Massa's ABI functions.
 
-Contract standards (ERC-20, etc) have been removed from it.
-
 Complete documentation of all available functions and objects is here: 
 
 - [`massa-as-sdk documentation`](https://as-sdk.docs.massa.net)
