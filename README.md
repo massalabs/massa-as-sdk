@@ -4,6 +4,13 @@ _Massa Assemblyscript SDK_
 
 Collection of tools, objects and functions, that are specific in usage only for Massa smart contracts in AssemblyScript 
 
+SDK enables us to import object classes (such as address, storage objects) and use them without having to write all objects from scratch each time.
+
+In order to call ABI functions, we import those functions in the smart-contract project, from the SDK dependency.
+SDK is a set of tools, objects and functions, that are specific in usage only for Massa blockchain.
+
+Contract standards (ERC-20, etc) have been removed from it.
+
 Complete doc of all functions and object can be found here : 
 
 - [`massa-as-sdk documentation`](https://as-sdk.docs.massa.net)
