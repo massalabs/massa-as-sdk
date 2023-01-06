@@ -2,7 +2,7 @@
 
 _Massa Assemblyscript SDK_
 
-Collection of tools, objects and functions, that are specific in usage only for Massa smart contracts in AssemblyScript 
+A collection of tools, objects and functions, specific in usage for Massa smart contracts, in AssemblyScript. 
 
 SDK enables us to import object classes (such as address, storage objects) and use them without having to write all objects from scratch each time.
 
