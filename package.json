@@ -29,7 +29,7 @@
     "release:minor": "npm version minor -m 'Release version %s'",
     "release:major": "npm version major -m 'Release version %s'",
     "prepare": "husky install",
-    "doc": "npx typedoc assembly/index.ts --name massa-as-sdk --out docs/documentation/html --tsconfig assembly/tsconfig.json"
+    "doc": "typedoc assembly/index.ts --name massa-as-sdk --out docs/documentation/html --tsconfig assembly/tsconfig.json"
   },
   "devDependencies": {
     "@as-pect/cli": "^8.0.1",

@@ -1,4 +1,4 @@
-name: Node.js Package
+name: Release
 
 on:
   push:
@@ -24,3 +24,25 @@ jobs:
           npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+
+  deploy-typedoc:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 16
+    - name: Generate doc
+      run: |
+        npm ci
+        npm run doc
+        mv docs/documentation/html massa-as-sdk
+    - name: Deploy files
+      uses: appleboy/scp-action@master
+      env:
+        HOST: ${{ secrets.MASSANET_HOST }}
+        USERNAME: ${{ secrets.MASSANET_USERNAME }}
+        KEY: ${{ secrets.MASSANET_SSHKEY }}
+      with:
+        source: "./massa-as-sdk"
+        target: "/var/www/type-doc"
