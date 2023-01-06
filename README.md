@@ -35,7 +35,7 @@ npm run doc
 
 # Example
 
-For instance here is a smart contract example generating an event "Hello World" on the blockchain 
+Here is a smart-contract example generating an event "Hello World" on the blockchain:
 
 ```sh
 import { generateEvent } from '@massalabs/massa-as-sdk';
