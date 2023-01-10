@@ -56,6 +56,8 @@ function resetLedger() {
 
 let webModule;
 
+const scCallMockStack = [];
+
 /**
  * Create a mock vm to simulate calls and responses of Massa WebAssembly sdk.
  *
@@ -211,7 +213,19 @@ export default function createMockedABI(memory, createImports, instantiate, bina
 
       assembly_script_get_time(){
         return BigInt(Date.now());
-      }
+      },
+
+      assembly_script_mock_call(ptr) {
+        scCallMockStack.push(getArrayBuffer(ptr));
+      },
+
+      assembly_script_call(_address, method, _param, _coins) {
+        if(scCallMockStack.length) {
+          return newArrayBuffer(scCallMockStack.shift());
+        }
+        throw new Error(`No mock defined for sc call on "${ptrToString(method)}".`);
+      },
+
     },
   };
 
