@@ -4,7 +4,7 @@
  * @param value - Value returned by the mocked function
  *
  *    * @example
- * ```assemblyscript
+ * ```typescript
  * test('mocked SC call', () => {
  *    const addr = new Address(
  *     'A12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT',

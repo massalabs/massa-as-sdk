@@ -76,6 +76,7 @@ export function set<T>(key: T, value: T): void {
  * Sets (key, value) in the datastore of the given address.
  * Existing entries are overwritten and missing ones are created.
  *
+ * @privateRemarks
  * TODO: explains security mechanisms
  *
  * @typeParam T - `string`, `Args` or `StaticArray<u8>`
@@ -94,6 +95,7 @@ export function setOf<T>(address: Address, key: T, value: T): void {
 /**
  * Returns (key, value) in the datastore of the callee's address.
  *
+ * @privateRemarks
  * TODO: explains what happens on missing key.
  *
  * @typeParam T - `string`, `Args` or `StaticArray<u8>`
@@ -108,6 +110,7 @@ export function get<T>(key: T): T {
 /**
  * Returns (key, value) in the datastore of the given address.
  *
+ * @privateRemarks
  * TODO: explains what happens on missing key.
  *
  * @typeParam T - `string`, `Args` or `StaticArray<u8>`
@@ -139,6 +142,7 @@ export function del<T>(key: T): void {
 /**
  * Removes (key, value) from the datastore of the given address.
  *
+ * @privateRemarks
  * TODO: explains what happens on missing key.
  * TODO: explains security mechanisms
  *
@@ -169,6 +173,8 @@ export function append<T>(key: T, value: T): void {
  * the datastore of the given address.
  *
  * Note: do nothing if key is absent.
+ *
+ * @privateRemarks
  * TODO: explains security mechanisms
  *
  * @typeParam T - `string`, `Args` or `StaticArray<u8>`
@@ -211,6 +217,7 @@ export function hasOf<T>(address: Address, key: T): bool {
 /**
  *  Sets the executable bytecode of the callee's address.
  *
+ * @privateRemarks
  * TODO: explains failure consequences.
  *
  * @param bytecode -
@@ -222,6 +229,7 @@ export function setBytecode(bytecode: StaticArray<u8>): void {
 /**
  *  Sets the executable bytecode of the given address.
  *
+ * @privateRemarks
  * TODO: explains security mechanisms.
  *
  * @param address - target address -
