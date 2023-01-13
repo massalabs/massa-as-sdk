@@ -318,12 +318,12 @@ export function unsafeRandom(): i64 {
  *
  * @remarks
  * The goal of sendMessage functionality is to send a message in the future, that will be executed as soon as possible
- * after the start period but not after the end period. This message allows you to make executions in the future and they
- * are executed deterministically on all nodes. The execution is made "as soon as possible" because there is a priority
- * on messages and a limit of messages possibly executed on each slot. More precisely, if you send a low amount of `rawFee` then your
- * message could possibly not executed directly at the first slot of the slot period.
- * If all of the slots of the specified period have a large load of messages, with more fees than you specified, then it's highly likely that your
- * message will never be executed.
+ * after the start period but not after the end period. This message allows you to make executions in the future and
+ * they are executed deterministically on all nodes. The execution is made "as soon as possible" because there is a
+ * priority on messages and a limit of messages possibly executed on each slot. More precisely, if you send a low amount
+ * of `rawFee` then your message could possibly not executed directly at the first slot of the slot period.
+ * If all of the slots of the specified period have a large load of messages, with more fees than you specified, then
+ * it's highly likely that your message will never be executed.
  *
  * Additionally, there is an optional filter on a message that adds a new condition on the trigger instead of:
  * "as soon as possible in this range", it becomes
@@ -334,7 +334,8 @@ export function unsafeRandom(): i64 {
  * If you pass only an address, then the message will be executed only after:
  * "we are in the range, and a change has happened during this range on the `filterAddress`" (possibly balance etc).
  * If you provide a `filterKey`, the condition of the execution of the message is:
- * "we are in the range, and a change has happened during this range on the `filterAddress` at that datastore `filterKey`"
+ * "we are in the range, and a change has happened during this range on the `filterAddress` at that datastore
+ * `filterKey`"
  *
  * Note: serialization is to be handled at the caller and the callee level.
  *
