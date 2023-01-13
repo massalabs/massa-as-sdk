@@ -314,11 +314,18 @@ export function unsafeRandom(): i64 {
 }
 
 /**
- * Sends an async message to a function at given address.
+ * Ask to schedule the execution of a function at a given address in the future.
  *
  * @remarks
  * The goal of sendMessage functionality is to send a message in the future, that will be executed as soon as possible
- * after the start period but not after the end period. This message allows you to make executions in the future and
+ * after the start period but not after the end period.
+ *
+ * You might want to use the sendMessage functionality:
+ * - Having a smart contract called periodically, without a centralized bot;
+ * - Having a smart contract that will trigger on the change of value (for example a change in price), of an other one;
+ * - Having an object that evolves on the blockchain itself.
+ *
+ * This message allows you to make executions in the future and
  * they are executed deterministically on all nodes. The execution is made "as soon as possible" because there is a
  * priority on messages and a limit of messages possibly executed on each slot. More precisely, if you send a low amount
  * of `rawFee` then your message could possibly not executed directly at the first slot of the slot period.
@@ -348,7 +355,7 @@ export function unsafeRandom(): i64 {
  * @param maxGas - Maximum gas for the message execution
  * @param rawFee - Fee to be paid for message execution
  * @param coins - Coins of the sender
- * @param msg - serialized data
+ * @param msg - function argument serialized in bytes
  * @param filterAddress - If you want your message to be trigger only
  * if a modification is made on a specific address precise it here
  * @param filterKey - If you want your message to be trigger only
