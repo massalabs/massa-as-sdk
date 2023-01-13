@@ -23,7 +23,7 @@ export function print(message: string): void {
  * @param at -
  * @param functionName -
  * @param args -
- * @param coins - // TODO define usage
+ * @param coins -
  *
  * @returns function returned value
  */
@@ -314,12 +314,40 @@ export function unsafeRandom(): i64 {
 }
 
 /**
- * Sends an async message to a function at given address.
+ * Ask to schedule the execution of a function at a given address in the future.
+ *
+ * @remarks
+ * The goal of sendMessage functionality is to send a message in the future, that will be executed as soon as possible
+ * after the start period but not after the end period.
+ *
+ * You might want to use the sendMessage functionality:
+ * - Having a smart contract called periodically, without a centralized bot;
+ * - Having a smart contract that will trigger on the change of value (for example a change in price), of an other one;
+ * - Having an object that evolves on the blockchain itself.
+ *
+ * This message allows you to make executions in the future and
+ * they are executed deterministically on all nodes. The execution is made "as soon as possible" because there is a
+ * priority on messages and a limit of messages possibly executed on each slot. More precisely, if you send a low amount
+ * of `rawFee` then your message could possibly not executed directly at the first slot of the slot period.
+ * If all of the slots of the specified period have a large load of messages, with more fees than you specified, then
+ * it's highly likely that your message will never be executed.
+ *
+ * Additionally, there is an optional filter on a message that adds a new condition on the trigger instead of:
+ * "as soon as possible in this range", it becomes
+ * "as soon as possible, after this field has been updated, in the state, in this range".
+ *
+ * As a parameter, you can pass the `filterAddress`, and also an optional datastore `filterKey`.
+ *
+ * If you pass only an address, then the message will be executed only after:
+ * "we are in the range, and a change has happened during this range on the `filterAddress`" (possibly balance etc).
+ * If you provide a `filterKey`, the condition of the execution of the message is:
+ * "we are in the range, and a change has happened during this range on the `filterAddress` at that datastore
+ * `filterKey`"
  *
  * Note: serialization is to be handled at the caller and the callee level.
  *
- * @param at -
- * @param functionName -
+ * @param at - Address of the contract
+ * @param functionName - name of the function in that contract
  * @param validityStartPeriod - Period of the validity start slot
  * @param validityStartThread - Thread of the validity start slot
  * @param validityEndPeriod - Period of the validity end slot
@@ -327,7 +355,7 @@ export function unsafeRandom(): i64 {
  * @param maxGas - Maximum gas for the message execution
  * @param rawFee - Fee to be paid for message execution
  * @param coins - Coins of the sender
- * @param msg - serialized data
+ * @param msg - function argument serialized in bytes
  * @param filterAddress - If you want your message to be trigger only
  * if a modification is made on a specific address precise it here
  * @param filterKey - If you want your message to be trigger only
@@ -415,6 +443,8 @@ export function fromBytes(arr: StaticArray<u8>): string {
 
 /**
  * Constructs an event given a key and arguments
+ *
+ * @see {@link generateEvent}
  *
  * @param key - event key
  * @param args - array of string arguments.
