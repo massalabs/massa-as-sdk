@@ -226,6 +226,10 @@ export default function createMockedABI(memory, createImports, instantiate, bina
         throw new Error(`No mock defined for sc call on "${ptrToString(method)}".`);
       },
 
+      assembly_caller_has_write_access() {
+        return true;
+      },
+
     },
   };
 

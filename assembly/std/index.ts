@@ -423,6 +423,7 @@ export function currentThread(): u8 {
 
 /**
  * Helper function to transform a string to a StaticArray<u8>
+ * @deprecated now use as-types helpers
  * @param str -
  */
 export function toBytes(str: string): StaticArray<u8> {
@@ -433,6 +434,7 @@ export function toBytes(str: string): StaticArray<u8> {
 
 /**
  * Helper function to transform a StaticArray<u8> to a string
+ * @deprecated now use as-types helpers
  * @param arr -
  */
 export function fromBytes(arr: StaticArray<u8>): string {
