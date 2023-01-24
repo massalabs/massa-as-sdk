@@ -57,5 +57,8 @@
     "./vm-mock": {
       "import": "./vm-mock/vm.js"
     }
+  },
+  "dependencies": {
+    "@massalabs/as-types": "^0.0.3-dev"
   }
 }
