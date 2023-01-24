@@ -28,7 +28,7 @@ export namespace env {
   export declare function getBytecode(): StaticArray<u8>;
 
   @external("massa", "assembly_script_get_bytecode_for")
-  export declare function getBytecodeFor(address: string): StaticArray<u8>;
+  export declare function getBytecodeOf(address: string): StaticArray<u8>;
 
   @external("massa", "assembly_script_caller_has_write_access")
   export declare function callerHasWriteAccess(): bool;

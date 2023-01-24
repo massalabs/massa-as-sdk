@@ -90,8 +90,8 @@ export function getBytecode(): StaticArray<u8> {
  *
  * @returns bytecode
  */
-export function getBytecodeFor(address: Address): StaticArray<u8> {
-  return env.getBytecodeFor(address.toByteString());
+export function getBytecodeOf(address: Address): StaticArray<u8> {
+  return env.getBytecodeOf(address.toByteString());
 }
 
 /**
