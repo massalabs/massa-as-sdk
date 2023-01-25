@@ -37,8 +37,7 @@ describe('Address tests', () => {
     ].forEach((input) => {
       const args = new Args().addObject(new Address(input));
       const serialized = args.serialize();
-      const deserialized = new Address();
-      args.next<Address>(deserialized);
+      const deserialized = args.nextObject<Address>(new Address());
       expect(deserialized.toString()).toBe(input);
       expect(serialized).toStrictEqual(deserialized.serialize());
     });
@@ -56,7 +55,7 @@ describe('Address tests', () => {
         .add('example');
       const deserialized = new Address();
       expect(args.nextI32().unwrap()).toBe(theNumber);
-      args.next<Address>(deserialized);
+      args.nextObject<Address>(deserialized);
       expect(deserialized.toString()).toBe(input);
     });
   });

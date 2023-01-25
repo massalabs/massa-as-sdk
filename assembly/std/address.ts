@@ -34,10 +34,25 @@ export class Address implements Valider, Serializable<Address> {
     return this._isValid;
   }
 
+  /**
+   * Serialize the address
+   *
+   * @remarks
+   * Addresses are not fixed-size so the first bytes are the size as a i32, then the address string is encoded.
+   *
+   * @returns the bytes
+   */
   serialize(): StaticArray<u8> {
     return i32ToBytes(this._value.length).concat(stringToBytes(this._value));
   }
 
+  /**
+   * Deserialize the address
+   *
+   * @param data - bytes
+   * @param offset - `Args` instance current offset
+   * @returns the new offset
+   */
   deserialize(data: StaticArray<u8>, offset: i32): i32 {
     const length = data[offset];
     const start = offset + sizeof<i32>();
