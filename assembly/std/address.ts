@@ -1,16 +1,10 @@
-import {
-  Valider,
-  Serializable,
-  stringToBytes,
-  bytesToString,
-  i32ToBytes,
-} from '@massalabs/as-types';
+import { Valider, Serializable, Args, Result } from '@massalabs/as-types';
 
 /**
  * A Massa's blockchain address.
  *
  */
-export class Address implements Valider, Serializable<Address> {
+export class Address implements Valider, Serializable {
   _value: string;
   _isValid: bool;
 
@@ -43,7 +37,7 @@ export class Address implements Valider, Serializable<Address> {
    * @returns the bytes
    */
   serialize(): StaticArray<u8> {
-    return i32ToBytes(this._value.length).concat(stringToBytes(this._value));
+    return new Args().add(this._value).serialize();
   }
 
   /**
@@ -51,16 +45,16 @@ export class Address implements Valider, Serializable<Address> {
    *
    * @param data - bytes
    * @param offset - `Args` instance current offset
-   * @returns the new offset
+   * @returns the new offset wrapped in a `Result`
    */
-  deserialize(data: StaticArray<u8>, offset: i32): i32 {
-    const length = data[offset];
-    const start = offset + sizeof<i32>();
-    const end = start + length;
-    this._value = bytesToString(
-      changetype<StaticArray<u8>>(data.slice(start, end).dataStart),
-    );
-    return end;
+  deserialize(data: StaticArray<u8>, offset: i32 = 0): Result<i32> {
+    const args = new Args(data, offset);
+    const result = args.nextString();
+    if (result.isErr()) {
+      return new Result(0, "Can't deserialize address.");
+    }
+    this._value = result.unwrap();
+    return new Result(args.offset);
   }
 
   /**
