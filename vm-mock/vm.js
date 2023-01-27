@@ -1,4 +1,3 @@
-/* eslint-disable require-jsdoc */
 /**
  * Addresses and callstack
  */
@@ -7,6 +6,12 @@
 const callerAddress = 'A12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq';
 const contractAddress = 'A12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT';
 
+/**
+ * return a random string
+ *
+ * @param {number} length length of the string to generate
+ * @returns {string} random string
+ */
 function mixRandomChars(length) {
   let result = '';
   let characters =
@@ -18,7 +23,11 @@ function mixRandomChars(length) {
   return result;
 }
 
-// Generates a probably invalid address of 50 base58 characters
+/**
+ * Generates a probably invalid address of 50 base58 characters.
+ *
+ * @returns {string} a random Address
+ */
 function generateDumbAddress() {
   return 'A12' + mixRandomChars(47);
 }
@@ -42,6 +51,9 @@ let callStack = callerAddress + ' , ' + contractAddress;
 */
 let ledger;
 
+/**
+ * Reset the ledger
+ */
 function resetLedger() {
   ledger = new Map();
   ledger.set(callerAddress, {
@@ -61,34 +73,57 @@ const scCallMockStack = [];
 /**
  * Create a mock vm to simulate calls and responses of Massa WebAssembly sdk.
  *
- * @param {WebAssembly.Memory} memory
- * @param {?} createImports
- * @param {?} instantiate
- * @param {?} binary
- *
- * @return {?} ?
+ * @param {?} memory -
+ * @param {?} createImports -
+ * @param {?} instantiate -
+ * @param {?} binary -
+ * @returns {?} -
  */
 export default function createMockedABI(memory, createImports, instantiate, binary) {
+  /**
+   * @param {ArrayBuffer} arr the array to decode
+   * @returns {string} the decoded string
+   */
   function byteArrToString(arr) {
     return new TextDecoder("utf-16").decode(arr);
   };
 
+  /**
+   * @param {number} ptr the pointer
+   * @returns {string} the string
+   */
   function ptrToString(ptr) {
     return byteArrToString(webModule.__getArrayBuffer(ptr));
   };
 
+  /**
+   * @param {number} ptr the pointer
+   * @returns {string} the array
+   */
   function ptrToUint8ArrayString(ptr) {
     return new Uint8Array(webModule.__getArrayBuffer(ptr)).toString();
   }
 
+  /**
+   * @param {number} ptr the pointer
+   * @returns {ArrayBuffer} the buffer
+   */
   function getArrayBuffer(ptr) {
     return webModule.__getArrayBuffer(ptr);
   };
 
+  /**
+   * @param {ArrayBuffer} buffer the buffer
+   * @returns {number} the pointer
+   */
   function newArrayBuffer(buffer) {
     return webModule.__newArrayBuffer(buffer);
   };
 
+  /**
+   * @param {ArrayBuffer} buffer the buffer
+   * @returns {number} the pointer
+   */
   function newString(buffer) {
     return webModule.__newString(buffer);
   }

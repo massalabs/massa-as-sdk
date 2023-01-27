@@ -21,7 +21,6 @@ function toDatastoreFormat<T>(value: T): StaticArray<u8> {
     return changetype<Args>(value).serialize();
   }
 
-  // eslint-disable-next-line new-cap
   ERROR('type must be one of string, StaticArray<u8> or Args'); // this function call stop the compilation.
 
   // Not necessary, but when giving an unsupported type, avoid
@@ -49,7 +48,6 @@ function fromDatastoreFormat<T>(value: StaticArray<u8>): T {
     return changetype<T>(new Args(value));
   }
 
-  // eslint-disable-next-line new-cap
   ERROR('type must be one of string, StaticArray<u8> or Args'); // this function call stop the compilation.
 
   // Not necessary, but when giving an unsupported type, avoid
