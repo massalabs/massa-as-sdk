@@ -3,7 +3,7 @@ import { Address } from '../address';
 
 describe('Address tests', () => {
   it('basic tests', () => {
-    const a1 = Address.fromString(
+    const a1 = new Address(
       'A1aMywGBgBywiL6WcbKR4ugxoBtdP9P3waBVi5e713uvj7F1DJL',
     );
 
@@ -14,7 +14,7 @@ describe('Address tests', () => {
     // byteString
     const rawByteString = a1.toString();
     expect<number>(rawByteString.length).toBe(51);
-    expect<Address>(Address.fromString(rawByteString)).toBe(a1);
+    expect<Address>(new Address(rawByteString)).toBe(a1);
   });
 
   it('serializable/de-serialization', () => {

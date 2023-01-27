@@ -125,7 +125,7 @@ export function functionExists(address: Address, func: string): bool {
  * @returns Smart contract address
  */
 export function createSC(bytecode: StaticArray<u8>): Address {
-  return Address.fromString(env.createSC(bytecode));
+  return new Address(env.createSC(bytecode));
 }
 
 /**
@@ -301,7 +301,7 @@ export function isSignatureValid(
  * @param pubKey - Base58check encoded
  */
 export function publicKeyToAddress(pubKey: string): Address {
-  return Address.fromString(env.publicKeyToAddress(pubKey));
+  return new Address(env.publicKeyToAddress(pubKey));
 }
 
 /**

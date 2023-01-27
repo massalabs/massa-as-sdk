@@ -58,15 +58,6 @@ export class Address implements Valider, Serializable {
   }
 
   /**
-   * Returns an Address from a byte string.
-   *
-   * @param bs - Byte string
-   */
-  static fromString(bs: string): Address {
-    return new Address(bs);
-  }
-
-  /**
    * Serialize to byte string.
    */
   toString(): string {
