@@ -1,7 +1,6 @@
-import { toBytes, fromBytes } from '.';
 import { env } from '../env';
 import { Address } from './address';
-import { Args } from '@massalabs/as-types';
+import { Args, bytesToString, stringToBytes } from '@massalabs/as-types';
 
 /**
  * Converts given value to StaticArray<u8> to match datastore expected format.
@@ -15,14 +14,13 @@ function toDatastoreFormat<T>(value: T): StaticArray<u8> {
   }
 
   if (isString<T>()) {
-    return toBytes(changetype<string>(value));
+    return stringToBytes(changetype<string>(value));
   }
 
   if (idof<T>() == idof<Args>()) {
     return changetype<Args>(value).serialize();
   }
 
-  // eslint-disable-next-line new-cap
   ERROR('type must be one of string, StaticArray<u8> or Args'); // this function call stop the compilation.
 
   // Not necessary, but when giving an unsupported type, avoid
@@ -43,14 +41,13 @@ function fromDatastoreFormat<T>(value: StaticArray<u8>): T {
   }
 
   if (isString<T>()) {
-    return changetype<T>(fromBytes(value));
+    return changetype<T>(bytesToString(value));
   }
 
   if (idof<T>() == idof<Args>()) {
     return changetype<T>(new Args(value));
   }
 
-  // eslint-disable-next-line new-cap
   ERROR('type must be one of string, StaticArray<u8> or Args'); // this function call stop the compilation.
 
   // Not necessary, but when giving an unsupported type, avoid
@@ -86,7 +83,7 @@ export function set<T>(key: T, value: T): void {
  */
 export function setOf<T>(address: Address, key: T, value: T): void {
   env.setOf(
-    address.toByteString(),
+    address.toString(),
     toDatastoreFormat(key),
     toDatastoreFormat(value),
   );
@@ -119,7 +116,7 @@ export function get<T>(key: T): T {
  */
 export function getOf<T>(address: Address, key: T): T {
   const value: StaticArray<u8> = env.getOf(
-    address.toByteString(),
+    address.toString(),
     toDatastoreFormat(key),
   );
 
@@ -151,7 +148,7 @@ export function del<T>(key: T): void {
  * @param key -
  */
 export function deleteOf<T>(address: Address, key: T): void {
-  env.deleteOf(address.toByteString(), toDatastoreFormat(key));
+  env.deleteOf(address.toString(), toDatastoreFormat(key));
 }
 
 /**
@@ -184,7 +181,7 @@ export function append<T>(key: T, value: T): void {
  */
 export function appendOf<T>(address: Address, key: T, value: T): void {
   env.appendOf(
-    address.toByteString(),
+    address.toString(),
     toDatastoreFormat(key),
     toDatastoreFormat(value),
   );
@@ -211,7 +208,7 @@ export function has<T>(key: T): bool {
  *
  */
 export function hasOf<T>(address: Address, key: T): bool {
-  return env.hasOf(address.toByteString(), toDatastoreFormat(key));
+  return env.hasOf(address.toString(), toDatastoreFormat(key));
 }
 
 /**
@@ -239,5 +236,5 @@ export function setBytecodeOf(
   address: Address,
   bytecode: StaticArray<u8>,
 ): void {
-  env.setBytecodeOf(address.toByteString(), bytecode);
+  env.setBytecodeOf(address.toString(), bytecode);
 }

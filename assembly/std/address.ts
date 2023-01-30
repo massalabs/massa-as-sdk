@@ -1,10 +1,10 @@
-import { Valider, ByteArray } from '@massalabs/as-types';
+import { Valider, Serializable, Args, Result } from '@massalabs/as-types';
 
 /**
  * A Massa's blockchain address.
  *
  */
-export class Address implements Valider {
+export class Address implements Valider, Serializable {
   _value: string;
   _isValid: bool;
 
@@ -29,81 +29,55 @@ export class Address implements Valider {
   }
 
   /**
-   * Returns the offset of the next element after having parsed
-   * an address from a string segment.
+   * Serialize the address
    *
-   * The string segment can contains more thant on serialized element.
+   * @remarks
+   * Addresses are not fixed-size so the first bytes are the size as a i32, then the address string is encoded.
    *
-   * @param bs -
-   * @param begin -
+   * @returns the bytes
    */
-  fromStringSegment(bs: string, begin: i32 = 0): i32 {
-    const length = u8(bs.codePointAt(begin));
-    // return length;
-    this._value = Address.fromByteString(
-      bs.slice(begin + 1, begin + length + 1),
-    ).toByteString();
-    return begin + length + 1;
+  serialize(): StaticArray<u8> {
+    return new Args().add(this._value).serialize();
   }
 
   /**
-   * Returns a string segment.
+   * Deserialize the address
    *
-   * The string segment can be concatenated with others
-   * to serialize multiple elements.
+   * @param data - bytes
+   * @param offset - `Args` instance current offset
+   * @returns the new offset wrapped in a `Result`
    */
-  toStringSegment(): string {
-    return String.fromCharCode(u8(this._value.length)).concat(
-      this.toByteString(),
-    );
-  }
-
-  /**
-   * Returns an Address from a byte string.
-   *
-   * @param bs - Byte string
-   */
-  static fromByteString(bs: string): Address {
-    return new Address(bs);
+  deserialize(data: StaticArray<u8>, offset: i32 = 0): Result<i32> {
+    const args = new Args(data, offset);
+    const result = args.nextString();
+    if (result.isErr()) {
+      return new Result(0, "Can't deserialize address.");
+    }
+    this._value = result.unwrap();
+    return new Result(args.offset);
   }
 
   /**
    * Serialize to byte string.
    */
-  toByteString(): string {
+  toString(): string {
     return this._value;
-  }
-
-  /**
-   * Returns an Address from a byte array.
-   *
-   * @param a - Byte array
-   */
-  static fromByteArray(a: Uint8Array): Address {
-    return this.fromByteString(ByteArray.fromUint8Array(a).toByteString());
-  }
-
-  /**
-   * Serialize to ByteArray.
-   */
-  toByteArray(): ByteArray {
-    return ByteArray.fromByteString(this._value);
   }
 
   /**
    * Tests if two addresses are identical.
    *
-   * @param other -
+   * @param other - the address object to compare
    */
   @operator('==')
   equals(other: Address): boolean {
-    return this._value == other.toByteString();
+    return this._value == other.toString();
   }
 
   /**
    * Tests if two addresses are different.
    *
-   * @param other -
+   * @param other - the address object to compare
    */
   @operator('!=')
   notEqual(other: Address): boolean {

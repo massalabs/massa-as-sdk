@@ -10,9 +10,7 @@ function json2Address(str: string): Array<Address> {
   str = str.substr(1, str.length - 2);
 
   const a = str.split(',');
-  return a.map<Address>((x) =>
-    Address.fromByteString(x.substring(1, x.length - 1)),
-  );
+  return a.map<Address>((x) => new Address(x.substring(1, x.length - 1)));
 }
 
 /**

@@ -1,37 +1,63 @@
+import { Args } from '@massalabs/as-types';
 import { Address } from '../address';
 
 describe('Address tests', () => {
   it('basic tests', () => {
-    const a1 = Address.fromByteString(
+    const a1 = new Address(
       'A1aMywGBgBywiL6WcbKR4ugxoBtdP9P3waBVi5e713uvj7F1DJL',
     );
 
-    expect<bool>(a1.isValid()).toBeTruthy();
+    expect(a1.isValid()).toBeTruthy();
 
     // serialization / deserialization
 
-    // byteArray
-    const rawByteArray = a1.toByteArray();
-    expect<number>(rawByteArray.length).toBe(51);
-    expect<Address>(Address.fromByteArray(rawByteArray)).toBe(a1);
-
     // byteString
-    const rawByteString = rawByteArray.toByteString();
+    const rawByteString = a1.toString();
     expect<number>(rawByteString.length).toBe(51);
-    expect<Address>(Address.fromByteString(rawByteString)).toBe(a1);
+    expect<Address>(new Address(rawByteString)).toBe(a1);
+  });
 
-    // stringSegment
-    let rawStringSegment = a1.toStringSegment();
-    rawStringSegment = rawStringSegment.concat(rawStringSegment);
-    expect<number>(rawStringSegment.length).toBe(104);
+  it('serializable/de-serialization', () => {
+    [
+      'A12LmTm4zRYkUQZusw7eevvV5ySzSwndJpENQ7EZHcmDbWafx96T',
+      'A1aMywGBgBywiL6WcbKR4ugxoBtdP9P3waBVi5e713uvj7F1DJL',
+    ].forEach((input) => {
+      const address = new Address(input);
+      const serialized = address.serialize();
+      const deserialized = new Address();
+      deserialized.deserialize(serialized, 0);
+      expect(address.toString()).toBe(deserialized.toString());
+    });
+  });
 
-    const a2 = new Address('');
-    const offset = a2.fromStringSegment(rawStringSegment);
-    expect<Address>(a2).toBe(a1);
-    expect<number>(offset).toBe(52);
+  it('args', () => {
+    [
+      'A12LmTm4zRYkUQZusw7eevvV5ySzSwndJpENQ7EZHcmDbWafx96T',
+      'A1aMywGBgBywiL6WcbKR4ugxoBtdP9P3waBVi5e713uvj7F1DJL',
+    ].forEach((input) => {
+      const args = new Args().add(new Address(input));
+      const serialized = args.serialize();
+      const deserialized = new Address();
+      args.nextSerializable<Address>(deserialized);
+      expect(deserialized.toString()).toBe(input);
+      expect(serialized).toStrictEqual(deserialized.serialize());
+    });
+  });
 
-    const a3 = new Address('');
-    a3.fromStringSegment(rawStringSegment, offset);
-    expect<Address>(a3).toBe(a1);
+  it('multiple args', () => {
+    [
+      'A12LmTm4zRYkUQZusw7eevvV5ySzSwndJpENQ7EZHcmDbWafx96T',
+      'A1aMywGBgBywiL6WcbKR4ugxoBtdP9P3waBVi5e713uvj7F1DJL',
+    ].forEach((input) => {
+      const theNumber = 4;
+      const args = new Args()
+        .add(theNumber)
+        .add(new Address(input))
+        .add('example');
+      expect(args.nextI32().unwrap()).toBe(theNumber);
+      const deserialized = new Address();
+      args.nextSerializable<Address>(deserialized);
+      expect(deserialized.toString()).toBe(input);
+    });
   });
 });

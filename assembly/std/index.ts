@@ -33,7 +33,7 @@ export function call(
   args: Args,
   coins: u64,
 ): StaticArray<u8> {
-  return env.call(at.toByteString(), functionName, args.serialize(), coins);
+  return env.call(at.toString(), functionName, args.serialize(), coins);
 }
 
 /**
@@ -52,7 +52,7 @@ export function localCall(
   functionName: string,
   args: Args,
 ): StaticArray<u8> {
-  return env.localCall(at.toByteString(), functionName, args.serialize());
+  return env.localCall(at.toString(), functionName, args.serialize());
 }
 
 /**
@@ -91,7 +91,7 @@ export function getBytecode(): StaticArray<u8> {
  * @returns bytecode
  */
 export function getBytecodeOf(address: Address): StaticArray<u8> {
-  return env.getBytecodeOf(address.toByteString());
+  return env.getBytecodeOf(address.toString());
 }
 
 /**
@@ -108,7 +108,7 @@ export function callerHasWriteAccess(): bool {
  * @param func -
  */
 export function functionExists(address: Address, func: string): bool {
-  return env.functionExists(address.toByteString(), func);
+  return env.functionExists(address.toString(), func);
 }
 
 /**
@@ -125,7 +125,7 @@ export function functionExists(address: Address, func: string): bool {
  * @returns Smart contract address
  */
 export function createSC(bytecode: StaticArray<u8>): Address {
-  return Address.fromByteString(env.createSC(bytecode));
+  return new Address(env.createSC(bytecode));
 }
 
 /**
@@ -144,7 +144,7 @@ export function generateEvent(event: string): void {
  * @param amount - value in the smallest unit.
  */
 export function transferCoins(to: Address, amount: u64): void {
-  env.transferCoins(to.toByteString(), amount);
+  env.transferCoins(to.toString(), amount);
 }
 
 /**
@@ -155,7 +155,7 @@ export function transferCoins(to: Address, amount: u64): void {
  * @param amount - value in the smallest unit.
  */
 export function transferCoinsOf(from: Address, to: Address, amount: u64): void {
-  env.transferCoinsOf(from.toByteString(), to.toByteString(), amount);
+  env.transferCoinsOf(from.toString(), to.toString(), amount);
 }
 
 /**
@@ -301,7 +301,7 @@ export function isSignatureValid(
  * @param pubKey - Base58check encoded
  */
 export function publicKeyToAddress(pubKey: string): Address {
-  return Address.fromByteString(env.publicKeyToAddress(pubKey));
+  return new Address(env.publicKeyToAddress(pubKey));
 }
 
 /**
@@ -376,7 +376,7 @@ export function sendMessage(
   filterKey: StaticArray<u8> = new StaticArray<u8>(0),
 ): void {
   env.sendMessage(
-    at.toByteString(),
+    at.toString(),
     functionName,
     validityStartPeriod,
     validityStartThread,
@@ -386,7 +386,7 @@ export function sendMessage(
     rawFee,
     coins,
     msg,
-    filterAddress.toByteString(),
+    filterAddress.toString(),
     filterKey,
   );
 }
@@ -419,28 +419,6 @@ export function currentPeriod(): u64 {
  */
 export function currentThread(): u8 {
   return env.currentThread();
-}
-
-/**
- * Helper function to transform a string to a StaticArray<u8>
- * @deprecated now use as-types helpers
- * @param str -
- */
-export function toBytes(str: string): StaticArray<u8> {
-  let arr = new StaticArray<u8>(str.length << 1);
-  memory.copy(changetype<usize>(arr), changetype<usize>(str), arr.length);
-  return arr;
-}
-
-/**
- * Helper function to transform a StaticArray<u8> to a string
- * @deprecated now use as-types helpers
- * @param arr -
- */
-export function fromBytes(arr: StaticArray<u8>): string {
-  let str = changetype<string>(__new(arr.length, idof<string>()));
-  memory.copy(changetype<usize>(str), changetype<usize>(arr), arr.length);
-  return str;
 }
 
 /**

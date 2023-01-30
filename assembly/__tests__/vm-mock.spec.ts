@@ -1,13 +1,6 @@
-import {
-  Address,
-  Storage,
-  generateEvent,
-  toBytes,
-  Context,
-  fromBytes,
-} from '../std';
+import { Address, Storage, generateEvent, Context } from '../std';
 import { resetStorage } from '../vm-mock/storage';
-import { Args } from '@massalabs/as-types';
+import { Args, bytesToString, stringToBytes } from '@massalabs/as-types';
 
 const testAddress = new Address(
   'A12E6N5BFAdC2wyiBV6VJjqkWhpz1kLVp2XpbRdSnL1mKjCWT6oR',
@@ -29,21 +22,21 @@ describe('Testing mocked Storage and CallStack', () => {
     const callStack = Context.addressStack();
 
     // expect to get the caller address in vm-mock/vm.js
-    expect(callStack[0].toByteString()).toBe(
+    expect(callStack[0].toString()).toBe(
       'A12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq',
     );
 
     // expect to get the contract address in vm-mock/vm.js
-    expect(callStack[1].toByteString()).toBe(
+    expect(callStack[1].toString()).toBe(
       'A12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT',
     );
   });
 
   test('Testing the Storage setOf in bytes', () => {
     Storage.setOf(testAddress, keyTest, valueTest);
-    expect(fromBytes(Storage.getOf(testAddress, toBytes(keyTest)))).toBe(
-      valueTest,
-    );
+    expect(
+      bytesToString(Storage.getOf(testAddress, stringToBytes(keyTest))),
+    ).toBe(valueTest);
   });
 
   test('Testing the Storage setOf with Args', () => {
