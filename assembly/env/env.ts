@@ -183,5 +183,5 @@ export namespace env {
   export declare function getOpData(key: StaticArray<u8>): StaticArray<u8>;
 
   @external("massa", "assembly_script_sha256")
-  export declare function sha256(key: StaticArray<u8>): StaticArray<u8>;
+  export declare function sha256(bytecode: StaticArray<u8>): StaticArray<u8>;
 }
