@@ -1,3 +1,5 @@
+const { createHash } = await import('node:crypto');
+
 /**
  * Addresses and callstack
  */
@@ -85,7 +87,7 @@ export default function createMockedABI(memory, createImports, instantiate, bina
    * @returns {string} the decoded string
    */
   function byteArrToString(arr) {
-    return new TextDecoder("utf-16").decode(arr);
+    return new TextDecoder("utf-8").decode(arr);
   };
 
   /**
@@ -128,6 +130,15 @@ export default function createMockedABI(memory, createImports, instantiate, bina
     return webModule.__newString(buffer);
   }
 
+
+  /**
+   * @param {string} text to transform
+   * @returns {Uint8Array} the array of bytes
+   */
+  function stringToByteArray(text) {
+    return new TextEncoder().encode(text);
+  }
+  
   resetLedger();
 
   const myImports = {
@@ -265,6 +276,12 @@ export default function createMockedABI(memory, createImports, instantiate, bina
         return true;
       },
 
+      assembly_script_sha256(aPtr) {
+        const stringToHash = byteArrToString(getArrayBuffer(aPtr));
+        const hash = createHash('sha256').update(stringToHash, 'utf8').digest('hex');
+        
+        return stringToByteArray(hash);
+      }
     },
   };
 
