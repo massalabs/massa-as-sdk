@@ -440,6 +440,6 @@ export function createEvent(key: string, args: Array<string>): string {
  * @param bytecode - StaticArray<u8>
  * @returns - Computed Sha256 in StaticArray<u8>
  */
-export function computeSha256(bytecode: StaticArray<u8>): StaticArray<u8> {
+export function sha256(bytecode: StaticArray<u8>): StaticArray<u8> {
   return env.sha256(bytecode);
 }
