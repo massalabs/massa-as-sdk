@@ -203,13 +203,14 @@ export class PersistentMap<K, V> {
    */
   getSome(key: K): Result<V> {
     if (!this.contains(key)) {
-      return new Result(null, 'key not found');
+      return new Result(<V>null, 'key not found');
     }
     const res = this.get(key, null);
-    return new Result(<V>res, null);
+    return new Result(<V>res);
   }
 
   /**
+   * @example
    * ```ts
    * let map = new PersistentMap<string, string>("m")
    *
@@ -225,31 +226,24 @@ export class PersistentMap<K, V> {
     if (this._size >= Usize.MAX_VALUE) {
       return new Result(this.size(), 'map size overflow');
     }
+
+    this._increaseSize(key);
+
     if (isString<V>()) {
-      this._increaseSize(key);
-      // @ts-ignore
-      Storage.set(this._key(key), stringToBytes(value));
+      Storage.set(this._key(key), stringToBytes(value as string));
     } else if (isInteger<V>()) {
-      this._increaseSize(key);
-      // @ts-ignore
       Storage.set(this._key(key), i64ToBytes(value as i64));
     } else if (isFloat<V>()) {
-      this._increaseSize(key);
-      // @ts-ignore
       Storage.set(this._key(key), f64ToBytes(value as f64));
     } else if (isBoolean<V>()) {
-      this._increaseSize(key);
-      // @ts-ignore
       Storage.set(this._key(key), boolToByte(value as boolean));
     } else if (isArrayLike<V>()) {
-      this._increaseSize(key);
-      // @ts-ignore
-      Storage.set(this._key(key), unwrapStaticArray(value));
+      Storage.set(this._key(key), unwrapStaticArray(value as Uint8Array));
     } else {
-      this._increaseSize(key);
       // @ts-ignore
       Storage.set(this._key(key), value.toString());
     }
-    return new Result(this.size(), null);
+
+    return new Result(this.size());
   }
 }
