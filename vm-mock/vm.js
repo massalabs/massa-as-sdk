@@ -87,6 +87,13 @@ export default function createMockedABI(memory, createImports, instantiate, bina
    * @returns {string} the decoded string
    */
   function byteArrToString(arr) {
+    return new TextDecoder("utf-16").decode(arr);
+  };
+  /**
+   * @param {ArrayBuffer} arr the array to decode
+   * @returns {string} the decoded string
+   */
+  function byteArrToUTF8String(arr) {
     return new TextDecoder("utf-8").decode(arr);
   };
 
@@ -138,7 +145,7 @@ export default function createMockedABI(memory, createImports, instantiate, bina
   function stringToByteArray(text) {
     return new TextEncoder().encode(text);
   }
-  
+
   resetLedger();
 
   const myImports = {
@@ -277,10 +284,10 @@ export default function createMockedABI(memory, createImports, instantiate, bina
       },
 
       assembly_script_sha256(aPtr) {
-        const stringToHash = byteArrToString(getArrayBuffer(aPtr));
+        const stringToHash = byteArrToUTF8String(getArrayBuffer(aPtr));
         const hash = createHash('sha256').update(stringToHash, 'utf8').digest('hex');
-        
-        return stringToByteArray(hash);
+
+        return newArrayBuffer(stringToByteArray(hash));
       }
     },
   };

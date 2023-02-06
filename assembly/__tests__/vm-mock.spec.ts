@@ -1,4 +1,4 @@
-import { Address, Storage, generateEvent, Context } from '../std';
+import { Address, Storage, generateEvent, Context, sha256 } from '../std';
 import { resetStorage } from '../vm-mock/storage';
 import { Args, bytesToString, stringToBytes } from '@massalabs/as-types';
 
@@ -63,5 +63,12 @@ describe('Testing mocked Storage and CallStack', () => {
 
   test('Testing event', () => {
     generateEvent("I'm an event ");
+  });
+
+  test('Testing sha256', () => {
+    const result = bytesToString(sha256(stringToBytes('something')));
+    expect(result).toBe(
+      '3fc9b689459d738f8c88a3a48aa9e33542016b7a4052e001aaa536fca74813cb',
+    );
   });
 });
