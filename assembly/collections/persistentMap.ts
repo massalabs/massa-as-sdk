@@ -1,5 +1,18 @@
 /* eslint-disable max-len */
 import { Storage } from '../std/index';
+import {
+  wrapStaticArray,
+  bytesToI64,
+  f64ToBytes,
+  i64ToBytes,
+  stringToBytes,
+  unwrapStaticArray,
+  boolToByte,
+  bytesToString,
+  bytesToF64,
+  byteToBool,
+  Result,
+} from '@massalabs/as-types';
 
 export const _KEY_ELEMENT_SUFFIX = '::';
 
@@ -54,9 +67,9 @@ export class PersistentMap<K, V> {
    * @param key - Search key.
    * @returns An internal string key for a given key of type K.
    */
-  private _key(key: K): string {
+  private _key(key: K): StaticArray<u8> {
     // @ts-ignore: TODO: Add interface that forces all K types to have toString
-    return this._elementPrefix + key.toString();
+    return stringToBytes(this._elementPrefix + key.toString());
   }
 
   /**
@@ -151,25 +164,25 @@ export class PersistentMap<K, V> {
     if (!this.contains(key)) {
       return defaultValue;
     }
-
     if (isString<V>()) {
       // @ts-ignore
-      return Storage.get(this._key(key));
+      return bytesToString(Storage.get(this._key(key)));
     } else if (isInteger<V>()) {
       // @ts-ignore
-      parseInt(Storage.get(this._key(key)), 10);
+      return bytesToI64(Storage.get(this._key(key)));
     } else if (isFloat<V>()) {
       // @ts-ignore
-      return parseFloat(Storage.get(this._key(key)));
+      return bytesToF64(Storage.get(this._key(key)));
     } else if (isBoolean<V>()) {
       // @ts-ignore
-      return Storage.get(this._key(key)).toLowerCase() == 'true' ? true : false;
+      return byteToBool(Storage.get(this._key(key)));
+    } else if (isArrayLike<V>()) {
+      // @ts-ignore
+      return wrapStaticArray(Storage.get(this._key(key)));
     } else {
       // @ts-ignore
       return null;
     }
-
-    return null;
   }
 
   /**
@@ -188,11 +201,12 @@ export class PersistentMap<K, V> {
    * @param key - Key of the element.
    * @returns Value for the given key or the default value.
    */
-  getSome(key: K): V {
-    assert(this.contains(key), 'key not found');
+  getSome(key: K): Result<V> {
+    if (!this.contains(key)) {
+      return new Result(null, 'key not found');
+    }
     const res = this.get(key, null);
-    assert(res, 'bad result');
-    return <V>res;
+    return new Result(<V>res, null);
   }
 
   /**
@@ -206,29 +220,36 @@ export class PersistentMap<K, V> {
    * @param key - Key of the element.
    * @param value - The new value of the element.
    */
-  set(key: K, value: V): void {
-    // assert map size wont overflow
-    assert(this._size < Usize.MAX_VALUE);
+  set(key: K, value: V): Result<usize> {
+    // check for map size wont overflow
+    if (this._size >= Usize.MAX_VALUE) {
+      return new Result(this.size(), 'map size overflow');
+    }
     if (isString<V>()) {
       this._increaseSize(key);
       // @ts-ignore
-      Storage.set(this._key(key), value);
+      Storage.set(this._key(key), stringToBytes(value));
     } else if (isInteger<V>()) {
       this._increaseSize(key);
       // @ts-ignore
-      Storage.set(this._key(key), value.toString());
+      Storage.set(this._key(key), i64ToBytes(value as i64));
     } else if (isFloat<V>()) {
       this._increaseSize(key);
       // @ts-ignore
-      Storage.set(this._key(key), value.toString());
+      Storage.set(this._key(key), f64ToBytes(value as f64));
     } else if (isBoolean<V>()) {
       this._increaseSize(key);
       // @ts-ignore
-      Storage.set(this._key(key), value.toString());
+      Storage.set(this._key(key), boolToByte(value as boolean));
+    } else if (isArrayLike<V>()) {
+      this._increaseSize(key);
+      // @ts-ignore
+      Storage.set(this._key(key), unwrapStaticArray(value));
     } else {
       this._increaseSize(key);
       // @ts-ignore
       Storage.set(this._key(key), value.toString());
     }
+    return new Result(this.size(), null);
   }
 }
