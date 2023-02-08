@@ -284,8 +284,8 @@ export default function createMockedABI(memory, createImports, instantiate, bina
       },
 
       assembly_script_hash_sha256(aPtr) {
-        const stringToHash = byteArrToUTF8String(getArrayBuffer(aPtr));
-        const hash = createHash('sha256').update(stringToHash, 'utf8').digest('hex');
+        const data = byteArrToUTF8String(getArrayBuffer(aPtr));
+        const hash = createHash('sha256').update(data, 'utf8').digest('hex');
 
         return newArrayBuffer(stringToByteArray(hash));
       }
