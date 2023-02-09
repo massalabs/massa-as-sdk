@@ -433,3 +433,13 @@ export function currentThread(): u8 {
 export function createEvent(key: string, args: Array<string>): string {
   return `${key}:`.concat(args.join(','));
 }
+
+/**
+ * Computing the sha256 of the passed parameter and return the hash as a byte array.
+ *
+ * @param bytecode - StaticArray<u8>
+ * @returns - Computed Sha256 in StaticArray<u8>
+ */
+export function sha256(bytecode: StaticArray<u8>): StaticArray<u8> {
+  return env.sha256(bytecode);
+}
