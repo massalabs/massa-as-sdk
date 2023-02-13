@@ -6,11 +6,17 @@ const testAddress = new Address(
   'A12E6N5BFAdC2wyiBV6VJjqkWhpz1kLVp2XpbRdSnL1mKjCWT6oR',
 );
 
+const testAddress2 = new Address(
+  'A12E6N5BFAdC2wyiBV6VJjqkWhpz1kLVp2XpbRdSnL1mKjCWT6oP',
+);
+
 const keyTest = 'test';
 const valueTest = 'value';
 
 const keyTestArgs = new Args().add(keyTest);
 const valueTestArgs = new Args().add(valueTest);
+
+const addressesArray: Address[] = [testAddress, testAddress2];
 
 beforeEach(() => {
   resetStorage();
@@ -44,6 +50,16 @@ describe('Testing mocked Storage and CallStack', () => {
     expect(Storage.getOf(testAddress, keyTestArgs).nextString().unwrap()).toBe(
       valueTest,
     );
+  });
+
+  test('Testing the Storage setOf with Args containing an array of addresses', () => {
+    const argsAddresses = new Args().addSerializableObjectArray(addressesArray);
+    Storage.setOf(testAddress, keyTestArgs, argsAddresses);
+    expect<Address[]>(
+      Storage.getOf(testAddress, keyTestArgs)
+        .nextSerializableObjectArray<Address>()
+        .unwrap(),
+    ).toStrictEqual(addressesArray);
   });
 
   test('Testing the Storage get', () => {
