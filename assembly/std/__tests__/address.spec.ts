@@ -4,7 +4,7 @@ import { Address } from '../address';
 describe('Address tests', () => {
   it('basic tests', () => {
     const a1 = new Address(
-      'A1aMywGBgBywiL6WcbKR4ugxoBtdP9P3waBVi5e713uvj7F1DJL',
+      'AU1aMywGBgBywiL6WcbKR4ugxoBtdP9P3waBVi5e713uvj7F1DJL',
     );
 
     expect(a1.isValid()).toBeTruthy();
@@ -13,14 +13,14 @@ describe('Address tests', () => {
 
     // byteString
     const rawByteString = a1.toString();
-    expect<number>(rawByteString.length).toBe(51);
+    expect<number>(rawByteString.length).toBe(52);
     expect<Address>(new Address(rawByteString)).toBe(a1);
   });
 
   it('serializable/de-serialization', () => {
     [
-      'A12LmTm4zRYkUQZusw7eevvV5ySzSwndJpENQ7EZHcmDbWafx96T',
-      'A1aMywGBgBywiL6WcbKR4ugxoBtdP9P3waBVi5e713uvj7F1DJL',
+      'AU12LmTm4zRYkUQZusw7eevvV5ySzSwndJpENQ7EZHcmDbWafx96T',
+      'AU1aMywGBgBywiL6WcbKR4ugxoBtdP9P3waBVi5e713uvj7F1DJL',
     ].forEach((input) => {
       const address = new Address(input);
       const serialized = address.serialize();
@@ -32,8 +32,8 @@ describe('Address tests', () => {
 
   it('args', () => {
     [
-      'A12LmTm4zRYkUQZusw7eevvV5ySzSwndJpENQ7EZHcmDbWafx96T',
-      'A1aMywGBgBywiL6WcbKR4ugxoBtdP9P3waBVi5e713uvj7F1DJL',
+      'AU12LmTm4zRYkUQZusw7eevvV5ySzSwndJpENQ7EZHcmDbWafx96T',
+      'AU1aMywGBgBywiL6WcbKR4ugxoBtdP9P3waBVi5e713uvj7F1DJL',
     ].forEach((input) => {
       const args = new Args().add(new Address(input));
       const serialized = args.serialize();

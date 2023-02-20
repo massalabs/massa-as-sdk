@@ -3,11 +3,11 @@ import { resetStorage } from '../vm-mock/storage';
 import { Args, bytesToString, stringToBytes } from '@massalabs/as-types';
 
 const testAddress = new Address(
-  'A12E6N5BFAdC2wyiBV6VJjqkWhpz1kLVp2XpbRdSnL1mKjCWT6oR',
+  'AU12E6N5BFAdC2wyiBV6VJjqkWhpz1kLVp2XpbRdSnL1mKjCWT6oR',
 );
 
 const testAddress2 = new Address(
-  'A12E6N5BFAdC2wyiBV6VJjqkWhpz1kLVp2XpbRdSnL1mKjCWT6oP',
+  'AS12E6N5BFAdC2wyiBV6VJjqkWhpz1kLVp2XpbRdSnL1mKjCWT6oP',
 );
 
 const keyTest = 'test';
