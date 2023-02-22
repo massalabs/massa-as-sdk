@@ -124,7 +124,7 @@ export namespace env {
   export declare function callCoins(): u64;
 
   @external("massa", "assembly_script_hash")
-  export declare function toBase58(data: string): string;
+  export declare function blake3(data: string): string;
 
   @external("massa", "assembly_script_signature_verify")
   export declare function isSignatureValid(
