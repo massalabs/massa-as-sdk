@@ -288,6 +288,11 @@ export default function createMockedABI(memory, createImports, instantiate, bina
         const hash = createHash('sha256').update(data, 'utf8').digest('hex');
 
         return newArrayBuffer(stringToByteArray(hash));
+      },
+
+      assembly_script_print(aPtr) {
+        const a = ptrToString(aPtr);
+        console.log(a);
       }
     },
   };
