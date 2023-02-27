@@ -5,19 +5,13 @@ import { Valider, Serializable, Args, Result } from '@massalabs/as-types';
  *
  */
 export class Address implements Valider, Serializable {
-  _value: string;
-  _isValid: bool;
-
   /**
    * Creates a new Address;
    *
    * @param bs - Byte string.
    * @param isValid - default true
    */
-  constructor(bs: string = '', isValid: bool = true) {
-    this._value = bs;
-    this._isValid = isValid;
-  }
+  constructor(private _value: string = '', private _isValid: bool = true) {}
 
   /**
    * Returns if the Address is still valid.
