@@ -219,8 +219,8 @@ export function getOpKeys(): Array<StaticArray<u8>> {
  *
  * @returns - a list of key (e.g. a list of byte array)
  */
-export function getKeys(): Array<StaticArray<u8>> {
-  let keysSer = env.getKeys();
+export function getKeys(prefix?: string): Array<StaticArray<u8>> {
+  let keysSer = env.getKeys(prefix);
   return derKeys(keysSer);
 }
 
@@ -230,8 +230,11 @@ export function getKeys(): Array<StaticArray<u8>> {
  * @param address - the address in the datastore
  * @returns - a list of key (e.g. a list of byte array)
  */
-export function getKeysOf(address: string): Array<StaticArray<u8>> {
-  let keysSer = env.getKeysOf(address);
+export function getKeysOf(
+  address: string,
+  prefix?: string,
+): Array<StaticArray<u8>> {
+  let keysSer = env.getKeysOf(address, prefix);
   return derKeys(keysSer);
 }
 
