@@ -228,6 +228,7 @@ export function getKeys(prefix?: string): Array<StaticArray<u8>> {
  * Get all keys from datastore
  *
  * @param address - the address in the datastore
+ * @param prefix - the prefix to filter the keys
  * @returns - a list of key (e.g. a list of byte array)
  */
 export function getKeysOf(
@@ -241,8 +242,8 @@ export function getKeysOf(
 /**
  * Internal function - used by getOpKeys
  *
- * @param keysSer - TBD
- * @returns - TBD
+ * @param keysSer - StaticArray<u8> of serialized keys
+ * @returns - StaticArray<u8>[] of deserialized keys
  */
 export function derKeys(keysSer: StaticArray<u8>): Array<StaticArray<u8>> {
   if (keysSer.length == 0) {
@@ -250,7 +251,11 @@ export function derKeys(keysSer: StaticArray<u8>): Array<StaticArray<u8>> {
   }
 
   // Datastore deserialization
-  // Format is: L (u32); V1_L (u8); V1 data (u8*V1_L); ...
+  // Format is: L (u32); V1_L (u8); V1 data (u8*V1_L); V2_L (u8); V2 data (u8*V2_L);...
+  // L = number of keys
+  // V1_L = length of key 1
+  // V1 data = key 1
+
   // u8 * 4 (LE) => u32
   let ar = new Uint8Array(4);
   ar[0] = keysSer[0];
