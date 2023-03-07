@@ -240,40 +240,56 @@ export function getKeysOf(
 }
 
 /**
- * Internal function - used by getOpKeys
+ * Read the number of keys from Uint8Array little endian format
+ *
+ * @param arr - Uint8Array
+ * @remarks - array length must be equal to 4
+ *
+ * @returns - The number of keys
+ */
+function getNumberOfKeys(arr: Uint8Array): u32 {
+  let dv = new DataView(arr.buffer, arr.byteOffset, arr.byteLength);
+  let entryCount = dv.getUint32(0, true /* littleEndian */);
+  return entryCount;
+}
+
+/**
+ * Deserialize keys
  *
  * @param keysSer - StaticArray<u8> of serialized keys
+ * @remarks - Serialized keys format:
+ *          - L (u32); V1_L (u8); V1 data (u8*V1_L); V2_L (u8); V2 data (u8*V2_L);...
+ *          - L = number of keys
+ *          - V1_L = length of key 1
+ *          - V1 data = key 1
  * @returns - StaticArray<u8>[] of deserialized keys
  */
 export function derKeys(keysSer: StaticArray<u8>): Array<StaticArray<u8>> {
-  if (keysSer.length == 0) {
-    return [];
-  }
+  if (keysSer.length == 0) return [];
 
-  // Datastore deserialization
-  // Format is: L (u32); V1_L (u8); V1 data (u8*V1_L); V2_L (u8); V2 data (u8*V2_L);...
-  // L = number of keys
-  // V1_L = length of key 1
-  // V1 data = key 1
-
-  // u8 * 4 (LE) => u32
+  // The first 4 bytes of the input array are used to store the number of keys
   let ar = new Uint8Array(4);
   ar[0] = keysSer[0];
   ar[1] = keysSer[1];
   ar[2] = keysSer[2];
   ar[3] = keysSer[3];
-  let dv = new DataView(ar.buffer, ar.byteOffset, ar.byteLength);
-  let entryCount = dv.getUint32(0, true /* littleEndian */);
-
+  const keyCount: u32 = getNumberOfKeys(ar);
+  // The first key start at index 4
   let cursor = 4;
-  let keysDer = new Array<StaticArray<u8>>(entryCount);
-  for (let i: u32 = 0; i < entryCount; i++) {
-    let end = cursor + keysSer[cursor] + 1;
-    keysDer[i] = StaticArray.slice(keysSer, cursor + 1, end);
+  // Initialize an array to hold the deserialized keys
+  let keysDer = new Array<StaticArray<u8>>(keyCount);
 
+  for (let i: u32 = 0; i < keyCount; i++) {
+    // Read the length of the current key from the input array
+    let keyLen = keysSer[cursor];
+    // Compute the end index of the current key in the input array
+    let end = cursor + keyLen + 1;
+    // Slice the input array to extract the data of the current key
+    keysDer[i] = keysSer.slice<StaticArray<u8>>(cursor + 1, end);
+    // Move the cursor to the next key in the input array
     cursor = end;
   }
-
+  // Return the deserialized keys as an array
   return keysDer;
 }
 
