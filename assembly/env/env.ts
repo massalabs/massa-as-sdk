@@ -43,12 +43,12 @@ export namespace env {
   export declare function createSC(bytecode: StaticArray<u8>): string;
 
   @external("massa", "assembly_script_get_keys")
-  export declare function getKeys(prefix?: string): StaticArray<u8>;
+  export declare function getKeys(prefix: StaticArray<u8>): StaticArray<u8>;
 
   @external("massa", "assembly_script_get_keys_for")
   export declare function getKeysOf(
     address: string,
-    prefix?: string,
+    prefix: StaticArray<u8>,
   ): StaticArray<u8>;
 
   @external("massa", "assembly_script_set_data")
