@@ -320,7 +320,7 @@ export function toBase58(data: string): string {
  * @param publicKey - base58check encoded
  * @param digest -
  * @param signature - base58check encoded
-
+ *
  */
 export function isSignatureValid(
   publicKey: string,
@@ -477,4 +477,14 @@ export function createEvent(key: string, args: Array<string>): string {
  */
 export function sha256(bytecode: StaticArray<u8>): StaticArray<u8> {
   return env.sha256(bytecode);
+}
+
+/**
+ * Checks if the address is valid.
+ * @param address - Address to check
+ * @returns boolean - true if the address is valid, false otherwise
+ *
+ */
+export function validateAddress(address: string): bool {
+  return env.validateAddress(address);
 }

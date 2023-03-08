@@ -5,12 +5,16 @@ import {
   Context,
   sha256,
   getKeysOf,
+  validateAddress,
 } from '../std';
 import { changeCallStack, resetStorage } from '../vm-mock/storage';
 import { Args, bytesToString, stringToBytes } from '@massalabs/as-types';
 
 const testAddress = new Address(
   'AU12E6N5BFAdC2wyiBV6VJjqkWhpz1kLVp2XpbRdSnL1mKjCWT6oR',
+);
+const badAddress = new Address(
+  'AUé2E6N5BFAdC2wyiBV6VJjqkWhpz1kLVp2XpbRdSnL1mKjCWT6oR',
 );
 
 const testAddress2 = new Address(
@@ -36,12 +40,12 @@ describe('Testing mocked Storage and CallStack', () => {
 
     // expect to get the caller address in vm-mock/vm.js
     expect(callStack[0].toString()).toBe(
-      'A12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq',
+      'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq',
     );
 
     // expect to get the contract address in vm-mock/vm.js
     expect(callStack[1].toString()).toBe(
-      'A12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT',
+      'AS12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT',
     );
   });
 
@@ -122,5 +126,13 @@ describe('Testing mocked Storage and CallStack', () => {
 
     expect(bytesToString(keys[0])).toBe('test1');
     expect(bytesToString(keys[1])).toBe('test2');
+  });
+
+  test('Testing validateAddress', () => {
+    const result = validateAddress(testAddress.toString());
+    expect(result).toBe(true);
+
+    const result2 = validateAddress(badAddress.toString());
+    expect(result2).toBe(false);
   });
 });
