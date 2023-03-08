@@ -81,21 +81,26 @@ const scCallMockStack = [];
  * @param {?} binary -
  * @returns {?} -
  */
-export default function createMockedABI(memory, createImports, instantiate, binary) {
+export default function createMockedABI(
+  memory,
+  createImports,
+  instantiate,
+  binary,
+) {
   /**
    * @param {ArrayBuffer} arr the array to decode
    * @returns {string} the decoded string
    */
   function byteArrToString(arr) {
-    return new TextDecoder("utf-16").decode(arr);
-  };
+    return new TextDecoder('utf-16').decode(arr);
+  }
   /**
    * @param {ArrayBuffer} arr the array to decode
    * @returns {string} the decoded string
    */
   function byteArrToUTF8String(arr) {
-    return new TextDecoder("utf-8").decode(arr);
-  };
+    return new TextDecoder('utf-8').decode(arr);
+  }
 
   /**
    * @param {number} ptr the pointer
@@ -103,7 +108,7 @@ export default function createMockedABI(memory, createImports, instantiate, bina
    */
   function ptrToString(ptr) {
     return byteArrToString(webModule.__getArrayBuffer(ptr));
-  };
+  }
 
   /**
    * @param {number} ptr the pointer
@@ -119,7 +124,7 @@ export default function createMockedABI(memory, createImports, instantiate, bina
    */
   function getArrayBuffer(ptr) {
     return webModule.__getArrayBuffer(ptr);
-  };
+  }
 
   /**
    * @param {ArrayBuffer} buffer the buffer
@@ -127,7 +132,7 @@ export default function createMockedABI(memory, createImports, instantiate, bina
    */
   function newArrayBuffer(buffer) {
     return webModule.__newArrayBuffer(buffer);
-  };
+  }
 
   /**
    * @param {ArrayBuffer} buffer the buffer
@@ -137,7 +142,6 @@ export default function createMockedABI(memory, createImports, instantiate, bina
     return webModule.__newString(buffer);
   }
 
-
   /**
    * @param {string} text to transform
    * @returns {Uint8Array} the array of bytes
@@ -146,12 +150,47 @@ export default function createMockedABI(memory, createImports, instantiate, bina
     return new TextEncoder().encode(text);
   }
 
+  /**
+   * Converts a number to its little-endian byte representation.
+   *
+   * @param {number} num - The number to convert.
+   * @returns {Uint8Array} - The little-endian byte representation of the number.
+   */
+  function numToLittleEndianBytes(num) {
+    let arr = new Uint8Array(4);
+    arr[0] = num & 0xff;
+    arr[1] = (num >> 8) & 0xff;
+    arr[2] = (num >> 16) & 0xff;
+    arr[3] = (num >> 24) & 0xff;
+    return arr;
+  }
+
+  /**
+   * Serializes an array of keys.
+   *
+   * @param {string[]} keysArr - The array of keys to serialize.
+   * @returns {Uint8Array} - The serialized keys.
+   */
+  function serializeKeys(keysArr) {
+    const serialized = [];
+    const lengthBytes = numToLittleEndianBytes(keysArr.length);
+
+    serialized.push(...lengthBytes);
+
+    for (const key of keysArr) {
+      const bytes = key.split(',').map(Number);
+      serialized.push(bytes.length);
+      serialized.push(...bytes);
+    }
+
+    return new Uint8Array(serialized);
+  }
+
   resetLedger();
 
   const myImports = {
     massa: {
       memory,
-
 
       assembly_script_set_data(kPtr, vPtr) {
         const k = ptrToUint8ArrayString(kPtr);
@@ -253,9 +292,9 @@ export default function createMockedABI(memory, createImports, instantiate, bina
         );
       },
 
-      // map the assemblyscript file with the contractAddresses generated
+      // map the AssemblyScript file with the contractAddresses generated
       assembly_script_create_sc(_) {
-        const newAddress = {_value: generateDumbAddress(), _isValid: true};
+        const newAddress = { _value: generateDumbAddress(), _isValid: true };
         const newAddressLedger = {
           storage: new Map(),
           contract: '',
@@ -264,7 +303,7 @@ export default function createMockedABI(memory, createImports, instantiate, bina
         return newArrayBuffer(newAddress._value);
       },
 
-      assembly_script_get_time(){
+      assembly_script_get_time() {
         return BigInt(Date.now());
       },
 
@@ -273,10 +312,12 @@ export default function createMockedABI(memory, createImports, instantiate, bina
       },
 
       assembly_script_call(_address, method, _param, _coins) {
-        if(scCallMockStack.length) {
+        if (scCallMockStack.length) {
           return newArrayBuffer(scCallMockStack.shift());
         }
-        throw new Error(`No mock defined for sc call on "${ptrToString(method)}".`);
+        throw new Error(
+          `No mock defined for sc call on "${ptrToString(method)}".`,
+        );
       },
 
       assembly_script_caller_has_write_access() {
@@ -293,7 +334,26 @@ export default function createMockedABI(memory, createImports, instantiate, bina
       assembly_script_print(aPtr) {
         const a = ptrToString(aPtr);
         console.log(a);
-      }
+      },
+
+      assembly_script_get_keys_for(aPtr) {
+        const a = ptrToString(aPtr);
+        if (!ledger.has(a)) return newArrayBuffer('');
+
+        const addressStorage = ledger.get(a).storage;
+        const keysArr = Array.from(addressStorage.keys());
+        const keys = serializeKeys(keysArr);
+
+        return newArrayBuffer(keys);
+      },
+
+      assembly_script_get_keys() {
+        const addressStorage = ledger.get(contractAddress).storage;
+        const keysArr = Array.from(addressStorage.keys());
+        const keys = serializeKeys(keysArr);
+
+        return newArrayBuffer(keys);
+      },
     },
   };
 
