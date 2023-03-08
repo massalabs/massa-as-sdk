@@ -215,12 +215,16 @@ export function getOpKeys(): Array<StaticArray<u8>> {
 }
 
 /**
- * Get all keys from datastore
+ * Get keys from datastore
+ *
+ * @param prefix - the prefix to filter the keys (optional)
  *
  * @returns - a list of key (e.g. a list of byte array)
  */
-export function getKeys(): Array<StaticArray<u8>> {
-  let keysSer = env.getKeys();
+export function getKeys(
+  prefix: StaticArray<u8> = new StaticArray<u8>(0),
+): Array<StaticArray<u8>> {
+  let keysSer = env.getKeys(prefix);
   return derKeys(keysSer);
 }
 
@@ -228,45 +232,76 @@ export function getKeys(): Array<StaticArray<u8>> {
  * Get all keys from datastore
  *
  * @param address - the address in the datastore
+ * @param prefix - the prefix to filter the keys (optional)
+ *
  * @returns - a list of key (e.g. a list of byte array)
  */
-export function getKeysOf(address: string): Array<StaticArray<u8>> {
-  let keysSer = env.getKeysOf(address);
+export function getKeysOf(
+  address: string,
+  prefix: StaticArray<u8> = new StaticArray<u8>(0),
+): Array<StaticArray<u8>> {
+  let keysSer = env.getKeysOf(address, prefix);
   return derKeys(keysSer);
 }
 
 /**
- * Internal function - used by getOpKeys
+ * Read the number of keys from serialized keys array
  *
- * @param keysSer - TBD
- * @returns - TBD
+ * @param arr - Uint8Array
+ *
+ * @returns The number of keys
+ */
+function getNumberOfKeys(keysSer: StaticArray<u8>): u32 {
+  // The first 4 bytes of the input array represent the number of keys
+  let arr = new Uint8Array(4);
+  arr[0] = keysSer[0];
+  arr[1] = keysSer[1];
+  arr[2] = keysSer[2];
+  arr[3] = keysSer[3];
+  let dv = new DataView(arr.buffer, arr.byteOffset, arr.byteLength);
+  let entryCount = dv.getUint32(0, true /* littleEndian */);
+  return entryCount;
+}
+
+/**
+ * Deserializes an array of keys from the specified serialized format.
+ *
+ * @param keysSer - The serialized keys.
+ * @returns The deserialized keys.
+ *
+ * ```text
+ * Format of keysSer:
+ *
+ *|---------------|----------|---------------|-----------------------------------------|
+ *| Field         | Type     | Size in Bytes | Description                             |
+ *|---------------|----------|---------------|-----------------------------------------|
+ *| L             | u32      | 4             | Total number of keys in the sequence.   |
+ *| V1_L          | u8       | 1             | Length of data for key 1.               |
+ *| V1 data       | u8[V1_L] | Variable      | Data for key 1.                         |
+ *| V2_L          | u8       | 1             | Length of data for key 2.               |
+ *| V2 data       | u8[V2_L] | Variable      | Data for key 2.                         |
+ *| ...           |          |               | Data for additional keys (if any).      |
+ *|---------------|----------|---------------|-----------------------------------------|
+ * ```
  */
 export function derKeys(keysSer: StaticArray<u8>): Array<StaticArray<u8>> {
-  if (keysSer.length == 0) {
-    return [];
-  }
+  if (keysSer.length == 0) return [];
 
-  // Datastore deserialization
-  // Format is: L (u32); V1_L (u8); V1 data (u8*V1_L); ...
-  // u8 * 4 (LE) => u32
-  let ar = new Uint8Array(4);
-  ar[0] = keysSer[0];
-  ar[1] = keysSer[1];
-  ar[2] = keysSer[2];
-  ar[3] = keysSer[3];
-  let dv = new DataView(ar.buffer, ar.byteOffset, ar.byteLength);
-  let entryCount = dv.getUint32(0, true /* littleEndian */);
+  const keyCount: u32 = getNumberOfKeys(keysSer);
+  const keys = new Array<StaticArray<u8>>(keyCount);
 
   let cursor = 4;
-  let keysDer = new Array<StaticArray<u8>>(entryCount);
-  for (let i: u32 = 0; i < entryCount; i++) {
-    let end = cursor + keysSer[cursor] + 1;
-    keysDer[i] = StaticArray.slice(keysSer, cursor + 1, end);
+
+  for (let i: u32 = 0; i < keyCount; i++) {
+    const keyLen = keysSer[cursor];
+    const start = cursor + 1;
+    const end = start + keyLen;
+
+    keys[i] = keysSer.slice<StaticArray<u8>>(start, end);
 
     cursor = end;
   }
-
-  return keysDer;
+  return keys;
 }
 
 /**
