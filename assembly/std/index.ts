@@ -245,57 +245,63 @@ export function getKeysOf(
 }
 
 /**
- * Read the number of keys from Uint8Array little endian format
+ * Read the number of keys from serialized keys array
  *
  * @param arr - Uint8Array
- * @remarks - array length must be equal to 4
  *
- * @returns - The number of keys
+ * @returns The number of keys
  */
-function getNumberOfKeys(arr: Uint8Array): u32 {
+function getNumberOfKeys(keysSer: StaticArray<u8>): u32 {
+  // The first 4 bytes of the input array represent the number of keys
+  let arr = new Uint8Array(4);
+  arr[0] = keysSer[0];
+  arr[1] = keysSer[1];
+  arr[2] = keysSer[2];
+  arr[3] = keysSer[3];
   let dv = new DataView(arr.buffer, arr.byteOffset, arr.byteLength);
   let entryCount = dv.getUint32(0, true /* littleEndian */);
   return entryCount;
 }
 
 /**
- * Deserialize keys
+ * Deserializes an array of keys from the specified serialized format.
  *
- * @param keysSer - StaticArray<u8> of serialized keys
- * @remarks - Serialized keys format:
- *          - L (u32); V1_L (u8); V1 data (u8*V1_L); V2_L (u8); V2 data (u8*V2_L);...
- *          - L = number of keys
- *          - V1_L = length of key 1
- *          - V1 data = key 1
- * @returns - StaticArray<u8>[] of deserialized keys
+ * @param keysSer - The serialized keys.
+ * @returns The deserialized keys.
+ *
+ * ```text
+ * Format of keysSer:
+ *
+ *|---------------|----------|---------------|-----------------------------------------|
+ *| Field         | Type     | Size in Bytes | Description                             |
+ *|---------------|----------|---------------|-----------------------------------------|
+ *| L             | u32      | 4             | Total number of keys in the sequence.   |
+ *| V1_L          | u8       | 1             | Length of data for key 1.               |
+ *| V1 data       | u8[V1_L] | Variable      | Data for key 1.                         |
+ *| V2_L          | u8       | 1             | Length of data for key 2.               |
+ *| V2 data       | u8[V2_L] | Variable      | Data for key 2.                         |
+ *| ...           |          |               | Data for additional keys (if any).      |
+ *|---------------|----------|---------------|-----------------------------------------|
+ * ```
  */
 export function derKeys(keysSer: StaticArray<u8>): Array<StaticArray<u8>> {
   if (keysSer.length == 0) return [];
 
-  // The first 4 bytes of the input array are used to store the number of keys
-  let ar = new Uint8Array(4);
-  ar[0] = keysSer[0];
-  ar[1] = keysSer[1];
-  ar[2] = keysSer[2];
-  ar[3] = keysSer[3];
-  const keyCount: u32 = getNumberOfKeys(ar);
-  // The first key start at index 4
+  const keyCount: u32 = getNumberOfKeys(keysSer);
+  const keys = new Array<StaticArray<u8>>(keyCount);
+
   let cursor = 4;
-  // Initialize an array to hold the deserialized keys
-  let keysDer = new Array<StaticArray<u8>>(keyCount);
 
   for (let i: u32 = 0; i < keyCount; i++) {
-    // Read the length of the current key from the input array
-    let keyLen = keysSer[cursor];
-    // Compute the end index of the current key in the input array
-    let end = cursor + keyLen + 1;
-    // Slice the input array to extract the data of the current key
-    keysDer[i] = keysSer.slice<StaticArray<u8>>(cursor + 1, end);
-    // Move the cursor to the next key in the input array
+    const keyLen = keysSer[cursor];
+    const start = cursor + 1;
+    const end = start + keyLen;
+
+    keys[i] = keysSer.slice<StaticArray<u8>>(start, end);
+
     cursor = end;
   }
-  // Return the deserialized keys as an array
-  return keysDer;
+  return keys;
 }
 
 /**
