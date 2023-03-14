@@ -5,8 +5,9 @@ const { createHash } = await import('node:crypto');
  */
 
 // Those both addresses have been randomly generated
-const callerAddress = 'A12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq';
-const contractAddress = 'A12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT';
+const callerAddress = 'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq';
+const contractAddress = 'AS12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT';
+const addressBytesLength = 53;
 
 /**
  * return a random string
@@ -329,6 +330,15 @@ export default function createMockedABI(
         const hash = createHash('sha256').update(data, 'utf8').digest('hex');
 
         return newArrayBuffer(stringToByteArray(hash));
+      },
+
+      assembly_script_validate_address(addressPtr) {
+        const address = ptrToString(addressPtr);
+
+        return (
+          stringToByteArray(address).length === addressBytesLength &&
+          (address.startsWith('AU') || address.startsWith('AS'))
+        );
       },
 
       assembly_script_print(aPtr) {

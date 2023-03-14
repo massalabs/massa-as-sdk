@@ -187,4 +187,7 @@ export namespace env {
 
   @external("massa", "assembly_script_hash_sha256")
   export declare function sha256(bytecode: StaticArray<u8>): StaticArray<u8>;
+
+  @external("massa", "assembly_script_validate_address")
+  export declare function validateAddress(address: string): bool;
 }
