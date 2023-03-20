@@ -11,6 +11,7 @@ describe('Context', () => {
   test('ownedAddresses', () => {
     const addresses: Address[] = ownedAddresses();
     expect(addresses.length).toBeGreaterThan(0);
+    expect(addresses[0].isValid()).toBe(true);
   });
 
   test('caller', () => {
