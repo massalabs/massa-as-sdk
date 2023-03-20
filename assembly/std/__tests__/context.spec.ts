@@ -13,7 +13,7 @@ describe('Context', () => {
     expect(addresses.length).toBeGreaterThan(0);
   });
 
-  test('test caller', () => {
+  test('caller', () => {
     const address: Address = caller();
     expect(address.isValid()).toBe(true);
   });
