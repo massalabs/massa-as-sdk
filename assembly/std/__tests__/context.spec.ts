@@ -29,7 +29,7 @@ describe('Context', () => {
     expect(address.isValid()).toBe(true);
   });
 
-  test('test transferredCoins', () => {
+  test('transferredCoins', () => {
     const coins = transferredCoins();
     expect(coins).toBe(0);
   });
