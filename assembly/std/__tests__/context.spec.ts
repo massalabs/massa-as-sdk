@@ -24,7 +24,7 @@ describe('Context', () => {
     expect(address.isValid()).toBe(true);
   });
 
-  test('test transactionCreator', () => {
+  test('transactionCreator', () => {
     const address: Address = transactionCreator();
     expect(address.isValid()).toBe(true);
   });
