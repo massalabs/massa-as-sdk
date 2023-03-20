@@ -19,7 +19,7 @@ describe('Context', () => {
     expect(address.isValid()).toBe(true);
   });
 
-  test('test callee', () => {
+  test('callee', () => {
     const address: Address = callee();
     expect(address.isValid()).toBe(true);
   });
