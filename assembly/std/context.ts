@@ -98,7 +98,7 @@ export function transactionCreator(): Address {
  *
  * @returns value in the smallest unit.
  */
-export function transferedCoins(): u64 {
+export function transferredCoins(): u64 {
   return env.callCoins();
 }
 

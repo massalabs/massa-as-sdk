@@ -368,6 +368,10 @@ export default function createMockedABI(
       assembly_script_get_owned_addresses() {
         return newString(`[ ${callerAddress} , ${contractAddress} ]`);
       },
+
+      assembly_script_get_call_coins() {
+        return BigInt(0);
+      },
     },
   };
 

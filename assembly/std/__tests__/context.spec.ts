@@ -1,5 +1,11 @@
 import { Address } from './../address';
-import { callee, caller, ownedAddresses, transactionCreator } from '../context';
+import {
+  callee,
+  caller,
+  ownedAddresses,
+  transactionCreator,
+  transferredCoins,
+} from '../context';
 
 describe('Context', () => {
   test('test ownedAddresses', () => {
@@ -20,5 +26,10 @@ describe('Context', () => {
   test('test transactionCreator', () => {
     const address: Address = transactionCreator();
     expect(address.isValid()).toBe(true);
+  });
+
+  test('test transferredCoins', () => {
+    const coins = transferredCoins();
+    expect(coins).toBe(0);
   });
 });
