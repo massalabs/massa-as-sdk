@@ -8,7 +8,7 @@ import {
 } from '../context';
 
 describe('Context', () => {
-  test('test ownedAddresses', () => {
+  test('ownedAddresses', () => {
     const addresses: Address[] = ownedAddresses();
     expect(addresses.length).toBeGreaterThan(0);
   });
