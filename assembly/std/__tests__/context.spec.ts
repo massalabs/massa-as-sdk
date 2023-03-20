@@ -1,5 +1,5 @@
 import { Address } from './../address';
-import { caller, ownedAddresses } from '../context';
+import { callee, caller, ownedAddresses } from '../context';
 
 describe('Context', () => {
   test('test ownedAddresses', () => {
@@ -9,6 +9,11 @@ describe('Context', () => {
 
   test('test caller', () => {
     const address: Address = caller();
+    expect(address.isValid()).toBe(true);
+  });
+
+  test('test callee', () => {
+    const address: Address = callee();
     expect(address.isValid()).toBe(true);
   });
 });
