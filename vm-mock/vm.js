@@ -364,6 +364,10 @@ export default function createMockedABI(
 
         return newArrayBuffer(keys);
       },
+
+      assembly_script_get_owned_addresses() {
+        return newString(`[ ${callerAddress} , ${contractAddress} ]`);
+      },
     },
   };
 
