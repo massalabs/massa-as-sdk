@@ -1,4 +1,6 @@
 # Massa-as-sdk
+![check-code-coverage](https://img.shields.io/badge/coverage-70%25-green)
+
 
 _Massa Assemblyscript SDK_
 
