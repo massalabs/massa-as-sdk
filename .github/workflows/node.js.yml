@@ -38,7 +38,16 @@ jobs:
       uses: actions/github-script@v3
       with:
         script: |
-          const color = process.env.COVERAGE >= 70 ? `green` : `orange`;
+          let color = "red";
+
+          const coverage = parseInt(process.env.COVERAGE);
+
+          if (coverage >= 80) {
+              color = "green";
+          } else if (coverage >= 70) {
+              color = "orange";
+          }
+
           const coverage = process.env.COVERAGE;
 
           const fs = require('fs');
