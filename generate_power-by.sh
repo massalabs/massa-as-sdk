@@ -3,7 +3,9 @@
 fileName="powered-by.md"
 report=$(license-report)
 
-echo "" > $fileName  # create an empty file
+echo "# Dependencies Report" > $fileName
+echo "" >> $fileName
+echo "The following is a list of all the dependencies of this project:" >> $fileName
 
 #base64 encoding/decoding used to handle any potential special characters or escape sequences in the JSON data.
 
