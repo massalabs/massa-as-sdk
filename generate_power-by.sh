@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash +x
 
 fileName="powered-by.md"
 report=$(license-report)
