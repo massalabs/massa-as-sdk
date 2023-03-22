@@ -311,7 +311,7 @@ export function derKeys(keysSer: StaticArray<u8>): Array<StaticArray<u8>> {
  *
  */
 export function toBase58(data: string): string {
-  return env.toBase58(data);
+  throw new Error('Not implemented');
 }
 
 /**
