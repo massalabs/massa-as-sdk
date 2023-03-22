@@ -2,9 +2,11 @@ import { env } from '../env/index';
 import { Address } from './address';
 
 /**
- * Returns an array of addresses.
+ * Parses a JSON-encoded string of addresses and returns an array of `Address` objects.
  *
- * @param str - json encode
+ * @param str - A string containing a JSON-encoded array of addresses.
+ *
+ * @returns An array of `Address` objects.
  */
 function json2Address(str: string): Array<Address> {
   str = str.substr(1, str.length - 2);
@@ -14,12 +16,31 @@ function json2Address(str: string): Array<Address> {
 }
 
 /**
- * Returns owned addresses.
+ * Returns an array of addresses owned by the current execution context.
  *
- * TODO:
- * - explain function purpose
- * - explain format
+ * This function calls the `env.ownedAddresses()` ABI function to get a JSON-encoded array of owned addresses.
+ * It then uses the `json2Address` function to parse the string into an array of `Address` objects.
  *
+ * @returns An array of `Address` objects owned by the current execution context.
+ *
+ * The owned addresses returned by this function are the addresses that the current execution
+ * context has write access to.
+ * This typically includes the current address itself, as well as any addresses that were
+ * created by the current call to allow initializing them.
+ *
+ * @example
+ * ```typescript
+ * const owned = ownedAddresses();
+ * for (let i = 0; i < owned.length; i++) {
+ *   log(owned[i].toString());
+ * }
+ * ```
+ *
+ * @example
+ * Example of a JSON-encoded array of addresses:
+ * ```json
+ * ["0xAS0123456789abcdef0123456789abcdef01234567", "AS0x89abcdef0123456789abcdef0123456789abcdef"]
+ * ```
  */
 export function ownedAddresses(): Array<Address> {
   return json2Address(env.ownedAddresses());
