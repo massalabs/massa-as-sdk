@@ -14,12 +14,12 @@ jobs:
     - name: Install node 
       uses: actions/setup-node@v3
       with:
-        node-version: 16
+        node-version: 18
         registry-url: https://registry.npmjs.org
 
     - name: Install license-report and jq
       run: |
-        sudo apt-get update -y && sudo apt-get install -y npm jq
+        sudo apt-get update -y && sudo apt-get install -y jq
         sudo npm install -g license-report
 
     - name: Generate Powered-By
