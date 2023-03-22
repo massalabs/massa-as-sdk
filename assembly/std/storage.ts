@@ -21,7 +21,13 @@ function toDatastoreFormat<T>(value: T): StaticArray<u8> {
     return changetype<Args>(value).serialize();
   }
 
-  ERROR('type must be one of string, StaticArray<u8> or Args'); // this function call stop the compilation.
+  if (idof<T>() == idof<Uint8Array>()) {
+    // @ts-ignore
+    return changetype<StaticArray<u8>>(value.buffer);
+  }
+
+  // this function call stop the compilation.
+  ERROR('type must be one of string, StaticArray<u8> or Args or Uint8Array');
 
   // Not necessary, but when giving an unsupported type, avoid
   // `ERROR TS2355: A function whose declared type is not 'void' must return a value.`
@@ -48,7 +54,13 @@ function fromDatastoreFormat<T>(value: StaticArray<u8>): T {
     return changetype<T>(new Args(value));
   }
 
-  ERROR('type must be one of string, StaticArray<u8> or Args'); // this function call stop the compilation.
+  if (idof<T>() == idof<Uint8Array>()) {
+    // @ts-ignore
+    return changetype<Uint8Array>(value);
+  }
+
+  // this function call stop the compilation.
+  ERROR('type must be one of string, StaticArray<u8> or Args or Uint8Array');
 
   // Not necessary, but when giving an unsupported type, avoid
   // `ERROR TS2355: A function whose declared type is not 'void' must return a value.`
