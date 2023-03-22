@@ -43,7 +43,12 @@ export const _KEY_ELEMENT_SUFFIX = '::';
  * @typeParam K - The generic type parameter `K` can be any [valid AssemblyScript type](https://docs.assemblyscript.org/basics/types).
  * @typeParam V - The generic type parameter `V` can be any [valid AssemblyScript type](https://docs.assemblyscript.org/basics/types).
  */
-export class PersistentMap<K, V> {
+
+interface Methods {
+  toString(): string;
+}
+
+export class PersistentMap<K extends Methods, V> {
   private _elementPrefix: string;
   private _size: usize;
 
@@ -68,7 +73,6 @@ export class PersistentMap<K, V> {
    * @returns An internal string key for a given key of type K.
    */
   private _key(key: K): StaticArray<u8> {
-    // @ts-ignore: TODO: Add interface that forces all K types to have toString
     return stringToBytes(this._elementPrefix + key.toString());
   }
 
