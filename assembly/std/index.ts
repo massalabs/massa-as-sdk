@@ -170,7 +170,7 @@ export function balance(): u64 {
 /**
  * Gets the balance of the specified address.
  *
- * @param address -
+ * @param address - address to get the balance from
  *
  * @returns - value in the smallest unit.
  */
