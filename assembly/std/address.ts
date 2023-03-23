@@ -8,8 +8,8 @@ export class Address implements Valider, Serializable {
   /**
    * Creates a new Address;
    *
-   * @param bs - Byte string.
-   * @param isValid - default true
+   * @param _value - A byte string that represents the address data.
+   * @param _isValid - Defaults to `true`.
    */
   constructor(private _value: string = '', private _isValid: bool = true) {}
 
