@@ -96,9 +96,9 @@ export function caller(): Address {
 /**
  * Returns callee's address.
  *
- * Callee is the current smart-contract address.
+ * The "callee" refers to the contract that is currently being executed.
  *
- * @returns the called smart contract address
+ * @returns The address of the currently executing smart contract.
  */
 export function callee(): Address {
   const a = addressStack();
