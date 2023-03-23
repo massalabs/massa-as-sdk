@@ -181,7 +181,7 @@ export function balanceOf(address: string): u64 {
 /**
  * Check for key in datastore
  *
- * @param key -
+ * @param key - key to check
  *
  * @returns - true if key is present in datastore, false otherwise.
  */
