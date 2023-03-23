@@ -23,7 +23,7 @@ function toDatastoreFormat<T>(value: T): StaticArray<u8> {
 
   if (idof<T>() == idof<Uint8Array>()) {
     // @ts-ignore
-    return changetype<StaticArray<u8>>(value.buffer);
+    return changetype<StaticArray<u8>>(value);
   }
 
   // this function call stop the compilation.
