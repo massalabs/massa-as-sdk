@@ -18,7 +18,7 @@
   },
   "scripts": {
     "test": "asp",
-    "test:ci": "asp --summary",
+    "test:ci": "asp --summary --config as-pect-ci.config.js",
     "prettier": "as-prettier --check assembly",
     "prettier:fix": "as-prettier --write assembly",
     "lint": "eslint .",
