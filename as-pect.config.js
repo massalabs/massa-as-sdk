@@ -15,9 +15,6 @@ export default {
     return createMockedABI(memory, createImports, instantiate, binary);
   },
 
-  // Enable code coverage.
-  // coverage: ['assembly/**/*.ts'],
-
   // Specify if the binary wasm file should be written to the file system.
   outputBinary: false,
 };
