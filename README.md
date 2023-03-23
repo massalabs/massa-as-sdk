@@ -10,7 +10,6 @@ Massa-as-sdk is a collection of tools, objects, and functions specifically desig
 To use Massa-as-sdk in your AssemblyScript project, simply add it as a dependency:
 
 ```sh
-Copy code
 npm i --save-dev @massalabs/massa-as-sdk
 ```
 
@@ -20,7 +19,6 @@ After installing Massa-as-sdk, you can import the object classes and functions t
 For example, to use the generateEvent function and generate a "Hello, World!" event, you can import and use it like this:
 
 ```typescript
-Copy code
 import { generateEvent } from '@massalabs/massa-as-sdk';
 
 // This main function is called automatically when the smart contract is executed by the blockchain.
