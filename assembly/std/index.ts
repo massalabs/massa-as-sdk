@@ -194,9 +194,9 @@ export function hasOpKey(key: StaticArray<u8>): bool {
 }
 
 /**
- * Get data associated with the given key from datastore
+ * Get data associated with the given key from operation datastore
  *
- * @param key -
+ * @param key - key to get data from
  *
  * @returns - data as a byte array
  */
