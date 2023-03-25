@@ -1,15 +1,13 @@
-// Standard Massa AssemblyScript SDK
 
-// massa higher order collections
+// Import modules from other files in the package
 import * as collections from './collections/index';
-export { collections };
-
-// massa native wasm bindings
 import * as env from './env/index';
-export { env };
 
-// massa std functionalities
+// Export the modules so they can be used by other files
+export { collections, env };
+
+// Import and re-export the std module
 export * from './std';
 
-// mock utilities for testing purpose
+// Import and re-export the vm-mock module
 export * from './vm-mock';
