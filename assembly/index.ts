@@ -1,4 +1,3 @@
-
 // Import modules from other files in the package
 import * as collections from './collections/index';
 import * as env from './env/index';

@@ -12,11 +12,11 @@ import { Args, bytesToString, stringToBytes } from '@massalabs/as-types';
  *
  * @typeParam T - the type of the value to convert, which must be one of `string`, `StaticArray<u8>`, `Args`,
  *    or `Uint8Array`
- * 
+ *
  * @param value - the value to convert to the appropriate format for datastore operations
- * 
+ *
  * @returns a StaticArray<u8> that represents the given value in the appropriate format for datastore operations
- * 
+ *
  * @throws AT COMPILATION TIME an error if the given value is not one of the supported types
  */
 function toDatastoreFormat<T>(value: T): StaticArray<u8> {
@@ -37,7 +37,9 @@ function toDatastoreFormat<T>(value: T): StaticArray<u8> {
   }
 
   // If the value is not one of the supported types, throw an error and stop the compilation
-  ERROR('Generic type must be one of string, StaticArray<u8>, Args, or Uint8Array.');
+  ERROR(
+    'Generic type must be one of string, StaticArray<u8>, Args, or Uint8Array.',
+  );
 
   // This return statement is not strictly necessary, but it is included to avoid a misleading error message
   // in cases where the compilation would otherwise fail due to the lack of a return value for a non-void function
@@ -45,10 +47,20 @@ function toDatastoreFormat<T>(value: T): StaticArray<u8> {
 }
 
 /**
- * Converts given datastore retrieved value to wanted format.
+ * Converts the given datastore retrieved value to the desired format.
  *
- * @typeParam T - `string`, `Args` or `StaticArray<u8>`
- * @param value -
+ * @remarks
+ * This function supports converting values of type `StaticArray<u8>` to either `string`, `Args`, or
+ * `StaticArray<u8>`. If the desired output type is not one of these supported types, an error will be
+ * thrown and the compilation will stop.
+ *
+ * @typeParam T - the desired output type, which must be one of `string`, `Args`, or `StaticArray<u8>`
+ *
+ * @param value - the datastore retrieved value to be converted, of type `StaticArray<u8>`
+ *
+ * @returns the converted value in the desired format, of type `T`
+ *
+ * @throws AT COMPILATION TIME an error if the desired output type is not one of the supported types
  */
 function fromDatastoreFormat<T>(value: StaticArray<u8>): T {
   if (idof<T>() == idof<StaticArray<u8>>()) {
@@ -68,12 +80,11 @@ function fromDatastoreFormat<T>(value: StaticArray<u8>): T {
     return changetype<Uint8Array>(value);
   }
 
-  // this function call stop the compilation.
-  ERROR('type must be one of string, StaticArray<u8> or Args or Uint8Array');
+  // If the desired output type is not one of the supported types, throw an error and stop the compilation
+  ERROR('type must be one of string, StaticArray<u8>, Args, or Uint8Array.');
 
-  // Not necessary, but when giving an unsupported type, avoid
-  // `ERROR TS2355: A function whose declared type is not 'void' must return a value.`
-  // which can be misleading when you try to figure out what caused the error.
+  // This return statement is not strictly necessary, but it is included to avoid a misleading error message
+  // in cases where the compilation would otherwise fail due to the lack of a return value for a non-void function
   return changetype<T>(0);
 }
 
@@ -82,15 +93,20 @@ function fromDatastoreFormat<T>(value: StaticArray<u8>): T {
  *
  * @remarks
  * This function checks if the given type is compatible with the expected value types for a storage key,
- * which includes `string`, `Args`, `StaticArray<u8>` and `Uint8Array` types. If the given type is compatible with any of
- * these types, the function returns `true`. Otherwise, it returns `false`.
+ * which includes `string`, `Args`, `StaticArray<u8>` and `Uint8Array` types. If the given type is compatible
+ * with any of these types, the function returns `true`. Otherwise, it returns `false`.
  *
  * @typeParam T - the type to check for compatibility with the expected value types for a storage key
  *
  * @returns `true` if the given type is compatible with the expected value types for a storage key, `false` otherwise.
  */
 function checkValueType<T>(key: T): bool {
-  if (isString<T>() || idof<T>() == idof<Args>() || idof<T>() == idof<Uint8Array>() || idof<T>() == idof<StaticArray<u8>>()) {
+  if (
+    isString<T>() ||
+    idof<T>() == idof<Args>() ||
+    idof<T>() == idof<Uint8Array>() ||
+    idof<T>() == idof<StaticArray<u8>>()
+  ) {
     return true;
   } else {
     return false;
@@ -113,13 +129,17 @@ function checkValueType<T>(key: T): bool {
  * @throws AT COMPILATION TIME an error if the given key or value type is not one of the supported types
  */
 export function set<T>(key: T, value: T): void {
-  //FIXME: if (!checkValueType<T>(key)) { is not working
-  if (!isString<T>() 
-      && idof<T>() != idof<Args>()
-      && idof<T>() != idof<Uint8Array>()
-      && idof<T>() != idof<StaticArray<u8>>()
+  // FIXME: if (!checkValueType<T>(key)) { is not working
+
+  if (
+    !isString<T>() &&
+    idof<T>() != idof<Args>() &&
+    idof<T>() != idof<Uint8Array>() &&
+    idof<T>() != idof<StaticArray<u8>>()
   ) {
-    ERROR('Type of key and value must be one of string, StaticArray<u8>, Args, or Uint8Array.');
+    ERROR(
+      'Type of key and value must be one of string, StaticArray<u8>, Args, or Uint8Array.',
+    );
   }
 
   env.set(toDatastoreFormat<T>(key), toDatastoreFormat<T>(value));
