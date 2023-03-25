@@ -1,3 +1,40 @@
+/**
+ * This module contains functions for interacting with the key-value datastore, which is used for persistent storage of data
+ * on the blockchain.
+ * 
+ * The supported value types for the datastore include `string`, `Args`, `Uint8Array` and `StaticArray<u8>`.
+ * 
+ * This module also provides functions for setting the executable bytecode of a smart contract address.
+ *
+ * @remarks
+ * The datastore is used to store data that is expected to persist between contract executions, such as contract
+ * state or user information.
+ * 
+ * The [set](../functions/Storage.set.html), [get](../functions/Storage.get.html), 
+ * [has](../functions/Storage.has.html), and [del](../functions/Storage.del.html) functions are used to manipulate 
+ * the data in the datastore of the current address, while the [setOf](../functions/Storage.setOf.html), 
+ * [getOf](../functions/Storage.getOf.html), [hasOf](../functions/Storage.hasOf.html), and 
+ * [deleteOf](../functions/Storage.deleteOf.html) functions are used to manipulate the datastore of a specific address.
+ *
+ * The `setOf` and `deleteOf` functions can only be called at smart contract generation time by the
+ * parent smart contract to write to or delete data from the child's datastore. These functions allow the parent smart
+ * contract to manipulate the child smart contract's datastore during the smart contract execution time where
+ * [createSC](../functions/createSC.html) is called, but not after.
+ *
+ * @privateRemarks
+ * AssemblyScript does not currently support union types, so we must manually check the compatibility of generic types
+ * in some of the functions.
+ *
+ * The `ERROR` function is used to stop the compilation and inform the developer that one of the passed generic types is
+ * not compatible with the expected type. Unfortunately, the `ERROR` function does not offer a way to pass the actual
+ * generic type or the compilation context, except for the line where the error function was called. Therefore, it is
+ * recommended to use the `ERROR` function as early as possible in the call process, and to avoid using sub-functions
+ * called in the process in order to preserve the error context.
+ *
+ * @module storage
+ */
+
+
 import { env } from '../env';
 import { Address } from './address';
 import { Args, bytesToString, stringToBytes } from '@massalabs/as-types';
