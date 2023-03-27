@@ -43,6 +43,10 @@ jobs:
 
           const coverage = parseInt(process.env.COVERAGE);
 
+          if (!coverage) {
+            throw new Error('no coverage');
+          }
+
           if (coverage >= 80) {
               color = "green";
           } else if (coverage >= 70) {
