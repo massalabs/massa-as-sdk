@@ -139,13 +139,18 @@ function fromDatastoreFormat<T>(value: StaticArray<u8>): T {
 
 // @ts-ignore: decorator
 @inline
-function checkValueType<T>(): bool {
-  return (
-    isString<T>() ||
-    idof<T>() == idof<Args>() ||
-    idof<T>() == idof<Uint8Array>() ||
-    idof<T>() == idof<StaticArray<u8>>()
-  );
+function checkValueType<T>(): void {
+  if (!isString<T>()) {
+    if (idof<T>() != idof<Args>()) {
+      if (idof<T>() != idof<Uint8Array>()) {
+        if (idof<T>() != idof<StaticArray<u8>>()) {
+          ERROR(
+            'Type of key and value must be one of string, StaticArray<u8>, Args, or Uint8Array.',
+          );
+        }
+      }
+    }
+  }
 }
 
 /**
@@ -164,11 +169,7 @@ function checkValueType<T>(): bool {
  * @throws AT COMPILATION TIME an error if the given key or value type is not one of the supported types
  */
 export function set<T>(key: T, value: T): void {
-  if (!checkValueType<T>()) {
-    ERROR(
-      'Type of key must be one of string, StaticArray<u8>, Args, or Uint8Array.',
-    );
-  }
+  checkValueType<T>();
   env.set(toDatastoreFormat<T>(key), toDatastoreFormat<T>(value));
 }
 
