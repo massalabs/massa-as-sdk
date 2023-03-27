@@ -1,19 +1,19 @@
 /**
- * This module contains functions for interacting with the key-value datastore, which is used for persistent storage of data
- * on the blockchain.
- * 
+ * This module contains functions for interacting with the key-value datastore, which is used for persistent storage of
+ * data on the blockchain.
+ *
  * The supported value types for the datastore include `string`, `Args`, `Uint8Array` and `StaticArray<u8>`.
- * 
+ *
  * This module also provides functions for setting the executable bytecode of a smart contract address.
  *
  * @remarks
  * The datastore is used to store data that is expected to persist between contract executions, such as contract
  * state or user information.
- * 
- * The [set](../functions/Storage.set.html), [get](../functions/Storage.get.html), 
- * [has](../functions/Storage.has.html), and [del](../functions/Storage.del.html) functions are used to manipulate 
- * the data in the datastore of the current address, while the [setOf](../functions/Storage.setOf.html), 
- * [getOf](../functions/Storage.getOf.html), [hasOf](../functions/Storage.hasOf.html), and 
+ *
+ * The [set](../functions/Storage.set.html), [get](../functions/Storage.get.html),
+ * [has](../functions/Storage.has.html), and [del](../functions/Storage.del.html) functions are used to manipulate
+ * the data in the datastore of the current address, while the [setOf](../functions/Storage.setOf.html),
+ * [getOf](../functions/Storage.getOf.html), [hasOf](../functions/Storage.hasOf.html), and
  * [deleteOf](../functions/Storage.deleteOf.html) functions are used to manipulate the datastore of a specific address.
  *
  * The `setOf` and `deleteOf` functions can only be called at smart contract generation time by the
@@ -33,7 +33,6 @@
  *
  * @module storage
  */
-
 
 import { env } from '../env';
 import { Address } from './address';
@@ -137,17 +136,16 @@ function fromDatastoreFormat<T>(value: StaticArray<u8>): T {
  *
  * @returns `true` if the given type is compatible with the expected value types for a storage key, `false` otherwise.
  */
-function checkValueType<T>(key: T): bool {
-  if (
+
+// @ts-ignore: decorator
+@inline
+function checkValueType<T>(): bool {
+  return (
     isString<T>() ||
     idof<T>() == idof<Args>() ||
     idof<T>() == idof<Uint8Array>() ||
     idof<T>() == idof<StaticArray<u8>>()
-  ) {
-    return true;
-  } else {
-    return false;
-  }
+  );
 }
 
 /**
@@ -166,19 +164,11 @@ function checkValueType<T>(key: T): bool {
  * @throws AT COMPILATION TIME an error if the given key or value type is not one of the supported types
  */
 export function set<T>(key: T, value: T): void {
-  // FIXME: if (!checkValueType<T>(key)) { is not working
-
-  if (
-    !isString<T>() &&
-    idof<T>() != idof<Args>() &&
-    idof<T>() != idof<Uint8Array>() &&
-    idof<T>() != idof<StaticArray<u8>>()
-  ) {
+  if (!checkValueType<T>()) {
     ERROR(
-      'Type of key and value must be one of string, StaticArray<u8>, Args, or Uint8Array.',
+      'Type of key must be one of string, StaticArray<u8>, Args, or Uint8Array.',
     );
   }
-
   env.set(toDatastoreFormat<T>(key), toDatastoreFormat<T>(value));
 }
 
