@@ -1,6 +1,12 @@
 import { Storage } from '..';
 import { Args } from '@massalabs/as-types';
 
+/**
+ * The following section contains a set of tests that follow a "test as documentation" strategy, making them easier
+ * to read and understand. These tests are organized in a way that serves as documentation, and each test is designed
+ * to demonstrate a specific aspect of the code's behavior.
+ */
+
 describe('Storage tests', () => {
   it('checks the set command', () => {
     Storage.set(new StaticArray<u8>(0), new StaticArray<u8>(0));
@@ -40,3 +46,27 @@ describe('Storage tests', () => {
     expect(Storage.get(keyArgs)).toStrictEqual(valueArgs);
   });
 });
+
+/**
+ * The following section contains table tests that are not organized according to the "test as documentation" strategy
+ * used above, which may make them more difficult to read and understand. These tests are still important for ensuring
+ * the correctness of the code and should not be skipped.
+ */
+
+const keyArr: StaticArray<u8> = [1, 2, 3, 4];
+const valueArr: StaticArray<u8> = [5, 6, 7, 8];
+
+// prettier-ignore
+verifyTableExpectations(
+  'set/get command',
+  () => {
+    Storage.set(row0, row1);
+    expect(Storage.get(row0)).toStrictEqual(row1, row2);
+  },
+  [
+    // <storage key>, <storage value>, <test description>,
+    "key", "value", "storing string",
+    new Args().add(u64(1)), new Args().add(u64.MAX_VALUE), "storing args",
+    keyArr, valueArr, "storing array",
+  ]
+);
