@@ -263,13 +263,22 @@ export function getOf<T>(address: Address, key: T): T {
 }
 
 /**
- * Removes (key, value) from the datastore of the callee's address.
+ * Removes the key-value pair associated with the given `key` from the current contract's datastore.
  *
- * TODO: explains what happens on missing key.
- * TODO: explains security mechanisms
+ * @remarks
+ * If the key is not of type string, StaticArray<u8>, Args, or Uint8Array, an error will be thrown and
+ * the compilation will stop.
+ * If the caller is not authorized to delete the key-value pair, an error will be thrown.
+ * If the key does not exist an error will be thrown.
  *
- * @typeParam T - `string`, `Args` or `StaticArray<u8>`
- * @param key -
+ * @privateRemarks
+ * TODO: describe the security mechanisms involved in this operation.
+ *
+ * @typeParam T - The type of the key to delete. Can be either `string`, `Args`, or `StaticArray<u8>`.
+ *
+ * @param key - The key to delete from the datastore. It will be converted to a `StaticArray<u8>` using
+ * the `toDatastoreFormat()` function.
+ *
  */
 export function del<T>(key: T): void {
   env.del(toDatastoreFormat(key));
