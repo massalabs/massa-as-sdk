@@ -352,7 +352,7 @@ export function appendOf<T>(address: Address, key: T, value: T): void {
 }
 
 /**
- * Checks if the key-value pair pair exists in the datastore of the callee's address.
+ * Checks if the key-value pair exists in the datastore of the callee's address.
  *
  * @remarks
  * If the `key` is not of type `string`, `Args`, `StaticArray<u8>` or Uint8Array, an error will be thrown and
@@ -363,7 +363,7 @@ export function appendOf<T>(address: Address, key: T, value: T): void {
  * @param key - The key to check for existence in the datastore. It will be converted to a `StaticArray<u8>` using
  * the `toDatastoreFormat()` function.
  *
- * @returns A boolean value indicating whether the `(key, value)` pair exists in the datastore or not.
+ * @returns A boolean value indicating whether the key-value pair exists in the datastore or not.
  */
 
 export function has<T>(key: T): bool {
@@ -371,13 +371,20 @@ export function has<T>(key: T): bool {
 }
 
 /**
- * Checks if the (key, value) exists in the datastore
- * of the given address.
+ * Checks if the key-value pair exists in the datastore of the callee's address.
  *
- * @typeParam T - `string`, `Args` or `StaticArray<u8>`
- * @param address -
- * @param key -
+ * @remarks
+ * If the `key` is not of type `string`, `Args`, `StaticArray<u8>` or Uint8Array, an error will be thrown and
+ * the compilation will stop.
+ * If the contract at the given `address` does not exist, the function will throw an error.
  *
+ * @typeParam T - The type of the `key`. Can be either `string`, `Args`, `StaticArray<u8>` or Uint8Array.
+ *
+ * @param address - The address whose datastore to check for the key-value pair.
+ * @param key - The key to check for existence in the datastore. It will be converted to a `StaticArray<u8>` using
+ * the `toDatastoreFormat()` function.
+ *
+ * @returns A boolean value indicating whether the key-value pair exists in the datastore or not.
  */
 export function hasOf<T>(address: Address, key: T): bool {
   return env.hasOf(address.toString(), toDatastoreFormat(key));
