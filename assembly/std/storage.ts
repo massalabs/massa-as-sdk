@@ -154,19 +154,21 @@ function checkValueType<T>(): void {
 }
 
 /**
- * Sets a key-value pair in the datastore of the current address.
+ * Sets a key-value pair in the current contract's datastore.
  *
- * @remarks
- * This function overwrites existing entries and creates missing ones. The types of the key and value must be
- * compatible with the expected value types for the datastore, which include `string`, `Args`, and `StaticArray<u8>`
- * types.
+ * @remarks If the key/value provided is not of type string, StaticArray<u8>, Args, or Uint8Array,
+ * an error will be thrown and the compilation will stop. Key and value must be of the same type.
  *
- * @typeParam T - the type of the key and value, which must be one of `string`, `Args`, or `StaticArray<u8>`
+ * @typeParam T - The type of the key-value pair. Can be either `string`, `StaticArray<u8>`, `Args`, or `Uint8Array`.
  *
- * @param key - the key to set in the datastore
- * @param value - the value to set for the given key in the datastore
+ * @param key - The key to set in the datastore. It will be converted to a `StaticArray<u8>`
+ * using the `toDatastoreFormat()` function.
+ * @param value - The value to associate with the key in the datastore. It will be converted to a `StaticArray<u8>`
+ * using the `toDatastoreFormat()` function.
  *
- * @throws AT COMPILATION TIME an error if the given key or value type is not one of the supported types
+ * @throws Throws an error at compilation time if the key is not of type `string`, `StaticArray<u8>`, `Args`,
+ * or `Uint8Array`.
+ *
  */
 export function set<T>(key: T, value: T): void {
   checkValueType<T>();
