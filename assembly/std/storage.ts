@@ -140,8 +140,6 @@ function fromDatastoreFormat<T>(value: StaticArray<u8>): T {
  *
  * @returns `true` if the given type is compatible with the expected value types for a storage key, `false` otherwise.
  */
-// @ts-ignore: decorator
-@inline
 function checkValueType<T>(): void {
   if (!isString<T>()) {
     if (idof<T>() != idof<Args>()) {
