@@ -90,7 +90,7 @@ function toDatastoreFormat<T>(value: T): StaticArray<u8> {
  * `StaticArray<u8>`. If the desired output type is not one of these supported types, an error will be
  * thrown and the compilation will stop.
  *
- * @typeParam T - the desired output type, which must be one of `string`, `Args`, or `StaticArray<u8>`
+ * @typeParam T - the desired output type, which must be one of `string`, `Args`, `StaticArray<u8>` or Uint8Array
  *
  * @param value - the datastore retrieved value to be converted, of type `StaticArray<u8>`
  *
@@ -222,7 +222,7 @@ export function setOf<T>(address: Address, key: T, value: T): void {
  * If there is no value associated with the `key`, an error will be thrown by the node:
  * Runtime error: data entry not found.
  *
- * @typeParam T - The type of the key-value pair. Can be either `string`, `Args`, or `StaticArray<u8>`.
+ * @typeParam T - The type of the key-value pair. Can be either `string`, `Args`, `StaticArray<u8>` or Uint8Array.
  *
  * @param key - The key whose associated value is to be retrieved from the datastore. It will be converted
  * to a `StaticArray<u8>` using the `toDatastoreFormat()` function.
@@ -243,7 +243,7 @@ export function get<T>(key: T): T {
  * If there is no value associated with the `key`, the function will throw an error.
  * If the contract at the given address does not exist, the function will throw an error.
  *
- * @typeParam T - The type of the key-value pair. Can be either `string`, `Args`, or `StaticArray<u8>`.
+ * @typeParam T - The type of the key-value pair. Can be either `string`, `Args`, `StaticArray<u8>` or Uint8Array.
  *
  * @param address - The address of the contract whose datastore is being queried.
  * @param key - The key whose associated value is to be retrieved from the datastore. It will be converted
@@ -269,12 +269,12 @@ export function getOf<T>(address: Address, key: T): T {
  * If the key is not of type string, StaticArray<u8>, Args, or Uint8Array, an error will be thrown and
  * the compilation will stop.
  * If the caller is not authorized to delete the key-value pair, an error will be thrown.
- * If the key does not exist an error will be thrown.
+ * If the `key` does not exist in the datastore, an error will be thrown.
  *
  * @privateRemarks
  * TODO: describe the security mechanisms involved in this operation.
  *
- * @typeParam T - The type of the key to delete. Can be either `string`, `Args`, or `StaticArray<u8>`.
+ * @typeParam T - The type of the key to delete. Can be either `string`, `Args`, `StaticArray<u8>` or Uint8Array.
  *
  * @param key - The key to delete from the datastore. It will be converted to a `StaticArray<u8>` using
  * the `toDatastoreFormat()` function.
@@ -291,10 +291,10 @@ export function del<T>(key: T): void {
  * If the key is not of type string, StaticArray<u8>, Args, or Uint8Array, an error will be thrown and
  * the compilation will stop.
  * If the caller is not authorized to delete the key-value pair, an error will be thrown.
- * If the key does not exist an error will be thrown.
+ * If the `key` does not exist in the datastore, an error will be thrown.
  * If the contract at the given address does not exist, the function will throw an error.
  *
- * @typeParam T - The type of the key to delete. Can be either `string`, `Args`, or `StaticArray<u8>`.
+ * @typeParam T - The type of the key to delete. Can be either `string`, `Args`, `StaticArray<u8>` or Uint8Array.
  * @param address - The address of the contract whose datastore is being queried.
  * @param key - The key whose associated value is to be retrieved from the datastore. It will be converted
  * to a `StaticArray<u8>` using the `toDatastoreFormat()` function.
@@ -309,12 +309,13 @@ export function deleteOf<T>(address: Address, key: T): void {
  * @remarks
  * If the key is not of type string, StaticArray<u8>, Args, or Uint8Array, an error will be thrown and
  * the compilation will stop.
- * If the key does not exist an error will be thrown.
+ * If the `key` does not exist in the datastore, an error will be thrown.
  *
- * @typeParam T - The type of the key and value to append. Can be either `string`, `Args`, or `StaticArray<u8>`.
+ * @typeParam T - The type of the key and value to append. Can be either `string`, `Args`, `StaticArray<u8>`
+ * or Uint8Array.
  *
- * @param key - The key whose data the `value` will be appended to. It will be converted to a `StaticArray<u8>` using
- * the `toDatastoreFormat()` function.
+ * @param key - The key whose data the `value` will be appended to. It will be converted to a `StaticArray<u8>`
+ * using the `toDatastoreFormat()` function.
  * @param value - The data that will be appended to the existing data associated with the `key`. It will be converted
  * to a `StaticArray<u8>` using the `toDatastoreFormat()` function.
  *
@@ -324,18 +325,23 @@ export function append<T>(key: T, value: T): void {
 }
 
 /**
- * Appends value to existing data of the (key, value) in
- * the datastore of the given address.
+ * Appends the `value` to the existing data associated with the `key` in the datastore of the specified `address`.
  *
- * Note: do nothing if key is absent.
+ * @remarks
+ * If the `key` is not of type `string`, `Args`, `StaticArray<u8>`, or `Uint8Array`, an error will be thrown and
+ * the compilation will stop.
+ * If the `key` does not exist in the datastore, an error will be thrown.
+ * If the contract at the given address does not exist, the function will throw an error.
  *
- * @privateRemarks
- * TODO: explains security mechanisms
+ * @typeParam T - The type of the key and value to append. Can be either `string`, `Args`, `StaticArray<u8>` or
+ * Uint8Array.
  *
- * @typeParam T - `string`, `Args` or `StaticArray<u8>`
- * @param address - target address -
- * @param key -
- * @param value - value to append -
+ * @param address - The address whose datastore the `value` will be appended to.
+ * @param key - The key whose data the `value` will be appended to. It will be converted to a `StaticArray<u8>` using
+ * the `toDatastoreFormat()` function.
+ * @param value - The data that will be appended to the existing data associated with the `key`. It will be converted
+ * to a `StaticArray<u8>` using the `toDatastoreFormat()` function.
+ *
  */
 export function appendOf<T>(address: Address, key: T, value: T): void {
   env.appendOf(
@@ -346,12 +352,20 @@ export function appendOf<T>(address: Address, key: T, value: T): void {
 }
 
 /**
- * Checks if the (key, value) exists in the datastore
- * of the callee's address.
+ * Checks if the key-value pair pair exists in the datastore of the callee's address.
  *
- * @typeParam T - `string`, `Args` or `StaticArray<u8>`
- * @param key -
+ * @remarks
+ * If the `key` is not of type `string`, `Args`, `StaticArray<u8>` or Uint8Array, an error will be thrown and
+ * the compilation will stop.
+ *
+ * @typeParam T - The type of the `key`. Can be either `string`, `Args`, `StaticArray<u8>` or Uint8Array.
+ *
+ * @param key - The key to check for existence in the datastore. It will be converted to a `StaticArray<u8>` using
+ * the `toDatastoreFormat()` function.
+ *
+ * @returns A boolean value indicating whether the `(key, value)` pair exists in the datastore or not.
  */
+
 export function has<T>(key: T): bool {
   return env.has(toDatastoreFormat(key));
 }
