@@ -218,13 +218,19 @@ export function setOf<T>(address: Address, key: T, value: T): void {
 }
 
 /**
- * Returns (key, value) in the datastore of the callee's address.
+ * Returns the value associated with the given `key` in the current contract's datastore.
  *
- * @privateRemarks
- * TODO: explains what happens on missing key.
+ * @remarks
+ * If there is no value associated with the `key`, an error will be thrown by the node:
+ * Runtime error: data entry not found.
  *
- * @typeParam T - `string`, `Args` or `StaticArray<u8>`
- * @param key -
+ * @typeParam T - The type of the key-value pair. Can be either `string`, `Args`, or `StaticArray<u8>`.
+ *
+ * @param key - The key whose associated value is to be retrieved from the datastore. It will be converted
+ * to a `StaticArray<u8>` using the `toDatastoreFormat()` function.
+ *
+ * @returns The value associated with the given `key` in the datastore, or throw an error: data entry not found.
+ *
  */
 export function get<T>(key: T): T {
   const value: StaticArray<u8> = env.get(toDatastoreFormat(key));
