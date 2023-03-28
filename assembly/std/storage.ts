@@ -47,7 +47,7 @@ import { Args, bytesToString, stringToBytes } from '@massalabs/as-types';
  * an error will be thrown and the compilation will stop.
  *
  * @typeParam T - the type of the value to convert, which must be one of `string`, `StaticArray<u8>`, `Args`,
- *    or `Uint8Array`
+ * or `Uint8Array`
  *
  * @param value - the value to convert to the appropriate format for datastore operations
  *
@@ -132,11 +132,14 @@ function fromDatastoreFormat<T>(value: StaticArray<u8>): T {
  * which includes `string`, `Args`, `StaticArray<u8>` and `Uint8Array` types. If the given type is compatible
  * with any of these types, the function returns `true`. Otherwise, it returns `false`.
  *
+ * @privateRemarks
+ * we need to use nested if statement because compile time evaluation of as-coverage is
+ * limited and doesn't support logical || and && operators in that case.
+ *
  * @typeParam T - the type to check for compatibility with the expected value types for a storage key
  *
  * @returns `true` if the given type is compatible with the expected value types for a storage key, `false` otherwise.
  */
-
 // @ts-ignore: decorator
 @inline
 function checkValueType<T>(): void {
@@ -157,8 +160,15 @@ function checkValueType<T>(): void {
  * Sets a key-value pair in the current contract's datastore. Existing entries are overwritten and missing
  * ones are created.
  *
- * @remarks If the key/value provided is not of type string, StaticArray<u8>, Args, or Uint8Array,
+ * @remarks
+ * If the key/value provided is not of type string, StaticArray<u8>, Args, or Uint8Array,
  * an error will be thrown and the compilation will stop. Key and value must be of the same type.
+ *
+ * @privateRemarks
+ * The checkValueType function is used in our codebase to ensure that the key and value being set are of the same type.
+ * Currently, if a type mismatch is detected, the function will trigger an error message that specifies the line number
+ * where checkValueType is implemented. However, this can be confusing and unhelpful for developers who need to identify
+ * the location in their code where the type mismatch actually occurred. We are working on a solution to this issue.
  *
  * @typeParam T - The type of the key-value pair. Can be either `string`, `StaticArray<u8>`, `Args`, or `Uint8Array`.
  *
@@ -179,11 +189,12 @@ export function set<T>(key: T, value: T): void {
  * Sets a key-value pair in the datastore of the given address. Existing entries are overwritten and missing
  * ones are created.
  *
- * @remarks If the key/value provided is not of type string, StaticArray<u8>, Args, or Uint8Array,
+ * @remarks
+ * If the key/value provided is not of type string, StaticArray<u8>, Args, or Uint8Array,
  * an error will be thrown and the compilation will stop. Key and value must be of the same type.
  *
- *
- * @privateRemarks TODO: Explain the security mechanisms in place to ensure that only authorized parties
+ * @privateRemarks
+ * TODO: Explain the security mechanisms in place to ensure that only authorized parties
  * can set data in the datastore.
  *
  * @typeParam T - The type of the key-value pair. Can be either string, Args, or StaticArray<u8>.
@@ -199,7 +210,6 @@ export function set<T>(key: T, value: T): void {
  *
  */
 export function setOf<T>(address: Address, key: T, value: T): void {
-  checkValueType<T>();
   env.setOf(
     address.toString(),
     toDatastoreFormat(key),
