@@ -393,18 +393,17 @@ export function hasOf<T>(address: Address, key: T): bool {
 /**
  * Sets the executable bytecode of the callee's address.
  *
- * Failure consequences:
- * If the callee's address does not correspond to a smart contract in the ledger,
+ * @remarks
+ * - If the callee's address does not correspond to a smart contract in the ledger,
  * setting the bytecode will be disallowed, and a runtime error will be returned.
- * 1. If the caller lacks write permissions on the callee's address,
+ * - If the caller lacks write permissions on the callee's address,
  * setting the bytecode will be disallowed, and a runtime error will be returned.
- * 2. If the callee's address is the same as the creator's address,
+ * - If the callee's address is the same as the creator's address,
  * setting the bytecode will be disallowed, as it is not a smart contract address.
- * A runtime error will be returned in this case.
- * 3. If an error occurs while updating the bytecode in the speculative ledger,
+ * - If an error occurs while updating the bytecode in the speculative ledger,
  * the operation will fail, and the error will be returned.
  *
- * @param bytecode - The bytecode to be set for the callee's address.
+ * @param bytecode - The bytecode to be set for the callee's address. It should be a `StaticArray<u8>`.
  */
 export function setBytecode(bytecode: StaticArray<u8>): void {
   env.setBytecode(bytecode);
