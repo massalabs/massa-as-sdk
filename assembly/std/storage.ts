@@ -304,14 +304,20 @@ export function deleteOf<T>(address: Address, key: T): void {
 }
 
 /**
- * Appends value to existing data of the (key, value) in
- * the datastore of the callee's address.
+ * Appends the `value` to the existing data associated with the `key` in the datastore of the current contract.
  *
- * Note: do nothing if key is absent.
+ * @remarks
+ * If the key is not of type string, StaticArray<u8>, Args, or Uint8Array, an error will be thrown and
+ * the compilation will stop.
+ * If the key does not exist an error will be thrown.
  *
- * @typeParam T - `string`, `Args` or `StaticArray<u8>`
- * @param key -
- * @param value -
+ * @typeParam T - The type of the key and value to append. Can be either `string`, `Args`, or `StaticArray<u8>`.
+ *
+ * @param key - The key whose data the `value` will be appended to. It will be converted to a `StaticArray<u8>` using
+ * the `toDatastoreFormat()` function.
+ * @param value - The data that will be appended to the existing data associated with the `key`. It will be converted
+ * to a `StaticArray<u8>` using the `toDatastoreFormat()` function.
+ *
  */
 export function append<T>(key: T, value: T): void {
   env.append(toDatastoreFormat(key), toDatastoreFormat(value));
