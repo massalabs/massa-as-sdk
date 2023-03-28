@@ -239,14 +239,21 @@ export function get<T>(key: T): T {
 }
 
 /**
- * Returns (key, value) in the datastore of the given address.
+ * Returns the value associated with the given `key` in the datastore of the contract at the specified `address`.
  *
- * @privateRemarks
- * TODO: explains what happens on missing key.
+ * @remarks
+ * If there is no value associated with the `key`, the function will throw an error.
+ * If the contract at the given address does not exist, the function will throw an error.
  *
- * @typeParam T - `string`, `Args` or `StaticArray<u8>`
- * @param address -
- * @param key -
+ * @typeParam T - The type of the key-value pair. Can be either `string`, `Args`, or `StaticArray<u8>`.
+ *
+ * @param address - The address of the contract whose datastore is being queried.
+ * @param key - The key whose associated value is to be retrieved from the datastore. It will be converted
+ * to a `StaticArray<u8>` using the `toDatastoreFormat()` function.
+ *
+ * @returns The value associated with the given `key` in the datastore of the specified contract, or throws an
+ * error if no value is found.
+ *
  */
 export function getOf<T>(address: Address, key: T): T {
   const value: StaticArray<u8> = env.getOf(
