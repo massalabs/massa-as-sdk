@@ -87,7 +87,8 @@ function toDatastoreFormat<T>(value: T): StaticArray<u8> {
  *
  * @remarks
  * This function supports converting values of type `StaticArray<u8>` to either `string`, `Args`, or
- * `StaticArray<u8>`. If the desired output type is not one of these supported types, an error will be
+ * `StaticArray<u8>`.
+ * - If the desired output type is not one of these supported types, an error will be
  * thrown and the compilation will stop.
  *
  * @typeParam T - the desired output type, which must be one of `string`, `Args`, `StaticArray<u8>` or Uint8Array
@@ -159,7 +160,7 @@ function checkValueType<T>(): void {
  * ones are created.
  *
  * @remarks
- * If the key/value provided is not of type string, StaticArray<u8>, Args, or Uint8Array,
+ * - If the key/value provided is not of type string, StaticArray<u8>, Args, or Uint8Array,
  * an error will be thrown and the compilation will stop. Key and value must be of the same type.
  *
  * @privateRemarks
@@ -188,7 +189,7 @@ export function set<T>(key: T, value: T): void {
  * ones are created.
  *
  * @remarks
- * If the key/value provided is not of type string, StaticArray<u8>, Args, or Uint8Array,
+ * - If the key/value provided is not of type string, StaticArray<u8>, Args, or Uint8Array,
  * an error will be thrown and the compilation will stop. Key and value must be of the same type.
  *
  * @privateRemarks
@@ -219,7 +220,7 @@ export function setOf<T>(address: Address, key: T, value: T): void {
  * Returns the value associated with the given `key` in the current contract's datastore.
  *
  * @remarks
- * If there is no value associated with the `key`, an error will be thrown by the node:
+ * - If there is no value associated with the `key`, an error will be thrown by the node:
  * Runtime error: data entry not found.
  *
  * @typeParam T - The type of the key-value pair. Can be either `string`, `Args`, `StaticArray<u8>` or Uint8Array.
@@ -240,8 +241,8 @@ export function get<T>(key: T): T {
  * Returns the value associated with the given `key` in the datastore of the contract at the specified `address`.
  *
  * @remarks
- * If there is no value associated with the `key`, the function will throw an error.
- * If the contract at the given address does not exist, the function will throw an error.
+ * - If there is no value associated with the `key`, the function will throw an error.
+ * - If the contract at the given address does not exist, the function will throw an error.
  *
  * @typeParam T - The type of the key-value pair. Can be either `string`, `Args`, `StaticArray<u8>` or Uint8Array.
  *
@@ -266,10 +267,10 @@ export function getOf<T>(address: Address, key: T): T {
  * Removes the key-value pair associated with the given `key` from the current contract's datastore.
  *
  * @remarks
- * If the key is not of type string, StaticArray<u8>, Args, or Uint8Array, an error will be thrown and
+ * - If the key is not of type string, StaticArray<u8>, Args, or Uint8Array, an error will be thrown and
  * the compilation will stop.
- * If the caller is not authorized to delete the key-value pair, an error will be thrown.
- * If the `key` does not exist in the datastore, an error will be thrown.
+ * - If the caller is not authorized to delete the key-value pair, an error will be thrown.
+ * - If the `key` does not exist in the datastore, an error will be thrown.
  *
  * @privateRemarks
  * TODO: describe the security mechanisms involved in this operation.
@@ -288,11 +289,11 @@ export function del<T>(key: T): void {
  * Removes the key-value pair associated with the given `key` from the datastore of the specified `address`.
  *
  * @privateRemarks
- * If the key is not of type string, StaticArray<u8>, Args, or Uint8Array, an error will be thrown and
+ * - If the key is not of type string, StaticArray<u8>, Args, or Uint8Array, an error will be thrown and
  * the compilation will stop.
- * If the caller is not authorized to delete the key-value pair, an error will be thrown.
- * If the `key` does not exist in the datastore, an error will be thrown.
- * If the contract at the given address does not exist, the function will throw an error.
+ * - If the caller is not authorized to delete the key-value pair, an error will be thrown.
+ * - If the `key` does not exist in the datastore, an error will be thrown.
+ * - If the contract at the given address does not exist, the function will throw an error.
  *
  * @typeParam T - The type of the key to delete. Can be either `string`, `Args`, `StaticArray<u8>` or Uint8Array.
  * @param address - The address of the contract whose datastore is being queried.
@@ -307,9 +308,9 @@ export function deleteOf<T>(address: Address, key: T): void {
  * Appends the `value` to the existing data associated with the `key` in the datastore of the current contract.
  *
  * @remarks
- * If the key is not of type string, StaticArray<u8>, Args, or Uint8Array, an error will be thrown and
+ * - If the key is not of type string, StaticArray<u8>, Args, or Uint8Array, an error will be thrown and
  * the compilation will stop.
- * If the `key` does not exist in the datastore, an error will be thrown.
+ * - If the `key` does not exist in the datastore, an error will be thrown.
  *
  * @typeParam T - The type of the key and value to append. Can be either `string`, `Args`, `StaticArray<u8>`
  * or Uint8Array.
@@ -328,10 +329,10 @@ export function append<T>(key: T, value: T): void {
  * Appends the `value` to the existing data associated with the `key` in the datastore of the specified `address`.
  *
  * @remarks
- * If the `key` is not of type `string`, `Args`, `StaticArray<u8>`, or `Uint8Array`, an error will be thrown and
+ * - If the `key` is not of type `string`, `Args`, `StaticArray<u8>`, or `Uint8Array`, an error will be thrown and
  * the compilation will stop.
- * If the `key` does not exist in the datastore, an error will be thrown.
- * If the contract at the given address does not exist, the function will throw an error.
+ * - If the `key` does not exist in the datastore, an error will be thrown.
+ * - If the contract at the given address does not exist, the function will throw an error.
  *
  * @typeParam T - The type of the key and value to append. Can be either `string`, `Args`, `StaticArray<u8>` or
  * Uint8Array.
@@ -355,7 +356,7 @@ export function appendOf<T>(address: Address, key: T, value: T): void {
  * Checks if the key-value pair exists in the datastore of the callee's address.
  *
  * @remarks
- * If the `key` is not of type `string`, `Args`, `StaticArray<u8>` or Uint8Array, an error will be thrown and
+ * - If the `key` is not of type `string`, `Args`, `StaticArray<u8>` or Uint8Array, an error will be thrown and
  * the compilation will stop.
  *
  * @typeParam T - The type of the `key`. Can be either `string`, `Args`, `StaticArray<u8>` or Uint8Array.
@@ -374,9 +375,9 @@ export function has<T>(key: T): bool {
  * Checks if the key-value pair exists in the datastore of the callee's address.
  *
  * @remarks
- * If the `key` is not of type `string`, `Args`, `StaticArray<u8>` or Uint8Array, an error will be thrown and
+ * - If the `key` is not of type `string`, `Args`, `StaticArray<u8>` or Uint8Array, an error will be thrown and
  * the compilation will stop.
- * If the contract at the given `address` does not exist, the function will throw an error.
+ * - If the contract at the given `address` does not exist, the function will throw an error.
  *
  * @typeParam T - The type of the `key`. Can be either `string`, `Args`, `StaticArray<u8>` or Uint8Array.
  *
