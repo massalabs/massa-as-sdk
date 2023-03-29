@@ -150,7 +150,10 @@ export function timestamp(): u64 {
 
 /**
  * Returns the remaining gas for the current smart contract execution.
+ *
+ * @remarks
  * Gas is a measure of the computational resources required to execute a transaction on the blockchain.
+ *
  * @returns The amount of remaining gas for the current transaction.
  */
 export function remainingGas(): u64 {
