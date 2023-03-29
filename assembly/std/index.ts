@@ -61,15 +61,15 @@ export function localCall(
 }
 
 /**
- * Executes a given bytecode within the current context.
+ * Executes a given bytecode within the current context and returns its return value.
  *
- * Note: arguments serialization is to be handled by the caller and the callee.
+ * @param bytecode - The bytecode to execute.
+ * @param functionName - The name of the function to call within the bytecode.
+ * @param args - The arguments to pass to the function within the bytecode.
  *
- * @param bytecode -
- * @param functionName -
- * @param args -
+ * @returns The return value of the function within the bytecode.
  *
- * @returns function returned value
+ * @throws Throws an error if the execution of the bytecode fails.
  */
 export function localExecution(
   bytecode: StaticArray<u8>,
