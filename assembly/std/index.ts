@@ -112,9 +112,13 @@ export function callerHasWriteAccess(): bool {
 }
 
 /**
- * Checks if `function` exists in the bytecode stored at `address`
- * @param address -
- * @param func -
+ * Checks if a function with the given name exists in the bytecode of the contract at the given address.
+ *
+ * @param address - The address of the contract to check for the existence of the function.
+ * @param func - The name of the function to check for existence.
+ *
+ * @returns A boolean value indicating whether the function exists in the bytecode or not.
+ *
  */
 export function functionExists(address: Address, func: string): bool {
   return env.functionExists(address.toString(), func);
