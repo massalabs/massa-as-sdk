@@ -1,3 +1,13 @@
+/**
+ * This file contains functions for interacting with the environment and execution
+ * context of a smart contract.
+ *
+ * The functions in this file allow for accessing information such as owned addresses,
+ * the address stack, and the amount of remaining gas for a smart contract execution.
+ *
+ * @module context
+ */
+
 import { env } from '../env/index';
 import { Address } from './address';
 
