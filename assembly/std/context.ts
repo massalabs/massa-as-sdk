@@ -65,16 +65,14 @@ export function ownedAddresses(): Array<Address> {
 }
 
 /**
- * Returns stack addresses.
+ * Returns the stack addresses for the current smart contract execution.
  *
+ * @remarks
  * The first element of this list is the originator (creator of the transaction)
  * and the last is the address of the current smart-contract.
  *
  * When executing the ExecuteSC function, the list is composed of only one entry:
  * the initiator, the caller and the callee having with the same address.
- *
- * ExecuteSC when an account A sends an ExecuteSC operation, the stack at the
- * beginning of that execution is: bottom [ A ] top.
  *
  * CallSC when an account A sends a CallSC operation to call a function in a smart
  * contract B, the stack at the beginning of the execution of that function is:
@@ -91,15 +89,16 @@ export function ownedAddresses(): Array<Address> {
  * of the execution of the target function: bottom [C, D] top. Note: C and D can be the same.
  *
  * Local execution
- * local executions don’t change the stack, they allow executing foreign code in the current context.
+ * Local executions don’t change the stack, they allow executing foreign code in the current context.
  *
+ * @returns An array of addresses for the current smart contract execution.
  */
 export function addressStack(): Array<Address> {
   return json2Address(env.callStack());
 }
 
 /**
- * Returns the address of the caller of the currently executing smart contract.
+ * Returns the `address` of the `caller` of the currently executing smart contract.
  *
  * @remarks
  * The caller is the person or the smart contract that directly called
