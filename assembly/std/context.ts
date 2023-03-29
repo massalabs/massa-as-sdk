@@ -124,9 +124,9 @@ export function callee(): Address {
 }
 
 /**
- * Return the address of the initial transaction creator (originator).
+ * Returns the address of the initial transaction creator (originator).
  *
- * @returns returns the stack element at the bottom of the address stack
+ * @returns The address of the initial transaction creator.
  */
 export function transactionCreator(): Address {
   return addressStack()[0];
@@ -135,7 +135,7 @@ export function transactionCreator(): Address {
 /**
  * Returns the amount transferred in the current call.
  *
- * @returns value in the smallest unit.
+ * @returns The value in the smallest unit.
  */
 export function transferredCoins(): u64 {
   return env.callCoins();
