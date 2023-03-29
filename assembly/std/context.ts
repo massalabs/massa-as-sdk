@@ -112,8 +112,9 @@ export function caller(): Address {
 }
 
 /**
- * Returns callee's address.
+ * Returns the address of the currently executing smart contract.
  *
+ * @remarks
  * The "callee" refers to the contract that is currently being executed.
  *
  * @returns The address of the currently executing smart contract.
