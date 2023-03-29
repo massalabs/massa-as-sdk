@@ -142,7 +142,9 @@ export function transferredCoins(): u64 {
 }
 
 /**
- * @returns the slot unix timestamp in milliseconds
+ * Returns the slot Unix timestamp in milliseconds.
+ *
+ * @returns The slot Unix timestamp in milliseconds.
  */
 export function timestamp(): u64 {
   return env.time();
