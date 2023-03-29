@@ -125,17 +125,18 @@ export function functionExists(address: Address, func: string): bool {
 }
 
 /**
- * Creates a new smart contract.
+ * Creates a new smart contract with the given bytecode.
  *
- * Take a base64 string representing the module binary and create an entry in
- * the ledger.
+ * @remarks
+ * Given a bytecode as a `StaticArray<u8>`, creates a new smart contract and returns its address.
+ * The context allows you to interact with this smart contract while executing the current bytecode.
  *
- * The context allow you to write in this smart contract while you're executing
- * the current bytecode.
+ * @param bytecode - The bytecode of the new smart contract.
  *
- * @param bytecode -
+ * @returns The address of the newly created smart contract.
  *
- * @returns Smart contract address
+ * @throws Throws an error if creating the new smart contract fails.
+ *
  */
 export function createSC(bytecode: StaticArray<u8>): Address {
   return new Address(env.createSC(bytecode));
