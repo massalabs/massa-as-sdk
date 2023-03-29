@@ -89,11 +89,15 @@ export function getBytecode(): StaticArray<u8> {
 }
 
 /**
- * Get the bytecode of the current address
+ * Retrieves the bytecode of the contract at the given address.
  *
- * @param address -
+ * @param address - The address of the contract whose bytecode is to be retrieved.
  *
- * @returns bytecode
+ * @returns The bytecode of the contract.
+ *
+ * @throws
+ * - Throws an error if the contract at the given address does not exist.
+ *
  */
 export function getBytecodeOf(address: Address): StaticArray<u8> {
   return env.getBytecodeOf(address.toString());
