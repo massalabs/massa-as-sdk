@@ -99,12 +99,13 @@ export function addressStack(): Array<Address> {
 }
 
 /**
- * Returns caller's address.
+ * Returns the address of the caller of the currently executing smart contract.
  *
- * Caller is the person or the smart contract that directly called
+ * @remarks
+ * The caller is the person or the smart contract that directly called
  * the pending function.
  *
- * @returns the caller's address
+ * @returns The `address` of the caller of the currently executing smart contract.
  */
 export function caller(): Address {
   const a = addressStack();
@@ -117,7 +118,7 @@ export function caller(): Address {
  * @remarks
  * The "callee" refers to the contract that is currently being executed.
  *
- * @returns The address of the currently executing smart contract.
+ * @returns The `address` of the currently executing smart contract.
  */
 export function callee(): Address {
   const a = addressStack();
@@ -127,7 +128,7 @@ export function callee(): Address {
 /**
  * Returns the address of the initial transaction creator (originator).
  *
- * @returns The address of the initial transaction creator.
+ * @returns The `address` of the initial transaction creator.
  */
 export function transactionCreator(): Address {
   return addressStack()[0];
