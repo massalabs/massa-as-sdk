@@ -16,16 +16,19 @@ export function print(message: string): void {
 }
 
 /**
- * Calls a remote function located at given address.
+ * Calls a remote function located at the given address with the specified arguments and returns its return value.
  *
- * Note: arguments serialization is to be handled by the caller and the callee.
+ * @param at - The address of the contract containing the remote function to call.
+ * @param functionName - The name of the remote function to call.
+ * @param args - The arguments to pass to the remote function.
+ * @param coins - The amount of coins to send along with the function call.
  *
- * @param at -
- * @param functionName -
- * @param args -
- * @param coins -
+ * @returns The return value of the remote function.
  *
- * @returns function returned value
+ * @throws
+ * - Throws an error if the remote function call fails.
+ * - Throws an error if the address doesn't exist.
+ *
  */
 export function call(
   at: Address,
