@@ -33,15 +33,14 @@ function json2Address(str: string): Array<Address> {
 /**
  * Returns an array of addresses owned by the current execution context.
  *
- * This function calls the `env.ownedAddresses()` ABI function to get a JSON-encoded array of owned addresses.
- * It then uses the `json2Address` function to parse the string into an array of `Address` objects.
+ * @remarks
+ * This function calls the `env.ownedAddresses()` ABI function to get a JSON-encoded array of owned addresses,
+ * and then uses the `json2Address` function to parse the string into an array of `Address` objects. The owned
+ * addresses returned by this function are the addresses that the current execution context has write access to.
+ * This typically includes the current address itself, as well as any addresses that were created by the current
+ * call to allow initializing them.
  *
  * @returns An array of `Address` objects owned by the current execution context.
- *
- * The owned addresses returned by this function are the addresses that the current execution
- * context has write access to.
- * This typically includes the current address itself, as well as any addresses that were
- * created by the current call to allow initializing them.
  *
  * @example
  * ```typescript
@@ -50,12 +49,16 @@ function json2Address(str: string): Array<Address> {
  *   log(owned[i].toString());
  * }
  * ```
+ * This example logs the string representation of each owned address to the console.
  *
  * @example
  * Example of a JSON-encoded array of addresses:
  * ```json
  * ["0xAS0123456789abcdef0123456789abcdef01234567", "AS0x89abcdef0123456789abcdef0123456789abcdef"]
  * ```
+ * This example shows the expected format of the JSON-encoded array of owned addresses returned by
+ * the `env.ownedAddresses()` ABI function. Each address is a string in the format "0x...", representing
+ * the hexadecimal representation of the address.
  */
 export function ownedAddresses(): Array<Address> {
   return json2Address(env.ownedAddresses());
