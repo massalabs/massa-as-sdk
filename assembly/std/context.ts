@@ -14,9 +14,14 @@ import { Address } from './address';
 /**
  * Parses a JSON-encoded string of addresses and returns an array of `Address` objects.
  *
+ * @remarks
+ * This function takes a string containing a JSON-encoded array of addresses
+ * (ex: "[address1,address2,...,addressN]") and returns an array of `Address`
+ * objects.
+ *
  * @param str - A string containing a JSON-encoded array of addresses.
  *
- * @returns An array of `Address` objects.
+ * @returns An array of `Address` objects, one for each address in the input string.
  */
 function json2Address(str: string): Array<Address> {
   str = str.substr(1, str.length - 2);
