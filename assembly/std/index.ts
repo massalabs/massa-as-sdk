@@ -143,9 +143,10 @@ export function createSC(bytecode: StaticArray<u8>): Address {
 }
 
 /**
- * Generates an event
+ * Generates an event with the given data within the current smart contract context.
  *
- * @param event - stringified
+ * @param event - A string representation of the event to generate.
+ *
  */
 export function generateEvent(event: string): void {
   env.generateEvent(event);
