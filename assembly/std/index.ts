@@ -40,15 +40,17 @@ export function call(
 }
 
 /**
- * Calls a remote function located at given address within the current context.
+ * Calls a remote function located at the given address within the current context.
  *
- * Note: arguments serialization is to be handled by the caller and the callee.
+ * @param at - The address of the contract containing the remote function to call.
+ * @param functionName - The name of the remote function to call.
+ * @param args - The arguments to pass to the remote function.
  *
- * @param at -
- * @param functionName -
- * @param args -
+ * @returns The return value of the remote function.
  *
- * @returns function returned value
+ * @throws
+ * - Throws an error if the remote function call fails.
+ * - Throws an error if the address doesn't exist.
  */
 export function localCall(
   at: Address,
