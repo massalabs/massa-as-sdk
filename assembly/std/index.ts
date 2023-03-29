@@ -153,10 +153,11 @@ export function generateEvent(event: string): void {
 }
 
 /**
- * Transfers SCE coins from the current address to given address.
+ * Transfers coins from the current smart contract to the specified address.
  *
- * @param to -
- * @param amount - value in the smallest unit.
+ * @param to - The address to which the coins will be transferred.
+ * @param amount - The amount of coins to transfer, in the smallest unit.
+ *
  */
 export function transferCoins(to: Address, amount: u64): void {
   env.transferCoins(to.toString(), amount);
