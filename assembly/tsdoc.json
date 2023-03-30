@@ -4,6 +4,10 @@
       {
         "tagName": "@module",
         "syntaxKind": "modifier"
+      },
+      {
+        "tagName": "@warning",
+        "syntaxKind": "modifier"
       }
     ]
   }

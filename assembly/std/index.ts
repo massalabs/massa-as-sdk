@@ -358,9 +358,12 @@ export function publicKeyToAddress(pubKey: string): Address {
 }
 
 /**
- * Returns an unsafe random.
+ * Returns an unsafe random integer.
  *
- * Warning: this function is unsafe because the random draws is predictable.
+ * @warning
+ * this function is considered unsafe because the random draws may be predictable.
+ *
+ * @returns An integer that has been randomly generated.
  */
 export function unsafeRandom(): i64 {
   return env.unsafeRandom();
