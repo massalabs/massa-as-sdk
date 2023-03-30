@@ -461,7 +461,10 @@ export function fileToByteArray(
 }
 
 /**
- * Returns the current period
+ * Returns the current period number.
+ *
+ * @returns The number of the current period.
+ *
  */
 export function currentPeriod(): u64 {
   return env.currentPeriod();
