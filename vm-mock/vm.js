@@ -325,6 +325,10 @@ export default function createMockedABI(
         return true;
       },
 
+      isDeployingContract() {
+        return myImports.massa.assembly_script_caller_has_write_access();
+      },
+
       assembly_script_hash_sha256(aPtr) {
         const data = byteArrToUTF8String(getArrayBuffer(aPtr));
         const hash = createHash('sha256').update(data, 'utf8').digest('hex');
