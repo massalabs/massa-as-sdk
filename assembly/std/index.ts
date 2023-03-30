@@ -475,13 +475,23 @@ export function currentThread(): u8 {
 }
 
 /**
- * Constructs an event given a key and arguments
+ * Constructs an event from the given key and arguments.
+ *
+ * @remarks
+ * This function is aimed to be used in conjunction with the `generateEvent` function.
  *
  * @see {@link generateEvent}
  *
- * @param key - event key
- * @param args - array of string arguments.
- * @returns stringified event.
+ * @param key - The event key.
+ *
+ * @param args - The array of event arguments.
+ *
+ * @returns The constructed event as a string.
+ *
+ * @example
+ * ```ts
+ * const event = createEvent('myEvent', ['arg1', 'arg2']);
+ * ```
  */
 export function createEvent(key: string, args: Array<string>): string {
   return `${key}:`.concat(args.join(','));
