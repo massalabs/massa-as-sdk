@@ -488,13 +488,15 @@ export function createEvent(key: string, args: Array<string>): string {
 }
 
 /**
- * Computing the sha256 of the passed parameter and return the hash as a byte array.
+ * Computes the SHA-256 hash of the given data and returns the hash as a `StaticArray<u8>`.
  *
- * @param bytecode - StaticArray<u8>
- * @returns - Computed Sha256 in StaticArray<u8>
+ * @param data - The data to compute the SHA-256 hash of.
+ *
+ * @returns The computed SHA-256 hash as a `StaticArray<u8>`.
+ *
  */
-export function sha256(bytecode: StaticArray<u8>): StaticArray<u8> {
-  return env.sha256(bytecode);
+export function sha256(data: StaticArray<u8>): StaticArray<u8> {
+  return env.sha256(data);
 }
 
 /**
