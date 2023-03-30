@@ -104,7 +104,9 @@ export function getBytecodeOf(address: Address): StaticArray<u8> {
 }
 
 /**
- * Check if the SC caller has a write access on it
+ * Checks if the current smart contract caller has write access to the smart contract.
+ *
+ * @returns A boolean value indicating whether the caller has write access to the smart contract or not.
  *
  */
 export function callerHasWriteAccess(): bool {
@@ -496,9 +498,11 @@ export function sha256(bytecode: StaticArray<u8>): StaticArray<u8> {
 }
 
 /**
- * Checks if the address is valid.
- * @param address - Address to check
- * @returns boolean - true if the address is valid, false otherwise
+ * Checks if the given address is a valid address.
+ *
+ * @param address - The address to check.
+ *
+ * @returns A boolean value indicating whether the address is valid or not.
  *
  */
 export function validateAddress(address: string): bool {
