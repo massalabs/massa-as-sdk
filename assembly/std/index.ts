@@ -333,12 +333,13 @@ export function toBase58(data: string): string {
 }
 
 /**
- * Tests if the signature is valid.
+ * Tests whether the provided signature is valid for the given public key and message digest.
  *
- * @param publicKey - base58check encoded
- * @param digest -
- * @param signature - base58check encoded
+ * @param publicKey - The public key in Base58check encoding.
+ * @param digest - The message digest.
+ * @param signature - The signature in Base58check encoding.
  *
+ * @returns A boolean indicating whether the signature is valid or not.
  */
 export function isSignatureValid(
   publicKey: string,
