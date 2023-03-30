@@ -468,7 +468,10 @@ export function currentPeriod(): u64 {
 }
 
 /**
- * Returns the current thread
+ * Returns the current thread number.
+ *
+ * @returns The number of the current thread.
+ *
  */
 export function currentThread(): u8 {
   return env.currentThread();
