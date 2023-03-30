@@ -445,13 +445,13 @@ export function sendMessage(
 }
 
 /**
- * Convert given file content to byteArray.
- *
+ * @deprecated
  * Note: this function shall never be called but is dynamically
  * replace using byteArray transformer.
- * More info here:
  *
- * @param filePath -
+ * Convert given file content to byteArray.
+ *
+ * @param filePath - The path to the file.
  */
 export function fileToByteArray(
   filePath: string, // eslint-disable-line @typescript-eslint/no-unused-vars
