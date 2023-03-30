@@ -335,7 +335,7 @@ export function derKeys(keysSer: StaticArray<u8>): Array<StaticArray<u8>> {
  *
  * Converts data to base58.
  *
- * @param data -
+ * @param data - The data to convert.
  *
  */
 export function toBase58(data: string): string {
