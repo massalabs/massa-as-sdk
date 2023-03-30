@@ -292,15 +292,18 @@ function getNumberOfKeys(keysSer: StaticArray<u8>): u32 {
  * Deserializes an array of keys from the specified serialized format.
  *
  * @param keysSer - The serialized keys.
+ *
  * @returns The deserialized keys.
  *
+ * @remarks
+ * The serialized format is as follows:
  * ```text
  * Format of keysSer:
  *
  *|---------------|----------|---------------|-----------------------------------------|
  *| Field         | Type     | Size in Bytes | Description                             |
  *|---------------|----------|---------------|-----------------------------------------|
- *| L             | u32      | 4             | Total number of keys in the sequence.   |
+ *| N             | u32      | 4             | Total number of keys in the sequence.   |
  *| V1_L          | u8       | 1             | Length of data for key 1.               |
  *| V1 data       | u8[V1_L] | Variable      | Data for key 1.                         |
  *| V2_L          | u8       | 1             | Length of data for key 2.               |
