@@ -168,9 +168,16 @@ export function transferCoins(to: Address, amount: u64): void {
 /**
  * Transfers SCE coins of the `from` address to the `to` address.
  *
- * @param from -
- * @param to -
- * @param amount - value in the smallest unit.
+ * @param from - The address of the sender.
+ * @param to - The address of the receiver.
+ * @param amount - The value to be transferred in the smallest unit.
+ *
+ * @throws
+ * - An error if the caller is not authorized to transfer coins.
+ * - An error if the `from` address does not have enough coins.
+ * - An error if the `from` address is not a valid address.
+ * - An error if the `to` address is not a valid address.
+ *
  */
 export function transferCoinsOf(from: Address, to: Address, amount: u64): void {
   env.transferCoinsOf(from.toString(), to.toString(), amount);
@@ -323,6 +330,9 @@ export function derKeys(keysSer: StaticArray<u8>): Array<StaticArray<u8>> {
 }
 
 /**
+ *
+ * @remarks not implemented
+ *
  * Converts data to base58.
  *
  * @param data -
@@ -452,7 +462,7 @@ export function sendMessage(
 
 /**
  * @deprecated
- * Note: this function shall never be called but is dynamically
+ * this function shall never be called but is dynamically
  * replace using byteArray transformer.
  *
  * Convert given file content to byteArray.
