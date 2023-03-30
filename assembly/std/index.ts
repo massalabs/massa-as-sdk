@@ -349,9 +349,11 @@ export function isSignatureValid(
 }
 
 /**
- * Converts a public key to an address
+ * Converts a Base58check encoded public key to its corresponding address.
  *
- * @param pubKey - Base58check encoded
+ * @param pubKey - The public key in Base58check encoding.
+ *
+ * @returns The address associated with the given public key.
  */
 export function publicKeyToAddress(pubKey: string): Address {
   return new Address(env.publicKeyToAddress(pubKey));
