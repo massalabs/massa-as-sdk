@@ -1,12 +1,64 @@
+/**
+ * This module contains functions for interacting with the key-value datastore, which is used for persistent storage of
+ * data on the blockchain.
+ *
+ * The supported value types for the datastore include `string`, `Args` and `StaticArray<u8>`.
+ *
+ * This module also provides functions for setting the executable bytecode of a smart contract address.
+ *
+ * @remarks
+ * The datastore is used to store data that is expected to persist between contract executions, such as contract
+ * state or user information.
+ *
+ * The [set](../functions/Storage.set.html), [get](../functions/Storage.get.html),
+ * [has](../functions/Storage.has.html), and [del](../functions/Storage.del.html) functions are used to manipulate
+ * the data in the datastore of the current address, while the [setOf](../functions/Storage.setOf.html),
+ * [getOf](../functions/Storage.getOf.html), [hasOf](../functions/Storage.hasOf.html), and
+ * [deleteOf](../functions/Storage.deleteOf.html) functions are used to manipulate the datastore of a specific address.
+ *
+ * The `setOf` and `deleteOf` functions can only be called at smart contract generation time by the
+ * parent smart contract to write to or delete data from the child's datastore. These functions allow the parent smart
+ * contract to manipulate the child smart contract's datastore during the smart contract execution time where
+ * [createSC](../functions/createSC.html) is called, but not after.
+ *
+ * It is not possible in AssemblyScript to catch thrown exceptions.
+ * All exceptions thrown by functions in this module will stop the execution of the smart contract.
+ * 
+ * You can see that your smart contract execution is stopped by looking at the events.
+ *
+ * @privateRemarks
+ * AssemblyScript does not currently support union types, so we must manually check the compatibility of generic types
+ * in some of the functions.
+ *
+ * The `ERROR` function is used to stop the compilation and inform the developer that one of the passed generic types is
+ * not compatible with the expected type. Unfortunately, the `ERROR` function does not offer a way to pass the actual
+ * generic type or the compilation context, except for the line where the error function was called. Therefore, it is
+ * recommended to use the `ERROR` function as early as possible in the call process, and to avoid using sub-functions
+ * called in the process in order to preserve the error context.
+ *
+ * @module
+ */
+
 import { env } from '../env';
 import { Address } from './address';
 import { Args, bytesToString, stringToBytes } from '@massalabs/as-types';
 
 /**
- * Converts given value to StaticArray<u8> to match datastore expected format.
+ * Converts the given value to a StaticArray<u8> to match the expected format for datastore operations.
  *
- * @typeParam T - `string`, `Args` or `StaticArray<u8>`
- * @param value -
+ * @remarks
+ * This function supports converting values of type `string`, `StaticArray<u8>`, or  `Args` to
+ * the appropriate format for datastore operations. If the given value is not one of these supported types,
+ * an error will be thrown and the compilation will stop.
+ *
+ * @typeParam T - the type of the value to convert, which must be one of `string`, `StaticArray<u8>`, or `Args`
+ *
+ * @param value - the value to convert to the appropriate format for datastore operations
+ *
+ * @returns a StaticArray<u8> that represents the given value in the appropriate format for datastore operations
+ *
+ * @throws
+ * - [compilation only] if the given value is not one of the supported types
  */
 function toDatastoreFormat<T>(value: T): StaticArray<u8> {
   if (idof<T>() == idof<StaticArray<u8>>()) {
@@ -21,19 +73,33 @@ function toDatastoreFormat<T>(value: T): StaticArray<u8> {
     return changetype<Args>(value).serialize();
   }
 
-  ERROR('type must be one of string, StaticArray<u8> or Args'); // this function call stop the compilation.
+  // If the value is not one of the supported types, throw an error and stop the compilation
+  ERROR(
+    'Generic type must be one of string, StaticArray<u8>, or Args.',
+  );
 
-  // Not necessary, but when giving an unsupported type, avoid
-  // `ERROR TS2355: A function whose declared type is not 'void' must return a value.`
-  // which can be misleading when you try to figure out what caused the error.
+  // This return statement is not strictly necessary, but it is included to avoid a misleading error message
+  // in cases where the compilation would otherwise fail due to the lack of a return value for a non-void function
   return new StaticArray<u8>(0);
 }
 
 /**
- * Converts given datastore retrieved value to wanted format.
+ * Converts the given datastore retrieved value to the desired format.
  *
- * @typeParam T - `string`, `Args` or `StaticArray<u8>`
- * @param value -
+ * @remarks
+ * This function supports converting values of type `StaticArray<u8>` to either `string`, `Args`, or
+ * `StaticArray<u8>`.
+ * - If the desired output type is not one of these supported types, an error will be
+ * thrown and the compilation will stop.
+ *
+ * @typeParam T - the desired output type, which must be one of `string`, `Args`, or `StaticArray<u8>`
+ *
+ * @param value - the datastore retrieved value to be converted, of type `StaticArray<u8>`
+ *
+ * @returns the converted value in the desired format, of type `T`
+ *
+ * @throws
+ * - [compilation only] if the desired output type is not one of the supported types
  */
 function fromDatastoreFormat<T>(value: StaticArray<u8>): T {
   if (idof<T>() == idof<StaticArray<u8>>()) {
@@ -48,38 +114,47 @@ function fromDatastoreFormat<T>(value: StaticArray<u8>): T {
     return changetype<T>(new Args(value));
   }
 
-  ERROR('type must be one of string, StaticArray<u8> or Args'); // this function call stop the compilation.
+  // If the desired output type is not one of the supported types, throw an error and stop the compilation
+  ERROR('Generic type must be one of string, StaticArray<u8>, or Args.');
 
-  // Not necessary, but when giving an unsupported type, avoid
-  // `ERROR TS2355: A function whose declared type is not 'void' must return a value.`
-  // which can be misleading when you try to figure out what caused the error.
+  // This return statement is not strictly necessary, but it is included to avoid a misleading error message
+  // in cases where the compilation would otherwise fail due to the lack of a return value for a non-void function
   return changetype<T>(0);
 }
 
 /**
- * Sets (key, value) in the datastore of the callee's address.
+ * Sets a key-value pair in the current contract's datastore. Existing entries are overwritten and missing
+ * ones are created.
  *
- * Note: Existing entries are overwritten and missing ones are created.
+ * @typeParam T - Can be either `string`, `StaticArray<u8>`, or `Args`.
  *
- * @typeParam T - `string`, `Args` or `StaticArray<u8>`
- * @param key -
- * @param value -
+ * @param key - The key to set in the datastore.
+ * @param value - The value to associate with the key in the datastore.
+ *
+ * @throws
+ * - [compilation only] if the `key` and `value` type are neither `string`, `StaticArray<u8>`, or `Args`.
  */
 export function set<T>(key: T, value: T): void {
-  env.set(toDatastoreFormat(key), toDatastoreFormat<T>(value));
+  env.set(toDatastoreFormat<T>(key), toDatastoreFormat<T>(value));
 }
 
 /**
- * Sets (key, value) in the datastore of the given address.
- * Existing entries are overwritten and missing ones are created.
+ * Sets a key-value pair in the datastore of the given address. Existing entries are overwritten and missing
+ * ones are created.
  *
- * @privateRemarks
- * TODO: explains security mechanisms
+ * @remarks Can only be called at smart contract generation time by the parent smart contract to the child's address.
  *
- * @typeParam T - `string`, `Args` or `StaticArray<u8>`
- * @param address -
- * @param key -
- * @param value -
+ * @typeParam T - Can be either string, Args, or StaticArray<u8>.
+ *
+ * @param address - The child smart contract `address`.
+ *
+ * @param key - The key to set in the datastore.
+ * @param value - The value to associate with the key in the datastore.
+ *
+ * @throws
+ * - if the given address is not a valid address.
+ * - [compilation only] if the `key` and `value` type are neither `string`, `StaticArray<u8>`, or `Args`.
+ *
  */
 export function setOf<T>(address: Address, key: T, value: T): void {
   env.setOf(
@@ -90,13 +165,18 @@ export function setOf<T>(address: Address, key: T, value: T): void {
 }
 
 /**
- * Returns (key, value) in the datastore of the callee's address.
+ * Returns the value associated with the given `key` in the current contract's datastore.
  *
- * @privateRemarks
- * TODO: explains what happens on missing key.
+ * @typeParam T - Can be either `string`, `Args`, or `StaticArray<u8>`.
  *
- * @typeParam T - `string`, `Args` or `StaticArray<u8>`
- * @param key -
+ * @param key - The key whose associated value is to be retrieved from the datastore.
+ *
+ * @returns The value associated with the given `key` in the datastore.
+ *
+ * @throws
+ * - `error: data entry not found` if the `key` does not exist in the datastore.
+ * - [compilation only] if the `key` type are neither `string`, `StaticArray<u8>`, or `Args`.
+ *
  */
 export function get<T>(key: T): T {
   const value: StaticArray<u8> = env.get(toDatastoreFormat(key));
@@ -105,14 +185,20 @@ export function get<T>(key: T): T {
 }
 
 /**
- * Returns (key, value) in the datastore of the given address.
+ * Returns the value associated with the given `key` in the datastore of the contract at the specified `address`.
+ * 
+ * @typeParam T - Can be either `string`, `Args`, or `StaticArray<u8>`.
  *
- * @privateRemarks
- * TODO: explains what happens on missing key.
+ * @param address - The targeted smart contract `address`.
+ * @param key - The key whose associated value is to be retrieved from the datastore.
  *
- * @typeParam T - `string`, `Args` or `StaticArray<u8>`
- * @param address -
- * @param key -
+ * @returns The value associated with the given `key` in the datastore of the specified contract.
+ *
+ * @throws
+ * - `error: data entry not found` if the `key` does not exist in the datastore.
+ * - if the datastore at the given `address` does not exist.
+ * - [compilation only] if the `key` type are neither `string`, `StaticArray<u8>`, or `Args`.
+ *
  */
 export function getOf<T>(address: Address, key: T): T {
   const value: StaticArray<u8> = env.getOf(
@@ -124,60 +210,73 @@ export function getOf<T>(address: Address, key: T): T {
 }
 
 /**
- * Removes (key, value) from the datastore of the callee's address.
+ * Removes the key-value pair associated with the given `key` from the current contract's datastore.
  *
- * TODO: explains what happens on missing key.
- * TODO: explains security mechanisms
+ * @typeParam T - Can be either `string`, `Args`, or `StaticArray<u8>`.
  *
- * @typeParam T - `string`, `Args` or `StaticArray<u8>`
- * @param key -
+ * @param key - The `key` to delete from the datastore.
+ *
+ * @throws
+ * - if the `key` does not exist in the datastore.
+ * - [compilation only] if the `key` type are neither `string`, `StaticArray<u8>`, or `Args`.
+ *
  */
 export function del<T>(key: T): void {
   env.del(toDatastoreFormat(key));
 }
 
 /**
- * Removes (key, value) from the datastore of the given address.
+ * Removes the key-value pair associated with the given `key` from the datastore of the specified `address`.
+ * 
+ * @remarks Can only be called at smart contract generation time by the parent smart contract to the child's address.
  *
- * @privateRemarks
- * TODO: explains what happens on missing key.
- * TODO: explains security mechanisms
+ * @typeParam T - Can be either `string`, `Args`, or `StaticArray<u8>`.
+ * 
+ * @param address - The child smart contract `address`.
+ * @param key - The `key` to delete from the datastore.
  *
- * @typeParam T - `string`, `Args` or `StaticArray<u8>`
- * @param address -
- * @param key -
+ * @throws
+ * - if the `key` does not exist in the datastore.
+ * - if the contract at the given `address` does not exist
+ * - if the caller is not authorized to modify the datastore.
+ * - [compilation only] if the `key` type are neither `string`, `StaticArray<u8>`, or `Args`.
  */
 export function deleteOf<T>(address: Address, key: T): void {
   env.deleteOf(address.toString(), toDatastoreFormat(key));
 }
 
 /**
- * Appends value to existing data of the (key, value) in
- * the datastore of the callee's address.
+ * Appends the given `value` to the existing value associated with the given `key` of the current contract.
  *
- * Note: do nothing if key is absent.
+ * @typeParam T - Can be either `string`, `Args`, or `StaticArray<u8>`.
  *
- * @typeParam T - `string`, `Args` or `StaticArray<u8>`
- * @param key -
- * @param value -
+ * @param key - The key whose data the `value` will be appended to.
+ * @param value - The data that will be appended to the existing data associated with the `key`.
+ *
+ * @throws
+ * - if the `key` does not exist in the datastore.
+ * - [compilation only] if the `key` and `value` type are neither `string`, `StaticArray<u8>`, or `Args`.
  */
 export function append<T>(key: T, value: T): void {
   env.append(toDatastoreFormat(key), toDatastoreFormat(value));
 }
 
 /**
- * Appends value to existing data of the (key, value) in
- * the datastore of the given address.
+ * Appends the given `value` to the existing value associated with the given `key` of the specified `address`.
+ * 
+ * @remarks Can only be called at smart contract generation time by the parent smart contract to the child's address.
  *
- * Note: do nothing if key is absent.
+ * @typeParam T - Can be either `string`, `Args`, or `StaticArray<u8>`.
  *
- * @privateRemarks
- * TODO: explains security mechanisms
+ * @param address - The child smart contract `address`.
+ * @param key - The key whose data the `value` will be appended to.
+ * @param value - The data that will be appended to the existing data associated with the `key`.
  *
- * @typeParam T - `string`, `Args` or `StaticArray<u8>`
- * @param address - target address -
- * @param key -
- * @param value - value to append -
+ * @throws
+ * - if the `key` does not exist in the datastore.
+ * - if the contract at the given `address` does not exist
+ * - if the caller is not authorized to modify the datastore.
+ * - [compilation only] if the `key` and `value` type are neither `string`, `StaticArray<u8>`, or `Args`.
  */
 export function appendOf<T>(address: Address, key: T, value: T): void {
   env.appendOf(
@@ -188,49 +287,71 @@ export function appendOf<T>(address: Address, key: T, value: T): void {
 }
 
 /**
- * Checks if the (key, value) exists in the datastore
- * of the callee's address.
+ * Checks if the key-value pair exists in the datastore of the current contract.
  *
- * @typeParam T - `string`, `Args` or `StaticArray<u8>`
- * @param key -
+ * @typeParam T - Can be either `string`, `Args`, or `StaticArray<u8>`.
+ *
+ * @param key - The key to check for existence in the datastore.
+ *
+ * @returns A boolean value indicating whether the key-value pair exists in the datastore or not.
+ *
+ * @throws
+ * - [compilation only] if the `key` type are neither `string`, `StaticArray<u8>`, or `Args`.
  */
 export function has<T>(key: T): bool {
   return env.has(toDatastoreFormat(key));
 }
 
 /**
- * Checks if the (key, value) exists in the datastore
- * of the given address.
+ * Checks if the key-value pair exists in the datastore of the target address.
  *
- * @typeParam T - `string`, `Args` or `StaticArray<u8>`
- * @param address -
- * @param key -
+ * @remarks Can only be called at smart contract generation time by the parent smart contract to the child's address.
+ * 
+ * @typeParam T - Can be either `string`, `Args`, or `StaticArray<u8>`.
+ * 
+ * @param address - The child smart contract `address`.
+ * @param key - The key to check for existence in the datastore.
  *
+ * @returns A boolean value indicating whether the key-value pair exists in the datastore or not.
+ *
+ * @throws
+ * - if the contract at the given `address` does not exist
+ * - if the caller is not authorized to modify the datastore.
+ * - [compilation only] if the `key` type are neither `string`, `StaticArray<u8>`, or `Args`.
  */
 export function hasOf<T>(address: Address, key: T): bool {
   return env.hasOf(address.toString(), toDatastoreFormat(key));
 }
 
 /**
- *  Sets the executable bytecode of the callee's address.
+ * Sets the executable bytecode of the current contract.
  *
- * @privateRemarks
- * TODO: explains failure consequences.
+ * @param bytecode - The bytecode to be set. It should be a `StaticArray<u8>`.
  *
- * @param bytecode -
+ * @throws
+ * - a runtime error if the callee's address does not correspond to a smart contract in the ledger.
+ * - a runtime error if the caller lacks write permissions on the callee's address.
+ * - a runtime error if the callee's address is the same as the creator's address.
+ * - a runtime error if an error occurs while updating the bytecode in the speculative ledger.
  */
 export function setBytecode(bytecode: StaticArray<u8>): void {
   env.setBytecode(bytecode);
 }
 
 /**
- *  Sets the executable bytecode of the given address.
+ * Sets the executable bytecode of the given `address`.
  *
- * @privateRemarks
- * TODO: explains security mechanisms.
+ * @remarks
+ * TODO: (add issue) explains security mechanisms.
  *
- * @param address - target address -
- * @param bytecode -
+ * @param address - The target address whose bytecode will be set. It should be of type `Address`.
+ * @param bytecode - The bytecode to be set for the `address`. It should be a `StaticArray<u8>`.
+ *
+ * @throws
+ * - a runtime error if the `address` does not correspond to a smart contract in the ledger.
+ * - a runtime error if the caller lacks write permissions on the `address`.
+ * - a runtime error if the `address` is the same as the creator's address.
+ * - a runtime error if an error occurs while updating the bytecode in the speculative ledger.
  */
 export function setBytecodeOf(
   address: Address,
