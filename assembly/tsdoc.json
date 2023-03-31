@@ -3,11 +3,11 @@
     "tagDefinitions": [
       {
         "tagName": "@module",
-        "syntaxKind": "modifier"
+        "syntaxKind": "block"
       },
       {
         "tagName": "@warning",
-        "syntaxKind": "modifier"
+        "syntaxKind": "block"
       }
     ]
   }
