@@ -215,6 +215,7 @@ export function set<T>(key: T, value: T): void {
  *
  */
 export function setOf<T>(address: Address, key: T, value: T): void {
+  checkValueType<T>();
   env.setOf(
     address.toString(),
     toDatastoreFormat(key),
@@ -237,6 +238,7 @@ export function setOf<T>(address: Address, key: T, value: T): void {
  *
  */
 export function get<T>(key: T): T {
+  checkValueType<T>();
   const value: StaticArray<u8> = env.get(toDatastoreFormat(key));
 
   return fromDatastoreFormat<T>(value);
@@ -260,6 +262,7 @@ export function get<T>(key: T): T {
  *
  */
 export function getOf<T>(address: Address, key: T): T {
+  checkValueType<T>();
   const value: StaticArray<u8> = env.getOf(
     address.toString(),
     toDatastoreFormat(key),
@@ -284,6 +287,7 @@ export function getOf<T>(address: Address, key: T): T {
  *
  */
 export function del<T>(key: T): void {
+  checkValueType<T>();
   env.del(toDatastoreFormat(key));
 }
 
@@ -361,6 +365,7 @@ export function appendOf<T>(address: Address, key: T, value: T): void {
  * - AT COMPILATION TIME an error if the `key` type are neither `string`, `StaticArray<u8>`, `Args`, or `Uint8Array`.
  */
 export function has<T>(key: T): bool {
+  checkValueType<T>();
   return env.has(toDatastoreFormat(key));
 }
 
@@ -379,6 +384,7 @@ export function has<T>(key: T): bool {
  * - AT COMPILATION TIME an error if the `key` type are neither `string`, `StaticArray<u8>`, `Args`, or `Uint8Array`.
  */
 export function hasOf<T>(address: Address, key: T): bool {
+  checkValueType<T>();
   return env.hasOf(address.toString(), toDatastoreFormat(key));
 }
 
