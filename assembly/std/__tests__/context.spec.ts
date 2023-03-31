@@ -36,6 +36,6 @@ describe('Context', () => {
   });
 
   test('isDeployingContract', () => {
-    expect(isDeployingContract()).toBeTruthy();
+    expect(isDeployingContract()).toBe(true);
   });
 });
