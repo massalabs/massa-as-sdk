@@ -1,4 +1,4 @@
-import { callerHasWriteAccess } from '.';
+import { callerHasWriteAccess, Context } from '.';
 import { env } from '../env/index';
 import { Address } from './address';
 
@@ -15,7 +15,7 @@ import { Address } from './address';
  */
 @inline
 export function isDeployingContract(): bool {
-  return callerHasWriteAccess();
+  return callerHasWriteAccess() && Context.callee().notEqual(Context.caller());
 }
 
 /**

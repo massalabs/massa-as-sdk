@@ -326,7 +326,7 @@ export default function createMockedABI(
       },
 
       isDeployingContract() {
-        return myImports.massa.assembly_script_caller_has_write_access();
+        return myImports.massa.assembly_script_caller_has_write_access() && callerAddress !== contractAddress;
       },
 
       assembly_script_hash_sha256(aPtr) {
