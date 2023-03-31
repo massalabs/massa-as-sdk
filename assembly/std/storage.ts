@@ -1,3 +1,4 @@
+/* tslint:disable:tsdoc-undefined-tag */
 /**
  * This module contains functions for interacting with the key-value datastore, which is used for persistent storage of
  * data on the blockchain.
@@ -23,7 +24,7 @@
  *
  * It is not possible in AssemblyScript to catch thrown exceptions.
  * All exceptions thrown by functions in this module will stop the execution of the smart contract.
- * 
+ *
  * You can see that your smart contract execution is stopped by looking at the events.
  *
  * @privateRemarks
@@ -74,9 +75,7 @@ function toDatastoreFormat<T>(value: T): StaticArray<u8> {
   }
 
   // If the value is not one of the supported types, throw an error and stop the compilation
-  ERROR(
-    'Generic type must be one of string, StaticArray<u8>, or Args.',
-  );
+  ERROR('Generic type must be one of string, StaticArray<u8>, or Args.');
 
   // This return statement is not strictly necessary, but it is included to avoid a misleading error message
   // in cases where the compilation would otherwise fail due to the lack of a return value for a non-void function
@@ -186,7 +185,7 @@ export function get<T>(key: T): T {
 
 /**
  * Returns the value associated with the given `key` in the datastore of the contract at the specified `address`.
- * 
+ *
  * @typeParam T - Can be either `string`, `Args`, or `StaticArray<u8>`.
  *
  * @param address - The targeted smart contract `address`.
@@ -227,11 +226,11 @@ export function del<T>(key: T): void {
 
 /**
  * Removes the key-value pair associated with the given `key` from the datastore of the specified `address`.
- * 
+ *
  * @remarks Can only be called at smart contract generation time by the parent smart contract to the child's address.
  *
  * @typeParam T - Can be either `string`, `Args`, or `StaticArray<u8>`.
- * 
+ *
  * @param address - The child smart contract `address`.
  * @param key - The `key` to delete from the datastore.
  *
@@ -263,7 +262,7 @@ export function append<T>(key: T, value: T): void {
 
 /**
  * Appends the given `value` to the existing value associated with the given `key` of the specified `address`.
- * 
+ *
  * @remarks Can only be called at smart contract generation time by the parent smart contract to the child's address.
  *
  * @typeParam T - Can be either `string`, `Args`, or `StaticArray<u8>`.
@@ -306,9 +305,9 @@ export function has<T>(key: T): bool {
  * Checks if the key-value pair exists in the datastore of the target address.
  *
  * @remarks Can only be called at smart contract generation time by the parent smart contract to the child's address.
- * 
+ *
  * @typeParam T - Can be either `string`, `Args`, or `StaticArray<u8>`.
- * 
+ *
  * @param address - The child smart contract `address`.
  * @param key - The key to check for existence in the datastore.
  *
