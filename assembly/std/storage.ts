@@ -194,10 +194,10 @@ export function set<T>(key: T, value: T): void {
  * Sets a key-value pair in the datastore of the given address. Existing entries are overwritten and missing
  * ones are created.
  *
- *
  * @remarks
- * TODO: (add issue) Explain the security mechanisms in place to ensure that only authorized parties
- * can set data in the datastore.
+ * TODO: Explain the security mechanisms in place to ensure that only authorized parties
+ * can modify data in the datastore.
+ * @see https://github.com/massalabs/massa-as-sdk/issues/182
  *
  * @typeParam T - The type of the key-value pair. Can be either string, Args, or StaticArray<u8>.
  *
@@ -275,7 +275,8 @@ export function getOf<T>(address: Address, key: T): T {
  * Removes the key-value pair associated with the given `key` from the current contract's datastore.
  *
  * @remarks
- * TODO: (add issue) describe the security mechanisms involved in this operation.
+ * TODO: describe the security mechanisms involved in this operation.
+ * @see https://github.com/massalabs/massa-as-sdk/issues/182
  *
  * @typeParam T - The type of the key to delete. Can be either `string`, `Args`, `StaticArray<u8>` or Uint8Array.
  *
@@ -293,6 +294,11 @@ export function del<T>(key: T): void {
 
 /**
  * Removes the key-value pair associated with the given `key` from the datastore of the specified `address`.
+ *
+ * @remarks
+ * TODO: Explain the security mechanisms in place to ensure that only authorized parties
+ * can modify data in the datastore.
+ * @see https://github.com/massalabs/massa-as-sdk/issues/182
  *
  * @typeParam T - The type of the key to delete. Can be either `string`, `Args`, `StaticArray<u8>` or Uint8Array.
  * @param address - The address of the contract whose datastore is being queried.
@@ -328,6 +334,11 @@ export function append<T>(key: T, value: T): void {
 
 /**
  * Appends the `value` to the existing data associated with the `key` in the datastore of the specified `address`.
+ *
+ * @remarks
+ * TODO: Explain the security mechanisms in place to ensure that only authorized parties
+ * can modify data in the datastore.
+ * @see https://github.com/massalabs/massa-as-sdk/issues/182
  *
  * @typeParam T - The type of the key and value to append. Can be either `string`, `Args`, `StaticArray<u8>` or
  * Uint8Array.
@@ -407,7 +418,8 @@ export function setBytecode(bytecode: StaticArray<u8>): void {
  * Sets the executable bytecode of the given `address`.
  *
  * @remarks
- * TODO: (add issue) explains security mechanisms.
+ * TODO: describe the security mechanisms involved in this operation.
+ * @see https://github.com/massalabs/massa-as-sdk/issues/182
  *
  * @param address - The target address whose bytecode will be set. It should be of type `Address`.
  * @param bytecode - The bytecode to be set for the `address`. It should be a `StaticArray<u8>`.
