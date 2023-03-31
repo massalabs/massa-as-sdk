@@ -33,11 +33,6 @@ export namespace env {
   @external("massa", "assembly_script_caller_has_write_access")
   export declare function callerHasWriteAccess(): bool;
 
-  @inline
-  export function isDeployingContract(): bool {
-    return callerHasWriteAccess();
-  }
-
   @external("massa", "assembly_script_function_exists")
   export declare function functionExists(address: string, func: string): bool;
 
