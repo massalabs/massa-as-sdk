@@ -3,15 +3,15 @@ import { env } from '../env/index';
 import { Address } from './address';
 
 /**
- * Check if the smart contract is currently being deployed.
- * This method is normally used in the constructor to ensure a one-time deployment and initialization
- * usually by the creator of the contract.
+ * Determines whether the smart contract is currently being deployed.
  *
- * Under the hood, this method verifies that the account that calls this function
- * (either the user that creates the operation or an upper contract)
- * has the access to write in the data of the current account.
+ * @remarks
+ * This method is typically used in the constructor to ensure a one-time deployment
+ * and initialization, usually by the creator of the contract. Under the hood, this method
+ * verifies that the account calling this function (either the user creating the operation
+ * or an upper contract) has write access to the data of the current account
  *
- * @returns true if the contract is currently being deployed
+ * @returns true if the contract is currently being deployed, false otherwise.
  */
 @inline
 export function isDeployingContract(): bool {
