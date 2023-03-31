@@ -1,6 +1,16 @@
-import { callerHasWriteAccess, Context } from '.';
+/**
+ * This file contains functions for interacting with the environment and execution
+ * context of a smart contract.
+ *
+ * The functions in this file allow for accessing information such as owned addresses,
+ * the address stack, and the amount of remaining gas for a smart contract execution.
+ *
+ */
+
 import { env } from '../env/index';
 import { Address } from './address';
+import { callerHasWriteAccess, Context } from '.';
+
 
 /**
  * Determines whether the smart contract is currently being deployed.
@@ -20,8 +30,17 @@ export function isDeployingContract(): bool {
 
 /**
  * Returns an array of addresses.
+ * 
+ * Parses a JSON-encoded string of addresses and returns an array of `Address` objects.
  *
- * @param str - json encode
+ * @remarks
+ * This function takes a string containing a JSON-encoded array of addresses
+ * (ex: "[address1,address2,...,addressN]") and returns an array of `Address`
+ * objects.
+ *
+ * @param str - A string containing a JSON-encoded array of addresses.
+ *
+ * @returns An array of `Address` objects, one for each address in the input string.
  */
 function json2Address(str: string): Array<Address> {
   str = str.substr(1, str.length - 2);
@@ -31,11 +50,16 @@ function json2Address(str: string): Array<Address> {
 }
 
 /**
- * Returns owned addresses.
+ * Returns an array of addresses owned by the current execution context.
  *
- * TODO:
- * - explain function purpose
- * - explain format
+ * @remarks
+ * This function calls the `env.ownedAddresses()` ABI function to get a JSON-encoded array of owned addresses,
+ * and then uses the `json2Address` function to parse the string into an array of `Address` objects. The owned
+ * addresses returned by this function are the addresses that the current execution context has write access to.
+ * This typically includes the current address itself, as well as any addresses that were created by the current
+ * call to allow initializing them.
+ *
+ * @returns An array of `Address` objects owned by the current execution context.
  *
  */
 export function ownedAddresses(): Array<Address> {
@@ -77,12 +101,13 @@ export function addressStack(): Array<Address> {
 }
 
 /**
- * Returns caller's address.
+ * Returns the `address` of the `caller` of the currently executing smart contract.
  *
- * Caller is the person or the smart contract that directly called
+ * @remarks
+ * The caller is the person or the smart contract that directly called
  * the pending function.
  *
- * @returns the caller's address
+ * @returns The `address` of the caller of the currently executing smart contract.
  */
 export function caller(): Address {
   const a = addressStack();
@@ -90,11 +115,12 @@ export function caller(): Address {
 }
 
 /**
- * Returns callee's address.
+ * Returns the address of the currently executing smart contract.
  *
- * Callee is the current smart-contract address.
+ * @remarks
+ * The "callee" refers to the contract that is currently being executed.
  *
- * @returns the called smart contract address
+ * @returns The `address` of the currently executing smart contract.
  */
 export function callee(): Address {
   const a = addressStack();
@@ -102,9 +128,9 @@ export function callee(): Address {
 }
 
 /**
- * Return the address of the initial transaction creator (originator).
+ * Returns the address of the initial transaction creator (originator).
  *
- * @returns returns the stack element at the bottom of the address stack
+ * @returns The `address` of the initial transaction creator.
  */
 export function transactionCreator(): Address {
   return addressStack()[0];
@@ -113,21 +139,28 @@ export function transactionCreator(): Address {
 /**
  * Returns the amount transferred in the current call.
  *
- * @returns value in the smallest unit.
+ * @returns The value in the smallest unit.
  */
 export function transferredCoins(): u64 {
   return env.callCoins();
 }
 
 /**
- * @returns the slot unix timestamp in milliseconds
+ * Returns the slot Unix timestamp in milliseconds.
+ *
+ * @returns The slot Unix timestamp in milliseconds.
  */
 export function timestamp(): u64 {
   return env.time();
 }
 
 /**
- * @returns the remaining gas
+ * Returns the remaining gas for the current smart contract execution.
+ *
+ * @remarks
+ * Gas is a measure of the computational resources required to execute a transaction on the blockchain.
+ *
+ * @returns The amount of remaining gas for the current transaction.
  */
 export function remainingGas(): u64 {
   return env.remainingGas();
