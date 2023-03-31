@@ -340,7 +340,8 @@ export function setBytecode(bytecode: StaticArray<u8>): void {
  * Sets the executable bytecode of the given `address`.
  *
  * @remarks
- * TODO: (add issue) explains security mechanisms.
+ * TODO: explains security mechanisms.
+ * See [related issue](https://github.com/massalabs/massa-as-sdk/issues/182)
  *
  * @param address - The target address whose bytecode will be set. It should be of type `Address`.
  * @param bytecode - The bytecode to be set for the `address`. It should be a `StaticArray<u8>`.
