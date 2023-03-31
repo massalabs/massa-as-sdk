@@ -1,4 +1,3 @@
-/* tslint:disable:tsdoc-undefined-tag */
 /**
  * This module contains functions for interacting with the key-value datastore, which is used for persistent storage of
  * data on the blockchain.
