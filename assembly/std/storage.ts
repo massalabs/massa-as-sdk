@@ -322,15 +322,14 @@ export function hasOf<T>(address: Address, key: T): bool {
 }
 
 /**
- * Sets the executable bytecode of the current contract.
+ * Sets the executable bytecode of the current address.
  *
  * @param bytecode - The bytecode to be set. It should be a `StaticArray<u8>`.
  *
  * @throws
- * - a runtime error if the callee's address does not correspond to a smart contract in the ledger.
- * - a runtime error if the caller lacks write permissions on the callee's address.
- * - a runtime error if the callee's address is the same as the creator's address.
- * - a runtime error if an error occurs while updating the bytecode in the speculative ledger.
+ * - if the caller address does not correspond to a smart contract in the ledger.
+ * - if the bytecode size exceeds maximum allowed size.
+ *
  */
 export function setBytecode(bytecode: StaticArray<u8>): void {
   env.setBytecode(bytecode);
@@ -347,10 +346,12 @@ export function setBytecode(bytecode: StaticArray<u8>): void {
  * @param bytecode - The bytecode to be set for the `address`. It should be a `StaticArray<u8>`.
  *
  * @throws
- * - a runtime error if the `address` does not correspond to a smart contract in the ledger.
- * - a runtime error if the caller lacks write permissions on the `address`.
- * - a runtime error if the `address` is the same as the creator's address.
- * - a runtime error if an error occurs while updating the bytecode in the speculative ledger.
+ * - if the `address` does not correspond to a smart contract in the ledger.
+ * - if the `address` is the same as the creator's address.
+ * - if the address does not exist
+ * - if the caller lacks write permissions on the `address`.
+ * - if the bytecode size exceeds maximum allowed size
+ *
  */
 export function setBytecodeOf(
   address: Address,
