@@ -19,39 +19,40 @@ export class Address implements Valider, Serializable {
    *
    * @see https://github.com/massalabs/massa-sc-runtime/issues/142
    */
-  isValid(): bool { 
+  isValid(): bool {
     return this._isValid;
   }
 
   /**
-    * Serialize the address.
-    * 
-    * @remarks
-    * Addresses are not fixed-size, so the first bytes are the size as a i32, then the address string is encoded.
-    * 
-    * This method is used to serialize an Address object into a byte array, which can be passed as an argument to another smart contract's method, 
-    * or stored in persistent storage.
-    *
-    * @returns The serialized byte string of the address.
-  */
+   * Serialize the address.
+   *
+   * @remarks
+   * Addresses are not fixed-size, so the first bytes are the size as a i32, then the address string is encoded.
+   *
+   * This method is used to serialize an Address object into a byte array,
+   * which can be passed as an argument to another smart contract's method,
+   * or stored in persistent storage.
+   *
+   * @returns The serialized byte string of the address.
+   */
   serialize(): StaticArray<u8> {
     return new Args().add(this._value).serialize();
   }
 
   /**
    * Deserialize the address.
-   * 
-   * This method is used to deserialize a byte array into an Address object. 
-   * The byte array must have been previously serialized using the serialize method of an Address object. 
-   * The method constructs a new instance of the Args class using the data and offset parameters. 
-   * If the extraction is successful, the _value field of the Address object is set to the deserialized string. 
+   *
+   * This method is used to deserialize a byte array into an Address object.
+   * The byte array must have been previously serialized using the serialize method of an Address object.
+   * The method constructs a new instance of the Args class using the data and offset parameters.
+   * If the extraction is successful, the _value field of the Address object is set to the deserialized string.
    * If the extraction fails, the method returns a Result object containing a message wrapped in an Err variant.
-   * 
+   *
    * @param data - The byte string to deserialize.
    * @param offset - The current offset of the `Args` instance.
-   * 
+   *
    * @returns The new offset wrapped in a `Result`.
-  */
+   */
   deserialize(data: StaticArray<u8>, offset: i32 = 0): Result<i32> {
     const args = new Args(data, offset);
     const result = args.nextString();
