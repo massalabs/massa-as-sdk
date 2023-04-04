@@ -20,10 +20,15 @@ export function print(message: string): void {
  *
  * Note: arguments serialization is to be handled by the caller and the callee.
  *
- * @param at -
- * @param functionName -
- * @param args -
- * @param coins -
+ * @param at - The address of the contract.
+ * @param functionName - The name of the function to call in that contract.
+ * @param args - The serialized arguments to send to the function to call.
+ * @param coins - The max number of coins to be used by the call. (If not enough, the call will stop !)
+ *
+ * @remarks
+ *  Runtime exception if:
+ *    - the address doesn't exist !
+ *    - the function doesn't exist in the contract !
  *
  * @returns function returned value
  */
@@ -41,9 +46,14 @@ export function call(
  *
  * Note: arguments serialization is to be handled by the caller and the callee.
  *
- * @param at -
- * @param functionName -
- * @param args -
+ * @param at - The address of the contract.
+ * @param functionName - The name of the function to call in that contract.
+ * @param args - The serialized arguments to send to the function to call.
+ *
+ * @remarks
+ *  Runtime exception if:
+ *    - the address doesn't exist !
+ *    - the function doesn't exist in the contract !
  *
  * @returns function returned value
  */
@@ -60,9 +70,12 @@ export function localCall(
  *
  * Note: arguments serialization is to be handled by the caller and the callee.
  *
- * @param bytecode -
- * @param functionName -
- * @param args -
+ * @param bytecode - The bytecode of the contract containing the function to execute.
+ * @param functionName - The name of the function to call in that contract.
+ * @param args - The serialized arguments to send to the function to call.
+ *
+ * @remarks
+ *  Runtime exception if the function doesn't exist in the bytecode !
  *
  * @returns function returned value
  */
@@ -86,7 +99,11 @@ export function getBytecode(): StaticArray<u8> {
 /**
  * Get the bytecode of the current address
  *
- * @param address -
+ *
+ * @param address - The address of the contract to fetch
+ *
+ * @remarks
+ *  Runtime exception if the address doesn't exist !
  *
  * @returns bytecode
  */
@@ -104,8 +121,10 @@ export function callerHasWriteAccess(): bool {
 
 /**
  * Checks if `function` exists in the bytecode stored at `address`
- * @param address -
- * @param func -
+ * @param address - The address of the contract to search in.
+ * @param func - The name of the function to search.
+ *
+ * @returns true if the function exists, false otherwise.
  */
 export function functionExists(address: Address, func: string): bool {
   return env.functionExists(address.toString(), func);
@@ -114,13 +133,12 @@ export function functionExists(address: Address, func: string): bool {
 /**
  * Creates a new smart contract.
  *
- * Take a base64 string representing the module binary and create an entry in
- * the ledger.
+ * Takes a byte array which is the bytecode of the contract to create.
  *
  * The context allow you to write in this smart contract while you're executing
  * the current bytecode.
  *
- * @param bytecode -
+ * @param bytecode - The byte code of the contract to create.
  *
  * @returns Smart contract address
  */
@@ -140,7 +158,7 @@ export function generateEvent(event: string): void {
 /**
  * Transfers SCE coins from the current address to given address.
  *
- * @param to -
+ * @param to - the address to send coins to.
  * @param amount - value in the smallest unit.
  */
 export function transferCoins(to: Address, amount: u64): void {
@@ -150,8 +168,8 @@ export function transferCoins(to: Address, amount: u64): void {
 /**
  * Transfers SCE coins of the `from` address to the `to` address.
  *
- * @param from -
- * @param to -
+ * @param from - the sender address
+ * @param to - the address to send coins to
  * @param amount - value in the smallest unit.
  */
 export function transferCoinsOf(from: Address, to: Address, amount: u64): void {
