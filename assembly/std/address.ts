@@ -17,7 +17,7 @@ export class Address implements Valider, Serializable {
    *
    * @returns A boolean value indicating whether the address is still valid.
    *
-   * @see https://github.com/massalabs/massa-sc-runtime/issues/142
+   * @see https://github.com/massalabs/massa-as-sdk/issues/195
    */
   isValid(): bool {
     return this._isValid;
