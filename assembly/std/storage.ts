@@ -10,16 +10,14 @@
  * The datastore is used to store data that is expected to persist between contract executions, such as contract
  * state or user information.
  *
- * The [set](../functions/Storage.set.html), [get](../functions/Storage.get.html),
- * [has](../functions/Storage.has.html), and [del](../functions/Storage.del.html) functions are used to manipulate
- * the data in the datastore of the current address, while the [setOf](../functions/Storage.setOf.html),
- * [getOf](../functions/Storage.getOf.html), [hasOf](../functions/Storage.hasOf.html), and
- * [deleteOf](../functions/Storage.deleteOf.html) functions are used to manipulate the datastore of a specific address.
+ * The {@link set}, {@link get}, {@link has}, and {@link del} functions are used to manipulate the data in the
+ * datastore of the current address, while the {@link setOf}, {@link getOf}, {@link hasOf}, and {@link deleteOf}
+ * functions are used to manipulate the data in the datastore of a different address.
  *
- * The `setOf` and `deleteOf` functions can only be called at smart contract generation time by the
+ * The {@link setOf} and {@link deleteOf} functions can only be called at smart contract generation time by the
  * parent smart contract to write to or delete data from the child's datastore. These functions allow the parent smart
  * contract to manipulate the child smart contract's datastore during the smart contract execution time where
- * [createSC](../functions/createSC.html) is called, but not after.
+ * {@link createSC} is called, but not after.
  *
  * It is not possible in AssemblyScript to catch thrown exceptions.
  * All exceptions thrown by functions in this module will stop the execution of the smart contract.
@@ -326,6 +324,8 @@ export function hasOf<T>(address: Address, key: T): bool {
  * @throws
  * - if the caller address does not correspond to a smart contract in the ledger.
  * - if the bytecode size exceeds maximum allowed size.
+ * - if the address does not exist
+ * - if the caller lacks write permissions on the address.
  */
 export function setBytecode(bytecode: StaticArray<u8>): void {
   env.setBytecode(bytecode);
@@ -343,7 +343,6 @@ export function setBytecode(bytecode: StaticArray<u8>): void {
  *
  * @throws
  * - if the `address` does not correspond to a smart contract in the ledger.
- * - if the `address` is the same as the creator's address.
  * - if the address does not exist
  * - if the caller lacks write permissions on the `address`.
  * - if the bytecode size exceeds maximum allowed size
