@@ -29,7 +29,9 @@ export class Address implements Valider, Serializable {
     * @remarks
     * Addresses are not fixed-size, so the first bytes are the size as a i32, then the address string is encoded.
     * 
-    * This method is used to serialize an Address object into a byte array, which can be passed as an argument to another smart contract's method, or stored in persistent storage.
+    * This method is used to serialize an Address object into a byte array, which can be passed as an argument to another smart contract's method, 
+    * or stored in persistent storage.
+    *
     * @returns The serialized byte string of the address.
   */
   serialize(): StaticArray<u8> {
