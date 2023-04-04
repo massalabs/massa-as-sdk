@@ -9,7 +9,7 @@ export { Address, Storage, Context };
 /**
  * Prints in the node logs
  *
- * @param message - Message string
+ * @param message - Message string to log in node
  */
 export function print(message: string): void {
   env.print(message);
@@ -30,7 +30,7 @@ export function print(message: string): void {
  *    - the address doesn't exist !
  *    - the function doesn't exist in the contract !
  *
- * @returns function returned value
+ * @returns the return value of the executed function
  */
 export function call(
   at: Address,
@@ -55,7 +55,7 @@ export function call(
  *    - the address doesn't exist !
  *    - the function doesn't exist in the contract !
  *
- * @returns function returned value
+ * @returns the return value of the executed function
  */
 export function localCall(
   at: Address,
@@ -77,7 +77,7 @@ export function localCall(
  * @remarks
  *  Runtime exception if the function doesn't exist in the bytecode !
  *
- * @returns function returned value
+ * @returns the return value of the executed function
  */
 export function localExecution(
   bytecode: StaticArray<u8>,
@@ -90,7 +90,7 @@ export function localExecution(
 /**
  * Get the bytecode of the current address
  *
- * @returns bytecode
+ * @returns the bytecode of the contract
  */
 export function getBytecode(): StaticArray<u8> {
   return env.getBytecode();
@@ -140,7 +140,7 @@ export function functionExists(address: Address, func: string): bool {
  *
  * @param bytecode - The byte code of the contract to create.
  *
- * @returns Smart contract address
+ * @returns the newly ledger-registered contract address
  */
 export function createSC(bytecode: StaticArray<u8>): Address {
   return new Address(env.createSC(bytecode));
@@ -188,7 +188,7 @@ export function balance(): u64 {
 /**
  * Gets the balance of the specified address.
  *
- * @param address -
+ * @param address - the address on which the balance is checked.
  *
  * @returns - value in the smallest unit.
  */
@@ -199,7 +199,7 @@ export function balanceOf(address: string): u64 {
 /**
  * Check for key in datastore
  *
- * @param key -
+ * @param key - the (serialized?) key to check for
  *
  * @returns - true if key is present in datastore, false otherwise.
  */
@@ -214,7 +214,7 @@ export function hasOpKey(key: StaticArray<u8>): bool {
 /**
  * Get data associated with the given key from datastore
  *
- * @param key -
+ * @param key - the (serialized?) key of the data to get.
  *
  * @returns - data as a byte array
  */
@@ -265,9 +265,9 @@ export function getKeysOf(
 /**
  * Read the number of keys from serialized keys array
  *
- * @param arr - Uint8Array
+ * @param arr - Uint8Array keys array
  *
- * @returns The number of keys
+ * @returns The number of keys in the  keys array
  */
 function getNumberOfKeys(keysSer: StaticArray<u8>): u32 {
   // The first 4 bytes of the input array represent the number of keys
@@ -325,7 +325,9 @@ export function derKeys(keysSer: StaticArray<u8>): Array<StaticArray<u8>> {
 /**
  * Converts data to base58.
  *
- * @param data -
+ * @param data - the string data to convert to base58.
+ *
+ * @returns the converted data
  *
  */
 export function toBase58(data: string): string {
@@ -335,10 +337,11 @@ export function toBase58(data: string): string {
 /**
  * Tests if the signature is valid.
  *
- * @param publicKey - base58check encoded
- * @param digest -
- * @param signature - base58check encoded
+ * @param publicKey - base58check encoded public key of wallet
+ * @param digest - digest message
+ * @param signature - base58check encoded signature of wallet
  *
+ * @returns 'true' if the signature is valid for the passed key, 'false' otherwise.
  */
 export function isSignatureValid(
   publicKey: string,
@@ -351,16 +354,20 @@ export function isSignatureValid(
 /**
  * Converts a public key to an address
  *
- * @param pubKey - Base58check encoded
+ * @param pubKey - Base58check encoded public key of the address
+ *
+ * @returns the fetched address
  */
 export function publicKeyToAddress(pubKey: string): Address {
   return new Address(env.publicKeyToAddress(pubKey));
 }
 
 /**
- * Returns an unsafe random.
+ * @remarks
+ *   This function is unsafe because the random draws is predictable.
  *
- * Warning: this function is unsafe because the random draws is predictable.
+ * @returns the unsafe randomly generated number.
+ *
  */
 export function unsafeRandom(): i64 {
   return env.unsafeRandom();
@@ -447,11 +454,10 @@ export function sendMessage(
 /**
  * Convert given file content to byteArray.
  *
- * Note: this function shall never be called but is dynamically
- * replace using byteArray transformer.
+ * Note: this function shall never be called, it is dynamically replaced using the byteArray converter.
  * More info here:
  *
- * @param filePath -
+ * @param filePath - the file path to convert
  */
 export function fileToByteArray(
   filePath: string, // eslint-disable-line @typescript-eslint/no-unused-vars
