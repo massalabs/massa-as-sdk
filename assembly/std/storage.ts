@@ -145,14 +145,12 @@ export function set<T>(key: T, value: T): void {
  * @typeParam T - Can be either string, Args, or StaticArray<u8>.
  *
  * @param address - The child smart contract `address`.
- *
  * @param key - The key to set in the datastore.
  * @param value - The value to associate with the key in the datastore.
  *
  * @throws
  * - if the given address is not a valid address.
  * - [compilation only] if the `key` and `value` type are neither `string`, `StaticArray<u8>`, or `Args`.
- *
  */
 export function setOf<T>(address: Address, key: T, value: T): void {
   env.setOf(
@@ -172,9 +170,8 @@ export function setOf<T>(address: Address, key: T, value: T): void {
  * @returns The value associated with the given `key` in the datastore.
  *
  * @throws
- * - `error: data entry not found` if the `key` does not exist in the datastore.
+ * - if the `key` does not exist in the datastore.
  * - [compilation only] if the `key` type are neither `string`, `StaticArray<u8>`, or `Args`.
- *
  */
 export function get<T>(key: T): T {
   const value: StaticArray<u8> = env.get(toDatastoreFormat(key));
@@ -193,7 +190,7 @@ export function get<T>(key: T): T {
  * @returns The value associated with the given `key` in the datastore of the specified contract.
  *
  * @throws
- * - `error: data entry not found` if the `key` does not exist in the datastore.
+ * - if the `key` does not exist in the datastore.
  * - if the datastore at the given `address` does not exist.
  * - [compilation only] if the `key` type are neither `string`, `StaticArray<u8>`, or `Args`.
  *
@@ -329,7 +326,6 @@ export function hasOf<T>(address: Address, key: T): bool {
  * @throws
  * - if the caller address does not correspond to a smart contract in the ledger.
  * - if the bytecode size exceeds maximum allowed size.
- *
  */
 export function setBytecode(bytecode: StaticArray<u8>): void {
   env.setBytecode(bytecode);
@@ -351,7 +347,6 @@ export function setBytecode(bytecode: StaticArray<u8>): void {
  * - if the address does not exist
  * - if the caller lacks write permissions on the `address`.
  * - if the bytecode size exceeds maximum allowed size
- *
  */
 export function setBytecodeOf(
   address: Address,
