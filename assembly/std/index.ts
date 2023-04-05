@@ -105,7 +105,7 @@ export function getBytecode(): StaticArray<u8> {
  * @remarks
  *  Runtime exception if the address doesn't exist !
  *
- * @returns bytecode
+ * @returns The serialized bytecode of the contract
  */
 export function getBytecodeOf(address: Address): StaticArray<u8> {
   return env.getBytecodeOf(address.toString());
