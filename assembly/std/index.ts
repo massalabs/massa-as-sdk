@@ -23,7 +23,7 @@ export function print(message: string): void {
  * @param at - The address of the contract.
  * @param functionName - The name of the function to call in that contract.
  * @param args -  The arguments of the function we are calling (type: Args).
- * @param coins - The max number of coins to be used by the call. (If not enough, the call will stop !)
+ * @param coins - If the function to call is a payable function, pass coins to it with this argument.
  *
  * @remarks
  *  Runtime exception if:
