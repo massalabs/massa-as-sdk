@@ -309,7 +309,6 @@ export function has<T>(key: T): bool {
  *
  * @throws
  * - if the contract at the given `address` does not exist
- * - if the caller is not authorized to modify the datastore.
  * - [compilation only] if the `key` type are neither `string`, `StaticArray<u8>`, or `Args`.
  */
 export function hasOf<T>(address: Address, key: T): bool {
