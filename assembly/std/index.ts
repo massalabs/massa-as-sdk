@@ -22,7 +22,7 @@ export function print(message: string): void {
  *
  * @param at - The address of the contract.
  * @param functionName - The name of the function to call in that contract.
- * @param args - The serialized arguments to send to the function to call.
+ * @param args -  The arguments of the function we are calling (type: Args).
  * @param coins - The max number of coins to be used by the call. (If not enough, the call will stop !)
  *
  * @remarks
