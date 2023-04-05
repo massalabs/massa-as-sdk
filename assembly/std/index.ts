@@ -72,7 +72,7 @@ export function localCall(
  *
  * @param bytecode - The bytecode of the contract containing the function to execute.
  * @param functionName - The name of the function to call in that contract.
- * @param args - The serialized arguments to send to the function to call.
+ * @param args - The arguments of the function we are calling.
  *
  * @remarks
  *  Runtime exception if the function doesn't exist in the bytecode !
