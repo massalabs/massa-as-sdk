@@ -14,7 +14,7 @@
  * datastore of the current address, while the {@link setOf}, {@link getOf}, {@link hasOf}, and {@link deleteOf}
  * functions are used to manipulate the data in the datastore of a different address.
  *
- * The {@link setOf} and {@link deleteOf} functions can only be called at smart contract generation time by the
+ * The {@link setOf}, {@link deleteOf} and {@link appendOf} functions can only be called at smart contract generation time by the
  * parent smart contract to write to or delete data from the child's datastore. These functions allow the parent smart
  * contract to manipulate the child smart contract's datastore during the smart contract execution time where
  * {@link createSC} is called, but not after.
