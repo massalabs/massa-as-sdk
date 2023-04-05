@@ -298,7 +298,6 @@ export function has<T>(key: T): bool {
 /**
  * Checks if the key-value pair exists in the datastore of the target address.
  *
- * @remarks Can only be called at smart contract generation time by the parent smart contract to the child's address.
  *
  * @typeParam T - Can be either `string`, `Args`, or `StaticArray<u8>`.
  *
