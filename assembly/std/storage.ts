@@ -14,10 +14,10 @@
  * datastore of the current address, while the {@link setOf}, {@link getOf}, {@link hasOf}, and {@link deleteOf}
  * functions are used to manipulate the data in the datastore of a different address.
  *
- * The {@link setOf}, {@link deleteOf} and {@link appendOf} functions can only be called at smart contract generation time by the
- * parent smart contract to write to or delete data from the child's datastore. These functions allow the parent smart
- * contract to manipulate the child smart contract's datastore during the smart contract execution time where
- * {@link createSC} is called, but not after.
+ * The {@link setOf}, {@link deleteOf} and {@link appendOf} functions can only be called at smart contract generation
+ * time by the parent smart contract to write to or delete data from the child's datastore. These functions allow the
+ * parent smart contract to manipulate the child smart contract's datastore during the smart contract execution time
+ * where {@link createSC} is called, but not after.
  *
  * It is not possible in AssemblyScript to catch thrown exceptions.
  * All exceptions thrown by functions in this module will stop the execution of the smart contract.
@@ -317,6 +317,9 @@ export function hasOf<T>(address: Address, key: T): bool {
 /**
  * Sets the executable bytecode of the current address.
  *
+ * @remarks
+ * The maximum bytecode size is 10MB.
+ *
  * @param bytecode - The bytecode to be set. It should be a `StaticArray<u8>`.
  *
  * @throws
@@ -333,6 +336,8 @@ export function setBytecode(bytecode: StaticArray<u8>): void {
  * Sets the executable bytecode of the given `address`.
  *
  * @remarks
+ * The maximum bytecode size is 10MB.
+ *
  * TODO: explains security mechanisms.
  * See [related issue](https://github.com/massalabs/massa-as-sdk/issues/182)
  *
