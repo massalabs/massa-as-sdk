@@ -31,7 +31,6 @@ import { env } from '../env/index';
 import { Address } from './address';
 import { callerHasWriteAccess, Context } from '.';
 
-
 /**
  * Determines whether the smart contract is currently being deployed.
  *
@@ -50,7 +49,7 @@ export function isDeployingContract(): bool {
 
 /**
  * Returns an array of addresses.
- * 
+ *
  * Parses a JSON-encoded string of addresses and returns an array of `Address` objects.
  *
  * @remarks
