@@ -1,3 +1,15 @@
+/**
+ * This module contains the 'Address' class, which represents a Massa blockchain address.
+ *
+ * The 'Address' class provides methods to serialize and deserialize an address, as well as to convert it to a string.
+ * It also provides overloading methods to test if two addresses are identical or different.
+ *
+ *
+ * @remarks
+ * The "_isValid" attribute of the class is not modifiable once an address is created
+ *
+ */
+
 import { Valider, Serializable, Args, Result } from '@massalabs/as-types';
 
 /**
@@ -104,7 +116,8 @@ export class Address implements Valider, Serializable {
    * object to determine if they are different.
    *
    * @remarks
-   * This method compares the string representation of the current `Address` object to another `Address` object to determine if they are identical.
+   * This method compares the string representation of the current `Address` object to
+   * another `Address` object to determine if they are identical.
    *
    * @param address - The address object to compare.
    *
