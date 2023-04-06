@@ -44,10 +44,4 @@ describe('Context', () => {
     const time = timestamp();
     expect(time).toBeGreaterThan(0);
   });
-
-  // TODO: mock remainingGas
-  // test('remainingGas', () => {
-  //   const gas = remainingGas();
-  //   expect(gas).toBeGreaterThan(0);
-  // });
 });
