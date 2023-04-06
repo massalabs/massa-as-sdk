@@ -10,6 +10,7 @@ export { Address, Storage, Context };
  * Prints in the node logs
  *
  * @param message - Message string to log in node
+ *
  */
 export function print(message: string): void {
   env.print(message);
@@ -21,8 +22,11 @@ export function print(message: string): void {
  * Note: arguments serialization is to be handled by the caller and the callee.
  *
  * @param at - The address of the contract.
+ *
  * @param functionName - The name of the function to call in that contract.
+ *
  * @param args -  The arguments of the function we are calling (type: Args).
+ *
  * @param coins - If the function to call is a payable function, pass coins to it with this argument.
  *
  * @remarks
@@ -47,7 +51,9 @@ export function call(
  * Note: arguments serialization is to be handled by the caller and the callee.
  *
  * @param at - The address of the contract.
+ *
  * @param functionName - The name of the function to call in that contract.
+ *
  * @param args - The arguments of the function we are calling.
  *
  * @remarks
@@ -68,14 +74,17 @@ export function localCall(
 /**
  * Executes a given bytecode within the current context.
  *
- * Note: arguments serialization is to be handled by the caller and the callee.
- *
- * @param bytecode - The bytecode of the contract containing the function to execute.
- * @param functionName - The name of the function to call in that contract.
- * @param args - The arguments of the function we are calling.
  *
  * @remarks
- *  Runtime exception if the function doesn't exist in the bytecode !
+ * - Runtime exception if the function doesn't exist in the bytecode !
+ * - Arguments serialization is to be handled by the caller and the callee.
+ *
+ * @param bytecode - The bytecode of the contract containing the function to execute.
+ *
+ * @param functionName - The name of the function to call in that contract.
+ *
+ * @param args - The arguments of the function we are calling.
+ *
  *
  * @returns the return value of the executed function
  */
@@ -91,6 +100,7 @@ export function localExecution(
  * Get the bytecode of the current address
  *
  * @returns the bytecode of the contract
+ *
  */
 export function getBytecode(): StaticArray<u8> {
   return env.getBytecode();
@@ -103,7 +113,7 @@ export function getBytecode(): StaticArray<u8> {
  * @param address - The address of the contract to fetch
  *
  * @remarks
- *  Runtime exception if the address doesn't exist !
+ * Runtime exception if the address doesn't exist !
  *
  * @returns The serialized bytecode of the contract
  */
@@ -121,7 +131,9 @@ export function callerHasWriteAccess(): bool {
 
 /**
  * Checks if `function` exists in the bytecode stored at `address`
+ *
  * @param address - The address of the contract to search in.
+ *
  * @param func - The name of the function to search.
  *
  * @returns true if the function exists, false otherwise.
@@ -138,9 +150,10 @@ export function functionExists(address: Address, func: string): bool {
  * The context allow you to write in this smart contract while you're executing
  * the current bytecode.
  *
- * @param bytecode - The byte code of the contract to create.
+ * @param bytecode - The byte code of the contract to create
  *
  * @returns the newly ledger-registered contract address
+ *
  */
 export function createSC(bytecode: StaticArray<u8>): Address {
   return new Address(env.createSC(bytecode));
@@ -166,11 +179,14 @@ export function transferCoins(to: Address, amount: u64): void {
 }
 
 /**
- * Transfers SCE coins of the `from` address to the `to` address.
+ * Transfers coins of the `from` address to the `to` address.
  *
  * @param from - the sender address
+ *
  * @param to - the address to send coins to
- * @param amount - value in the smallest unit.
+ *
+ * @param amount - value in the smallest unit
+ *
  */
 export function transferCoinsOf(from: Address, to: Address, amount: u64): void {
   env.transferCoinsOf(from.toString(), to.toString(), amount);
@@ -180,6 +196,7 @@ export function transferCoinsOf(from: Address, to: Address, amount: u64): void {
  * Gets the balance of the current address
  *
  * @returns - value in the smallest unit.
+ *
  */
 export function balance(): u64 {
   return env.balance();
@@ -191,6 +208,7 @@ export function balance(): u64 {
  * @param address - the address on which the balance is checked.
  *
  * @returns - value in the smallest unit.
+ *
  */
 export function balanceOf(address: string): u64 {
   return env.balanceOf(address);
@@ -202,6 +220,7 @@ export function balanceOf(address: string): u64 {
  * @param key - the (serialized?) key to check for
  *
  * @returns - true if key is present in datastore, false otherwise.
+ *
  */
 export function hasOpKey(key: StaticArray<u8>): bool {
   let result = env.hasOpKey(key);
@@ -217,6 +236,7 @@ export function hasOpKey(key: StaticArray<u8>): bool {
  * @param key - the (serialized?) key of the data to get.
  *
  * @returns - data as a byte array
+ *
  */
 export function getOpData(key: StaticArray<u8>): StaticArray<u8> {
   return env.getOpData(key);
@@ -226,6 +246,7 @@ export function getOpData(key: StaticArray<u8>): StaticArray<u8> {
  * Get all keys from operation datastore
  *
  * @returns - a list of key (e.g. a list of byte array)
+ *
  */
 export function getOpKeys(): Array<StaticArray<u8>> {
   let keysSer = env.getOpKeys();
@@ -238,6 +259,7 @@ export function getOpKeys(): Array<StaticArray<u8>> {
  * @param prefix - the prefix to filter the keys (optional)
  *
  * @returns - a list of key (e.g. a list of byte array)
+ *
  */
 export function getKeys(
   prefix: StaticArray<u8> = new StaticArray<u8>(0),
@@ -250,9 +272,11 @@ export function getKeys(
  * Get all keys from datastore
  *
  * @param address - the address in the datastore
+ *
  * @param prefix - the prefix to filter the keys (optional)
  *
  * @returns - a list of key (e.g. a list of byte array)
+ *
  */
 export function getKeysOf(
   address: string,
@@ -268,6 +292,7 @@ export function getKeysOf(
  * @param arr - Uint8Array keys array
  *
  * @returns The number of keys in the  keys array
+ *
  */
 function getNumberOfKeys(keysSer: StaticArray<u8>): u32 {
   // The first 4 bytes of the input array represent the number of keys
@@ -285,6 +310,7 @@ function getNumberOfKeys(keysSer: StaticArray<u8>): u32 {
  * Deserializes an array of keys from the specified serialized format.
  *
  * @param keysSer - The serialized keys.
+ *
  * @returns The deserialized keys.
  *
  * ```text
@@ -356,7 +382,8 @@ export function isSignatureValid(
  *
  * @param pubKey - Base58check encoded public key of the address
  *
- * @returns the fetched address
+ * @returns the fetched address as a string
+ *
  */
 export function publicKeyToAddress(pubKey: string): Address {
   return new Address(env.publicKeyToAddress(pubKey));
@@ -364,9 +391,9 @@ export function publicKeyToAddress(pubKey: string): Address {
 
 /**
  * @remarks
- *   This function is unsafe because the random draws is predictable.
+ * This function is unsafe because the random draws is predictable.
  *
- * @returns the unsafe randomly generated number.
+ * @returns the unsafe randomly generated number as i64.
  *
  */
 export function unsafeRandom(): i64 {
@@ -454,10 +481,12 @@ export function sendMessage(
 /**
  * Convert given file content to byteArray.
  *
- * Note: this function shall never be called, it is dynamically replaced using the byteArray converter.
+ * @remarks
+ * This function shall NEVER be called, it is dynamically replaced using the byteArray converter.
  * More info here:
  *
  * @param filePath - the file path to convert
+ *
  */
 export function fileToByteArray(
   filePath: string, // eslint-disable-line @typescript-eslint/no-unused-vars
@@ -468,6 +497,9 @@ export function fileToByteArray(
 
 /**
  * Returns the current period
+ *
+ * @returns the current period as u64
+ *
  */
 export function currentPeriod(): u64 {
   return env.currentPeriod();
@@ -475,6 +507,9 @@ export function currentPeriod(): u64 {
 
 /**
  * Returns the current thread
+ *
+ * @returns the current thread as u8
+ *
  */
 export function currentThread(): u8 {
   return env.currentThread();
@@ -486,8 +521,11 @@ export function currentThread(): u8 {
  * @see {@link generateEvent}
  *
  * @param key - event key
+ *
  * @param args - array of string arguments.
+ *
  * @returns stringified event.
+ *
  */
 export function createEvent(key: string, args: Array<string>): string {
   return `${key}:`.concat(args.join(','));
@@ -497,7 +535,9 @@ export function createEvent(key: string, args: Array<string>): string {
  * Computing the sha256 of the passed parameter and return the hash as a byte array.
  *
  * @param bytecode - StaticArray<u8>
+ *
  * @returns - Computed Sha256 in StaticArray<u8>
+ *
  */
 export function sha256(bytecode: StaticArray<u8>): StaticArray<u8> {
   return env.sha256(bytecode);
@@ -505,7 +545,9 @@ export function sha256(bytecode: StaticArray<u8>): StaticArray<u8> {
 
 /**
  * Checks if the address is valid.
+ *
  * @param address - Address to check
+ *
  * @returns boolean - true if the address is valid, false otherwise
  *
  */
