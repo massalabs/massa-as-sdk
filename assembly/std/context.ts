@@ -95,7 +95,8 @@ export function ownedAddresses(): Array<Address> {
  * function F of a smart contract D, will yield the following stack at the beginning
  * of the execution of the target function: bottom [C, D] top. Note: C and D can be the same.
  *
- * Local execution: local executions don’t change the stack, they allow executing foreign code in the current context.
+ * **Local execution**: local executions don’t change the stack, they allow executing foreign code
+ * in the current context.
  *
  * @returns An array of `Address` objects representing the call stack.
  */
