@@ -165,7 +165,13 @@ export function getBytecodeOf(address: Address): StaticArray<u8> {
 }
 
 /**
- * Check if the SC caller has a write access on it
+ * Check if the SC caller has a write access on its storage
+ *
+ * @returns true if the caller has write access, false otherwise
+ *
+ * @remarks
+ * This function returns true only when you deploy a new sc using 'create_new_sc_address()'.
+ * The User or SC calling this will have the write access on the SC created ONLY during the context of this operation.
  *
  */
 export function callerHasWriteAccess(): bool {
