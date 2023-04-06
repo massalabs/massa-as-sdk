@@ -5,6 +5,10 @@
  * The functions in this file allow for accessing information such as owned addresses,
  * the address stack, and the amount of remaining gas for a smart contract execution.
  *
+ * @remarks
+ * It is not possible in AssemblyScript to catch thrown exceptions.
+ * All exceptions thrown by functions in this module will stop the execution of the smart contract.
+ *
  */
 
 import { env } from '../env/index';
