@@ -6,6 +6,7 @@ import {
   transactionCreator,
   transferredCoins,
   isDeployingContract,
+  timestamp,
 } from '../context';
 
 describe('Context', () => {
@@ -37,5 +38,10 @@ describe('Context', () => {
 
   test('isDeployingContract', () => {
     expect(isDeployingContract()).toBe(false);
+  });
+
+  test('timestamp', () => {
+    const time = timestamp();
+    expect(time).toBeGreaterThan(0);
   });
 });
