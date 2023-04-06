@@ -1,6 +1,7 @@
 /**
  * This module contains the 'Address' class, which represents a Massa blockchain address.
  *
+ * @remarks
  * The 'Address' class provides methods to serialize and deserialize an address, as well as to convert it to a string.
  * It also provides overloading methods to test if two addresses are identical or different.
  *
