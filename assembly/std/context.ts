@@ -1,8 +1,10 @@
 /**
- * This module contains functions related to the execution context of a smart contract.
+ * This module provides functions for interacting with the execution context of a smart contract on the Massa
+ * blockchain.
  *
- * The functions in this module provide access to information such as owned addresses, the address stack, and the
- * amount of remaining gas for a smart contract execution.
+ * The functions in this module allow you to retrieve information about the current execution context, such as the
+ * caller and callee of the current smart contract, the call stack, the amount of transferred coins, the remaining gas,
+ * and the timestamp.
  *
  * @remarks
  * The execution context is important for understanding the current state of the smart contract, such as who called
@@ -71,8 +73,8 @@ function json2Address(str: string): Array<Address> {
  * Returns the addresses that the current execution context has write access to.
  *
  * @remarks
- * The owned addresses returned by this function are the addresses that the current
- * execution context has write access to.
+ * Returned addresses include the current address itself, as well as any addresses that
+ * were created by the current call to allow initializing them.
  *
  * @returns An array of `Address` objects owned by the current execution context.
  *
