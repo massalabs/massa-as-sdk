@@ -1,6 +1,5 @@
 /**
- * This file contains functions for interacting with the environment and execution
- * context of a smart contract.
+ * This file contains functions for the execution context of a smart contract.
  *
  * The functions in this file allow for accessing information such as owned addresses,
  * the address stack, and the amount of remaining gas for a smart contract execution.
@@ -54,7 +53,7 @@ function json2Address(str: string): Array<Address> {
 }
 
 /**
- * Returns an array of addresses owned by the current execution context.
+ * Returns the addresses that the current execution context has write access to.
  *
  * @remarks
  * The owned addresses returned by this function are the addresses that the current
@@ -129,6 +128,7 @@ export function transferredCoins(): u64 {
  * Returns the slot Unix timestamp in milliseconds.
  *
  * @returns The slot Unix timestamp in milliseconds.
+ *
  */
 export function timestamp(): u64 {
   return env.time();
@@ -139,8 +139,10 @@ export function timestamp(): u64 {
  *
  * @remarks
  * Gas is a measure of the computational resources required to execute a transaction on the blockchain.
+ * When there is no more gas, the execution of the smart contract is interrupted and all the transactions are reversed.
  *
  * @returns The amount of remaining gas for the current transaction.
+ *
  */
 export function remainingGas(): u64 {
   return env.remainingGas();
