@@ -1,13 +1,28 @@
 /**
- * This file contains functions for the execution context of a smart contract.
+ * This module contains functions related to the execution context of a smart contract.
  *
- * The functions in this file allow for accessing information such as owned addresses,
- * the address stack, and the amount of remaining gas for a smart contract execution.
+ * The functions in this module provide access to information such as owned addresses, the address stack, and the
+ * amount of remaining gas for a smart contract execution.
  *
  * @remarks
+ * The execution context is important for understanding the current state of the smart contract, such as who called
+ * the contract, the current contract address, and the transaction creator.
+ *
+ * Functions such as {@link ownedAddresses}, {@link addressStack}, {@link caller}, {@link callee},
+ * {@link transactionCreator}, {@link transferredCoins}, {@link timestamp}, and {@link remainingGas}
+ * provide access to important context information during smart contract execution.
+ *
  * It is not possible in AssemblyScript to catch thrown exceptions.
  * All exceptions thrown by functions in this module will stop the execution of the smart contract.
  *
+ * You can see that your smart contract execution is stopped by looking at the events.
+ *
+ * @privateRemarks
+ * The `json2Address` function is used to parse a JSON-encoded string of addresses and return an array of `Address`
+ * objects. This function is used internally by other functions in this module to convert string representations of
+ * addresses into a more usable format.
+ *
+ * @module
  */
 
 import { env } from '../env/index';
