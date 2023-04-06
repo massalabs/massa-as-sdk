@@ -29,10 +29,9 @@ export function print(message: string): void {
  *
  * @param coins - If the function to call is a payable function, pass coins to it with this argument.
  *
- * @remarks
- *  Runtime exception if:
- *    - the address doesn't exist !
- *    - the function doesn't exist in the contract !
+ * @throws
+ *    - the address doesn't exist
+ *    - the function doesn't exist in the contract
  *
  * @returns the return value of the executed function
  */
@@ -56,10 +55,9 @@ export function call(
  *
  * @param args - The arguments of the function we are calling.
  *
- * @remarks
- *  Runtime exception if:
- *    - the address doesn't exist !
- *    - the function doesn't exist in the contract !
+ * @throws
+ *    - the address doesn't exist
+ *    - the function doesn't exist in the contract
  *
  * @returns the return value of the executed function
  */
@@ -76,7 +74,6 @@ export function localCall(
  *
  *
  * @remarks
- * - Runtime exception if the function doesn't exist in the bytecode !
  * - Arguments serialization is to be handled by the caller and the callee.
  *
  * @param bytecode - The bytecode of the contract containing the function to execute.
@@ -85,8 +82,11 @@ export function localCall(
  *
  * @param args - The arguments of the function we are calling.
  *
- *
  * @returns the return value of the executed function
+ *
+ * @throws
+ *    - Runtime exception if the function doesn't exist in the bytecode
+ *
  */
 export function localExecution(
   bytecode: StaticArray<u8>,
@@ -112,10 +112,11 @@ export function getBytecode(): StaticArray<u8> {
  *
  * @param address - The address of the contract to fetch
  *
- * @remarks
- * Runtime exception if the address doesn't exist !
- *
  * @returns The serialized bytecode of the contract
+ *
+ * @throws
+ *   - Runtime exception if the address doesn't exist
+ *
  */
 export function getBytecodeOf(address: Address): StaticArray<u8> {
   return env.getBytecodeOf(address.toString());
