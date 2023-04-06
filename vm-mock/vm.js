@@ -322,11 +322,11 @@ export default function createMockedABI(
       },
 
       assembly_script_caller_has_write_access() {
-        return true;
+        return false;
       },
 
       isDeployingContract() {
-        return myImports.massa.assembly_script_caller_has_write_access() && callerAddress !== contractAddress;
+        return false;
       },
 
       assembly_script_hash_sha256(aPtr) {
