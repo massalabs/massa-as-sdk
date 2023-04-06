@@ -5,6 +5,7 @@ import {
   ownedAddresses,
   transactionCreator,
   transferredCoins,
+  isDeployingContract,
 } from '../context';
 
 describe('Context', () => {
@@ -32,5 +33,9 @@ describe('Context', () => {
   test('transferredCoins', () => {
     const coins = transferredCoins();
     expect(coins).toBe(0);
+  });
+
+  test('isDeployingContract', () => {
+    expect(isDeployingContract()).toBe(false);
   });
 });

@@ -1,5 +1,22 @@
+import { callerHasWriteAccess, Context } from '.';
 import { env } from '../env/index';
 import { Address } from './address';
+
+/**
+ * Determines whether the smart contract is currently being deployed.
+ *
+ * @remarks
+ * This method is typically used in the constructor to ensure a one-time deployment
+ * and initialization, usually by the creator of the contract. Under the hood, this method
+ * verifies that the account calling this function (either the user creating the operation
+ * or an upper contract) has write access to the data of the current account
+ *
+ * @returns true if the contract is currently being deployed, false otherwise.
+ */
+@inline
+export function isDeployingContract(): bool {
+  return callerHasWriteAccess() && Context.callee().notEqual(Context.caller());
+}
 
 /**
  * Returns an array of addresses.
