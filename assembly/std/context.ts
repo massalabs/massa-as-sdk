@@ -69,9 +69,33 @@ export function ownedAddresses(): Array<Address> {
 /**
  * Returns the current call stack of smart contract execution.
  *
- * @see
- * [The Address Stack documentation]( https://docs.massa.net/en/latest/web3-dev/smart-contracts/address-stack.html)
- * for more information.
+ * @remarks
+ * The first element of this list is the originator (creator of the transaction)
+ * and the last is the address of the current smart-contract.
+ *
+ * When executing the ExecuteSC function, the list is composed of only one entry:
+ * the initiator, the caller and the callee having with the same address.
+ *
+ * Here is a list of the different cases in the Massa stack system:
+ *
+ * **ExecuteSC**: when an account A sends an ExecuteSC operation, the stack at the
+ * beginning of that execution is: bottom [ A ] top.
+ *
+ * **CallSC**: when an account A sends a CallSC operation to call a function in a smart
+ * contract B, the stack at the beginning of the execution of that function is:
+ * bottom [ A, B ] top. Note: A and B can be the same.
+ *
+ * **Call**: from one smart contract to another: when a function F from smart contract C
+ * is being executed with the stack [A, B, C] and calls a function on a smart
+ * contract D, the stack at the beginning of the execution of D’s function becomes:
+ * bottom [A, B, C, D] top. When D’s function finishes, the stack becomes bottom [A, B, C]
+ * top and the execution of F resumes.
+ *
+ * **Autonomous SC**: a message sent at a moment when the stack was [A, B, C] and calling a target
+ * function F of a smart contract D, will yield the following stack at the beginning
+ * of the execution of the target function: bottom [C, D] top. Note: C and D can be the same.
+ *
+ * Local execution: local executions don’t change the stack, they allow executing foreign code in the current context.
  *
  * @returns An array of `Address` objects representing the call stack.
  */
