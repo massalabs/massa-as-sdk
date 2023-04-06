@@ -1,3 +1,45 @@
+/**
+ * This module contains functions for interacting with Massa's blockchain, it describes all standarts functions.
+ *
+ * This module therefore provides functions to make transactions, manipulate smart-contracts and their bytecode,
+ * call other smart-contracts functions and provides many more usefull utilities functions.
+ *
+ * @remarks
+ *
+ * The {@link call}, {@link localCall} and {@link localExecution} functions are used to call other
+ * smart-contracts functions by using the function name and either the other smart-contract
+ * address or the bytecode of the other smart-contract.
+ *
+ * The {@link sendMessage} function is close to 'call' functions but it is used to call functions with cron jobs
+ * as it is part of the new autonomous smart-contracts features.
+ *
+ * The {@link createSC}, {@link getBytecode} and {@link getBytecodeOf} functions are used to manipulate smart-contracts
+ * and their bytecode.
+ *
+ * The {@link transferCoins}, {@link transferCoinsOf}, {@link balance} and {@link balanceOf} functions are used to
+ * manipulate SCE coins between contracts.
+ *
+ * The {@link functionExists} function is used to check if a function exists in a smart-contract's bytecode.
+ *
+ * The {@link callerHasWriteAccess} function is used to check if the caller has write access on the smart-contract.
+ *
+ * The {@link generateEvent} function is used to generate an event in the blockchain
+ * that can be fetched using [the massa-web3 module](https://github.com/massalabs/massa-web3).
+ *
+ * The {@link hasOpKey}, {@link getOpData}, {@link getKeys}, {@link getOpKeys},
+ * {@link getKeysOf} and {@link derKeys} functions are used to manipulate
+ * the interact with the Op datastore which is used as a key-store for operations
+ * and pass much larger data sets between operations.
+ *
+ * @privateRemarks
+ * It is not possible in AssemblyScript to catch thrown exceptions.
+ * All exceptions thrown by functions in this module will stop the execution of the smart contract.
+ *
+ * You can see that your smart contract execution is stopped by looking at the events.
+ *
+ * @packageDocumentation
+ */
+
 import { env } from '../env/index';
 import { Address } from './address';
 import * as Storage from './storage';
@@ -25,7 +67,7 @@ export function print(message: string): void {
  *
  * @param functionName - The name of the function to call in that contract.
  *
- * @param args -  The arguments of the function we are calling (type: Args).
+ * @param args - The arguments of the function we are calling (type: Args).
  *
  * @param coins - If the function to call is a payable function, pass coins to it with this argument.
  *
@@ -484,7 +526,7 @@ export function sendMessage(
  *
  * @remarks
  * This function shall NEVER be called, it is dynamically replaced using the byteArray converter.
- * More info here:
+ * [More info here](https://github.com/massalabs/as/tree/main/packages/as-transformer#file2bytearray)
  *
  * @param filePath - the file path to convert
  *
