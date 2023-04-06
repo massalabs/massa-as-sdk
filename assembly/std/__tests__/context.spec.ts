@@ -6,6 +6,7 @@ import {
   transactionCreator,
   transferredCoins,
   isDeployingContract,
+  timestamp,
 } from '../context';
 
 describe('Context', () => {
@@ -38,4 +39,15 @@ describe('Context', () => {
   test('isDeployingContract', () => {
     expect(isDeployingContract()).toBe(false);
   });
+
+  test('timestamp', () => {
+    const time = timestamp();
+    expect(time).toBeGreaterThan(0);
+  });
+
+  // TODO: mock remainingGas
+  // test('remainingGas', () => {
+  //   const gas = remainingGas();
+  //   expect(gas).toBeGreaterThan(0);
+  // });
 });
