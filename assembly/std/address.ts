@@ -103,6 +103,9 @@ export class Address implements Valider, Serializable {
    * This method compares the string representation of the current `Address` object to another `Address`
    * object to determine if they are different.
    *
+   * @remarks
+   * This method compares the string representation of the current `Address` object to another `Address` object to determine if they are identical.
+   *
    * @param address - The address object to compare.
    *
    * @returns `true` if the addresses are different, `false` otherwise.
