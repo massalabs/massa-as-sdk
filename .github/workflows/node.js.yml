@@ -35,6 +35,7 @@ jobs:
         echo "coverage=$value" >> $GITHUB_OUTPUT
 
     - name: Update README
+      if: matrix.node-version == '18.x'
       uses: actions/github-script@v3
       with:
         script: |
