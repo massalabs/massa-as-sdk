@@ -140,25 +140,31 @@ export function localExecution(
 }
 
 /**
- * Get the bytecode of the current address
+ * This function can be used to retrieve the bytecode of the contract that is currently being executed.
  *
- * @returns the bytecode of the contract
+ * @remarks
+ * Bytecode is a low-level representation of a smart contract's code that can be executed by the blockchain.
+ *
+ * @returns The bytecode of the contract, serialized as a 'StaticArray<u8>'.
  *
  */
+
 export function getBytecode(): StaticArray<u8> {
   return env.getBytecode();
 }
 
 /**
- * Get the bytecode of the current address
+ * This function can be used to retrieve the bytecode of the remote contract at the given 'address'.
  *
+ * @remarks
+ * Bytecode is a low-level representation of a smart contract's code that can be executed by the blockchain.
  *
- * @param address - The address of the contract to fetch
+ * @param address - The address of the contract's bytecode to retrieve.
  *
- * @returns The serialized bytecode of the contract
+ * @returns The bytecode of the contract, serialized as a 'StaticArray<u8>'.
  *
  * @throws
- *   - Runtime exception if the address doesn't exist
+ * - if the given address is not a valid smart-contract address.
  *
  */
 export function getBytecodeOf(address: Address): StaticArray<u8> {
@@ -166,9 +172,7 @@ export function getBytecodeOf(address: Address): StaticArray<u8> {
 }
 
 /**
- * Determine if the caller has write access to the data stored in the called smart contract.
- *
- * @returns Returns true if the caller has write access; false otherwise.
+ * Determine if the caller has write access to the data stored in the called smart-contract.
  *
  * @remarks
  * This function returns true exclusively when a new smart contract is deployed using the
@@ -176,9 +180,28 @@ export function getBytecodeOf(address: Address): StaticArray<u8> {
  * When calling {@link createSC}, the User or smart contract will be granted write
  * access to the created SC, but this privilege is limited to the context of this specific operation.
  *
+ * @returns Returns true if the caller has write access; false otherwise.
+ *
  */
 export function callerHasWriteAccess(): bool {
   return env.callerHasWriteAccess();
+}
+
+/**
+ * This function takes a byte array which is the 'bytecode' of a contract to create.
+ *
+ * @remarks
+ * After executing this function, you will have write access on the newly generated contract.
+ *
+ * @see {@link callerHasWriteAccess} for more information.
+ *
+ * @param bytecode - The byte code of the contract to create.
+ *
+ * @returns The address of the newly created smart contract on the ledger.
+ *
+ */
+export function createSC(bytecode: StaticArray<u8>): Address {
+  return new Address(env.createSC(bytecode));
 }
 
 /**
@@ -192,23 +215,6 @@ export function callerHasWriteAccess(): bool {
  */
 export function functionExists(address: Address, func: string): bool {
   return env.functionExists(address.toString(), func);
-}
-
-/**
- * Creates a new smart contract.
- *
- * Takes a byte array which is the bytecode of the contract to create.
- *
- * The context allow you to write in this smart contract while you're executing
- * the current bytecode.
- *
- * @param bytecode - The byte code of the contract to create
- *
- * @returns The address of the newly created smart contract on the ledger
- *
- */
-export function createSC(bytecode: StaticArray<u8>): Address {
-  return new Address(env.createSC(bytecode));
 }
 
 /**
