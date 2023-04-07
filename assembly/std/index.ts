@@ -165,14 +165,15 @@ export function getBytecodeOf(address: Address): StaticArray<u8> {
 }
 
 /**
- * This functions checks if the caller has access to the data stored in the called smart contract.
- * It allows you to know if you can change the data stored in the called smart contrac.
+ * Determine if the caller has write access to the data stored in the called smart contract.
  *
- * @returns true if the caller has write access, false otherwise
+ * @returns Returns true if the caller has write access; false otherwise.
  *
  * @remarks
- * This function returns true only when you deploy a new sc using 'create_new_sc_address()'.
- * The User or SC calling this will have the write access on the SC created ONLY during the context of this operation.
+ * This function returns true exclusively when a new smart contract is deployed using the
+ * 'create_new_sc_address()' function.
+ * When calling 'callerHasWriteAccess()', the User or smart contract will be granted write
+ * access to the created SC, but this privilege is limited to the context of this specific operation.
  *
  */
 export function callerHasWriteAccess(): bool {
