@@ -294,7 +294,7 @@ export default function createMockedABI(
       },
 
       // map the AssemblyScript file with the contractAddresses generated
-      assembly_script_create_sc(_) {
+      assembly_script_create_sc(_bytecode) {
         const newAddress = { _value: generateDumbAddress(), _isValid: true };
         const newAddressLedger = {
           storage: new Map(),
@@ -320,6 +320,25 @@ export default function createMockedABI(
           `No mock defined for sc call on "${ptrToString(method)}".`,
         );
       },
+
+      assembly_script_local_call(_address, method, _param) {
+        if (scCallMockStack.length) {
+          return newArrayBuffer(scCallMockStack.shift());
+        }
+        throw new Error(
+          `No mock defined for sc call on "${ptrToString(method)}".`,
+        );
+      },
+
+      assembly_script_local_execution(_bytecode, method, _param) {
+        if (scCallMockStack.length) {
+          return newArrayBuffer(scCallMockStack.shift());
+        }
+        throw new Error(
+          `No mock defined for sc call on "${ptrToString(method)}".`,
+        );
+      },
+
 
       assembly_script_caller_has_write_access() {
         return false;
@@ -376,6 +395,31 @@ export default function createMockedABI(
       assembly_script_get_call_coins() {
         return BigInt(0);
       },
+
+      assembly_script_function_exists(addressPtr, methodPtr) {
+        const address = ptrToString(addressPtr);
+        const method = ptrToString(methodPtr);
+
+        if (!ledger.has(address)) return false;
+        if (address == 'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq' && method == 'dummyFunction1')
+          return true;
+        if (address == 'AS12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT' && method == 'dummyFunction2')
+          return true;
+        return false;
+      },
+
+      assembly_script_get_bytecode() {
+        return newArrayBuffer([]);
+      },
+
+      assembly_script_get_bytecode_for() {
+        return newArrayBuffer([]);
+      },
+
+      assembly_script_transfer_coins(_address, _coins) {
+        return;
+      }
+
     },
   };
 
