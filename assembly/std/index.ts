@@ -205,13 +205,16 @@ export function createSC(bytecode: StaticArray<u8>): Address {
 }
 
 /**
- * Checks if `function` exists in the bytecode stored at `address`
+ * Checks if the given function exists in a smart-contract at the given address.
  *
  * @param address - The address of the contract to search in.
- *
  * @param func - The name of the function to search.
  *
  * @returns true if the function exists, false otherwise.
+ *
+ * @throws
+ * - if the given address is not a valid smart-contract address.
+ *
  */
 export function functionExists(address: Address, func: string): bool {
   return env.functionExists(address.toString(), func);
