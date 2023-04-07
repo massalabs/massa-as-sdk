@@ -165,7 +165,8 @@ export function getBytecodeOf(address: Address): StaticArray<u8> {
 }
 
 /**
- * Check if the SC caller has a write access on its storage
+ * This functions checks if the caller has access to the data stored in the called smart contract.
+ * It allows you to know if you can change the data stored in the called smart contrac.
  *
  * @returns true if the caller has write access, false otherwise
  *
@@ -201,7 +202,7 @@ export function functionExists(address: Address, func: string): bool {
  *
  * @param bytecode - The byte code of the contract to create
  *
- * @returns the newly ledger-registered contract address
+ * @returns The address of the newly created smart contract on the ledger
  *
  */
 export function createSC(bytecode: StaticArray<u8>): Address {
@@ -532,7 +533,7 @@ export function sendMessage(
  *
  * @remarks
  * This function shall NEVER be called, it is dynamically replaced using the byteArray converter.
- * [More info here](https://github.com/massalabs/as/tree/main/packages/as-transformer#file2bytearray)
+ * [See more about the transformer](https://github.com/massalabs/as/tree/main/packages/as-transformer#file2bytearray)
  *
  * @param filePath - the file path to convert
  *
