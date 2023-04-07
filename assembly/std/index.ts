@@ -224,7 +224,7 @@ export function functionExists(address: Address, func: string): bool {
 /**
  * Generates a string event that is then emitted by the blockchain and can be listened off-chain.
  *
- * @see {@link https://github.com/massalabs/massa-sc-examples} for exemples on how to listen
+ * @see [massa smart-contracts exemples](https://github.com/massalabs/massa-sc-examples) to see how to listen
  * such events in a web3 application.
  *
  * @param event - The string event to emit.
@@ -432,11 +432,11 @@ export function derKeys(keysSer: StaticArray<u8>): Array<StaticArray<u8>> {
 }
 
 /**
- * Converts data to base58.
+ * This function converts the given string data into a base58 formatted string.
  *
  * @param data - the string data to convert to base58.
  *
- * @returns the converted data
+ * @returns the converted data as a string.
  *
  */
 export function toBase58(data: string): string {
@@ -444,13 +444,14 @@ export function toBase58(data: string): string {
 }
 
 /**
- * Tests if the signature is valid.
+ * This function checks if the given signature is valid using a public key.
  *
- * @param publicKey - base58check encoded public key of wallet
+ * @param publicKey - base58check encoded public key
  * @param digest - digest message
- * @param signature - base58check encoded signature of wallet
+ * @param signature - base58check encoded signature
  *
  * @returns 'true' if the signature is valid for the passed key, 'false' otherwise.
+ *
  */
 export function isSignatureValid(
   publicKey: string,
@@ -461,11 +462,14 @@ export function isSignatureValid(
 }
 
 /**
- * Converts a public key to an address
+ * This function uses the given public key to recover its corresponding address.
  *
  * @param pubKey - Base58check encoded public key of the address
  *
- * @returns the fetched address as a string
+ * @returns the fetched address as an 'Address' object.
+ *
+ * @throws
+ * - if the public key is invalid
  *
  */
 export function publicKeyToAddress(pubKey: string): Address {
@@ -473,8 +477,10 @@ export function publicKeyToAddress(pubKey: string): Address {
 }
 
 /**
+ * This function generates a pseudo-random integer.
+ *
  * @remarks
- * This function is unsafe because the random draws is predictable.
+ * This function is unsafe because the random draws are predictable.
  *
  * @returns the unsafe randomly generated number as i64.
  *
@@ -530,6 +536,7 @@ export function unsafeRandom(): i64 {
  * if a modification is made on a specific address precise it here
  * @param filterKey - If you want your message to be trigger only
  * if a modification is made on a specific storage key of the `filterAddress` precise it here
+ *
  */
 export function sendMessage(
   at: Address,
@@ -566,7 +573,7 @@ export function sendMessage(
  *
  * @remarks
  * This function shall NEVER be called, it is dynamically replaced using the byteArray converter.
- * [See more about the transformer](https://github.com/massalabs/as/tree/main/packages/as-transformer#file2bytearray)
+ * @see [as-transformer](https://github.com/massalabs/as/tree/main/packages/as-transformer#file2bytearray)
  *
  * @param filePath - the file path to convert
  *
@@ -579,9 +586,9 @@ export function fileToByteArray(
 }
 
 /**
- * Returns the current period
+ * This function retreives the current period of the network.
  *
- * @returns the current period as u64
+ * @returns the current period as u64.
  *
  */
 export function currentPeriod(): u64 {
@@ -589,9 +596,9 @@ export function currentPeriod(): u64 {
 }
 
 /**
- * Returns the current thread
+ * This function retreives the current thread of the network.
  *
- * @returns the current thread as u8
+ * @returns the current thread as u8.
  *
  */
 export function currentThread(): u8 {
@@ -599,15 +606,17 @@ export function currentThread(): u8 {
 }
 
 /**
- * Constructs an event given a key and arguments
+ * This function constructs a pretty formated event with given key and arguments.
+ * It is usefull to generate events with array formatted data.
  *
- * @see {@link generateEvent}
+ * @remarks
+ * The generated event is meant to be used with the {@link generateEvent} function.
  *
- * @param key - event key
+ * @param key - the string event key.
  *
- * @param args - array of string arguments.
+ * @param args - the string array arguments.
  *
- * @returns stringified event.
+ * @returns the stringified event.
  *
  */
 export function createEvent(key: string, args: Array<string>): string {
@@ -615,11 +624,11 @@ export function createEvent(key: string, args: Array<string>): string {
 }
 
 /**
- * Computing the sha256 of the passed parameter and return the hash as a byte array.
+ * This function computes the checksum, with the 'sha256' algorithm, of the given contract's bytecode.
  *
- * @param bytecode - StaticArray<u8>
+ * @param bytecode - the bytecode for which to compute the checksum.
  *
- * @returns - Computed Sha256 in StaticArray<u8>
+ * @returns the serialized computed checksum.
  *
  */
 export function sha256(bytecode: StaticArray<u8>): StaticArray<u8> {
@@ -627,11 +636,11 @@ export function sha256(bytecode: StaticArray<u8>): StaticArray<u8> {
 }
 
 /**
- * Checks if the address is valid.
+ * This functions checks if the address is valid.
  *
- * @param address - Address to check
+ * @param address - the string address to validate.
  *
- * @returns boolean - true if the address is valid, false otherwise
+ * @returns 'true' if the address is valid, 'false' otherwise.
  *
  */
 export function validateAddress(address: string): bool {
