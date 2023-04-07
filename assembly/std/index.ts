@@ -49,9 +49,9 @@ import { Args } from '@massalabs/as-types';
 export { Address, Storage, Context };
 
 /**
- * Prints in the node logs
+ * This function takes a message string as input and logs it in the node logs.
  *
- * @param message - Message string to log in node
+ * @param message - The message string to be logged in the node.
  *
  */
 export function print(message: string): void {
