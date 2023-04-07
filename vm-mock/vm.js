@@ -425,8 +425,8 @@ export default function createMockedABI(
       },
 
       assembly_script_delete_data_for(addressPtr, keyPtr) {
-        const a = ptrToString(addressPtr);
-        const k = ptrToString(keyPtr);
+        const a = ptrToUint8ArrayString(addressPtr);
+        const k = ptrToUint8ArrayString(keyPtr);
         if (ledger.has(a)) {
           const addressStorage = ledger.get(a).storage;
           if (addressStorage.has(k)) {
@@ -435,12 +435,34 @@ export default function createMockedABI(
         }
       },
 
-      assembly_script_append_data(addressPtr, keyPtr, valuePtr) {
-        return;
+      assembly_script_append_data(keyPtr, valuePtr) {
+        const a = contractAddress;
+        const k = ptrToUint8ArrayString(keyPtr);
+        const v = getArrayBuffer(valuePtr);
+        if (!ledger.has(a)) {
+          ledger.set(a, {
+            storage: new Map(),
+            contract: '',
+          });
+        }
+
+        const addressStorage = ledger.get(a).storage;
+        addressStorage.set(k, v);
       },
 
-      assembly_script_append_data_for(addrerssPtr, keyPtr, valuePtr) {
-        return;
+      assembly_script_append_data_for(addressPtr, keyPtr, valuePtr) {
+        const a = ptrToUint8ArrayString(addressPtr);
+        const k = ptrToUint8ArrayString(keyPtr);
+        const v = getArrayBuffer(valuePtr);
+        if (!ledger.has(a)) {
+          ledger.set(a, {
+            storage: new Map(),
+            contract: '',
+          });
+        }
+
+        const addressStorage = ledger.get(a).storage;
+        addressStorage.set(k, v);
       },
 
       assembly_script_transfer_coins_for(fromPtr, toPtr, amountPtr) {
