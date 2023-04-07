@@ -172,7 +172,7 @@ export function getBytecodeOf(address: Address): StaticArray<u8> {
  * @remarks
  * This function returns true exclusively when a new smart contract is deployed using the
  * 'create_new_sc_address()' function.
- * When calling 'callerHasWriteAccess()', the User or smart contract will be granted write
+ * When calling 'create_new_sc_address()', the User or smart contract will be granted write
  * access to the created SC, but this privilege is limited to the context of this specific operation.
  *
  */
