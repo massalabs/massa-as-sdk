@@ -1,27 +1,27 @@
 /**
- * This module contains functions for interacting with Massa's blockchain, it describes all standarts functions.
- *
- * This module therefore provides functions to make transactions, manipulate smart-contracts and their bytecode,
- * call other smart-contracts functions and provides many more usefull utilities functions.
+ * This module contains functions for working with Massa's blockchain,
+ * including making transactions, manipulating smart-contracts and their bytecode,
+ * calling other smart-contracts functions, and providing various utility functions.
  *
  * @remarks
  *
- * The {@link call}, {@link localCall} and {@link localExecution} functions are used to call other
- * smart-contracts functions by using the function name and either the other smart-contract
- * address or the bytecode of the other smart-contract.
+ * You can use the {@link call}, {@link localCall} and {@link localExecution} functions to call other
+ * smart-contracts by specifying the function name and either the other smart-contract
+ * address or its bytecode.
  *
- * The {@link sendMessage} function is close to 'call' functions but it is used to call functions with cron jobs
+ * The {@link sendMessage} function is similar to 'call' functions but it is used to call functions with cron jobs
  * as it is part of the new autonomous smart-contracts features.
  *
- * The {@link createSC}, {@link getBytecode} and {@link getBytecodeOf} functions are used to manipulate smart-contracts
- * and their bytecode.
+ * The {@link createSC}, {@link getBytecode} and {@link getBytecodeOf} functions are used to create smart-contracts
+ * and manipulate them by their bytecode.
  *
  * The {@link transferCoins}, {@link transferCoinsOf}, {@link balance} and {@link balanceOf} functions are used to
- * manipulate SCE coins between contracts.
+ * transfer SCE coins between contracts.
  *
  * The {@link functionExists} function is used to check if a function exists in a smart-contract's bytecode.
  *
- * The {@link callerHasWriteAccess} function is used to check if the caller has write access on the smart-contract.
+ * The {@link callerHasWriteAccess} function is used to check if the caller has write access on the smart-contract's
+ * data.
  *
  * The {@link generateEvent} function is used to generate an event in the blockchain
  * that can be fetched using [the massa-web3 module](https://github.com/massalabs/massa-web3).
@@ -38,6 +38,7 @@
  * You can see that your smart contract execution is stopped by looking at the events.
  *
  * @packageDocumentation
+ *
  */
 
 import { env } from '../env/index';
@@ -221,9 +222,13 @@ export function functionExists(address: Address, func: string): bool {
 }
 
 /**
- * Generates an event
+ * Generates a string event that is then emitted by the blockchain and can be listened off-chain.
  *
- * @param event - stringified
+ * @see {@link https://github.com/massalabs/massa-sc-examples} for exemples on how to listen
+ * such events in a web3 application.
+ *
+ * @param event - The string event to emit.
+ *
  */
 export function generateEvent(event: string): void {
   env.generateEvent(event);
@@ -234,19 +239,29 @@ export function generateEvent(event: string): void {
  *
  * @param to - the address to send coins to.
  * @param amount - value in the smallest unit.
+ *
+ * @throws
+ * - if the given address is not a valid address.
+ * - if the balance of the current address is insufficient to make the transaction.
+ *
  */
 export function transferCoins(to: Address, amount: u64): void {
   env.transferCoins(to.toString(), amount);
 }
 
 /**
- * Transfers coins of the `from` address to the `to` address.
+ * Transfers SCE coins 'from' a given address 'to' another given address.
  *
- * @param from - the sender address
+ * @remarks
+ * The transfer is done only after approval.
  *
- * @param to - the address to send coins to
+ * @param from - the sender address.
+ * @param to - the address to send coins to.
+ * @param amount - value in the smallest unit.
  *
- * @param amount - value in the smallest unit
+ * @throws
+ * - if the sender's or the receiver address is not a valid address.
+ * - if the balance of the sender's address is insufficient to make the transaction.
  *
  */
 export function transferCoinsOf(from: Address, to: Address, amount: u64): void {
@@ -254,7 +269,7 @@ export function transferCoinsOf(from: Address, to: Address, amount: u64): void {
 }
 
 /**
- * Gets the balance of the current address
+ * Gets the balance of the current address.
  *
  * @returns - value in the smallest unit.
  *
@@ -269,6 +284,9 @@ export function balance(): u64 {
  * @param address - the address on which the balance is checked.
  *
  * @returns - value in the smallest unit.
+ *
+ * @throws
+ * - if the given address is not a valid address.
  *
  */
 export function balanceOf(address: string): u64 {
