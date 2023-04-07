@@ -3,18 +3,24 @@ import { Address } from '../address';
 
 describe('Address tests', () => {
   it('basic tests', () => {
-    const a1 = new Address(
+    const addr = new Address(
       'AU1aMywGBgBywiL6WcbKR4ugxoBtdP9P3waBVi5e713uvj7F1DJL',
     );
 
-    expect(a1.isValid()).toBeTruthy();
+    expect(addr.isValid()).toBeTruthy();
 
-    // serialization / deserialization
+    // get address length
+    const serializedAddr = addr.serialize();
+    // get the fist byte of the serialized address (it is the length of the address)
+    const addrLength = serializedAddr[0];
+    // get the address string
+    const addrString = addr.toString();
 
-    // byteString
-    const rawByteString = a1.toString();
-    expect<number>(rawByteString.length).toBe(52);
-    expect<Address>(new Address(rawByteString)).toBe(a1);
+    // check if the first character is 'A'
+    expect(addrString.charAt(0)).toBe('A');
+
+    // check if the address length is equal to the address string length
+    expect(addrLength).toBe(u8(addrString.length));
   });
 
   it('serializable/de-serialization', () => {
@@ -28,6 +34,12 @@ describe('Address tests', () => {
       deserialized.deserialize(serialized, 0);
       expect(address.toString()).toBe(deserialized.toString());
     });
+  });
+
+  it('invalid deserialization', () => {
+    const wrongSerializedData = new Args().add(69).serialize();
+    const deserialized = new Address().deserialize(wrongSerializedData, 0);
+    expect(deserialized.isErr()).toBe(true);
   });
 
   it('args', () => {
@@ -57,5 +69,23 @@ describe('Address tests', () => {
       const deserialized = args.nextSerializable<Address>().unwrap();
       expect(deserialized.toString()).toBe(input);
     });
+  });
+
+  it('overloading functions', () => {
+    const addr1 = new Address(
+      'A12LmTm4zRYkUQZusw7eevvV5ySzSwndJpENQ7EZHcmDbWafx96T',
+    );
+    const addr2 = new Address(
+      'A1aMywGBgBywiL6WcbKR4ugxoBtdP9P3waBVi5e713uvj7F1DJL',
+    );
+
+    // check if addr1 == addr1
+    expect(addr1 == addr1).toBeTruthy();
+
+    // check if addr1 == addr2
+    expect(addr1 == addr2).toBeFalsy();
+
+    // check if addr1 != addr2
+    expect(addr1 != addr2).toBeTruthy();
   });
 });
