@@ -59,49 +59,50 @@ export function print(message: string): void {
 }
 
 /**
- * Calls a remote function located at given address.
+ * Calls a remote function located at the given address.
+ * This function allows the caller to execute a function of a smart-contract deployed at a given address, with
+ * the specified arguments and optional coins to be sent to the function.
  *
- * Note: arguments serialization is to be handled by the caller and the callee.
+ * @remarks
+ * The serialization of arguments must be handled by the caller and the callee.
  *
- * @param at - The address of the contract.
- *
- * @param functionName - The name of the function to call in that contract.
- *
+ * @param at - The address of the contract where the function will be executed.
+ * @param functionName - The name of the function to be called in the contract.
  * @param args - The arguments of the function we are calling (type: Args).
+ * @param coins - An optional amount of coins to send with the function call if it is a payable function.
  *
- * @param coins - If the function to call is a payable function, pass coins to it with this argument.
+ * @returns The return value of the executed function, serialized as a 'StaticArray<u8>'.
  *
  * @throws
- *    - the address doesn't exist
- *    - the function doesn't exist in the contract
+ * - if the given address is not a valid address.
+ * - if the function doesn't exist in the contract to call.
  *
- * @returns the return value of the executed function
  */
 export function call(
   at: Address,
   functionName: string,
   args: Args,
-  coins: u64,
+  coins: u64 = 0,
 ): StaticArray<u8> {
   return env.call(at.toString(), functionName, args.serialize(), coins);
 }
 
 /**
- * Calls a remote function located at given address within the current context.
+ * This function allows you to execute a function from a remote contract but in the current context.
  *
- * Note: arguments serialization is to be handled by the caller and the callee.
+ * @remarks
+ * Arguments serialization is to be handled by the caller and the callee.
  *
- * @param at - The address of the contract.
- *
- * @param functionName - The name of the function to call in that contract.
- *
+ * @param at - The address of the contract from where the function is located.
+ * @param functionName - The name of the function to call in the current context.
  * @param args - The arguments of the function we are calling.
  *
- * @throws
- *    - the address doesn't exist
- *    - the function doesn't exist in the contract
+ * @returns The return value of the executed function, serialized as a 'StaticArray<u8>'.
  *
- * @returns the return value of the executed function
+ * @throws
+ * - if the given address is not a valid address.
+ * - if the function doesn't exist in the contract to call.
+ *
  */
 export function localCall(
   at: Address,
@@ -112,22 +113,22 @@ export function localCall(
 }
 
 /**
- * Executes a given bytecode within the current context.
- *
+ * This function allows you to execute a function in a contract as if it were called by
+ * another function in the same contract, using the provided `bytecode` as the source code
+ * for the contract. This can be useful for testing or debugging purposes,
+ * or for calling functions that are not meant to be called from outside the contract.
  *
  * @remarks
- * - Arguments serialization is to be handled by the caller and the callee.
+ * Arguments serialization is to be handled by the caller and the callee.
  *
  * @param bytecode - The bytecode of the contract containing the function to execute.
- *
  * @param functionName - The name of the function to call in that contract.
- *
  * @param args - The arguments of the function we are calling.
  *
- * @returns the return value of the executed function
+ * @returns The return value of the executed function, serialized as a 'StaticArray<u8>'.
  *
  * @throws
- *    - Runtime exception if the function doesn't exist in the bytecode
+ * - if the function doesn't exist in the bytecode
  *
  */
 export function localExecution(
