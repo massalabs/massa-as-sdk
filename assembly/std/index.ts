@@ -294,9 +294,9 @@ export function balanceOf(address: string): u64 {
 }
 
 /**
- * Check for key in datastore
+ * This function checks if a given serialized 'key' is present in the operation datastore.
  *
- * @param key - the (serialized?) key to check for
+ * @param key - the serialized key to look for in the datastore.
  *
  * @returns - true if key is present in datastore, false otherwise.
  *
@@ -310,11 +310,14 @@ export function hasOpKey(key: StaticArray<u8>): bool {
 }
 
 /**
- * Get data associated with the given key from datastore
+ * This function retreives the data associated with the given key from the operation datastore.
  *
- * @param key - the (serialized?) key of the data to get.
+ * @param key - the serialized key to look for in the datastore.
  *
- * @returns - data as a byte array
+ * @returns - the serialized data associated with the given key as a byte array.
+ *
+ * @throws
+ * - if the key is not present in the datastore.
  *
  */
 export function getOpData(key: StaticArray<u8>): StaticArray<u8> {
@@ -322,9 +325,9 @@ export function getOpData(key: StaticArray<u8>): StaticArray<u8> {
 }
 
 /**
- * Get all keys from operation datastore
+ * This function retreives all the keys from the operation datastore.
  *
- * @returns - a list of key (e.g. a list of byte array)
+ * @returns - a list of serialized keys (e.g. a list of byte array)
  *
  */
 export function getOpKeys(): Array<StaticArray<u8>> {
@@ -333,11 +336,12 @@ export function getOpKeys(): Array<StaticArray<u8>> {
 }
 
 /**
- * Get keys from datastore
+ * This function retreives all the keys from the operation datastore.
+ * It alows to filter the keys by an optionnal prefix.
  *
- * @param prefix - the prefix to filter the keys (optional)
+ * @param prefix - the serialized prefix to filter the keys (optional)
  *
- * @returns - a list of key (e.g. a list of byte array)
+ * @returns - a list of serialized keys (e.g. a list of byte array)
  *
  */
 export function getKeys(
@@ -348,10 +352,10 @@ export function getKeys(
 }
 
 /**
- * Get all keys from datastore
+ * This function retreives all the keys from the operation datastore from a remote address.
+ * It alows to filter the keys by an optionnal prefix.
  *
  * @param address - the address in the datastore
- *
  * @param prefix - the prefix to filter the keys (optional)
  *
  * @returns - a list of key (e.g. a list of byte array)
