@@ -416,8 +416,51 @@ export default function createMockedABI(
         return newArrayBuffer([]);
       },
 
-      assembly_script_transfer_coins(_address, _coins) {
+      assembly_script_transfer_coins(_addressPtr, _coinsPtr) {
         return;
+      },
+
+      assembly_script_get_remaining_gas() {
+        return BigInt(12000);
+      },
+
+      assembly_script_delete_data_for(addressPtr, keyPtr) {
+        const a = ptrToString(addressPtr);
+        const k = ptrToString(keyPtr);
+        if (ledger.has(a)) {
+          const addressStorage = ledger.get(a).storage;
+          if (addressStorage.has(k)) {
+            addressStorage.delete(k);
+          }
+        }
+      },
+
+      assembly_script_append_data(addressPtr, keyPtr, valuePtr) {
+        return;
+      },
+
+      assembly_script_append_data_for(addrerssPtr, keyPtr, valuePtr) {
+        return;
+      },
+
+      assembly_script_transfer_coins_for(fromPtr, toPtr, amountPtr) {
+        return;
+      },
+
+      assembly_script_get_balance() {
+        return BigInt(1000000);
+      },
+
+      assembly_script_get_balance_for(addressPtr) {
+        return BigInt(1000000);
+      },
+
+      assembly_script_signature_verify(digestPtr, signaturePtr, publicKeyPtr) {
+        return true;
+      },
+
+      assembly_script_address_from_public_key(publicKeyPtr) {
+        return "AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq";
       }
 
     },
