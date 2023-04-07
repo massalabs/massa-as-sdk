@@ -483,6 +483,49 @@ export default function createMockedABI(
 
       assembly_script_address_from_public_key(publicKeyPtr) {
         return "AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq";
+      },
+
+      assembly_script_get_op_data(kPtr) {
+        return newArrayBuffer('');
+      },
+
+      assembly_script_has_op_key(kPtr) {
+        return false;
+      },
+
+      assembly_script_get_op_keys() {
+
+        return newArrayBuffer([]);
+      },
+
+      assembly_script_set_bytecode_for(addressPtr, bytecodePtr) {
+        let address = ptrToString(addressPtr);
+        let bytecode = ptrToString(bytecodePtr);
+
+        if (ledger.has(address)) {
+          ledger.get(address).bytecode = bytecode;
+        }
+        else {
+          throw Error ("Address does not exist");
+        }
+      },
+
+      assembly_script_set_bytecode(bytecodePtr) {
+        let bytecode = ptrToString(bytecodePtr);
+        ledger.get(contractAddress).bytecode = bytecode;
+      },
+
+      assembly_script_get_current_thread() {
+        return 0;
+      },
+
+      assembly_script_get_current_period() {
+        return 0;
+      },
+
+      assembly_script_send_message(_aPtr, _hPtr, _vSPPtr, _vSTPtr, _vEPPtr,
+        _vETPtr, _mGPtr, _rFPtr, _cPtr, _dPtr, _faPtr, _fkPtr) {
+        return;
       }
 
     },
