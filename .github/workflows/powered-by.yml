@@ -33,5 +33,6 @@ jobs:
     - name: Commit Changes
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
+        token: ${{ secrets.MASSABOTCLASSIC }}
         commit_message: "Generate powered-by"
         file_pattern: "powered-by.md"
