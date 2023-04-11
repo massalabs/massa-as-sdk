@@ -112,12 +112,11 @@ export function localCall(
 }
 
 /**
- * Calls a function in a contract as if it were called by
- * another function in the same contract, using the provided `bytecode` as the source code
- * for the contract. This can be useful for testing or debugging purposes,
- * or for calling functions that are not meant to be called from outside the contract.
+ * Calls a function from a contract's bytecode in the current context.
  *
  * @remarks
+ * This can be useful for testing or debugging purposes,
+ * or for calling functions that are not meant to be called from outside the contract.
  * Arguments serialization is to be handled by the caller and the callee.
  *
  * @param bytecode - The bytecode of the contract containing the function to execute.
