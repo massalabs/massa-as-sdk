@@ -478,7 +478,7 @@ export function publicKeyToAddress(pubKey: string): Address {
  * @remarks
  * This function is unsafe because the random draws are predictable.
  *
- * @returns the unsafe randomly generated number as i64.
+ * @returns a random number.
  *
  */
 export function unsafeRandom(): i64 {
