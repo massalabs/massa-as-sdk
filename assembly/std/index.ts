@@ -584,7 +584,7 @@ export function fileToByteArray(
 /**
  * Retrieves the current period of the network.
  *
- * @returns the current period as u64.
+ * @returns the current period.
  *
  */
 export function currentPeriod(): u64 {
@@ -594,7 +594,7 @@ export function currentPeriod(): u64 {
 /**
  * Retrieves the current thread of the execution context.
  *
- * @returns the current thread as u8.
+ * @returns the current thread.
  *
  */
 export function currentThread(): u8 {
