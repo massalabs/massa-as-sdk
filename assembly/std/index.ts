@@ -320,7 +320,7 @@ export function getOpData(key: StaticArray<u8>): StaticArray<u8> {
 /**
  * Retrieves all the keys from the operation datastore.
  *
- * @returns - a list of serialized keys (e.g. a list of byte array)
+ * @returns - a list of keys (e.g. a list of byte array)
  *
  */
 export function getOpKeys(): Array<StaticArray<u8>> {
@@ -333,7 +333,7 @@ export function getOpKeys(): Array<StaticArray<u8>> {
  *
  * @param prefix - the serialized prefix to filter the keys (optional)
  *
- * @returns - a list of serialized keys (e.g. a list of byte array)
+ * @returns - a list of keys (e.g. a list of byte array)
  *
  */
 export function getKeys(
@@ -361,11 +361,11 @@ export function getKeysOf(
 }
 
 /**
- * Read the number of keys from serialized keys array
+ * Retrieves the number of keys from serialized keys array
  *
  * @param arr - Uint8Array keys array
  *
- * @returns The number of keys in the  keys array
+ * @returns The number of keys in the keys array
  *
  */
 function getNumberOfKeys(keysSer: StaticArray<u8>): u32 {
