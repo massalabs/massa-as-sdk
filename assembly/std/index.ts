@@ -146,7 +146,6 @@ export function localExecution(
  * @returns The bytecode of the contract, serialized as a 'StaticArray<u8>'.
  *
  */
-
 export function getBytecode(): StaticArray<u8> {
   return env.getBytecode();
 }
