@@ -68,7 +68,7 @@ export function print(message: string): void {
  *
  * @param at - The address of the contract where the function will be executed.
  * @param functionName - The name of the function to be called in the contract.
- * @param args - The arguments of the function we are calling (type: Args).
+ * @param args - The arguments of the function being called (type: Args).
  * @param coins - An optional amount of coins to send with the function call if it is a payable function.
  *
  * @returns The return value of the executed function, serialized as a 'StaticArray<u8>'.
