@@ -623,15 +623,18 @@ export function createEvent(key: string, args: Array<string>): string {
 }
 
 /**
- * Computes the checksum, with the 'sha256' algorithm, of the given contract's bytecode.
+ * Computes the SHA256 hash of the given `data`.
  *
- * @param bytecode - the bytecode for which to compute the checksum.
+ * @remarks
+ * The SHA256 hash algorithm produces a 32-byte hash, which is returned as a `StaticArray<u8>`.
  *
- * @returns the serialized computed checksum.
+ * @param data - The data to hash.
+ *
+ * @returns The SHA256 hash of the `data`, serialized as a `StaticArray<u8>`.
  *
  */
-export function sha256(bytecode: StaticArray<u8>): StaticArray<u8> {
-  return env.sha256(bytecode);
+export function sha256(data: StaticArray<u8>): StaticArray<u8> {
+  return env.sha256(data);
 }
 
 /**
