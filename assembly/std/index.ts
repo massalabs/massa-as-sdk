@@ -50,9 +50,9 @@ import { Args } from '@massalabs/as-types';
 export { Address, Storage, Context };
 
 /**
- * This function takes a message string as input and logs it in the node logs.
+ * Logs a string message in the massa-node logs.
  *
- * @param message - The message string to be logged in the node.
+ * @param message - The string message to be logged in the node.
  *
  */
 export function print(message: string): void {
@@ -60,8 +60,7 @@ export function print(message: string): void {
 }
 
 /**
- * Calls a remote function located at the given address.
- * This function allows the caller to execute a function of a smart-contract deployed at a given address, with
+ * Calls a function of a smart-contract deployed at a given address, with
  * the specified arguments and optional coins to be sent to the function.
  *
  * @remarks
@@ -89,7 +88,7 @@ export function call(
 }
 
 /**
- * This function allows you to execute a function from a remote contract but in the current context.
+ * Calls a function from a remote contract in the current context.
  *
  * @remarks
  * Arguments serialization is to be handled by the caller and the callee.
@@ -114,7 +113,7 @@ export function localCall(
 }
 
 /**
- * This function allows you to execute a function in a contract as if it were called by
+ * Calls a function in a contract as if it were called by
  * another function in the same contract, using the provided `bytecode` as the source code
  * for the contract. This can be useful for testing or debugging purposes,
  * or for calling functions that are not meant to be called from outside the contract.
@@ -141,7 +140,7 @@ export function localExecution(
 }
 
 /**
- * This function can be used to retrieve the bytecode of the contract that is currently being executed.
+ * Retrieves the bytecode of the contract that is currently being executed.
  *
  * @remarks
  * Bytecode is a low-level representation of a smart contract's code that can be executed by the blockchain.
@@ -155,7 +154,7 @@ export function getBytecode(): StaticArray<u8> {
 }
 
 /**
- * This function can be used to retrieve the bytecode of the remote contract at the given 'address'.
+ * Retrieves the bytecode of the remote contract at the given 'address'.
  *
  * @remarks
  * Bytecode is a low-level representation of a smart contract's code that can be executed by the blockchain.
@@ -189,7 +188,7 @@ export function callerHasWriteAccess(): bool {
 }
 
 /**
- * This function takes a byte array which is the 'bytecode' of a contract to create.
+ * Creates a new smart contract on the ledger using its bytecode representation.
  *
  * @remarks
  * After executing this function, you will have write access on the newly generated contract.
@@ -294,7 +293,7 @@ export function balanceOf(address: string): u64 {
 }
 
 /**
- * This function checks if a given serialized 'key' is present in the operation datastore.
+ * Checks if a given serialized 'key' is present in the operation datastore.
  *
  * @param key - the serialized key to look for in the datastore.
  *
@@ -310,7 +309,7 @@ export function hasOpKey(key: StaticArray<u8>): bool {
 }
 
 /**
- * This function retrieves the data associated with the given key from the operation datastore.
+ * Retrieves the data associated with the given key from the operation datastore.
  *
  * @param key - the serialized key to look for in the datastore.
  *
@@ -325,7 +324,7 @@ export function getOpData(key: StaticArray<u8>): StaticArray<u8> {
 }
 
 /**
- * This function retrieves all the keys from the operation datastore.
+ * Retrieves all the keys from the operation datastore.
  *
  * @returns - a list of serialized keys (e.g. a list of byte array)
  *
@@ -336,7 +335,7 @@ export function getOpKeys(): Array<StaticArray<u8>> {
 }
 
 /**
- * This function retrieves all the keys from the operation datastore.
+ * Retrieves all the keys from the operation datastore.
  * It allows to filter the keys by an optional prefix.
  *
  * @param prefix - the serialized prefix to filter the keys (optional)
@@ -352,7 +351,7 @@ export function getKeys(
 }
 
 /**
- * This function retrieves all the keys from the operation datastore from a remote address.
+ * Retrieves all the keys from the operation datastore from a remote address.
  * It allows to filter the keys by an optional prefix.
  *
  * @param address - the address in the datastore
@@ -432,7 +431,7 @@ export function derKeys(keysSer: StaticArray<u8>): Array<StaticArray<u8>> {
 }
 
 /**
- * This function converts the given string data into a base58 formatted string.
+ * Converts the given string data into a base58 formatted string.
  *
  * @param data - the string data to convert to base58.
  *
@@ -444,7 +443,7 @@ export function toBase58(data: string): string {
 }
 
 /**
- * This function checks if the given signature is valid using a public key.
+ * Checks if the given signature is valid using a public key.
  *
  * @param publicKey - base58check encoded public key
  * @param digest - digest message
@@ -462,7 +461,7 @@ export function isSignatureValid(
 }
 
 /**
- * This function uses the given public key to recover its corresponding address.
+ * Retrieves an Address object from the given public key.
  *
  * @param pubKey - Base58check encoded public key of the address
  *
@@ -477,7 +476,7 @@ export function publicKeyToAddress(pubKey: string): Address {
 }
 
 /**
- * This function generates a pseudo-random integer.
+ * Generates a pseudo-random integer.
  *
  * @remarks
  * This function is unsafe because the random draws are predictable.
@@ -586,7 +585,7 @@ export function fileToByteArray(
 }
 
 /**
- * This function retrieves the current period of the network.
+ * Retrieves the current period of the network.
  *
  * @returns the current period as u64.
  *
@@ -596,7 +595,7 @@ export function currentPeriod(): u64 {
 }
 
 /**
- * This function retrieves the current thread of the network.
+ * Retrieves the current thread of the network.
  *
  * @returns the current thread as u8.
  *
@@ -606,7 +605,7 @@ export function currentThread(): u8 {
 }
 
 /**
- * This function constructs a pretty formatted event with given key and arguments.
+ * Constructs a pretty formatted event with given key and arguments.
  * It is useful to generate events with array formatted data.
  *
  * @remarks
@@ -624,7 +623,7 @@ export function createEvent(key: string, args: Array<string>): string {
 }
 
 /**
- * This function computes the checksum, with the 'sha256' algorithm, of the given contract's bytecode.
+ * Computes the checksum, with the 'sha256' algorithm, of the given contract's bytecode.
  *
  * @param bytecode - the bytecode for which to compute the checksum.
  *
@@ -636,7 +635,7 @@ export function sha256(bytecode: StaticArray<u8>): StaticArray<u8> {
 }
 
 /**
- * This functions checks if the address is valid.
+ * Checks if the given address is valid.
  *
  * @param address - the string address to validate.
  *
