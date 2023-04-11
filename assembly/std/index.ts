@@ -81,7 +81,7 @@ export function call(
   at: Address,
   functionName: string,
   args: Args,
-  coins: u64,
+  coins: u64 = 0,
 ): StaticArray<u8> {
   return env.call(at.toString(), functionName, args.serialize(), coins);
 }
