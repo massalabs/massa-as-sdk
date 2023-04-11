@@ -228,7 +228,7 @@ export function generateEvent(event: string): void {
 }
 
 /**
- * Transfers coins from the current address 'to' given address.
+ * Transfers coins from the current address 'to' a given address.
  *
  * @param to - the address to send coins to.
  * @param amount - value in the smallest unit.
