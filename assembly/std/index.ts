@@ -223,9 +223,6 @@ export function functionExists(address: Address, func: string): bool {
 /**
  * Generates an event that is then emitted by the blockchain.
  *
- * @see [massa smart-contracts examples](https://github.com/massalabs/massa-sc-examples) to see how to listen
- * such events in a web3 application.
- *
  * @param event - The string event to emit.
  *
  */
