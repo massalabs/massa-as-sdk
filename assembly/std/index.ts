@@ -440,13 +440,13 @@ export function toBase58(data: string): string {
 }
 
 /**
- * Checks if the given signature is valid using a public key.
+ * Checks if a signature is valid.
  *
- * @param publicKey - base58check encoded public key
- * @param digest - digest message
- * @param signature - base58check encoded signature
+ * @param publicKey - base58check encoded public key.
+ * @param digest - digest message.
+ * @param signature - base58check encoded signature.
  *
- * @returns 'true' if the signature is valid for the passed key, 'false' otherwise.
+ * @returns 'true' if the signature is valid, 'false' otherwise.
  *
  */
 export function isSignatureValid(
