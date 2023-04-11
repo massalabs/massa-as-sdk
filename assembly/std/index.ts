@@ -1,26 +1,26 @@
 /**
  * This module contains functions for working with Massa's blockchain,
- * including making transactions, manipulating smart-contracts and their bytecode,
- * calling other smart-contracts functions, and providing various utility functions.
+ * including making transactions, manipulating smart contracts and their bytecode,
+ * calling other smart contracts functions, and providing various utility functions.
  *
  * @remarks
  *
  * You can use the {@link call}, {@link localCall} and {@link localExecution} functions to call other
- * smart-contracts by specifying the function name and either the other smart-contract
+ * smart contracts by specifying the function name and either the other smart contract
  * address or its bytecode.
  *
  * The {@link sendMessage} function is similar to 'call' functions but it is used to schedule a call
- * as it is part of the new autonomous smart-contracts features.
+ * as it is part of the new autonomous smart contracts features.
  *
- * The {@link createSC}, {@link getBytecode} and {@link getBytecodeOf} functions are used to create smart-contracts
+ * The {@link createSC}, {@link getBytecode} and {@link getBytecodeOf} functions are used to create smart contracts
  * and manipulate them by their bytecode.
  *
  * The {@link transferCoins}, {@link transferCoinsOf}, {@link balance} and {@link balanceOf} functions are used to
  * manage the transfer and retrieval of coins between contracts.
  *
- * The {@link functionExists} function is used to check if a function exists in a smart-contract's bytecode.
+ * The {@link functionExists} function is used to check if a function exists in a smart contract's bytecode.
  *
- * The {@link callerHasWriteAccess} function is used to check if the caller has write access on the smart-contract's
+ * The {@link callerHasWriteAccess} function is used to check if the caller has write access on the smart contract's
  * data.
  *
  * The {@link generateEvent} function is used to generate an event in the blockchain
@@ -37,7 +37,7 @@
  *
  * You can see that your smart contract execution is stopped by looking at the events.
  *
- * @packageDocumentation
+ * @module
  *
  */
 
@@ -60,8 +60,7 @@ export function print(message: string): void {
 }
 
 /**
- * Calls a function of a smart contract deployed at a given address, with the
- * specified arguments and an optional amount of coins to be sent to the function.
+ * Calls a function of a smart contract deployed at a given address.
  *
  * @remarks
  * The serialization of arguments must be handled by the caller and the callee.
@@ -164,7 +163,7 @@ export function getBytecode(): StaticArray<u8> {
  * @returns The bytecode of the contract, serialized as a 'StaticArray<u8>'.
  *
  * @throws
- * - if the given address is not a valid smart-contract address.
+ * - if the given address is not a valid smart contract address.
  *
  */
 export function getBytecodeOf(address: Address): StaticArray<u8> {
@@ -172,7 +171,7 @@ export function getBytecodeOf(address: Address): StaticArray<u8> {
 }
 
 /**
- * Determine if the caller has write access to the data stored in the called smart-contract.
+ * Determine if the caller has write access to the data stored in the called smart contract.
  *
  * @remarks
  * This function returns true exclusively when a new smart contract is deployed using the
@@ -205,7 +204,7 @@ export function createSC(bytecode: StaticArray<u8>): Address {
 }
 
 /**
- * Checks if the given function exists in a smart-contract at the given address.
+ * Checks if the given function exists in a smart contract at the given address.
  *
  * @param address - The address of the contract to search in.
  * @param func - The name of the function to search.
@@ -213,7 +212,7 @@ export function createSC(bytecode: StaticArray<u8>): Address {
  * @returns true if the function exists, false otherwise.
  *
  * @throws
- * - if the given address is not a valid smart-contract address.
+ * - if the given address is not a valid smart contract address.
  *
  */
 export function functionExists(address: Address, func: string): bool {
@@ -458,7 +457,7 @@ export function isSignatureValid(
 }
 
 /**
- * Retrieves an Address object from the given public key.
+ * Retrieves an 'Address' object from the given public key.
  *
  * @param pubKey - Base58check encoded public key of the address
  *
