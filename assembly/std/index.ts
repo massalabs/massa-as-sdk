@@ -330,7 +330,6 @@ export function getOpKeys(): Array<StaticArray<u8>> {
 
 /**
  * Retrieves all the keys from the operation datastore.
- * It allows to filter the keys by an optional prefix.
  *
  * @param prefix - the serialized prefix to filter the keys (optional)
  *
@@ -346,7 +345,6 @@ export function getKeys(
 
 /**
  * Retrieves all the keys from the operation datastore from a remote address.
- * It allows to filter the keys by an optional prefix.
  *
  * @param address - the address in the datastore
  * @param prefix - the prefix to filter the keys (optional)
