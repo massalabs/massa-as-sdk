@@ -603,10 +603,10 @@ export function currentThread(): u8 {
 
 /**
  * Constructs a pretty formatted event with given key and arguments.
- * It is useful to generate events with array formatted data.
  *
  * @remarks
- * The createEvent is meant to be used with the {@link generateEvent} function.
+ * The result is meant to be used with the {@link generateEvent} function.
+ * It is useful to generate events from an array.
  *
  * @param key - the string event key.
  *
