@@ -224,7 +224,7 @@ export function functionExists(address: Address, func: string): bool {
 /**
  * Generates a string event that is then emitted by the blockchain and can be listened off-chain.
  *
- * @see [massa smart-contracts exemples](https://github.com/massalabs/massa-sc-examples) to see how to listen
+ * @see [massa smart-contracts examples](https://github.com/massalabs/massa-sc-examples) to see how to listen
  * such events in a web3 application.
  *
  * @param event - The string event to emit.
@@ -310,7 +310,7 @@ export function hasOpKey(key: StaticArray<u8>): bool {
 }
 
 /**
- * This function retreives the data associated with the given key from the operation datastore.
+ * This function retrieves the data associated with the given key from the operation datastore.
  *
  * @param key - the serialized key to look for in the datastore.
  *
@@ -325,7 +325,7 @@ export function getOpData(key: StaticArray<u8>): StaticArray<u8> {
 }
 
 /**
- * This function retreives all the keys from the operation datastore.
+ * This function retrieves all the keys from the operation datastore.
  *
  * @returns - a list of serialized keys (e.g. a list of byte array)
  *
@@ -336,8 +336,8 @@ export function getOpKeys(): Array<StaticArray<u8>> {
 }
 
 /**
- * This function retreives all the keys from the operation datastore.
- * It alows to filter the keys by an optionnal prefix.
+ * This function retrieves all the keys from the operation datastore.
+ * It allows to filter the keys by an optional prefix.
  *
  * @param prefix - the serialized prefix to filter the keys (optional)
  *
@@ -352,8 +352,8 @@ export function getKeys(
 }
 
 /**
- * This function retreives all the keys from the operation datastore from a remote address.
- * It alows to filter the keys by an optionnal prefix.
+ * This function retrieves all the keys from the operation datastore from a remote address.
+ * It allows to filter the keys by an optional prefix.
  *
  * @param address - the address in the datastore
  * @param prefix - the prefix to filter the keys (optional)
@@ -586,7 +586,7 @@ export function fileToByteArray(
 }
 
 /**
- * This function retreives the current period of the network.
+ * This function retrieves the current period of the network.
  *
  * @returns the current period as u64.
  *
@@ -596,7 +596,7 @@ export function currentPeriod(): u64 {
 }
 
 /**
- * This function retreives the current thread of the network.
+ * This function retrieves the current thread of the network.
  *
  * @returns the current thread as u8.
  *
@@ -606,8 +606,8 @@ export function currentThread(): u8 {
 }
 
 /**
- * This function constructs a pretty formated event with given key and arguments.
- * It is usefull to generate events with array formatted data.
+ * This function constructs a pretty formatted event with given key and arguments.
+ * It is useful to generate events with array formatted data.
  *
  * @remarks
  * The generated event is meant to be used with the {@link generateEvent} function.
