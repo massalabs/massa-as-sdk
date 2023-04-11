@@ -565,10 +565,10 @@ export function sendMessage(
 }
 
 /**
- * Convert given file content to byteArray.
+ * Convert the given file content to byteArray.
  *
  * @remarks
- * This function shall NEVER be called, it is dynamically replaced using the byteArray converter.
+ * This function is dynamically replaced using the byteArray converter.
  * @see [as-transformer](https://github.com/massalabs/as/tree/main/packages/as-transformer#file2bytearray)
  *
  * @param filePath - the file path to convert
