@@ -265,7 +265,7 @@ export function transferCoinsOf(from: Address, to: Address, amount: u64): void {
 }
 
 /**
- * Gets the balance of the current address.
+ * Returns the balance of the current address.
  *
  * @returns - value in the smallest unit.
  *
@@ -275,7 +275,7 @@ export function balance(): u64 {
 }
 
 /**
- * Gets the balance of the specified address.
+ * Returns the balance of the specified address.
  *
  * @param address - The address for which the balance is retrieved.
  *
