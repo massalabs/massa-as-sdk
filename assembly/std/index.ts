@@ -243,7 +243,7 @@ export function transferCoins(to: Address, amount: u64): void {
 }
 
 /**
- * Transfers coins 'from' a given address 'to' another given address.
+ * Transfers coins 'from' an address 'to' another address.
  *
  * @remarks
  * The transfer is done only after approval.
