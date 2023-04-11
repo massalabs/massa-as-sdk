@@ -299,6 +299,44 @@ export default function createMockedABI(
         }
       },
 
+      assembly_script_append_data(keyPtr, valuePtr) {
+        const address = contractAddress;
+        const key = ptrToUint8ArrayString(keyPtr);
+        const newValue = byteArrToUTF8String(getArrayBuffer(valuePtr));
+
+        if (!ledger.has(address)) {
+          throw new Error('address not found');
+        }
+
+        const addressStorage = ledger.get(address).storage;
+
+        if (addressStorage.has(key)) {
+          const oldValue = byteArrToUTF8String(addressStorage.get(key));
+          addressStorage.set(key, stringToByteArray(oldValue + newValue));
+        } else {
+          throw new Error('key not found');
+        }
+      },
+
+      assembly_script_append_data_for(addressPtr, keyPtr, valuePtr) {
+        const address = ptrToString(addressPtr);
+        const key = ptrToUint8ArrayString(keyPtr);
+        const newValue = byteArrToUTF8String(getArrayBuffer(valuePtr));
+
+        if (!ledger.has(address)) {
+          throw new Error('address not found');
+        }
+
+        const addressStorage = ledger.get(address).storage;
+
+        if (addressStorage.has(key)) {
+          const oldValue = byteArrToUTF8String(addressStorage.get(key));
+          addressStorage.set(key, stringToByteArray(oldValue + newValue));
+        } else {
+          throw new Error('key not found');
+        }
+      },
+
       assembly_script_get_call_stack() {
         return newString('[ ' + callStack + ' ]');
       },
