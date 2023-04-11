@@ -9,14 +9,14 @@
  * smart-contracts by specifying the function name and either the other smart-contract
  * address or its bytecode.
  *
- * The {@link sendMessage} function is similar to 'call' functions but it is used to call functions with cron jobs
+ * The {@link sendMessage} function is similar to 'call' functions but it is used to schedule a call
  * as it is part of the new autonomous smart-contracts features.
  *
  * The {@link createSC}, {@link getBytecode} and {@link getBytecodeOf} functions are used to create smart-contracts
  * and manipulate them by their bytecode.
  *
  * The {@link transferCoins}, {@link transferCoinsOf}, {@link balance} and {@link balanceOf} functions are used to
- * transfer SCE coins between contracts.
+ * manage the transfer and retrieval of coins between contracts.
  *
  * The {@link functionExists} function is used to check if a function exists in a smart-contract's bytecode.
  *
@@ -28,7 +28,7 @@
  *
  * The {@link hasOpKey}, {@link getOpData}, {@link getKeys}, {@link getOpKeys},
  * {@link getKeysOf} and {@link derKeys} functions are used to manipulate
- * the interact with the Op datastore which is used as a key-store for operations
+ * the interact with the operation datastore which is used as a key-store for operations
  * and pass much larger data sets between operations.
  *
  * @privateRemarks
@@ -60,8 +60,8 @@ export function print(message: string): void {
 }
 
 /**
- * Calls a function of a smart-contract deployed at a given address, with
- * the specified arguments and optional coins to be sent to the function.
+ * Calls a function of a smart contract deployed at a given address, with the
+ * specified arguments and an optional amount of coins to be sent to the function.
  *
  * @remarks
  * The serialization of arguments must be handled by the caller and the callee.
@@ -595,7 +595,7 @@ export function currentPeriod(): u64 {
 }
 
 /**
- * Retrieves the current thread of the network.
+ * Retrieves the current thread of the execution context.
  *
  * @returns the current thread as u8.
  *
