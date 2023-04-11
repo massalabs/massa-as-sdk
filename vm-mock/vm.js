@@ -279,6 +279,22 @@ export default function createMockedABI(
           const addressStorage = ledger.get(contractAddress).storage;
           if (addressStorage.has(k)) {
             addressStorage.delete(k);
+          } else {
+            console.log('key not found');
+          }
+        }
+      },
+
+      assembly_script_delete_data_for(addressPtr, keyPtr) {
+        const address = ptrToString(addressPtr);
+        const key = ptrToUint8ArrayString(keyPtr);
+
+        if (ledger.has(address)) {
+          const addressStorage = ledger.get(address).storage;
+          if (addressStorage.has(key)) {
+            addressStorage.delete(key);
+          } else {
+            console.log('key not found');
           }
         }
       },
