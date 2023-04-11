@@ -389,20 +389,25 @@ function getNumberOfKeys(keysSer: StaticArray<u8>): u32 {
  *
  * @returns The deserialized keys.
  *
+ * @remarks
+ * 'keysSer' is a encoded array of keys. Each elements are encoded as follows:
  * ```text
- * Format of keysSer:
- *
- *|---------------|----------|---------------|-----------------------------------------|
- *| Field         | Type     | Size in Bytes | Description                             |
- *|---------------|----------|---------------|-----------------------------------------|
- *| L             | u32      | 4             | Total number of keys in the sequence.   |
- *| V1_L          | u8       | 1             | Length of data for key 1.               |
- *| V1 data       | u8[V1_L] | Variable      | Data for key 1.                         |
- *| V2_L          | u8       | 1             | Length of data for key 2.               |
- *| V2 data       | u8[V2_L] | Variable      | Data for key 2.                         |
- *| ...           |          |               | Data for additional keys (if any).      |
- *|---------------|----------|---------------|-----------------------------------------|
+ *|---------------|-----------|---------------|-----------------------------------------|
+ *| Field         | Type      | Size in Bytes | Description                             |
+ *|---------------|-----------|---------------|-----------------------------------------|
+ *| L             | u32       | 4             | Total number of keys in the sequence.   |
+ *| Key1_L        | u8        | 1             | Length of the Key number 1.             |
+ *| Key1          | u8[Key1_L]| Variable      | The Key number 1.                       |
+ *| Key2_L        | u8        | 1             | Length of the Key number 2.             |
+ *| Key2          | u8[Key2_L]| Variable      | The Key number 2.                       |
+ *| ...           |           |               | Data for additional keys (if any).      |
+ *|---------------|-----------|---------------|-----------------------------------------|
  * ```
+ * Then it returns an array of keys:
+ * ```text
+ * keys = [Key1, Key2, ...]
+ * ```
+ *
  */
 export function derKeys(keysSer: StaticArray<u8>): Array<StaticArray<u8>> {
   if (keysSer.length == 0) return [];
