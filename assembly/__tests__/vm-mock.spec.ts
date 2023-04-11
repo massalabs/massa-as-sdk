@@ -8,7 +8,9 @@ import {
   validateAddress,
 } from '../std';
 import { changeCallStack, resetStorage } from '../vm-mock/storage';
+import { mockScCall } from '../vm-mock/env';
 import { Args, bytesToString, stringToBytes } from '@massalabs/as-types';
+import { localCall, balance } from '../std/index';
 
 const testAddress = new Address(
   'AU12E6N5BFAdC2wyiBV6VJjqkWhpz1kLVp2XpbRdSnL1mKjCWT6oR',
@@ -134,5 +136,20 @@ describe('Testing mocked Storage and CallStack', () => {
 
     const result2 = validateAddress(badAddress.toString());
     expect(result2).toBe(false);
+  });
+});
+
+describe('Testing vm mock functions', () => {
+  test('Testing assembly script local call : succeed', () => {
+    const at = new Address(
+      'AS12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT',
+    );
+
+    const functionName = 'test';
+    const arg = new Args();
+    mockScCall(at.serialize());
+    const output = new Address();
+    output.deserialize(localCall(at, functionName, arg), 0);
+    expect(output).toBe(at);
   });
 });
