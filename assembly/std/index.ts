@@ -476,7 +476,7 @@ export function publicKeyToAddress(pubKey: string): Address {
 }
 
 /**
- * Generates a pseudo-random integer.
+ * Generates an unsafe random integer.
  *
  * @remarks
  * This function is unsafe because the random draws are predictable.
