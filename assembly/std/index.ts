@@ -231,7 +231,7 @@ export function generateEvent(event: string): void {
 }
 
 /**
- * Transfers SCE coins from the current address to given address.
+ * Transfers coins from the current address 'to' given address.
  *
  * @param to - the address to send coins to.
  * @param amount - value in the smallest unit.
@@ -246,7 +246,7 @@ export function transferCoins(to: Address, amount: u64): void {
 }
 
 /**
- * Transfers SCE coins 'from' a given address 'to' another given address.
+ * Transfers coins 'from' a given address 'to' another given address.
  *
  * @remarks
  * The transfer is done only after approval.
