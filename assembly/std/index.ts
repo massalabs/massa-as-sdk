@@ -280,7 +280,7 @@ export function balance(): u64 {
 /**
  * Gets the balance of the specified address.
  *
- * @param address - the address on which the balance is checked.
+ * @param address - The address for which the balance is retrieved.
  *
  * @returns - value in the smallest unit.
  *
