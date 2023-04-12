@@ -63,12 +63,12 @@ function resetLedger() {
   ledger.set(callerAddress, {
     storage: new Map(),
     contract: '',
-    balance: 100000,
+    balance: BigInt(100000),
   });
   ledger.set(contractAddress, {
     storage: new Map(),
     contract: '',
-    balance: 100000,
+    balance: BigInt(100000),
   });
 }
 
@@ -499,10 +499,11 @@ export default function createMockedABI(
           ledger.set(address, {
             storage: new Map(),
             contract: '',
-            balance: 0,
+            balance: BigInt(0),
           });
         }
-        ledger.get(address).balance += Number(_coinsAmount);
+        ledger.get(callerAddress).balance -= BigInt(_coinsAmount);
+        ledger.get(address).balance += BigInt(_coinsAmount);
       },
 
       assembly_script_transfer_coins_for(
@@ -522,11 +523,15 @@ export default function createMockedABI(
           ledger.set(addressTo, {
             storage: new Map(),
             contract: '',
-            balance: 0,
+            balance: BigInt(0),
           });
         }
-        ledger.get(addressFrom).balance -= Number(_coinsAmount);
-        ledger.get(addressTo).balance += Number(_coinsAmount);
+        try {
+          ledger.get(addressFrom).balance -= BigInt(_coinsAmount);
+          ledger.get(addressTo).balance += BigInt(_coinsAmount);
+        } catch (error) {
+          console.log(error);
+        }
       },
 
       assembly_script_get_balance() {
