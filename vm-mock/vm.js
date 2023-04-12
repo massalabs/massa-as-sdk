@@ -482,7 +482,7 @@ export default function createMockedABI(
       },
 
       assembly_script_address_from_public_key(publicKeyPtr) {
-        return "AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq";
+        return newString("AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq");
       },
 
       assembly_script_get_op_data(kPtr) {
