@@ -9,8 +9,8 @@ import {
 } from '../std';
 import { changeCallStack, resetStorage } from '../vm-mock/storage';
 import { mockScCall } from '../vm-mock/env';
+import { localCall } from '../std/index';
 import { Args, bytesToString, stringToBytes } from '@massalabs/as-types';
-import { localCall, balance } from '../std/index';
 
 const testAddress = new Address(
   'AU12E6N5BFAdC2wyiBV6VJjqkWhpz1kLVp2XpbRdSnL1mKjCWT6oR',
@@ -140,7 +140,7 @@ describe('Testing mocked Storage and CallStack', () => {
 });
 
 describe('Testing vm mock functions', () => {
-  test('Testing assembly script local call : succeed', () => {
+  test('Testing assembly script local call', () => {
     const at = new Address(
       'AS12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT',
     );

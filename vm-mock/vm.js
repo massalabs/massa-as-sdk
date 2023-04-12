@@ -622,6 +622,15 @@ export default function createMockedABI(
           'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq',
         );
       },
+
+      assembly_script_local_call(_address, method, _param) {
+        if (scCallMockStack.length) {
+          return newArrayBuffer(scCallMockStack.shift());
+        }
+        throw new Error(
+          `No mock defined for sc call on "${ptrToString(method)}".`,
+        );
+      },
     },
   };
 
