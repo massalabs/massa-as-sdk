@@ -193,6 +193,14 @@ export default function createMockedABI(
     massa: {
       memory,
 
+      assembly_script_add_address_to_ledger(addressPtr) {
+        const address = ptrToString(addressPtr);
+        ledger.set(address, {
+          storage: new Map(),
+          contract: '',
+        });
+      },
+
       assembly_script_set_data(kPtr, vPtr) {
         const k = ptrToUint8ArrayString(kPtr);
         const v = getArrayBuffer(vPtr);
@@ -442,6 +450,48 @@ export default function createMockedABI(
         console.log(
           `sendMessage: function ${calledFunction} will be called in ${address}`,
         );
+      },
+
+      assembly_script_get_current_period() {
+        return BigInt(0);
+      },
+
+      assembly_script_get_current_thread() {
+        return 1;
+      },
+
+      assembly_script_set_bytecode(bytecodePtr) {
+        const bytecode = getArrayBuffer(bytecodePtr);
+
+        const addressLedger = ledger.get(contractAddress);
+        addressLedger.contract = bytecode;
+      },
+
+      assembly_script_set_bytecode_for(aPtr, bytecodePtr) {
+        const a = ptrToString(aPtr);
+        const bytecode = getArrayBuffer(bytecodePtr);
+
+        if (!ledger.has(a)) {
+          throw new Error(`No address ${a} found in ledger.`);
+        }
+
+        const addressLedger = ledger.get(a);
+        addressLedger.contract = bytecode;
+      },
+
+      assembly_script_get_bytecode() {
+        const addressLedger = ledger.get(contractAddress);
+        return newArrayBuffer(addressLedger.contract);
+      },
+
+      assembly_script_get_bytecode_for(aPtr) {
+        const a = ptrToString(aPtr);
+        if (!ledger.has(a)) {
+          throw new Error(`No address ${a} found in ledger.`);
+        }
+
+        const addressLedger = ledger.get(a);
+        return newArrayBuffer(addressLedger.contract);
       },
     },
   };
