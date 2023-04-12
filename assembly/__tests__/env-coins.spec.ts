@@ -62,4 +62,9 @@ describe('Testing env coins related functions', () => {
     // The balance of the current contract is 100000
     expect(env.balance()).toBe(100000);
   });
+
+  test('Testing callCoins (assembly_script_get_call_coins)', () => {
+    // We don't have a way to set the call coins yet in the mock
+    expect(env.callCoins()).toBe(0);
+  });
 });
