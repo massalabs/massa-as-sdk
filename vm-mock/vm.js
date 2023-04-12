@@ -444,6 +444,26 @@ export default function createMockedABI(
         );
       },
     },
+
+    // assembly_script_get_current_period
+    assembly_script_get_current_period() {
+      return BigInt(0);
+    },
+
+    // assembly_script_get_current_thread
+    assembly_script_get_current_thread() {
+      return BigInt(0);
+    },
+
+    // assembly_script_set_bytecode
+    assembly_script_set_bytecode() {
+      return;
+    },
+
+    // assembly_script_set_bytecode_for
+    assembly_script_set_bytecode_for() {
+      return;
+    },
   };
 
   let instance = instantiate(binary, createImports(myImports));
