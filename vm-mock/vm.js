@@ -296,6 +296,8 @@ export default function createMockedABI(
           } else {
             console.log('key not found');
           }
+        } else {
+          console.log('address not found');
         }
       },
 
@@ -305,7 +307,7 @@ export default function createMockedABI(
         const newValue = byteArrToUTF8String(getArrayBuffer(valuePtr));
 
         if (!ledger.has(address)) {
-          throw new Error('address not found');
+          console.log('address not found');
         }
 
         const addressStorage = ledger.get(address).storage;
@@ -314,7 +316,7 @@ export default function createMockedABI(
           const oldValue = byteArrToUTF8String(addressStorage.get(key));
           addressStorage.set(key, stringToByteArray(oldValue + newValue));
         } else {
-          throw new Error('key not found');
+          console.log('key not found');
         }
       },
 
@@ -324,7 +326,7 @@ export default function createMockedABI(
         const newValue = byteArrToUTF8String(getArrayBuffer(valuePtr));
 
         if (!ledger.has(address)) {
-          throw new Error('address not found');
+          console.log('address not found');
         }
 
         const addressStorage = ledger.get(address).storage;
@@ -333,7 +335,7 @@ export default function createMockedABI(
           const oldValue = byteArrToUTF8String(addressStorage.get(key));
           addressStorage.set(key, stringToByteArray(oldValue + newValue));
         } else {
-          throw new Error('key not found');
+          console.log('key not found');
         }
       },
 
