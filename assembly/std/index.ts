@@ -68,7 +68,7 @@ export function print(message: string): void {
  * @param at - The address of the contract where the function will be executed.
  * @param functionName - The name of the function to be called in the contract.
  * @param args - The arguments of the function being called (type: Args).
- * @param coins - An optional amount of coins to send with the function call if it is a payable function.
+ * @param coins - The amount of coins to pass if it is a payable function (minimum value is 0).
  *
  * @returns The return value of the executed function, serialized as a 'StaticArray<u8>'.
  *
@@ -81,7 +81,7 @@ export function call(
   at: Address,
   functionName: string,
   args: Args,
-  coins: u64 = 0,
+  coins: u64,
 ): StaticArray<u8> {
   return env.call(at.toString(), functionName, args.serialize(), coins);
 }
