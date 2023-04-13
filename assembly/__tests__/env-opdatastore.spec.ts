@@ -4,6 +4,14 @@ import { changeCallStack, resetStorage } from '../vm-mock/storage';
 import { Args, bytesToString, stringToBytes } from '@massalabs/as-types';
 
 describe('Testing mocked Operation Datastore', () => {
+  beforeAll(() => {
+    resetStorage();
+  });
+
+  afterEach(() => {
+    resetStorage();
+  });
+
   test('hasOpKey - key not exists', () => {
     expect(env.hasOpKey(stringToBytes('key1'))).toBeNull();
   });
@@ -11,7 +19,6 @@ describe('Testing mocked Operation Datastore', () => {
   test('getOpKey - key exists', () => {
     env.set(stringToBytes('key1'), stringToBytes('value1'));
     expect(env.hasOpKey(stringToBytes('key1'))).not.toBeNull();
-    resetStorage();
   });
 
   test('getOpData - key not exists', () => {
@@ -21,7 +28,6 @@ describe('Testing mocked Operation Datastore', () => {
   test('getOpData - key exists', () => {
     env.set(stringToBytes('key1'), stringToBytes('value1'));
     expect(env.getOpData(stringToBytes('key1'))).not.toBeNull();
-    resetStorage();
   });
 
   test('getOpKeys - no keys', () => {
@@ -35,7 +41,6 @@ describe('Testing mocked Operation Datastore', () => {
     env.set(stringToBytes('key3'), stringToBytes('value3'));
 
     expect(env.getOpKeys()).not.toBeNull();
-    resetStorage();
   });
 
   test('getOpKeys - expected specific keys ', () => {
@@ -47,6 +52,5 @@ describe('Testing mocked Operation Datastore', () => {
       51,
     ];
     expect(env.getOpKeys()).toStrictEqual(expected);
-    resetStorage();
   });
 });
