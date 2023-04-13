@@ -18,7 +18,7 @@ beforeEach(() => {
 });
 
 describe('Testing env coins related functions', () => {
-  test('Testing transferCoins (assembly_script_transfer_coins)', () => {
+  it('transferCoins', () => {
     const amount: u64 = 100;
     const receiverCurrentBalance = env.balanceOf(testAddress.toString());
     // given
@@ -29,7 +29,7 @@ describe('Testing env coins related functions', () => {
     expect(env.balanceOf(testAddress.toString())).toBe(amount);
   });
 
-  test('Testing transferCoinsOf (assembly_script_transfer_coins_for)', () => {
+  it('transferCoins of another address', () => {
     const amount: u64 = 100;
     env.transferCoins(testAddress.toString(), amount);
     const emitterCurrentBalance = env.balanceOf(testAddress.toString());
@@ -48,7 +48,7 @@ describe('Testing env coins related functions', () => {
     expect(env.balanceOf(testAddress2.toString())).toBe(amount);
   });
 
-  test('Testing balanceOf (assembly_script_balance_of)', () => {
+  it('get the balance of an address', () => {
     const amount: u64 = 100;
     // given
     expect(env.balanceOf(testAddress.toString())).toBe(0);
@@ -58,12 +58,12 @@ describe('Testing env coins related functions', () => {
     expect(env.balanceOf(testAddress.toString())).toBe(amount);
   });
 
-  test('Testing balance (assembly_script_balance)', () => {
+  it('get the balance of the current address', () => {
     // The balance of the current contract is 100000
     expect(env.balance()).toBe(100000);
   });
 
-  test('Testing callCoins (assembly_script_get_call_coins)', () => {
+  it('callCoins', () => {
     // We don't have a way to set the call coins yet in the mock
     expect(env.callCoins()).toBe(0);
   });
