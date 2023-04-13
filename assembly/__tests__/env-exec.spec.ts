@@ -9,32 +9,32 @@ const testAddress = new Address(
 );
 
 describe('Testing env coins related functions', () => {
-  test('Testing localExecution (assembly_script_local_execution)', () => {
+  test('localExecution (assembly_script_local_execution)', () => {
     expect(
       env.localExecution(new StaticArray(0), 'myFunction', new StaticArray(0)),
     ).toBeTruthy();
   });
 
-  test('Testing getBytecodeOf (assembly_script_get_bytecode_for)', () => {
+  test('getBytecodeOf (assembly_script_get_bytecode_for)', () => {
     expect(env.getBytecodeOf(testAddress.toString())).toBeTruthy();
   });
 
-  test('Testing functionExists (assembly_script_function_exists)', () => {
+  test('functionExists (assembly_script_function_exists)', () => {
     expect(env.functionExists(testAddress.toString(), 'myFunction')).toBe(true);
   });
 
-  test('Testing remainingGas (assembly_script_get_remaining_gas)', () => {
+  test('remainingGas (assembly_script_get_remaining_gas)', () => {
     expect(env.remainingGas()).toBe(1000000000000000000);
   });
 
-  test('Testing ownedAddresses (assembly_script_get_owned_addresses)', () => {
+  test('ownedAddresses (assembly_script_get_owned_addresses)', () => {
     const callStack = Context.addressStack();
     expect(env.ownedAddresses()).toBe(
       `[ ${callStack[0].toString()} , ${callStack[1].toString()} ]`,
     );
   });
 
-  test('Testing sendMessage (assembly_script_send_message)', () => {
+  test('sendMessage (assembly_script_send_message)', () => {
     const callStack = Context.addressStack();
 
     env.sendMessage(
