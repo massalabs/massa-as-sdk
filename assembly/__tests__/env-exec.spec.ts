@@ -4,37 +4,39 @@
 import { env } from '../env';
 import { Address, Context } from '../std';
 
-const testAddress = new Address(
+const smartContractTestAddress = new Address(
   'AU12E6N5BFAdC2wyiBV6VJjqkWhpz1kLVp2XpbRdSnL1mKjCWT6oR',
 );
 
 describe('Testing env coins related functions', () => {
-  test('localExecution (assembly_script_local_execution)', () => {
+  test('localExecution', () => {
     expect(
       env.localExecution(new StaticArray(0), 'myFunction', new StaticArray(0)),
     ).toBeTruthy();
   });
 
-  test('getBytecodeOf (assembly_script_get_bytecode_for)', () => {
-    expect(env.getBytecodeOf(testAddress.toString())).toBeTruthy();
+  test('getBytecodeOf', () => {
+    expect(env.getBytecodeOf(smartContractTestAddress.toString())).toBeTruthy();
   });
 
-  test('functionExists (assembly_script_function_exists)', () => {
-    expect(env.functionExists(testAddress.toString(), 'myFunction')).toBe(true);
+  test('if functionExists at a specific address', () => {
+    expect(
+      env.functionExists(smartContractTestAddress.toString(), 'myFunction'),
+    ).toBe(true);
   });
 
-  test('remainingGas (assembly_script_get_remaining_gas)', () => {
+  test('remainingGas', () => {
     expect(env.remainingGas()).toBe(1000000000000000000);
   });
 
-  test('ownedAddresses (assembly_script_get_owned_addresses)', () => {
+  test('ownedAddresses', () => {
     const callStack = Context.addressStack();
     expect(env.ownedAddresses()).toBe(
       `[ ${callStack[0].toString()} , ${callStack[1].toString()} ]`,
     );
   });
 
-  test('sendMessage (assembly_script_send_message)', () => {
+  test('sendMessage', () => {
     const callStack = Context.addressStack();
 
     env.sendMessage(
