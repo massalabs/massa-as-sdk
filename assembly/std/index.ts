@@ -232,6 +232,7 @@ export function generateEvent(event: string): void {
  *
  * @param to - the address to send coins to.
  * @param amount - value in the smallest unit.
+ * @see [massa units standard](https://github.com/massalabs/massa-standards/blob/main/units.md)
  *
  * @throws
  * - if the given address is not a valid address.
@@ -252,6 +253,7 @@ export function transferCoins(to: Address, amount: u64): void {
  * @param from - the sender address.
  * @param to - the address to send coins to.
  * @param amount - value in the smallest unit.
+ * @see [massa units standard](https://github.com/massalabs/massa-standards/blob/main/units.md)
  *
  * @throws
  * - if the sender's or the receiver address is not a valid address.
