@@ -74,7 +74,7 @@ export namespace env {
   ): StaticArray<u8>;
 
   @external("massa", "assembly_script_delete_data")
-  export declare function del(key: StaticArray<u8>): StaticArray<u8>;
+  export declare function del(key: StaticArray<u8>): void;
 
   @external("massa", "assembly_script_delete_data_for")
   export declare function deleteOf(address: string, key: StaticArray<u8>): void;

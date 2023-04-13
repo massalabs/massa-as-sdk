@@ -193,6 +193,14 @@ export default function createMockedABI(
     massa: {
       memory,
 
+      assembly_script_add_address_to_ledger(addressPtr) {
+        const address = ptrToString(addressPtr);
+        ledger.set(address, {
+          storage: new Map(),
+          contract: '',
+        });
+      },
+
       assembly_script_set_data(kPtr, vPtr) {
         const k = ptrToUint8ArrayString(kPtr);
         const v = getArrayBuffer(vPtr);
@@ -277,11 +285,10 @@ export default function createMockedABI(
         const k = ptrToUint8ArrayString(kPtr);
         if (ledger.has(contractAddress)) {
           const addressStorage = ledger.get(contractAddress).storage;
-          if (addressStorage.has(k)) {
-            addressStorage.delete(k);
-          } else {
-            console.log('key not found');
+          if (!addressStorage.has(k)) {
+            throw new Error('key not found');
           }
+          addressStorage.delete(k);
         }
       },
 
@@ -289,16 +296,17 @@ export default function createMockedABI(
         const address = ptrToString(addressPtr);
         const key = ptrToUint8ArrayString(keyPtr);
 
-        if (ledger.has(address)) {
-          const addressStorage = ledger.get(address).storage;
-          if (addressStorage.has(key)) {
-            addressStorage.delete(key);
-          } else {
-            console.log('key not found');
-          }
-        } else {
-          console.log('address not found');
+        if (!ledger.has(address)) {
+          throw new Error('address not found');
         }
+
+        const addressStorage = ledger.get(address).storage;
+
+        if (!addressStorage.has(key)) {
+          throw new Error('key not found');
+        }
+
+        addressStorage.delete(key);
       },
 
       assembly_script_append_data(keyPtr, valuePtr) {
@@ -307,17 +315,17 @@ export default function createMockedABI(
         const newValue = byteArrToUTF8String(getArrayBuffer(valuePtr));
 
         if (!ledger.has(address)) {
-          console.log('address not found');
+          throw new Error('address not found');
         }
 
         const addressStorage = ledger.get(address).storage;
 
-        if (addressStorage.has(key)) {
-          const oldValue = byteArrToUTF8String(addressStorage.get(key));
-          addressStorage.set(key, stringToByteArray(oldValue + newValue));
-        } else {
-          console.log('key not found');
+        if (!addressStorage.has(key)) {
+          throw new Error('key not found');
         }
+
+        const oldValue = byteArrToUTF8String(addressStorage.get(key));
+        addressStorage.set(key, stringToByteArray(oldValue + newValue));
       },
 
       assembly_script_append_data_for(addressPtr, keyPtr, valuePtr) {
@@ -326,17 +334,17 @@ export default function createMockedABI(
         const newValue = byteArrToUTF8String(getArrayBuffer(valuePtr));
 
         if (!ledger.has(address)) {
-          console.log('address not found');
+          throw new Error('address not found');
         }
 
         const addressStorage = ledger.get(address).storage;
 
-        if (addressStorage.has(key)) {
-          const oldValue = byteArrToUTF8String(addressStorage.get(key));
-          addressStorage.set(key, stringToByteArray(oldValue + newValue));
-        } else {
-          console.log('key not found');
+        if (!addressStorage.has(key)) {
+          throw new Error('key not found');
         }
+
+        const oldValue = byteArrToUTF8String(addressStorage.get(key));
+        addressStorage.set(key, stringToByteArray(oldValue + newValue));
       },
 
       assembly_script_get_call_stack() {
