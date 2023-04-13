@@ -9,21 +9,21 @@ const testAddress = new Address(
 );
 
 describe('Testing env coins related functions', () => {
-  test('currentPeriod (assembly_script_get_current_period)', () => {
+  test('get the currentPeriod', () => {
     expect(env.currentPeriod()).toBe(0);
   });
 
-  test('currentThread (assembly_script_get_current_thread)', () => {
+  test('get the currentThread', () => {
     expect(env.currentThread()).toBe(1);
   });
 
-  test('setBytecode (assembly_script_set_bytecode)', () => {
+  test('setBytecode', () => {
     env.setBytecode(new StaticArray(0));
     const byteCode = env.getBytecode().toString();
     expect(byteCode).toBe('');
   });
 
-  test('setBytecodeFor (assembly_script_set_bytecode_for)', () => {
+  test('setBytecodeFor', () => {
     addAddressToLedger(testAddress.toString());
     env.setBytecodeOf(testAddress.toString(), new StaticArray(0));
     const byteCode = env.getBytecodeOf(testAddress.toString()).toString();
