@@ -246,7 +246,8 @@ export function transferCoins(to: Address, amount: u64): void {
  * Transfers coins 'from' an address 'to' another address.
  *
  * @remarks
- * The transfer is done only after approval.
+ * The transfer can only be done if the caller has write access to the sender's address.
+ * @see {@link callerHasWriteAccess}
  *
  * @param from - the sender address.
  * @param to - the address to send coins to.
