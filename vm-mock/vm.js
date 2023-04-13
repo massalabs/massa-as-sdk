@@ -411,10 +411,6 @@ export default function createMockedABI(
         return newArrayBuffer('');
       },
 
-      assembly_script_get_bytecode_for() {
-        return newArrayBuffer('');
-      },
-
       assembly_script_function_exists() {
         return true;
       },
