@@ -5,7 +5,7 @@ import { addAddressToLedger, resetStorage } from '../vm-mock';
 import { Address, Storage } from '../std';
 import { stringToBytes } from '@massalabs/as-types';
 
-const testAddress = new Address(
+const ownedAddress = new Address(
   'AU12E6N5BFAdC2wyiBV6VJjqkWhpz1kLVp2XpbRdSnL1mKjCWT6oR',
 );
 
@@ -30,13 +30,13 @@ describe('Testing env storage functions', () => {
     const key: string = 'test';
     const value: string = 'value';
     // given
-    addAddressToLedger(testAddress.toString());
-    Storage.setOf(testAddress, key, value);
-    expect(Storage.getOf(testAddress, key)).not.toBeNull();
+    addAddressToLedger(ownedAddress.toString());
+    Storage.setOf(ownedAddress, key, value);
+    expect(Storage.getOf(ownedAddress, key)).not.toBeNull();
     // when
-    env.deleteOf(testAddress.toString(), stringToBytes(key));
+    env.deleteOf(ownedAddress.toString(), stringToBytes(key));
     // then
-    expect(env.hasOf(testAddress.toString(), stringToBytes(key))).toBe(false);
+    expect(env.hasOf(ownedAddress.toString(), stringToBytes(key))).toBe(false);
   });
 
   it('appends a value to a specific key', () => {
@@ -57,15 +57,15 @@ describe('Testing env storage functions', () => {
     const value: string = 'hello';
     const appendValue: string = 'world';
     // given
-    Storage.setOf(testAddress, key, value);
-    expect(Storage.getOf(testAddress, key)).toBe(value);
+    Storage.setOf(ownedAddress, key, value);
+    expect(Storage.getOf(ownedAddress, key)).toBe(value);
     // when
     env.appendOf(
-      testAddress.toString(),
+      ownedAddress.toString(),
       stringToBytes(key),
       stringToBytes(appendValue),
     );
     // then
-    expect(Storage.getOf(testAddress, key)).toBe(value + appendValue);
+    expect(Storage.getOf(ownedAddress, key)).toBe(value + appendValue);
   });
 });
