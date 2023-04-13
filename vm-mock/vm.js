@@ -369,11 +369,10 @@ export default function createMockedABI(
         return newArrayBuffer(keys);
       },
 
-
       assembly_script_has_op_key(kPtr) {
         const k = ptrToUint8ArrayString(kPtr);
         const addressStorage = ledger.get(contractAddress).storage;
-        
+
         if (!addressStorage.has(k)) return newArrayBuffer();
 
         return newArrayBuffer(addressStorage.get(k));
@@ -390,20 +389,60 @@ export default function createMockedABI(
       assembly_script_get_op_data(kPtr) {
         const k = ptrToUint8ArrayString(kPtr);
         const addressStorage = ledger.get(contractAddress).storage;
-        
+
         if (!addressStorage.has(k)) return newArrayBuffer();
 
         return newArrayBuffer(addressStorage.get(k));
-      },
-
-      assembly_script_get_owned_addresses() {
-        return newString(`[ ${callerAddress} , ${contractAddress} ]`);
       },
 
       assembly_script_get_call_coins() {
         return BigInt(0);
       },
 
+      assembly_script_local_execution() {
+        return newArrayBuffer('');
+      },
+
+      assembly_script_get_bytecode_for() {
+        return newArrayBuffer('');
+      },
+
+      assembly_script_function_exists() {
+        return true;
+      },
+
+      assembly_script_get_remaining_gas() {
+        return BigInt(1000000000000000000);
+      },
+
+      assembly_script_get_owned_addresses() {
+        return newString(`[ ${callerAddress} , ${contractAddress} ]`);
+      },
+
+      assembly_script_send_message(
+        addressPtr,
+        handlerPtr,
+        validityStartPeriod,
+        validityStartThread,
+        validityEndPeriod,
+        validityEndThread,
+        maxGas,
+        rawFee,
+        coins,
+        dataPtr,
+        filterAddressPtr,
+        filterKeyPtr,
+      ) {
+        const address = ptrToString(addressPtr);
+        const calledFunction = ptrToString(handlerPtr);
+
+        if (!ledger.has(address)) {
+          throw new Error(`Address ${ptrToString(addressPtr)} does not exist.`);
+        }
+        console.log(
+          `sendMessage: function ${calledFunction} will be called in ${address}`,
+        );
+      },
     },
   };
 
