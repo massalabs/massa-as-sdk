@@ -461,7 +461,7 @@ export default function createMockedABI(
 
         return newArrayBuffer(addressStorage.get(k));
       },
-      
+
       assembly_script_local_call(_address, method, _param) {
         if (scCallMockStack.length) {
           return newArrayBuffer(scCallMockStack.shift());
