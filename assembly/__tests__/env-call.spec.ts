@@ -1,5 +1,6 @@
 import { Args } from '@massalabs/as-types';
-import { Address, localCall } from '../std';
+import { Address } from '../std';
+import { env } from '../env';
 import { mockScCall } from '../vm-mock/env';
 
 describe('Testing vm mock functions', () => {
@@ -15,7 +16,11 @@ describe('Testing vm mock functions', () => {
     // See mockScCall documentation for more details
     mockScCall(mockedCallReturnValue);
     // When
-    const result: StaticArray<u8> = localCall(at, functionName, arg);
+    const result: StaticArray<u8> = env.localCall(
+      at.toString(),
+      functionName,
+      arg.serialize(),
+    );
     // Then
     expect(result).toStrictEqual(mockedCallReturnValue);
   });
