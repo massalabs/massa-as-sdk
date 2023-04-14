@@ -14,14 +14,18 @@ const testAddress2 = new Address(
 );
 
 beforeEach(() => {
+  // We set the balance of the current contract to 100000 in the resetStorage
   resetStorage();
 });
 
 describe('Testing env coins related functions', () => {
   it('transferCoins', () => {
     const amount: u64 = 100;
+    // The sender is the current contract executing the transfer
+    const senderBalance = env.balance();
     const receiverCurrentBalance = env.balanceOf(testAddress.toString());
     // given
+    expect(senderBalance).toBe(100000);
     expect(receiverCurrentBalance).toBe(0);
     // when
     env.transferCoins(testAddress.toString(), amount);
@@ -31,10 +35,11 @@ describe('Testing env coins related functions', () => {
 
   it('transferCoins of another address', () => {
     const amount: u64 = 100;
+    // we first transfer coins to the emitter address
     env.transferCoins(testAddress.toString(), amount);
+
     const emitterCurrentBalance = env.balanceOf(testAddress.toString());
     const receiverCurrentBalance = env.balanceOf(testAddress2.toString());
-
     // given
     expect(emitterCurrentBalance).toBeGreaterThanOrEqual(amount);
     expect(receiverCurrentBalance).toBe(0);

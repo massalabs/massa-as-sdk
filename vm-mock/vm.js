@@ -502,6 +502,12 @@ export default function createMockedABI(
             balance: BigInt(0),
           });
         }
+        const callerBalance = ledger.get(callerAddress).balance;
+        if (callerBalance < BigInt(_coinsAmount)) {
+          throw new Error(
+            `Not enough balance to transfer ${_coinsAmount} coins.`,
+          );
+        }
         ledger.get(callerAddress).balance -= BigInt(_coinsAmount);
         ledger.get(address).balance += BigInt(_coinsAmount);
       },
@@ -519,6 +525,7 @@ export default function createMockedABI(
             `Address ${addressFrom} does not exist in the ledger.`,
           );
         }
+
         if (!ledger.has(addressTo)) {
           ledger.set(addressTo, {
             storage: new Map(),
@@ -526,12 +533,17 @@ export default function createMockedABI(
             balance: BigInt(0),
           });
         }
-        try {
-          ledger.get(addressFrom).balance -= BigInt(_coinsAmount);
-          ledger.get(addressTo).balance += BigInt(_coinsAmount);
-        } catch (error) {
-          console.log(error);
+
+        const addressFromBalance = ledger.get(addressFrom).balance;
+
+        if (addressFromBalance < BigInt(_coinsAmount)) {
+          throw new Error(
+            `Not enough balance to transfer ${_coinsAmount} coins.`,
+          );
         }
+
+        ledger.get(addressFrom).balance -= BigInt(_coinsAmount);
+        ledger.get(addressTo).balance += BigInt(_coinsAmount);
       },
 
       assembly_script_get_balance() {
