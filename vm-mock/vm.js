@@ -49,6 +49,7 @@ let callStack = callerAddress + ' , ' + contractAddress;
             "key2" : "value2"
         },
         "Contract" : "./pathOfTheAssemblyScriptContract",
+        "Balance" : "100000
     }
 }
 */
@@ -62,10 +63,12 @@ function resetLedger() {
   ledger.set(callerAddress, {
     storage: new Map(),
     contract: '',
+    balance: BigInt(100000),
   });
   ledger.set(contractAddress, {
     storage: new Map(),
     contract: '',
+    balance: BigInt(100000),
   });
 }
 
@@ -544,6 +547,70 @@ export default function createMockedABI(
 
         const addressLedger = ledger.get(a);
         return newArrayBuffer(addressLedger.contract);
+      },
+
+      assembly_script_transfer_coins(_addressPtr, _coinsAmount) {
+        const address = ptrToString(_addressPtr);
+        if (!ledger.has(address)) {
+          ledger.set(address, {
+            storage: new Map(),
+            contract: '',
+            balance: BigInt(0),
+          });
+        }
+        const callerBalance = ledger.get(callerAddress).balance;
+        if (callerBalance < BigInt(_coinsAmount)) {
+          throw new Error(
+            `Not enough balance to transfer ${_coinsAmount} coins.`,
+          );
+        }
+        ledger.get(callerAddress).balance -= BigInt(_coinsAmount);
+        ledger.get(address).balance += BigInt(_coinsAmount);
+      },
+
+      assembly_script_transfer_coins_for(
+        _addressFromPtr,
+        _addressToPtr,
+        _coinsAmount,
+      ) {
+        const addressFrom = ptrToString(_addressFromPtr);
+        const addressTo = ptrToString(_addressToPtr);
+
+        if (!ledger.has(addressFrom)) {
+          throw new Error(
+            `Address ${addressFrom} does not exist in the ledger.`,
+          );
+        }
+
+        if (!ledger.has(addressTo)) {
+          ledger.set(addressTo, {
+            storage: new Map(),
+            contract: '',
+            balance: BigInt(0),
+          });
+        }
+
+        const addressFromBalance = ledger.get(addressFrom).balance;
+
+        if (addressFromBalance < BigInt(_coinsAmount)) {
+          throw new Error(
+            `Not enough balance to transfer ${_coinsAmount} coins.`,
+          );
+        }
+
+        ledger.get(addressFrom).balance -= BigInt(_coinsAmount);
+        ledger.get(addressTo).balance += BigInt(_coinsAmount);
+      },
+
+      assembly_script_get_balance() {
+        return BigInt(ledger.get(contractAddress).balance);
+      },
+
+      assembly_script_get_balance_for(aPtr) {
+        const a = ptrToString(aPtr);
+        if (!ledger.has(a)) return BigInt(0);
+
+        return BigInt(ledger.get(a).balance);
       },
     },
   };
