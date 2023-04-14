@@ -414,11 +414,20 @@ export default function createMockedABI(
 
       assembly_script_validate_address(addressPtr) {
         const address = ptrToString(addressPtr);
+        const prefix = 'A';
+        const userOrSC = ['U', 'S'];
+        const minLength = 40;
+        const maxLength = 60;
 
-        return (
-          stringToByteArray(address).length === addressBytesLength &&
-          (address.startsWith('AU') || address.startsWith('AS'))
-        );
+        if (address.length < minLength && address.length > maxLength) {
+          return false;
+        }
+
+        if (address.startsWith(prefix) && userOrSC.includes(address[1])) {
+          return true;
+        }
+
+        return false;
       },
 
       assembly_script_print(aPtr) {
