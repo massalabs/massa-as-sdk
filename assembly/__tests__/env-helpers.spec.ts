@@ -29,4 +29,8 @@ describe('Testing env coins related functions', () => {
     const byteCode = env.getBytecodeOf(testAddress.toString()).toString();
     expect(byteCode).toBe('');
   });
+
+  test('getBytecodeOf', () => {
+    expect(env.getBytecodeOf(testAddress.toString())).toBeTruthy();
+  });
 });
