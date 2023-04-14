@@ -612,6 +612,16 @@ export default function createMockedABI(
 
         return BigInt(ledger.get(a).balance);
       },
+
+      assembly_script_signature_verify(digestPtr, signaturePtr, publicKeyPtr) {
+        return true;
+      },
+
+      assembly_script_address_from_public_key(publicKeyPtr) {
+        return newString(
+          'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq',
+        );
+      },
     },
   };
 
