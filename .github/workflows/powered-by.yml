@@ -1,8 +1,7 @@
 name: Generate Powered-By
 on:
   push:
-    branches:
-      - main
+
 
 jobs:
   generate-powered-by:
