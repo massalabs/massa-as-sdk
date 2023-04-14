@@ -398,7 +398,7 @@ export default function createMockedABI(
       },
 
       assembly_script_caller_has_write_access() {
-        return false;
+        return true;
       },
 
       isDeployingContract() {
