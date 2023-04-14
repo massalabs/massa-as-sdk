@@ -18,3 +18,15 @@
  */
 @external("massa", "assembly_script_mock_call")
 export declare function mockScCall(value: StaticArray<u8>): void;
+
+/**
+ * Add a new smart contract address to the ledger
+ *
+ * @remarks
+ * This function is used to add a new smart contract address to the ledger for test purpose.
+ * It's only used by the vm-mock.
+ *
+ * @param address - the address to add to the ledger
+ */
+@external("massa", "assembly_script_add_address_to_ledger")
+export declare function addAddressToLedger(address: string): void;
