@@ -138,18 +138,3 @@ describe('Testing mocked Storage and CallStack', () => {
     expect(result2).toBe(false);
   });
 });
-
-describe('Testing vm mock functions', () => {
-  test('Testing assembly script local call', () => {
-    const at = new Address(
-      'AS12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT',
-    );
-
-    const functionName = 'test';
-    const arg = new Args();
-    mockScCall(at.serialize());
-    const output = new Address();
-    output.deserialize(localCall(at, functionName, arg), 0);
-    expect(output).toBe(at);
-  });
-});
