@@ -462,15 +462,6 @@ export default function createMockedABI(
         return newArrayBuffer(addressStorage.get(k));
       },
 
-      assembly_script_local_call(_address, method, _param) {
-        if (scCallMockStack.length) {
-          return newArrayBuffer(scCallMockStack.shift());
-        }
-        throw new Error(
-          `No mock defined for sc call on "${ptrToString(method)}".`,
-        );
-      },
-
       assembly_script_get_call_coins() {
         return BigInt(0);
       },
