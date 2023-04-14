@@ -8,6 +8,8 @@ import {
   validateAddress,
 } from '../std';
 import { changeCallStack, resetStorage } from '../vm-mock/storage';
+import { mockScCall } from '../vm-mock/env';
+import { localCall } from '../std/index';
 import { Args, bytesToString, stringToBytes } from '@massalabs/as-types';
 
 const testAddress = new Address(

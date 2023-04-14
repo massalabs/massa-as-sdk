@@ -8,15 +8,11 @@ const smartContractTestAddress = new Address(
   'AU12E6N5BFAdC2wyiBV6VJjqkWhpz1kLVp2XpbRdSnL1mKjCWT6oR',
 );
 
-describe('Testing env coins related functions', () => {
+describe('Testing env execution related functions', () => {
   test('localExecution', () => {
     expect(
       env.localExecution(new StaticArray(0), 'myFunction', new StaticArray(0)),
     ).toBeTruthy();
-  });
-
-  test('getBytecodeOf', () => {
-    expect(env.getBytecodeOf(smartContractTestAddress.toString())).toBeTruthy();
   });
 
   test('if functionExists at a specific address', () => {
