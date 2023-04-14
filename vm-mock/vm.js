@@ -285,10 +285,66 @@ export default function createMockedABI(
         const k = ptrToUint8ArrayString(kPtr);
         if (ledger.has(contractAddress)) {
           const addressStorage = ledger.get(contractAddress).storage;
-          if (addressStorage.has(k)) {
-            addressStorage.delete(k);
+          if (!addressStorage.has(k)) {
+            throw new Error('key not found');
           }
+          addressStorage.delete(k);
         }
+      },
+
+      assembly_script_delete_data_for(addressPtr, keyPtr) {
+        const address = ptrToString(addressPtr);
+        const key = ptrToUint8ArrayString(keyPtr);
+
+        if (!ledger.has(address)) {
+          throw new Error('address not found');
+        }
+
+        const addressStorage = ledger.get(address).storage;
+
+        if (!addressStorage.has(key)) {
+          throw new Error('key not found');
+        }
+
+        addressStorage.delete(key);
+      },
+
+      assembly_script_append_data(keyPtr, valuePtr) {
+        const address = contractAddress;
+        const key = ptrToUint8ArrayString(keyPtr);
+        const newValue = byteArrToUTF8String(getArrayBuffer(valuePtr));
+
+        if (!ledger.has(address)) {
+          throw new Error('address not found');
+        }
+
+        const addressStorage = ledger.get(address).storage;
+
+        if (!addressStorage.has(key)) {
+          throw new Error('key not found');
+        }
+
+        const oldValue = byteArrToUTF8String(addressStorage.get(key));
+        addressStorage.set(key, stringToByteArray(oldValue + newValue));
+      },
+
+      assembly_script_append_data_for(addressPtr, keyPtr, valuePtr) {
+        const address = ptrToString(addressPtr);
+        const key = ptrToUint8ArrayString(keyPtr);
+        const newValue = byteArrToUTF8String(getArrayBuffer(valuePtr));
+
+        if (!ledger.has(address)) {
+          throw new Error('address not found');
+        }
+
+        const addressStorage = ledger.get(address).storage;
+
+        if (!addressStorage.has(key)) {
+          throw new Error('key not found');
+        }
+
+        const oldValue = byteArrToUTF8String(addressStorage.get(key));
+        addressStorage.set(key, stringToByteArray(oldValue + newValue));
       },
 
       assembly_script_get_call_stack() {
