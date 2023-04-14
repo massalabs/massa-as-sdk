@@ -1,3 +1,46 @@
+/**
+ * This module contains functions for working with Massa's blockchain,
+ * including making transactions, manipulating smart contracts and their bytecode,
+ * calling other smart contracts functions, and providing various utility functions.
+ *
+ * @remarks
+ *
+ * You can use the {@link call}, {@link localCall} and {@link localExecution} functions to call other
+ * smart contracts by specifying the function name and either the other smart contract
+ * address or its bytecode.
+ *
+ * The {@link sendMessage} function is similar to 'call' functions but it is used to schedule a call
+ * as it is part of the new autonomous smart contracts features.
+ *
+ * The {@link createSC}, {@link getBytecode} and {@link getBytecodeOf} functions are used to create smart contracts
+ * and manipulate them by their bytecode.
+ *
+ * The {@link transferCoins}, {@link transferCoinsOf}, {@link balance} and {@link balanceOf} functions are used to
+ * manage the transfer and retrieval of coins between contracts.
+ *
+ * The {@link functionExists} function is used to check if a function exists in a smart contract's bytecode.
+ *
+ * The {@link callerHasWriteAccess} function is used to check if the caller has write access on the smart contract's
+ * data.
+ *
+ * The {@link generateEvent} function is used to generate an event in the blockchain
+ * that can be fetched using [the massa-web3 module](https://github.com/massalabs/massa-web3).
+ *
+ * The {@link hasOpKey}, {@link getOpData}, {@link getKeys}, {@link getOpKeys},
+ * {@link getKeysOf} and {@link derKeys} functions are used to manipulate
+ * the interact with the operation datastore which is used as a key-store for operations
+ * and pass much larger data sets between operations.
+ *
+ * @privateRemarks
+ * It is not possible in AssemblyScript to catch thrown exceptions.
+ * All exceptions thrown by functions in this module will stop the execution of the smart contract.
+ *
+ * You can see that your smart contract execution is stopped by looking at the events.
+ *
+ * @module
+ *
+ */
+
 import { env } from '../env/index';
 import { Address } from './address';
 import * as Storage from './storage';
@@ -7,25 +50,32 @@ import { Args } from '@massalabs/as-types';
 export { Address, Storage, Context };
 
 /**
- * Prints in the node logs
+ * Logs a string message in the massa-node logs.
  *
- * @param message - Message string
+ * @param message - The string message to be logged in the node.
+ *
  */
 export function print(message: string): void {
   env.print(message);
 }
 
 /**
- * Calls a remote function located at given address.
+ * Calls a function of a smart contract deployed at a given address.
  *
- * Note: arguments serialization is to be handled by the caller and the callee.
+ * @remarks
+ * The serialization of arguments must be handled by the caller and the callee.
  *
- * @param at -
- * @param functionName -
- * @param args -
- * @param coins -
+ * @param at - The address of the contract where the function will be executed.
+ * @param functionName - The name of the function to be called in the contract.
+ * @param args - The arguments of the function being called (type: Args).
+ * @param coins - The amount of coins to pass if it is a payable function (minimum value is 0).
  *
- * @returns function returned value
+ * @returns The return value of the executed function, serialized as a 'StaticArray<u8>'.
+ *
+ * @throws
+ * - if the given address is not a valid address.
+ * - if the function doesn't exist in the contract to call.
+ *
  */
 export function call(
   at: Address,
@@ -37,15 +87,21 @@ export function call(
 }
 
 /**
- * Calls a remote function located at given address within the current context.
+ * Calls a function from a remote contract in the current context.
  *
- * Note: arguments serialization is to be handled by the caller and the callee.
+ * @remarks
+ * Arguments serialization is to be handled by the caller and the callee.
  *
- * @param at -
- * @param functionName -
- * @param args -
+ * @param at - The address of the contract from where the function is located.
+ * @param functionName - The name of the function to call in the current context.
+ * @param args - The arguments of the function we are calling.
  *
- * @returns function returned value
+ * @returns The return value of the executed function, serialized as a 'StaticArray<u8>'.
+ *
+ * @throws
+ * - if the given address is not a valid address.
+ * - if the function doesn't exist in the contract to call.
+ *
  */
 export function localCall(
   at: Address,
@@ -56,15 +112,22 @@ export function localCall(
 }
 
 /**
- * Executes a given bytecode within the current context.
+ * Calls a function from a contract's bytecode in the current context.
  *
- * Note: arguments serialization is to be handled by the caller and the callee.
+ * @remarks
+ * This can be useful for testing or debugging purposes,
+ * or for calling functions that are not meant to be called from outside the contract.
+ * Arguments serialization is to be handled by the caller and the callee.
  *
- * @param bytecode -
- * @param functionName -
- * @param args -
+ * @param bytecode - The bytecode of the contract containing the function to execute.
+ * @param functionName - The name of the function to call in that contract.
+ * @param args - The arguments of the function we are calling.
  *
- * @returns function returned value
+ * @returns The return value of the executed function, serialized as a 'StaticArray<u8>'.
+ *
+ * @throws
+ * - if the function doesn't exist in the bytecode
+ *
  */
 export function localExecution(
   bytecode: StaticArray<u8>,
@@ -75,27 +138,46 @@ export function localExecution(
 }
 
 /**
- * Get the bytecode of the current address
+ * Retrieves the bytecode of the contract that is currently being executed.
  *
- * @returns bytecode
+ * @remarks
+ * Bytecode is a low-level representation of a smart contract's code that can be executed by the blockchain.
+ *
+ * @returns The bytecode of the contract, serialized as a 'StaticArray<u8>'.
+ *
  */
 export function getBytecode(): StaticArray<u8> {
   return env.getBytecode();
 }
 
 /**
- * Get the bytecode of the current address
+ * Retrieves the bytecode of the remote contract at the given 'address'.
  *
- * @param address -
+ * @remarks
+ * Bytecode is a low-level representation of a smart contract's code that can be executed by the blockchain.
  *
- * @returns bytecode
+ * @param address - The address of the contract's bytecode to retrieve.
+ *
+ * @returns The bytecode of the contract, serialized as a 'StaticArray<u8>'.
+ *
+ * @throws
+ * - if the given address is not a valid smart contract address.
+ *
  */
 export function getBytecodeOf(address: Address): StaticArray<u8> {
   return env.getBytecodeOf(address.toString());
 }
 
 /**
- * Check if the SC caller has a write access on it
+ * Determine if the caller has write access to the data stored in the called smart contract.
+ *
+ * @remarks
+ * This function returns true exclusively when a new smart contract is deployed using the
+ * 'create_new_sc_address()' function.
+ * When calling {@link createSC}, the User or smart contract will be granted write
+ * access to the created SC, but this privilege is limited to the context of this specific operation.
+ *
+ * @returns Returns true if the caller has write access; false otherwise.
  *
  */
 export function callerHasWriteAccess(): bool {
@@ -103,87 +185,117 @@ export function callerHasWriteAccess(): bool {
 }
 
 /**
- * Checks if `function` exists in the bytecode stored at `address`
- * @param address -
- * @param func -
- */
-export function functionExists(address: Address, func: string): bool {
-  return env.functionExists(address.toString(), func);
-}
-
-/**
- * Creates a new smart contract.
+ * Creates a new smart contract on the ledger using its bytecode representation.
  *
- * Take a base64 string representing the module binary and create an entry in
- * the ledger.
+ * @remarks
+ * After executing this function, you will have write access on the newly generated contract.
  *
- * The context allow you to write in this smart contract while you're executing
- * the current bytecode.
+ * @see {@link callerHasWriteAccess} for more information.
  *
- * @param bytecode -
+ * @param bytecode - The byte code of the contract to create.
  *
- * @returns Smart contract address
+ * @returns The address of the newly created smart contract on the ledger.
+ *
  */
 export function createSC(bytecode: StaticArray<u8>): Address {
   return new Address(env.createSC(bytecode));
 }
 
 /**
- * Generates an event
+ * Checks if the given function exists in a smart contract at the given address.
  *
- * @param event - stringified
+ * @param address - The address of the contract to search in.
+ * @param func - The name of the function to search.
+ *
+ * @returns true if the function exists, false otherwise.
+ *
+ * @throws
+ * - if the given address is not a valid smart contract address.
+ *
+ */
+export function functionExists(address: Address, func: string): bool {
+  return env.functionExists(address.toString(), func);
+}
+
+/**
+ * Generates an event that is then emitted by the blockchain.
+ *
+ * @param event - The string event to emit.
+ *
  */
 export function generateEvent(event: string): void {
   env.generateEvent(event);
 }
 
 /**
- * Transfers SCE coins from the current address to given address.
+ * Transfers coins from the current address 'to' a given address.
  *
- * @param to -
+ * @param to - the address to send coins to.
  * @param amount - value in the smallest unit.
+ * @see [massa units standard](https://github.com/massalabs/massa-standards/blob/main/units.md)
+ *
+ * @throws
+ * - if the given address is not a valid address.
+ * - if the balance of the current address is insufficient to make the transaction.
+ *
  */
 export function transferCoins(to: Address, amount: u64): void {
   env.transferCoins(to.toString(), amount);
 }
 
 /**
- * Transfers SCE coins of the `from` address to the `to` address.
+ * Transfers coins 'from' an address 'to' another address.
  *
- * @param from -
- * @param to -
+ * @remarks
+ * The transfer can only be done if the caller has write access to the sender's address.
+ * @see {@link callerHasWriteAccess}
+ *
+ * @param from - the sender address.
+ * @param to - the address to send coins to.
  * @param amount - value in the smallest unit.
+ * @see [massa units standard](https://github.com/massalabs/massa-standards/blob/main/units.md)
+ *
+ * @throws
+ * - if the sender's or the receiver address is not a valid address.
+ * - if the balance of the sender's address is insufficient to make the transaction.
+ *
  */
 export function transferCoinsOf(from: Address, to: Address, amount: u64): void {
   env.transferCoinsOf(from.toString(), to.toString(), amount);
 }
 
 /**
- * Gets the balance of the current address
+ * Returns the balance of the current address.
  *
  * @returns - value in the smallest unit.
+ *
  */
 export function balance(): u64 {
   return env.balance();
 }
 
 /**
- * Gets the balance of the specified address.
+ * Returns the balance of the specified address.
  *
- * @param address -
+ * @param address - The address for which the balance is retrieved.
  *
  * @returns - value in the smallest unit.
+ *
+ * @throws
+ * - if the given address is not a valid address.
+ *
  */
 export function balanceOf(address: string): u64 {
   return env.balanceOf(address);
 }
 
 /**
- * Check for key in datastore
+ * Checks if a given serialized 'key' is present in the operation datastore.
  *
- * @param key -
+ * @param key - the serialized key to look for in the datastore.
  *
  * @returns - true if key is present in datastore, false otherwise.
+ *
  */
 export function hasOpKey(key: StaticArray<u8>): bool {
   let result = env.hasOpKey(key);
@@ -194,20 +306,25 @@ export function hasOpKey(key: StaticArray<u8>): bool {
 }
 
 /**
- * Get data associated with the given key from datastore
+ * Retrieves the data associated with the given key from the operation datastore.
  *
- * @param key -
+ * @param key - the serialized key to look for in the datastore.
  *
- * @returns - data as a byte array
+ * @returns - the serialized data associated with the given key as a byte array.
+ *
+ * @throws
+ * - if the key is not present in the datastore.
+ *
  */
 export function getOpData(key: StaticArray<u8>): StaticArray<u8> {
   return env.getOpData(key);
 }
 
 /**
- * Get all keys from operation datastore
+ * Retrieves all the keys from the operation datastore.
  *
- * @returns - a list of key (e.g. a list of byte array)
+ * @returns - a list of keys (e.g. a list of byte array)
+ *
  */
 export function getOpKeys(): Array<StaticArray<u8>> {
   let keysSer = env.getOpKeys();
@@ -215,11 +332,12 @@ export function getOpKeys(): Array<StaticArray<u8>> {
 }
 
 /**
- * Get keys from datastore
+ * Retrieves all the keys from the operation datastore.
  *
- * @param prefix - the prefix to filter the keys (optional)
+ * @param prefix - the serialized prefix to filter the keys (optional)
  *
- * @returns - a list of key (e.g. a list of byte array)
+ * @returns - a list of keys (e.g. a list of byte array)
+ *
  */
 export function getKeys(
   prefix: StaticArray<u8> = new StaticArray<u8>(0),
@@ -229,12 +347,13 @@ export function getKeys(
 }
 
 /**
- * Get all keys from datastore
+ * Retrieves all the keys from the operation datastore from a remote address.
  *
  * @param address - the address in the datastore
  * @param prefix - the prefix to filter the keys (optional)
  *
  * @returns - a list of key (e.g. a list of byte array)
+ *
  */
 export function getKeysOf(
   address: string,
@@ -245,11 +364,12 @@ export function getKeysOf(
 }
 
 /**
- * Read the number of keys from serialized keys array
+ * Retrieves the number of keys from serialized keys array
  *
- * @param arr - Uint8Array
+ * @param arr - Uint8Array keys array
  *
- * @returns The number of keys
+ * @returns The number of keys in the keys array
+ *
  */
 function getNumberOfKeys(keysSer: StaticArray<u8>): u32 {
   // The first 4 bytes of the input array represent the number of keys
@@ -267,22 +387,28 @@ function getNumberOfKeys(keysSer: StaticArray<u8>): u32 {
  * Deserializes an array of keys from the specified serialized format.
  *
  * @param keysSer - The serialized keys.
+ *
  * @returns The deserialized keys.
  *
+ * @remarks
+ * 'keysSer' is a encoded array of keys. Each elements are encoded as follows:
  * ```text
- * Format of keysSer:
- *
- *|---------------|----------|---------------|-----------------------------------------|
- *| Field         | Type     | Size in Bytes | Description                             |
- *|---------------|----------|---------------|-----------------------------------------|
- *| L             | u32      | 4             | Total number of keys in the sequence.   |
- *| V1_L          | u8       | 1             | Length of data for key 1.               |
- *| V1 data       | u8[V1_L] | Variable      | Data for key 1.                         |
- *| V2_L          | u8       | 1             | Length of data for key 2.               |
- *| V2 data       | u8[V2_L] | Variable      | Data for key 2.                         |
- *| ...           |          |               | Data for additional keys (if any).      |
- *|---------------|----------|---------------|-----------------------------------------|
+ *|---------------|-----------|---------------|-----------------------------------------|
+ *| Field         | Type      | Size in Bytes | Description                             |
+ *|---------------|-----------|---------------|-----------------------------------------|
+ *| L             | u32       | 4             | Total number of keys in the sequence.   |
+ *| Key1_L        | u8        | 1             | Length of the Key number 1.             |
+ *| Key1          | u8[Key1_L]| Variable      | The Key number 1.                       |
+ *| Key2_L        | u8        | 1             | Length of the Key number 2.             |
+ *| Key2          | u8[Key2_L]| Variable      | The Key number 2.                       |
+ *| ...           |           |               | Data for additional keys (if any).      |
+ *|---------------|-----------|---------------|-----------------------------------------|
  * ```
+ * Then it returns an array of keys:
+ * ```text
+ * keys = [Key1, Key2, ...]
+ * ```
+ *
  */
 export function derKeys(keysSer: StaticArray<u8>): Array<StaticArray<u8>> {
   if (keysSer.length == 0) return [];
@@ -305,21 +431,25 @@ export function derKeys(keysSer: StaticArray<u8>): Array<StaticArray<u8>> {
 }
 
 /**
- * Converts data to base58.
+ * Converts the given string data into a base58 formatted string.
  *
- * @param data -
+ * @param data - the string data to convert to base58.
+ *
+ * @returns the converted data as a string.
  *
  */
 export function toBase58(data: string): string {
-  return env.toBase58(data);
+  ERROR('toBase58 is not implemented yet');
 }
 
 /**
- * Tests if the signature is valid.
+ * Checks if a signature is valid.
  *
- * @param publicKey - base58check encoded
- * @param digest -
- * @param signature - base58check encoded
+ * @param publicKey - base58check encoded public key.
+ * @param digest - digest message.
+ * @param signature - base58check encoded signature.
+ *
+ * @returns 'true' if the signature is valid, 'false' otherwise.
  *
  */
 export function isSignatureValid(
@@ -331,18 +461,28 @@ export function isSignatureValid(
 }
 
 /**
- * Converts a public key to an address
+ * Retrieves an 'Address' object from the given public key.
  *
- * @param pubKey - Base58check encoded
+ * @param pubKey - Base58check encoded public key of the address
+ *
+ * @returns the fetched address as an 'Address' object.
+ *
+ * @throws
+ * - if the public key is invalid
+ *
  */
 export function publicKeyToAddress(pubKey: string): Address {
   return new Address(env.publicKeyToAddress(pubKey));
 }
 
 /**
- * Returns an unsafe random.
+ * Generates an unsafe random integer.
  *
- * Warning: this function is unsafe because the random draws is predictable.
+ * @remarks
+ * This function is unsafe because the random draws are predictable.
+ *
+ * @returns a random number.
+ *
  */
 export function unsafeRandom(): i64 {
   return env.unsafeRandom();
@@ -395,6 +535,7 @@ export function unsafeRandom(): i64 {
  * if a modification is made on a specific address precise it here
  * @param filterKey - If you want your message to be trigger only
  * if a modification is made on a specific storage key of the `filterAddress` precise it here
+ *
  */
 export function sendMessage(
   at: Address,
@@ -427,13 +568,14 @@ export function sendMessage(
 }
 
 /**
- * Convert given file content to byteArray.
+ * Convert the given file content to byteArray.
  *
- * Note: this function shall never be called but is dynamically
- * replace using byteArray transformer.
- * More info here:
+ * @remarks
+ * This function is dynamically replaced using the byteArray converter.
+ * @see [as-transformer](https://github.com/massalabs/as/tree/main/packages/as-transformer#file2bytearray)
  *
- * @param filePath -
+ * @param filePath - the file path to convert
+ *
  */
 export function fileToByteArray(
   filePath: string, // eslint-disable-line @typescript-eslint/no-unused-vars
@@ -443,46 +585,64 @@ export function fileToByteArray(
 }
 
 /**
- * Returns the current period
+ * Retrieves the current period of the network.
+ *
+ * @returns the current period.
+ *
  */
 export function currentPeriod(): u64 {
   return env.currentPeriod();
 }
 
 /**
- * Returns the current thread
+ * Retrieves the current thread of the execution context.
+ *
+ * @returns the current thread.
+ *
  */
 export function currentThread(): u8 {
   return env.currentThread();
 }
 
 /**
- * Constructs an event given a key and arguments
+ * Constructs a pretty formatted event with given key and arguments.
  *
- * @see {@link generateEvent}
+ * @remarks
+ * The result is meant to be used with the {@link generateEvent} function.
+ * It is useful to generate events from an array.
  *
- * @param key - event key
- * @param args - array of string arguments.
- * @returns stringified event.
+ * @param key - the string event key.
+ *
+ * @param args - the string array arguments.
+ *
+ * @returns the stringified event.
+ *
  */
 export function createEvent(key: string, args: Array<string>): string {
   return `${key}:`.concat(args.join(','));
 }
 
 /**
- * Computing the sha256 of the passed parameter and return the hash as a byte array.
+ * Computes the SHA256 hash of the given `data`.
  *
- * @param bytecode - StaticArray<u8>
- * @returns - Computed Sha256 in StaticArray<u8>
+ * @remarks
+ * The SHA256 hash algorithm produces a 32-byte hash, which is returned as a `StaticArray<u8>`.
+ *
+ * @param data - The data to hash.
+ *
+ * @returns The SHA256 hash of the `data`, serialized as a `StaticArray<u8>`.
+ *
  */
-export function sha256(bytecode: StaticArray<u8>): StaticArray<u8> {
-  return env.sha256(bytecode);
+export function sha256(data: StaticArray<u8>): StaticArray<u8> {
+  return env.sha256(data);
 }
 
 /**
- * Checks if the address is valid.
- * @param address - Address to check
- * @returns boolean - true if the address is valid, false otherwise
+ * Checks if the given address is valid.
+ *
+ * @param address - the string address to validate.
+ *
+ * @returns 'true' if the address is valid, 'false' otherwise.
  *
  */
 export function validateAddress(address: string): bool {
