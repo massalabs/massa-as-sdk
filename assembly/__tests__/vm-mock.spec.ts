@@ -16,7 +16,7 @@ const testAddress = new Address(
   'AU12E6N5BFAdC2wyiBV6VJjqkWhpz1kLVp2XpbRdSnL1mKjCWT6oR',
 );
 const badAddress = new Address(
-  'AUé2E6N5BFAdC2wyiBV6VJjqkWhpz1kLVp2XpbRdSnL1mKjCWT6oR',
+  'ALé2E6N5BFAdC2wyiBV6VJjqkWhpz1kLVp2XpbRdSnL1mKjCWT6oR',
 );
 
 const testAddress2 = new Address(

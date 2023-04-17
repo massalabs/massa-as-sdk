@@ -7,7 +7,6 @@ const { createHash } = await import('node:crypto');
 // Those both addresses have been randomly generated
 const callerAddress = 'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq';
 const contractAddress = 'AS12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT';
-const addressBytesLength = 53;
 
 /**
  * return a random string
@@ -188,6 +187,37 @@ export default function createMockedABI(
     }
 
     return new Uint8Array(serialized);
+  }
+
+  /**
+   * Check if the address prefix is valid
+   *
+   * @param {string} address
+   *
+   * @returns {boolean}
+   */
+  function isRightPrefix(address) {
+    const addressPrefix = 'A';
+    const addressPrefixUserOrSC = ['U', 'S'];
+    return (
+      address.startsWith(addressPrefix) &&
+      addressPrefixUserOrSC.includes(address[1])
+    );
+  }
+
+  /**
+   * Check if the address length is valid
+   *
+   * @param {string} address
+   *
+   * @returns {boolean}
+   */
+  function isRightLength(address) {
+    const minAddressLength = 40;
+    const maxAddressLength = 60;
+    return (
+      address.length >= minAddressLength && address.length <= maxAddressLength
+    );
   }
 
   resetLedger();
@@ -415,10 +445,7 @@ export default function createMockedABI(
       assembly_script_validate_address(addressPtr) {
         const address = ptrToString(addressPtr);
 
-        return (
-          stringToByteArray(address).length === addressBytesLength &&
-          (address.startsWith('AU') || address.startsWith('AS'))
-        );
+        return isRightLength(address) && isRightPrefix(address);
       },
 
       assembly_script_print(aPtr) {
