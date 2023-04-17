@@ -36,4 +36,4 @@ jobs:
         token: ${{ secrets.MASSABOTCLASSIC }}
         commit_message: "Generate powered-by"
         file_pattern: "powered-by.md"
-        commit_author: massabot <massabot@users.noreply.github.com>
+        commit_author: massabot <info@massa.net>
