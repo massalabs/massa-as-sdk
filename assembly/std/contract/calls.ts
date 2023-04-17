@@ -30,7 +30,7 @@ export function call(
 }
 
 /**
- * Calls a function from a remote contract in the current context.
+ * Calls a function from a remote contract and execute it in the current context.
  *
  * @remarks
  * Arguments serialization is to be handled by the caller and the callee.
