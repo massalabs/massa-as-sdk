@@ -1,6 +1,6 @@
 /**
  * This namespace is used to interact with other **smart contract functions** and manipulate their **bytecode**.
- * It is located at **std/contract**.
+ * It is located at **contract**.
  *
  * @remarks
  * In the file **calls.ts** you can find functions to interact with **smart contract functions** such as:
