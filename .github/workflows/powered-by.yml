@@ -4,6 +4,7 @@ on:
     branches:
       - main
       - test_ci_contrib_to_merge
+      
 
 jobs:
   generate-powered-by:
