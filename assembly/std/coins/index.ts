@@ -1,6 +1,6 @@
 /**
  * This namespace is used to interact with wallet's **balance** and **transfers**.
- * It is located at **std/coins**.
+ * It is located at **coins**.
  *
  * @remarks
  * In the file **balance.ts** you can find functions to interact with the **balance** of a wallet such as:
