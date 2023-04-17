@@ -1,6 +1,6 @@
 /**
  * This namespace is a compilation of utilities functions relative to **smart contract development**.
- * It is located at **std/utils**.
+ * It is located at **utils**.
  *
  * @remarks
  * Here is the catalog of all functions organized by file:
