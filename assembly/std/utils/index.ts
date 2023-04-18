@@ -2,16 +2,25 @@
  * This namespace is a compilation of utilities functions relative to **smart contract development**.
  * It is located at **utils**.
  *
- * @remarks
+ * @privateRemarks
+ *
+ * Please do not dump all your functions in this namespace.
+ * Try to organize them in different files.
+ *
+ * If any files becomes too big, or is starting to be too specific,
+ * don't hesitate to propose a new namespace.
+ *
  * Here is the catalog of all functions organized by file:
  *
  * In the file **address.ts** you can find utilities functions to interact further with {@link Address} such as:
  * - {@link publicKeyToAddress}.
  * - {@link validateAddress}.
+ * To be moved in the {@link Address} namespace.
  *
  * In the file **context.ts** you can find utilities functions about the **execution context** such as:
  * - {@link currentPeriod}.
  * - {@link currentThread}.
+ * To be moved in the {@link Context} namespace.
  *
  * In the file **crypto.ts** you can find basic **cryptographic** functions such as:
  * - {@link sha256}.
