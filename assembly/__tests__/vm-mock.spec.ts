@@ -156,7 +156,7 @@ describe('Testing mocked Context', () => {
     changeCallStack(testAddress.toString() + ' , ' + testAddress2.toString());
   });
 
-  test('Test no write access', () => {
+  it('should return false when caller has no write access', () => {
     expect(env.callerHasWriteAccess()).toStrictEqual(false);
   });
 
