@@ -160,7 +160,7 @@ describe('Testing mocked Context', () => {
     expect(env.callerHasWriteAccess()).toStrictEqual(false);
   });
 
-  test('Test write access ok', () => {
+  it('should return true when caller has write access as an admin', () => {
     mockAdminContext();
     expect(env.callerHasWriteAccess()).toStrictEqual(true);
   });
