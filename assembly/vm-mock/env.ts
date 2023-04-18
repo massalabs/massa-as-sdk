@@ -53,29 +53,6 @@ export declare function addAddressToLedger(address: string): void;
 export declare function mockAdminContext(): void;
 
 /**
- * Emulate a deployment context by giving the write access to all contracts
- * as well a emulating a deployment for all of them.
- *
- * @remarks
- * This function is used to test write access protected smart contract functions
- * as well as 'constructor' functions.
- *
- * @example
- * ```typescript
- * test('test constructor function', () => {
- *   mockAdminContext();
- *
- *   const mockValue: StaticArray<u8> = [1,2,3];
- *   const res = constructor(NoArgs.serialize());
- *
- *   expect(res).toBe(mockValue);
- * });
- * ```
- */
-@external("massa", "assembly_script_mock_deploy_context")
-export declare function mockDeployContext(): void;
-
-/**
  * Reset the context to the default one by removing all the write access
  * and the deployment emulation.
  *
@@ -94,5 +71,51 @@ export declare function mockDeployContext(): void;
  * ```
  *
  */
-@external("massa", "assembly_script_reset_context")
-export declare function resetContext(): void;
+@external("massa", "assembly_script_mock_not_admin_context")
+export declare function mockNonAdminContext(): void;
+
+/**
+ * Emulate a deployment context by giving the write access to all contracts
+ * as well a emulating a deployment for all of them.
+ *
+ * @remarks
+ * By default, the context as already callStack that emulates a deployment but has not write access.
+ * This function ensure that both are set.
+ *
+ * The deployment emulation is done by modifying the call stack to have different caller and callee addresses.
+ *
+ * If the given callerAddress is the same as the current contract address in the call stack,
+ * it is ignored to generate a different one.
+ *
+ * @param callerAddress - the optional caller address to use for the deployment emulation
+ *
+ * @example
+ * ```typescript
+ * test('test constructor function', () => {
+ *   setDeployContext();
+ *
+ *   const mockValue: StaticArray<u8> = [1,2,3];
+ *   const res = constructor(NoArgs.serialize());
+ *
+ *   expect(res).toBe(mockValue);
+ * });
+ * ```
+ */
+@external("massa", "assembly_script_set_deploy_context")
+export declare function setDeployContext(callerAddress?: string): void;
+
+/**
+ * Emulate a local context by giving the write access to all contracts
+ * as well a emulating a local callStack.
+ *
+ * @remarks
+ *
+ * The local emulation is done by modifying the call stack to have identical caller and callee addresses.
+ *
+ * If the given localAddress is not passed, uses the current contract address as the caller address.
+ *
+ * @param address - the optional address to use for the local emulation
+ *
+ */
+@external("massa", "assembly_script_set_local_context")
+export declare function setLocalContext(address?: string): void;

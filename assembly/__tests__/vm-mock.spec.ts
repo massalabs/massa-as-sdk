@@ -8,9 +8,15 @@ import {
   validateAddress,
 } from '../std';
 import { changeCallStack, resetStorage } from '../vm-mock/storage';
-import { mockScCall } from '../vm-mock/env';
-import { localCall } from '../std/index';
+import {
+  mockAdminContext,
+  setDeployContext,
+  mockNonAdminContext,
+  setLocalContext,
+} from '../vm-mock/env';
 import { Args, bytesToString, stringToBytes } from '@massalabs/as-types';
+import { env } from '../env/index';
+import { callee, caller, isDeployingContract } from '../std/context';
 
 const testAddress = new Address(
   'AU12E6N5BFAdC2wyiBV6VJjqkWhpz1kLVp2XpbRdSnL1mKjCWT6oR',
@@ -136,5 +142,91 @@ describe('Testing mocked Storage and CallStack', () => {
 
     const result2 = validateAddress(badAddress.toString());
     expect(result2).toBe(false);
+  });
+});
+
+describe('Testing mocked Context', () => {
+  beforeEach(() => {
+    mockNonAdminContext();
+    changeCallStack(testAddress.toString() + ' , ' + testAddress2.toString());
+  });
+
+  afterAll(() => {
+    mockNonAdminContext();
+    changeCallStack(testAddress.toString() + ' , ' + testAddress2.toString());
+  });
+
+  test('Test no write access', () => {
+    expect(env.callerHasWriteAccess()).toStrictEqual(false);
+  });
+
+  test('Test write access ok', () => {
+    mockAdminContext();
+    expect(env.callerHasWriteAccess()).toStrictEqual(true);
+  });
+
+  test('Test write access ok then not ok', () => {
+    mockAdminContext();
+    expect(env.callerHasWriteAccess()).toStrictEqual(true);
+    mockNonAdminContext();
+    expect(env.callerHasWriteAccess()).toStrictEqual(false);
+  });
+
+  test('Test deploy context gives write access', () => {
+    setDeployContext();
+    expect(env.callerHasWriteAccess()).toStrictEqual(true);
+  });
+
+  test('Test deploy context ok', () => {
+    setDeployContext();
+    expect(isDeployingContract()).toStrictEqual(true);
+  });
+
+  test('Test deploy context changes caller', () => {
+    setDeployContext('AS12BqZEQ6sByNCALLER');
+
+    expect(caller()).toStrictEqual(new Address('AS12BqZEQ6sByNCALLER'));
+    expect(callee()).not.toStrictEqual(new Address('AS12BqZEQ6sByNCALLER'));
+  });
+
+  test('Test deploy context random ok values', () => {
+    setDeployContext();
+    const callerAddress = caller();
+    const calleeAddress = callee();
+
+    expect(callerAddress).not.toStrictEqual(calleeAddress);
+  });
+
+  test('Test deploy context no contract Address changes', () => {
+    setDeployContext();
+    const callerAddress = caller();
+    const calleeAddress = callee();
+
+    expect(callerAddress).not.toStrictEqual(calleeAddress);
+  });
+
+  test('Test local context gives write access', () => {
+    setLocalContext();
+    expect(env.callerHasWriteAccess()).toStrictEqual(true);
+  });
+
+  test('Test local context not deploying', () => {
+    setLocalContext();
+    expect(isDeployingContract()).toStrictEqual(false);
+  });
+
+  test('Test local context changes call stack', () => {
+    setLocalContext('AS12BqZEQ6sByNCALLER');
+
+    expect(caller()).toStrictEqual(new Address('AS12BqZEQ6sByNCALLER'));
+    expect(callee()).toStrictEqual(new Address('AS12BqZEQ6sByNCALLER'));
+  });
+
+  test('Test local context random ok values', () => {
+    setLocalContext();
+    const callerAddress = caller();
+    const calleeAddress = callee();
+
+    expect(callerAddress.toString()).toStrictEqual(calleeAddress.toString());
   });
 });

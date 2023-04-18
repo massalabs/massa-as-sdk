@@ -5,8 +5,8 @@ const { createHash } = await import('node:crypto');
  */
 
 // Those both addresses have been randomly generated
-const callerAddress = 'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq';
-const contractAddress = 'AS12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT';
+let callerAddress = 'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq';
+let contractAddress = 'AS12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT';
 
 /**
  * return a random string
@@ -427,25 +427,74 @@ export default function createMockedABI(
         );
       },
 
+      /**
+       * Sets the current testing context to admin.
+       * Thus giving write access on any sc function tested.
+       */
       assembly_script_mock_admin_context() {
         adminContext = true;
       },
 
-      assembly_script_mock_deploy_context() {
-        deployContext = true;
+      assembly_script_mock_not_admin_context() {
+        adminContext = false;
       },
 
-      assembly_script_reset_context() {
-        adminContext = false;
-        deployContext = false;
+      /**
+       * Sets the current context to a deploy context by setting the caller address to a new address
+       * and different address than the contract address.
+       * Gives write access on any sc function tested.
+       *
+       * @param {*} addrPtr - the new optionnal address to set as caller address 
+       */
+      assembly_script_set_deploy_context(addrPtr) {
+        adminContext = true;
+        // making sure the caller address is different than the contract address
+        if (addrPtr == undefined || addrPtr == 0 || addrPtr == null || ptrToString(addrPtr) === contractAddress) {
+          // generate a new address if it is the same as the contract address
+          callerAddress = generateDumbAddress(); 
+        } else {
+          callerAddress = ptrToString(addrPtr);
+        }
+
+        if (!ledger.has(callerAddress)) {
+          // add the new address to the ledger
+          ledger.set(callerAddress, {
+            storage: new Map(),
+            contract: '',
+          });
+        }
+        // updating the callStack
+        callStack = callerAddress + ' , ' + contractAddress;
+      },
+
+      /**
+       * Sets the current context to a local context by setting the caller address to the contract address.
+       * Gives write access on any sc function tested.
+       * If the address is not set, uses the current contract address as caller address.
+       * 
+       * @param {*} addrPtr - the new optional address of the call stack
+       */
+      assembly_script_set_local_context(addrPtr) {
+        adminContext = true;
+        if (addrPtr == undefined || addrPtr == 0 || addrPtr == null) {
+          // if the address is not set, uses the current contract address as caller address
+          callerAddress = contractAddress;
+        }
+        else {
+          callerAddress = ptrToString(addrPtr);
+          contractAddress = callerAddress;
+        }
+        if (!ledger.has(callerAddress)) {
+          ledger.set(callerAddress, {
+            storage: new Map(),
+            contract: '',
+          });
+        }
+        callStack = callerAddress + ' , ' + contractAddress;
       },
 
       assembly_script_caller_has_write_access() {
-        return adminContext;
-      },
-
-      isDeployingContract() {
-        return deployContext;
+        return adminContext; // uses the saved actual state of the context
       },
 
       assembly_script_hash_sha256(aPtr) {
