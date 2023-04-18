@@ -182,7 +182,7 @@ describe('Testing mocked Context', () => {
     expect(isDeployingContract()).toStrictEqual(true);
   });
 
-  test('Test deploy context changes caller', () => {
+  it('should set the same address for caller and callee when deploy context is set', () => {
     setDeployContext('AS12BqZEQ6sByNCALLER');
 
     expect(caller()).toStrictEqual(new Address('AS12BqZEQ6sByNCALLER'));
