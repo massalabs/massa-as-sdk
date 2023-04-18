@@ -1,5 +1,5 @@
 # Massa-as-sdk
-![check-code-coverage](https://img.shields.io/badge/coverage-79%25-orange)
+![check-code-coverage](https://img.shields.io/badge/coverage-80%25-green)
 
 
 
