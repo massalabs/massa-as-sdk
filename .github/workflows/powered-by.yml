@@ -7,9 +7,17 @@ on:
 jobs:
   generate-powered-by:
     runs-on: ubuntu-latest
+
+    permissions:
+      # Give the default GITHUB_TOKEN write permission to commit and push the changed files back to the repository.
+      contents: write
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+      with:
+        # Checkout code using massabot account
+        token: ${{ secrets.MASSABOTCLASSIC }}
 
     - name: Install node 
       uses: actions/setup-node@v3
@@ -33,10 +41,8 @@ jobs:
     - name: Commit Changes
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
-        token: ${{ secrets.MASSABOTCLASSIC }}
+        token: 
         commit_message: "Generate powered-by"
         file_pattern: "powered-by.md"
-        commit_user_email: info@massa.net
-        commit_user_name: massabot
+        # Commit code using massabot account that can bypass push and MR restriction
         commit_author: massabot <info@massa.net>
-        push_options: '--force'
