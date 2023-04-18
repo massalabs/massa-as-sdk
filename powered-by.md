@@ -1,4 +1,17 @@
+# Dependencies Report
 
+The following is a list of all the dependencies of this project:
+## [@as-pect/cli](git+https://github.com/jtenner/as-pect.git#master)
+
+**License:** MIT - perpetual
+
+**Used version:** 8.0.1
+
+**Many thanks to:** [Joshua Tenner](tenner.joshua@gmail.com)
+
+## [@massalabs/as-transformer](https://registry.npmjs.org/@massalabs/as-transformer/-/as-transformer-0.1.3-dev.20230406075559.tgz)
+
+**License:** ISC - perpetual
 
 **Used version:** 0.1.3-dev.20230210120639
 
