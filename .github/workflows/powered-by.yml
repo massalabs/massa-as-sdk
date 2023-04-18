@@ -34,7 +34,6 @@ jobs:
     - name: Commit Changes
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
-        ref: ${{ github.event.pull_request.head.ref }}
         token: ${{ secrets.MASSABOTCLASSIC }}
         commit_message: "Generate powered-by"
         file_pattern: "powered-by.md"
