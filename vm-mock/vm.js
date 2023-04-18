@@ -440,16 +440,17 @@ export default function createMockedABI(
       },
 
       /**
-       * Sets the current context to a deploy context by setting the caller address to a new address
-       * and different address than the contract address.
+       * Sets the current context to a deployment context by updating the caller address to a new, distinct
+       * address from the contract address.
        * Gives write access on any sc function tested.
        *
        * @param {*} addrPtr - the new optionnal address to set as caller address 
        */
       assembly_script_set_deploy_context(addrPtr) {
         adminContext = true;
-        // making sure the caller address is different than the contract address
-        if (addrPtr == undefined || addrPtr == 0 || addrPtr == null || ptrToString(addrPtr) === contractAddress) {
+        // Ensure the caller address is different from the contract address
+
+        if (!addrPtr || ptrToString(addrPtr) === contractAddress) {
           // generate a new address if it is the same as the contract address
           callerAddress = generateDumbAddress(); 
         } else {
@@ -476,7 +477,7 @@ export default function createMockedABI(
        */
       assembly_script_set_local_context(addrPtr) {
         adminContext = true;
-        if (addrPtr == undefined || addrPtr == 0 || addrPtr == null) {
+        if (!addrPtr) {
           // if the address is not set, uses the current contract address as caller address
           callerAddress = contractAddress;
         }
