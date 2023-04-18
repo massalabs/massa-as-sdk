@@ -46,5 +46,5 @@ jobs:
         file_pattern: "powered-by.md"
 #        commit_user_email: info@massa.net
 #        commit_user_name: massabot
-#        commit_author: massabot <info@massa.net>
+        commit_author: massabot <info@massa.net>
 #        push_options: '--force'
