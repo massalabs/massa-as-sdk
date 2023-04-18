@@ -177,7 +177,7 @@ describe('Testing mocked Context', () => {
     expect(env.callerHasWriteAccess()).toStrictEqual(true);
   });
 
-  test('Test deploy context ok', () => {
+  it('should return true for isDeployingContract when deploy context mock is set', () => {
     setDeployContext();
     expect(isDeployingContract()).toStrictEqual(true);
   });
