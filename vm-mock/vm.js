@@ -53,6 +53,8 @@ let callStack = callerAddress + ' , ' + contractAddress;
 }
 */
 let ledger;
+let adminContext = false;
+let deployContext = false;
 
 /**
  * Reset the ledger
@@ -192,9 +194,8 @@ export default function createMockedABI(
   /**
    * Check if the address prefix is valid
    *
-   * @param {string} address
-   *
-   * @returns {boolean}
+   * @param {string} address - the address to check
+   * @returns {boolean} - true if the address prefix is valid
    */
   function isRightPrefix(address) {
     const addressPrefix = 'A';
@@ -208,9 +209,8 @@ export default function createMockedABI(
   /**
    * Check if the address length is valid
    *
-   * @param {string} address
-   *
-   * @returns {boolean}
+   * @param {string} address - the address to check
+   * @returns {boolean} - true if the address length is valid
    */
   function isRightLength(address) {
     const minAddressLength = 40;
@@ -427,12 +427,25 @@ export default function createMockedABI(
         );
       },
 
+      assembly_script_mock_admin_context() {
+        adminContext = true;
+      },
+
+      assembly_script_mock_deploy_context() {
+        deployContext = true;
+      },
+
+      assembly_script_reset_context() {
+        adminContext = false;
+        deployContext = false;
+      },
+
       assembly_script_caller_has_write_access() {
-        return false;
+        return adminContext;
       },
 
       isDeployingContract() {
-        return false;
+        return deployContext;
       },
 
       assembly_script_hash_sha256(aPtr) {

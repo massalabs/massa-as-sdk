@@ -3,7 +3,7 @@
  *
  * @param value - Value returned by the mocked function
  *
- *    * @example
+ * @example
  * ```typescript
  * test('mocked SC call', () => {
  *    const addr = new Address(
@@ -30,3 +30,69 @@ export declare function mockScCall(value: StaticArray<u8>): void;
  */
 @external("massa", "assembly_script_add_address_to_ledger")
 export declare function addAddressToLedger(address: string): void;
+
+/**
+ * Emulate an admin context by giving the write access to all contracts
+ *
+ * @remarks
+ * This function is used to test write access protected smart contract functions.
+ *
+ * @example
+ * ```typescript
+ * test('test protected function', () => {
+ *   mockAdminContext();
+ *
+ *   const mockValue: StaticArray<u8> = [1,2,3];
+ *   const res = myProtectedSCFunc(NoArgs.serialize());
+ *
+ *   expect(res).toBe(mockValue);
+ * });
+ * ```
+ */
+@external("massa", "assembly_script_mock_admin_context")
+export declare function mockAdminContext(): void;
+
+/**
+ * Emulate a deployment context by giving the write access to all contracts
+ * as well a emulating a deployment for all of them.
+ *
+ * @remarks
+ * This function is used to test write access protected smart contract functions
+ * as well as 'constructor' functions.
+ *
+ * @example
+ * ```typescript
+ * test('test constructor function', () => {
+ *   mockAdminContext();
+ *
+ *   const mockValue: StaticArray<u8> = [1,2,3];
+ *   const res = constructor(NoArgs.serialize());
+ *
+ *   expect(res).toBe(mockValue);
+ * });
+ * ```
+ */
+@external("massa", "assembly_script_mock_deploy_context")
+export declare function mockDeployContext(): void;
+
+/**
+ * Reset the context to the default one by removing all the write access
+ * and the deployment emulation.
+ *
+ * @example
+ * ```typescript
+ * test('test function protection', () => {
+ *   resetContext();
+ *
+ *   const mockValue: StaticArray<u8> = [1,2,3];
+ *   const call = (): void => {
+ *      myProtectedSCFunction(NoArgs.serialize());
+ *   };
+ *
+ *   expect(call).toThrow('You do not have the write access to this smart contract'');
+ * });
+ * ```
+ *
+ */
+@external("massa", "assembly_script_reset_context")
+export declare function resetContext(): void;
