@@ -1,6 +1,6 @@
 /**
  * This namespace is used to interact with the **operation datastore**.
- * It is located at **std/op-datastore**.
+ * It is located at **op-datastore**.
  *
  * @remarks
  * In the file **op-datastore.ts** you can find all the **datastore's** functions such as:
