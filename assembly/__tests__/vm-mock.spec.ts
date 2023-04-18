@@ -172,7 +172,7 @@ describe('Testing mocked Context', () => {
     expect(env.callerHasWriteAccess()).toStrictEqual(false);
   });
 
-  test('Test deploy context gives write access', () => {
+  it('should return true for write access when using deploy context', () => {
     setDeployContext();
     expect(env.callerHasWriteAccess()).toStrictEqual(true);
   });
