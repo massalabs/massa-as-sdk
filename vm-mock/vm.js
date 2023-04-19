@@ -427,12 +427,8 @@ export default function createMockedABI(
         );
       },
 
-      /**
-       * Sets the current testing context to admin.
-       * Thus giving write access on any sc function tested.
-       */
-      assembly_script_mock_admin_context() {
-        adminContext = true;
+      assembly_script_mock_admin_context(isAdmin) {
+        adminContext = isAdmin;
       },
 
       assembly_script_mock_not_admin_context() {
@@ -468,13 +464,6 @@ export default function createMockedABI(
         callStack = callerAddress + ' , ' + contractAddress;
       },
 
-      /**
-       * Sets the current context to a local context by setting the caller address to the contract address.
-       * Gives write access on any sc function tested.
-       * If the address is not set, uses the current contract address as caller address.
-       * 
-       * @param {*} addrPtr - the new optional address of the call stack
-       */
       assembly_script_set_local_context(addrPtr) {
         adminContext = true;
         if (!addrPtr) {
