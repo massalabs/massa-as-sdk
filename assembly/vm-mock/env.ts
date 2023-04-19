@@ -32,15 +32,18 @@ export declare function mockScCall(value: StaticArray<u8>): void;
 export declare function addAddressToLedger(address: string): void;
 
 /**
- * Emulate an admin context by giving the write access to all contracts
+ * Changes wether the testing context is
+ * has all privileges or not by giving the write access to all contracts
  *
  * @remarks
  * This function is used to test write access protected smart contract functions.
  *
+ * @param isAdmin - true to give write access, false otherwise
+ *
  * @example
  * ```typescript
  * test('test protected function', () => {
- *   mockAdminContext();
+ *   mockAdminContext(true);
  *
  *   const mockValue: StaticArray<u8> = [1,2,3];
  *   const res = myProtectedSCFunc(NoArgs.serialize());
@@ -50,29 +53,7 @@ export declare function addAddressToLedger(address: string): void;
  * ```
  */
 @external("massa", "assembly_script_mock_admin_context")
-export declare function mockAdminContext(): void;
-
-/**
- * Reset the context to the default one by removing all the write access
- * and the deployment emulation.
- *
- * @example
- * ```typescript
- * test('test function protection', () => {
- *   resetContext();
- *
- *   const mockValue: StaticArray<u8> = [1,2,3];
- *   const call = (): void => {
- *      myProtectedSCFunction(NoArgs.serialize());
- *   };
- *
- *   expect(call).toThrow('You do not have the write access to this smart contract'');
- * });
- * ```
- *
- */
-@external("massa", "assembly_script_mock_not_admin_context")
-export declare function mockNonAdminContext(): void;
+export declare function mockAdminContext(isAdmin: bool): void;
 
 /**
  * Emulate a deployment context by giving the write access to all contracts

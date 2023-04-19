@@ -11,7 +11,6 @@ import { changeCallStack, resetStorage } from '../vm-mock/storage';
 import {
   mockAdminContext,
   setDeployContext,
-  mockNonAdminContext,
   setLocalContext,
 } from '../vm-mock/env';
 import { Args, bytesToString, stringToBytes } from '@massalabs/as-types';
@@ -145,15 +144,26 @@ describe('Testing mocked Storage and CallStack', () => {
   });
 });
 
+const callerAddress: Address = new Address(
+  'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq',
+);
+const contractAddress: Address = new Address(
+  'AS12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT',
+);
+
 describe('Testing mocked Context', () => {
   beforeEach(() => {
-    mockNonAdminContext();
-    changeCallStack(testAddress.toString() + ' , ' + testAddress2.toString());
+    mockAdminContext(false);
+    changeCallStack(
+      callerAddress.toString() + ' , ' + contractAddress.toString(),
+    );
   });
 
   afterAll(() => {
-    mockNonAdminContext();
-    changeCallStack(testAddress.toString() + ' , ' + testAddress2.toString());
+    mockAdminContext(false);
+    changeCallStack(
+      callerAddress.toString() + ' , ' + contractAddress.toString(),
+    );
   });
 
   it('should return false when caller has no write access', () => {
@@ -161,14 +171,14 @@ describe('Testing mocked Context', () => {
   });
 
   it('should return true when caller has write access as an admin', () => {
-    mockAdminContext();
+    mockAdminContext(true);
     expect(env.callerHasWriteAccess()).toStrictEqual(true);
   });
 
   it('should return true for write access when caller is an admin and false when caller is a non-admin', () => {
-    mockAdminContext();
+    mockAdminContext(true);
     expect(env.callerHasWriteAccess()).toStrictEqual(true);
-    mockNonAdminContext();
+    mockAdminContext(false);
     expect(env.callerHasWriteAccess()).toStrictEqual(false);
   });
 
@@ -189,44 +199,44 @@ describe('Testing mocked Context', () => {
     expect(callee()).not.toStrictEqual(new Address('AS12BqZEQ6sByNCALLER'));
   });
 
-  test('Test deploy context random ok values', () => {
+  it('should give a random distinct value to callerAddress when deploy context is set', () => {
     setDeployContext();
-    const callerAddress = caller();
-    const calleeAddress = callee();
 
-    expect(callerAddress).not.toStrictEqual(calleeAddress);
+    expect(caller()).not.toStrictEqual(callee());
   });
 
-  test('Test deploy context no contract Address changes', () => {
-    setDeployContext();
-    const callerAddress = caller();
-    const calleeAddress = callee();
+  it('should not change the contract address when changing to deploy context', () => {
+    expect(callee()).toStrictEqual(contractAddress);
+    expect(caller()).toStrictEqual(callerAddress);
 
-    expect(callerAddress).not.toStrictEqual(calleeAddress);
+    setDeployContext();
+
+    expect(caller()).not.toStrictEqual(callerAddress);
+    expect(caller()).not.toStrictEqual(callee());
+
+    expect(callee()).toStrictEqual(contractAddress);
   });
 
-  test('Test local context gives write access', () => {
+  it('should give write access when changing to local context', () => {
     setLocalContext();
     expect(env.callerHasWriteAccess()).toStrictEqual(true);
   });
 
-  test('Test local context not deploying', () => {
+  it('should not be in deploying context when local context is set', () => {
     setLocalContext();
     expect(isDeployingContract()).toStrictEqual(false);
   });
 
-  test('Test local context changes call stack', () => {
+  it('should change the call stack according to the passed parameter when changing to local context', () => {
     setLocalContext('AS12BqZEQ6sByNCALLER');
 
     expect(caller()).toStrictEqual(new Address('AS12BqZEQ6sByNCALLER'));
     expect(callee()).toStrictEqual(new Address('AS12BqZEQ6sByNCALLER'));
   });
 
-  test('Test local context random ok values', () => {
+  it('should give the same random value to both address in call stack when changing to local context', () => {
     setLocalContext();
-    const callerAddress = caller();
-    const calleeAddress = callee();
 
-    expect(callerAddress.toString()).toStrictEqual(calleeAddress.toString());
+    expect(caller().toString()).toStrictEqual(callee().toString());
   });
 });

@@ -435,24 +435,19 @@ export default function createMockedABI(
         adminContext = false;
       },
 
-      /**
-       * Sets the current context to a deployment context by updating the caller address to a new, distinct
-       * address from the contract address.
-       * Gives write access on any sc function tested.
-       *
-       * @param {*} addrPtr - the new optionnal address to set as caller address 
-       */
       assembly_script_set_deploy_context(addrPtr) {
         adminContext = true;
         // Ensure the caller address is different from the contract address
-
+        console.log("\n\ncallStack Before: " + callStack);
+        console.log("callerAddress Before: " + callerAddress);
+        console.log("contractAddress Before: " + contractAddress);
         if (!addrPtr || ptrToString(addrPtr) === contractAddress) {
           // generate a new address if it is the same as the contract address
           callerAddress = generateDumbAddress(); 
         } else {
           callerAddress = ptrToString(addrPtr);
         }
-
+        
         if (!ledger.has(callerAddress)) {
           // add the new address to the ledger
           ledger.set(callerAddress, {
@@ -462,6 +457,9 @@ export default function createMockedABI(
         }
         // updating the callStack
         callStack = callerAddress + ' , ' + contractAddress;
+        console.log("--------------\ncallStack After: " + callStack);
+        console.log("callerAddress After: " + callerAddress);
+        console.log("contractAddress After: " + contractAddress);
       },
 
       assembly_script_set_local_context(addrPtr) {
