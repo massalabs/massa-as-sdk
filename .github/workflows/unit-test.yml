@@ -30,7 +30,6 @@ jobs:
     - name: Execute unit tests
       run: |
         npm ci
-        npm run build
         npm run fmt:check
         npm run test:ci
 
