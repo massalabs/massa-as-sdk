@@ -5,8 +5,8 @@ const { createHash } = await import('node:crypto');
  */
 
 // Those both addresses have been randomly generated
-const callerAddress = 'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq';
-const contractAddress = 'AS12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT';
+let callerAddress = 'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq';
+let contractAddress = 'AS12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT';
 
 /**
  * return a random string
@@ -53,6 +53,8 @@ let callStack = callerAddress + ' , ' + contractAddress;
 }
 */
 let ledger;
+let adminContext = false;
+let deployContext = false;
 
 /**
  * Reset the ledger
@@ -192,9 +194,8 @@ export default function createMockedABI(
   /**
    * Check if the address prefix is valid
    *
-   * @param {string} address
-   *
-   * @returns {boolean}
+   * @param {string} address - the address to check
+   * @returns {boolean} - true if the address prefix is valid
    */
   function isRightPrefix(address) {
     const addressPrefix = 'A';
@@ -208,9 +209,8 @@ export default function createMockedABI(
   /**
    * Check if the address length is valid
    *
-   * @param {string} address
-   *
-   * @returns {boolean}
+   * @param {string} address - the address to check
+   * @returns {boolean} - true if the address length is valid
    */
   function isRightLength(address) {
     const minAddressLength = 40;
@@ -427,12 +427,56 @@ export default function createMockedABI(
         );
       },
 
-      assembly_script_caller_has_write_access() {
-        return false;
+      assembly_script_mock_admin_context(isAdmin) {
+        adminContext = isAdmin;
       },
 
-      isDeployingContract() {
-        return false;
+      assembly_script_mock_not_admin_context() {
+        adminContext = false;
+      },
+
+      assembly_script_set_deploy_context(addrPtr) {
+        adminContext = true;
+        // Ensure the caller address is different from the contract address
+        if (!addrPtr || ptrToString(addrPtr) === contractAddress) {
+          // generate a new address if it is the same as the contract address
+          callerAddress = generateDumbAddress(); 
+        } else {
+          callerAddress = ptrToString(addrPtr);
+        }
+        
+        if (!ledger.has(callerAddress)) {
+          // add the new address to the ledger
+          ledger.set(callerAddress, {
+            storage: new Map(),
+            contract: '',
+          });
+        }
+        // updating the callStack
+        callStack = callerAddress + ' , ' + contractAddress;
+      },
+
+      assembly_script_set_local_context(addrPtr) {
+        adminContext = true;
+        if (!addrPtr) {
+          // if the address is not set, uses the current contract address as caller address
+          callerAddress = contractAddress;
+        }
+        else {
+          callerAddress = ptrToString(addrPtr);
+          contractAddress = callerAddress;
+        }
+        if (!ledger.has(callerAddress)) {
+          ledger.set(callerAddress, {
+            storage: new Map(),
+            contract: '',
+          });
+        }
+        callStack = callerAddress + ' , ' + contractAddress;
+      },
+
+      assembly_script_caller_has_write_access() {
+        return adminContext; // uses the saved actual state of the context
       },
 
       assembly_script_hash_sha256(aPtr) {

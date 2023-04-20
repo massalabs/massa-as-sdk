@@ -8,9 +8,14 @@ import {
   validateAddress,
 } from '../std';
 import { changeCallStack, resetStorage } from '../vm-mock/storage';
-import { mockScCall } from '../vm-mock/env';
-import { localCall } from '../std/index';
+import {
+  mockAdminContext,
+  setDeployContext,
+  setLocalContext,
+} from '../vm-mock/env';
 import { Args, bytesToString, stringToBytes } from '@massalabs/as-types';
+import { env } from '../env/index';
+import { callee, caller, isDeployingContract } from '../std/context';
 
 const testAddress = new Address(
   'AU12E6N5BFAdC2wyiBV6VJjqkWhpz1kLVp2XpbRdSnL1mKjCWT6oR',
@@ -136,5 +141,102 @@ describe('Testing mocked Storage and CallStack', () => {
 
     const result2 = validateAddress(badAddress.toString());
     expect(result2).toBe(false);
+  });
+});
+
+const callerAddress: Address = new Address(
+  'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq',
+);
+const contractAddress: Address = new Address(
+  'AS12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT',
+);
+
+describe('Testing mocked Context', () => {
+  beforeEach(() => {
+    mockAdminContext(false);
+    changeCallStack(
+      callerAddress.toString() + ' , ' + contractAddress.toString(),
+    );
+  });
+
+  afterAll(() => {
+    mockAdminContext(false);
+    changeCallStack(
+      callerAddress.toString() + ' , ' + contractAddress.toString(),
+    );
+  });
+
+  it('should return false when caller has no write access', () => {
+    expect(env.callerHasWriteAccess()).toStrictEqual(false);
+  });
+
+  it('should return true when caller has write access as an admin', () => {
+    mockAdminContext(true);
+    expect(env.callerHasWriteAccess()).toStrictEqual(true);
+  });
+
+  it('should return true for write access when caller is an admin and false when caller is a non-admin', () => {
+    mockAdminContext(true);
+    expect(env.callerHasWriteAccess()).toStrictEqual(true);
+    mockAdminContext(false);
+    expect(env.callerHasWriteAccess()).toStrictEqual(false);
+  });
+
+  it('should return true for write access when using deploy context', () => {
+    setDeployContext();
+    expect(env.callerHasWriteAccess()).toStrictEqual(true);
+  });
+
+  it('should return true for isDeployingContract when deploy context mock is set', () => {
+    setDeployContext();
+    expect(isDeployingContract()).toStrictEqual(true);
+  });
+
+  it('should set the same address for caller and callee when deploy context is set', () => {
+    setDeployContext('AS12BqZEQ6sByNCALLER');
+
+    expect(caller()).toStrictEqual(new Address('AS12BqZEQ6sByNCALLER'));
+    expect(callee()).not.toStrictEqual(new Address('AS12BqZEQ6sByNCALLER'));
+  });
+
+  it('should give a random distinct value to callerAddress when deploy context is set', () => {
+    setDeployContext();
+
+    expect(caller()).not.toStrictEqual(callee());
+  });
+
+  it('should not change the contract address when changing to deploy context', () => {
+    expect(callee()).toStrictEqual(contractAddress);
+    expect(caller()).toStrictEqual(callerAddress);
+
+    setDeployContext();
+
+    expect(caller()).not.toStrictEqual(callerAddress);
+    expect(caller()).not.toStrictEqual(callee());
+
+    expect(callee()).toStrictEqual(contractAddress);
+  });
+
+  it('should give write access when changing to local context', () => {
+    setLocalContext();
+    expect(env.callerHasWriteAccess()).toStrictEqual(true);
+  });
+
+  it('should not be in deploying context when local context is set', () => {
+    setLocalContext();
+    expect(isDeployingContract()).toStrictEqual(false);
+  });
+
+  it('should change the call stack according to the passed parameter when changing to local context', () => {
+    setLocalContext('AS12BqZEQ6sByNCALLER');
+
+    expect(caller()).toStrictEqual(new Address('AS12BqZEQ6sByNCALLER'));
+    expect(callee()).toStrictEqual(new Address('AS12BqZEQ6sByNCALLER'));
+  });
+
+  it('should give the same random value to both address in call stack when changing to local context', () => {
+    setLocalContext();
+
+    expect(caller().toString()).toStrictEqual(callee().toString());
   });
 });
