@@ -27,17 +27,19 @@ To contribute code, please follow these steps:
 
 > **NOTE:** When creating a pull request, please include a clear and concise title and description of your changes, as well as any relevant context or background information.
 
-### Contributing Namespaces
-They are a few things to know about namespaces to contribute to Massa-as-sdk.
-All namespaces are located in the `assembly/std/` directory, and each namespace is in its own directory.
+## Contributing Namespaces
 
-If you want to add a new feature, make sure you add it in the correct namespace.
-However you can decide that a namespace is getting to big or a mess.
+Namespaces are used in Massa-as-sdk to group related functions and objects together, making it easier for developers to find and use them in their contracts. All namespaces are located in the `assembly/std/` directory, and each namespace is in its own subdirectory.
 
-So if you think you have a great new namespace idea, don't hesitate to create a new one.
-Just make sure you add sufficient documentation to your namespace and functions.
+### Using existing namespaces
 
+When contributing to Massa-as-sdk, make sure you add new features to the correct namespace. Before adding a new feature, it's a good idea to check if there's an existing namespace that contains related functions or objects. By adding to an existing namespace, you can help ensure that your code is well-organized and easy to find.
 
+### Creating new namespaces
+
+If you have an idea for a new feature or a collection of related functions and objects that doesn't fit into an existing namespace, you can create a new namespace. When creating a new namespace, make sure to choose a descriptive name that accurately reflects the purpose of the namespace. Additionally, make sure to keep the namespace focused and to only include related functions and objects.
+
+If an existing namespace is becoming too large or unwieldy, it may also be a good idea to create a new one. When doing so, make sure to document your namespace and its functions thoroughly to make it easy for other developers to understand and use.
 ## Code Style
 Please ensure that your code follows the existing code style used in the project.
 We use the [MassaLabs Prettier configuration](https://github.com/massalabs/prettier-config-as) and [MassaLabs ESLint configuration](https://github.com/massalabs/eslint-config) for formatting and linting.
