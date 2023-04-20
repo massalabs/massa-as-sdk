@@ -1,5 +1,6 @@
 import { Args } from '@massalabs/as-types';
 import { Address } from '../address';
+import { validateAddress } from '../utils';
 
 describe('Address tests', () => {
   it('basic tests', () => {
@@ -7,7 +8,7 @@ describe('Address tests', () => {
       'AU1aMywGBgBywiL6WcbKR4ugxoBtdP9P3waBVi5e713uvj7F1DJL',
     );
 
-    expect(a1.isValid()).toBeTruthy();
+    expect(validateAddress(a1.toString())).toBeTruthy();
 
     // serialization / deserialization
 

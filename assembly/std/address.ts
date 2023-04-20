@@ -9,30 +9,18 @@
  * @module
  */
 
-import { Valider, Serializable, Args, Result } from '@massalabs/as-types';
+import { Serializable, Args, Result } from '@massalabs/as-types';
 
 /**
  * Represents a Massa blockchain address.
  */
-export class Address implements Valider, Serializable {
+export class Address implements Serializable {
   /**
    * Creates a new Address;
    *
    * @param _value - A byte string that represents the address data.
-   * @param _isValid - Defaults to `true`.
    */
-  constructor(private _value: string = '', private _isValid: bool = true) {}
-
-  /**
-   * Returns whether the Address is still valid.
-   *
-   * @returns A boolean value indicating whether the address is still valid.
-   *
-   * @see https://github.com/massalabs/massa-sc-runtime/issues/142
-   */
-  isValid(): bool {
-    return this._isValid;
-  }
+  constructor(private _value: string = '') {}
 
   /**
    * Serialize the address.
