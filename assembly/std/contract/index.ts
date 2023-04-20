@@ -22,6 +22,8 @@
  * In the file **bytecode.ts** you can find functions to manipulate **smart contracts bytecode** such as:
  * - {@link getBytecode}.
  * - {@link getBytecodeOf}.
+ * - {@link setBytecode}.
+ * - {@link setBytecodeOf}.
  * - {@link createSC}.
  *
  * @module
