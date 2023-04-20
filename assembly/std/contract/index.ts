@@ -22,10 +22,17 @@
  * In the file **bytecode.ts** you can find functions to manipulate **smart contracts bytecode** such as:
  * - {@link getBytecode}.
  * - {@link getBytecodeOf}.
+ * - {@link setBytecode}.
+ * - {@link setBytecodeOf}.
  * - {@link createSC}.
+ *
+ * In the file **fileToByteArray.ts** you can find a function that convert a **smart-contract file** to a **byteArray**:
+ * - {@link fileToByteArray}.
+ *
  *
  * @module
  *
  */
 export * from './calls';
 export * from './bytecode';
+export * from './fileToByteArray';
