@@ -24,8 +24,13 @@
  * - {@link getBytecodeOf}.
  * - {@link createSC}.
  *
+ * In the file **fileToByteArray.ts** you can find a function that convert a **smart-contract file** to a **byteArray**:
+ * - {@link fileToByteArray}.
+ *
+ *
  * @module
  *
  */
 export * from './calls';
 export * from './bytecode';
+export * from './fileToByteArray';
