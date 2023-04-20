@@ -37,9 +37,6 @@
  * In the file **random.ts** you can find functions to generate **random numbers** such as:
  * - {@link unsafeRandom}.
  *
- * In the file **file-utils.ts** you can find functions to manipulate **files** such as:
- * - {@link fileToByteArray}.
- *
  * @module
  *
  */
@@ -50,4 +47,3 @@ export * from './crypto';
 export * from './events';
 export * from './logging';
 export * from './random';
-export * from './file-utils';
