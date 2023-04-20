@@ -249,7 +249,7 @@ export default function createMockedABI(
           const addressStorage = ledger.get(contractAddress).storage;
 
           if (addressStorage.has(k)) {
-            return addressStorage.get(k);
+            return newArrayBuffer(addressStorage.get(k));
           } else {
             throw new Error('Runtime error: data entry not found');
           }
@@ -294,7 +294,7 @@ export default function createMockedABI(
         if (ledger.has(a)) {
           const addressStorage = ledger.get(a).storage;
           if (addressStorage.has(k)) {
-            return addressStorage.get(k);
+            return newArrayBuffer(addressStorage.get(k));
           } else {
             throw new Error('Runtime error: data entry not found');
           }
