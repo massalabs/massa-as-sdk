@@ -1,4 +1,4 @@
-name: Release
+name: Publish npm package and documentation
 
 on:
   push:
@@ -11,14 +11,21 @@ jobs:
 
   publish-npm:
     needs: test
+
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: 18
           registry-url: https://registry.npmjs.org
-      - run: |
+
+      - name: Publish package on npm
+        run: |
           npm pkg delete scripts.prepare
           npm ci
           npm publish --access public
@@ -27,18 +34,25 @@ jobs:
 
   deploy-typedoc:
     needs: test
+
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Use Node.js
+      uses: actions/setup-node@v3
       with:
         node-version: 18
+
     - name: Generate doc
       run: |
         npm ci
         npm run doc
         mv docs/documentation/html massa-as-sdk
-    - name: Deploy files
+
+    - name: Deploy documentation
       uses: appleboy/scp-action@master
       env:
         HOST: ${{ secrets.MASSANET_HOST }}
