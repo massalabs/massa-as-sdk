@@ -27,6 +27,17 @@ To contribute code, please follow these steps:
 
 > **NOTE:** When creating a pull request, please include a clear and concise title and description of your changes, as well as any relevant context or background information.
 
+### Contributing Namespaces
+They are a few things to know about namespaces to contribute to Massa-as-sdk.
+All namespaces are located in the `assembly/std/` directory, and each namespace is in its own directory.
+
+If you want to add a new feature, make sure you add it in the correct namespace.
+However you can decide that a namespace is getting to big or a mess.
+
+So if you think you have a great new namespace idea, don't hesitate to create a new one.
+Just make sure you add sufficient documentation to your namespace and functions.
+
+
 ## Code Style
 Please ensure that your code follows the existing code style used in the project.
 We use the [MassaLabs Prettier configuration](https://github.com/massalabs/prettier-config-as) and [MassaLabs ESLint configuration](https://github.com/massalabs/eslint-config) for formatting and linting.
