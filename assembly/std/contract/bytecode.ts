@@ -33,6 +33,49 @@ export function getBytecodeOf(address: Address): StaticArray<u8> {
 }
 
 /**
+ * Sets the executable bytecode of the current address.
+ *
+ * @remarks
+ * The maximum bytecode size is 10MB.
+ *
+ * @param bytecode - The bytecode to be set. It should be a `StaticArray<u8>`.
+ *
+ * @throws
+ * - if the caller address does not correspond to a smart contract in the ledger.
+ * - if the bytecode size exceeds maximum allowed size.
+ * - if the address does not exist
+ * - if the caller lacks write permissions on the address.
+ */
+export function setBytecode(bytecode: StaticArray<u8>): void {
+  env.setBytecode(bytecode);
+}
+
+/**
+ * Sets the executable bytecode of the given `address`.
+ *
+ * @remarks
+ * The maximum bytecode size is 10MB.
+ *
+ * TODO: explains security mechanisms.
+ * See [related issue](https://github.com/massalabs/massa-as-sdk/issues/182)
+ *
+ * @param address - The target address whose bytecode will be set. It should be of type `Address`.
+ * @param bytecode - The bytecode to be set for the `address`. It should be a `StaticArray<u8>`.
+ *
+ * @throws
+ * - if the `address` does not correspond to a smart contract in the ledger.
+ * - if the address does not exist
+ * - if the caller lacks write permissions on the `address`.
+ * - if the bytecode size exceeds maximum allowed size
+ */
+export function setBytecodeOf(
+  address: Address,
+  bytecode: StaticArray<u8>,
+): void {
+  env.setBytecodeOf(address.toString(), bytecode);
+}
+
+/**
  * Creates a new smart contract on the ledger using its bytecode representation.
  *
  * @remarks
