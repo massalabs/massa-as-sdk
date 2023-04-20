@@ -11,8 +11,9 @@
  * the contract, the current contract address, and the transaction creator.
  *
  * Functions such as {@link ownedAddresses}, {@link addressStack}, {@link caller}, {@link callee},
- * {@link transactionCreator}, {@link transferredCoins}, {@link timestamp}, and {@link remainingGas}
- * provide access to important context information during smart contract execution.
+ * {@link transactionCreator}, {@link transferredCoins}, {@link timestamp}, {@link remainingGas},
+ * {@link currentThread} and {@link currentPeriod} provide access to important context information
+ * during smart contract execution.
  *
  * It is not possible in AssemblyScript to catch thrown exceptions.
  * All exceptions thrown by functions in this module will stop the execution of the smart contract.
@@ -187,4 +188,24 @@ export function timestamp(): u64 {
  */
 export function remainingGas(): u64 {
   return env.remainingGas();
+}
+
+/**
+ * Retrieves the current period of the network.
+ *
+ * @returns the current period.
+ *
+ */
+export function currentPeriod(): u64 {
+  return env.currentPeriod();
+}
+
+/**
+ * Retrieves the current thread of the execution context.
+ *
+ * @returns the current thread.
+ *
+ */
+export function currentThread(): u8 {
+  return env.currentThread();
 }

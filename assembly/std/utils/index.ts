@@ -17,11 +17,6 @@
  * - {@link validateAddress}.
  * To be moved in the {@link Address} namespace.
  *
- * In the file **context.ts** you can find utilities functions about the **execution context** such as:
- * - {@link currentPeriod}.
- * - {@link currentThread}.
- * To be moved in the {@link Context} namespace.
- *
  * In the file **crypto.ts** you can find basic **cryptographic** functions such as:
  * - {@link sha256}.
  * - {@link isSignatureValid}.
@@ -45,7 +40,6 @@
  */
 
 export * from './address';
-export * from './context';
 export * from './crypto';
 export * from './events';
 export * from './logging';
