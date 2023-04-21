@@ -40,7 +40,7 @@ jobs:
         echo "coverage=$value" >> $GITHUB_OUTPUT
 
     - name: Debug find .github
-      run:  ls
+      run:  cd .. && ls -al
       shell: bash
 
     - name: Add test coverage to README
