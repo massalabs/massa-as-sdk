@@ -263,6 +263,8 @@ export default function createMockedABI(
 
       assembly_script_change_call_stack(callstackPtr) {
         callStack = ptrToString(callstackPtr);
+        callerAddress = callStack.split(' , ')[0];
+        contractAddress = (callStack.split(' , ').length > 1) ? callStack.split(' , ')[1] : '';
       },
 
       assembly_script_generate_event(msgPtr) {
