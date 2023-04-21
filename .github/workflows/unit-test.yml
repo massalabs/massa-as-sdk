@@ -40,7 +40,7 @@ jobs:
         echo "coverage=$value" >> $GITHUB_OUTPUT
 
     - name: Add test coverage to README
-      run:  ${GITHUB_WORKSPACE}/.github/coverage.sh
+      run:  ./.github/coverage.sh
       shell: bash
 
     - name: Commit changes
