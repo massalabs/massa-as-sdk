@@ -39,12 +39,12 @@ jobs:
         value=$(npm run test:ci | grep -oE '^│\s*total\s+\│\s*([0-9.]+)%' | grep -oE '[0-9]+(\.[0-9]+)?%' | cut -d'.' -f1)
         echo "coverage=$value" >> $GITHUB_OUTPUT
 
-    - name: Debug find pwd
-      run:  pwd
+    - name: Debug find .github
+      run:  ls
       shell: bash
 
     - name: Add test coverage to README
-      run:  ./.github/coverage.sh
+      run:  .github/coverage.sh
       shell: bash
 
     - name: Commit changes
