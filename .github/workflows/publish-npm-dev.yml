@@ -1,4 +1,4 @@
-name: Npm nightly publish
+name: Publish npm dev
 
 on:
   push:
@@ -10,13 +10,20 @@ jobs:
 
   publish-npm-dev:
     needs: test
+
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: 18
           registry-url: https://registry.npmjs.org
-      - run: ./scripts/publish-dev.sh
+
+      - name: Publish package on npm
+        run: ./scripts/publish-dev.sh
         env:
           NODE_AUTH_TOKEN: ${{ secrets.npm_token }}

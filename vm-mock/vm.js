@@ -243,18 +243,20 @@ export default function createMockedABI(
       },
 
       assembly_script_get_data(kPtr) {
-        let v = '';
         const k = ptrToUint8ArrayString(kPtr);
 
         if (ledger.has(contractAddress)) {
           const addressStorage = ledger.get(contractAddress).storage;
 
           if (addressStorage.has(k)) {
-            v = addressStorage.get(k);
+            return newArrayBuffer(addressStorage.get(k));
+          } else {
+            throw new Error('Runtime error: data entry not found');
           }
+        } else {
+          throw new Error('Runtime error: address parsing error: ' + contractAddress);
         }
 
-        return newArrayBuffer(v);
       },
 
       assembly_script_reset_storage() {
@@ -275,13 +277,13 @@ export default function createMockedABI(
         const a = ptrToString(aPtr);
         const k = ptrToUint8ArrayString(kPtr);
         const v = getArrayBuffer(vPtr);
+
         if (!ledger.has(a)) {
           ledger.set(a, {
             storage: new Map(),
             contract: '',
           });
         }
-
         const addressStorage = ledger.get(a).storage;
         addressStorage.set(k, v);
       },
@@ -290,13 +292,17 @@ export default function createMockedABI(
         let v = '';
         const a = ptrToString(aPtr);
         const k = ptrToUint8ArrayString(kPtr);
+
         if (ledger.has(a)) {
           const addressStorage = ledger.get(a).storage;
           if (addressStorage.has(k)) {
-            v = addressStorage.get(k);
+            return newArrayBuffer(addressStorage.get(k));
+          } else {
+            throw new Error('Runtime error: data entry not found');
           }
+        } else {
+          throw new Error('Runtime error: address parsing error: ' + a);
         }
-        return newArrayBuffer(v);
       },
 
       assembly_script_has_data(kPtr) {
@@ -321,9 +327,11 @@ export default function createMockedABI(
         if (ledger.has(contractAddress)) {
           const addressStorage = ledger.get(contractAddress).storage;
           if (!addressStorage.has(k)) {
-            throw new Error('key not found');
+            throw new Error('Runtime error: data entry not found');
           }
           addressStorage.delete(k);
+        } else {
+          throw new Error('Runtime error: address parsing error: ' + contractAddress);
         }
       },
 
@@ -332,13 +340,13 @@ export default function createMockedABI(
         const key = ptrToUint8ArrayString(keyPtr);
 
         if (!ledger.has(address)) {
-          throw new Error('address not found');
+          throw new Error('Runtime error: address parsing error: ' + address);
         }
 
         const addressStorage = ledger.get(address).storage;
 
         if (!addressStorage.has(key)) {
-          throw new Error('key not found');
+          throw new Error('Runtime error: data entry not found');
         }
 
         addressStorage.delete(key);
@@ -350,13 +358,13 @@ export default function createMockedABI(
         const newValue = byteArrToUTF8String(getArrayBuffer(valuePtr));
 
         if (!ledger.has(address)) {
-          throw new Error('address not found');
+          throw new Error('Runtime error: address parsing error: ' + address);
         }
 
         const addressStorage = ledger.get(address).storage;
 
         if (!addressStorage.has(key)) {
-          throw new Error('key not found');
+          throw new Error('Runtime error: data entry not found');
         }
 
         const oldValue = byteArrToUTF8String(addressStorage.get(key));
@@ -369,13 +377,13 @@ export default function createMockedABI(
         const newValue = byteArrToUTF8String(getArrayBuffer(valuePtr));
 
         if (!ledger.has(address)) {
-          throw new Error('address not found');
+          throw new Error('Runtime error: address parsing error: ' + address);
         }
 
         const addressStorage = ledger.get(address).storage;
 
         if (!addressStorage.has(key)) {
-          throw new Error('key not found');
+          throw new Error('Runtime error: data entry not found');
         }
 
         const oldValue = byteArrToUTF8String(addressStorage.get(key));
@@ -609,7 +617,7 @@ export default function createMockedABI(
         const bytecode = getArrayBuffer(bytecodePtr);
 
         if (!ledger.has(a)) {
-          throw new Error(`No address ${a} found in ledger.`);
+          throw new Error('Runtime error: address parsing error: ' + a);
         }
 
         const addressLedger = ledger.get(a);
@@ -624,7 +632,7 @@ export default function createMockedABI(
       assembly_script_get_bytecode_for(aPtr) {
         const a = ptrToString(aPtr);
         if (!ledger.has(a)) {
-          throw new Error(`No address ${a} found in ledger.`);
+          throw new Error('Runtime error: address parsing error: ' + a);
         }
 
         const addressLedger = ledger.get(a);
@@ -643,7 +651,7 @@ export default function createMockedABI(
         const callerBalance = ledger.get(callerAddress).balance;
         if (callerBalance < BigInt(_coinsAmount)) {
           throw new Error(
-            `Not enough balance to transfer ${_coinsAmount} coins.`,
+            `Runtime error: not enough balance to transfer ${_coinsAmount} coins.`,
           );
         }
         ledger.get(callerAddress).balance -= BigInt(_coinsAmount);
@@ -659,9 +667,7 @@ export default function createMockedABI(
         const addressTo = ptrToString(_addressToPtr);
 
         if (!ledger.has(addressFrom)) {
-          throw new Error(
-            `Address ${addressFrom} does not exist in the ledger.`,
-          );
+          throw new Error('Runtime error: address parsing error: ' + addressFrom);
         }
 
         if (!ledger.has(addressTo)) {
@@ -676,7 +682,7 @@ export default function createMockedABI(
 
         if (addressFromBalance < BigInt(_coinsAmount)) {
           throw new Error(
-            `Not enough balance to transfer ${_coinsAmount} coins.`,
+            `Runtime error: not enough balance to transfer ${_coinsAmount} coins.`,
           );
         }
 
