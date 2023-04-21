@@ -2,9 +2,9 @@
 
 color="red"
 
-if [ "$coverage" -ge 80 ]; then
+if [ "$COVERAGE" -ge 80 ]; then
     color="green"
-elif [ "$coverage" -ge 70 ]; then
+elif [ "$COVERAGE" -ge 70 ]; then
     color="orange"
 fi
 
@@ -16,13 +16,13 @@ regex="coverage-([0-9]+)%"
 
 if [[ $coverageLine =~ $regex ]]; then
     oldCoverage="${BASH_REMATCH[1]}"
-    echo "Coverage is $coverage%"
+    echo "Coverage is $COVERAGE%"
 else
     echo "No coverage found"
 fi
 
-if [ "$oldCoverage" != "$coverage" ] || [ -z "$oldCoverage" ]; then
+if [ "$oldCoverage" != "$COVERAGE" ] || [ -z "$oldCoverage" ]; then
     echo "Updating badge"
-    newLine="![check-code-coverage](https://img.shields.io/badge/coverage-$coverage%25-$color)"
+    newLine="![check-code-coverage](https://img.shields.io/badge/coverage-$COVERAGE%25-$color)"
     sed -i "3s#.*#${newLine}#" $filename
 fi

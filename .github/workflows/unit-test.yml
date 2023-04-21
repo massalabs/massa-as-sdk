@@ -39,13 +39,11 @@ jobs:
         value=$(npm run test:ci | grep -oE '^│\s*total\s+\│\s*([0-9.]+)%' | grep -oE '[0-9]+(\.[0-9]+)?%' | cut -d'.' -f1)
         echo "coverage=$value" >> $GITHUB_OUTPUT
 
-    - name: Debug find .github
-      run:  cd .. && ls -al
-      shell: bash
-
     - name: Add test coverage to README
       run:  .github/coverage.sh
       shell: bash
+      env:
+        COVERAGE: ${{ steps.coverage.outputs.coverage }}
 
     - name: Commit changes
       uses: stefanzweifel/git-auto-commit-action@v4
@@ -54,6 +52,3 @@ jobs:
         file_pattern: "README.md"
         # Commit code using massabot account that can bypass push and MR restriction
         commit_author: massabot <info@massa.net>
- 
-      env:
-        COVERAGE: ${{ steps.coverage.outputs.coverage }}
