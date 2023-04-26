@@ -35,6 +35,12 @@ export function call(
  * @remarks
  * Arguments serialization is to be handled by the caller and the callee.
  *
+ * @privateRemarks
+ * When using localCall, the contract calls a function defined in another smart contract
+ * and executes it within its own context. This means that if a datastore key is modified
+ * in the called function, the modification will occur in the current smart contract's datastore.
+ * This behavior is attributed to the execution taking place "in the current context" of the caller.
+ *
  * @param at - The address of the contract from where the function is located.
  * @param functionName - The name of the function to call in the current context.
  * @param args - The arguments of the function we are calling.
