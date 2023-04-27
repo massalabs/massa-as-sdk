@@ -1,3 +1,20 @@
+/**
+ * Operation Datastore Functions
+ *
+ * The operation datastore is a concept unique to the ExecuteSC operations in Massa.
+ * It allows to send a table of keys and values (same format as the persistent datastore)
+ * that will be taken into consideration when running the ExecuteSC operation, and will not
+ * persist after that execution.
+ *
+ * This can be useful for setting initialization values such as ephemeral parameters, and
+ * in a deployer smart contract case, bytecode corresponding to smart contracts that we
+ * would want to deploy. That way, you could have generic deployers that use the operation
+ * datastore instead of writing the smart contract bytes directly into the deployer. These
+ * functions provide an interface for interacting with the operation datastore.
+ *
+ * Note that there might be more use cases beyond what has been mentioned here.
+ */
+
 import { env } from '../../env';
 import { derKeys } from './util';
 
