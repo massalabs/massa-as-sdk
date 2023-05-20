@@ -9,19 +9,19 @@ The following is a list of all the dependencies of this project:
 
 **Many thanks to:** [Joshua Tenner](tenner.joshua@gmail.com)
 
-## [@massalabs/as-transformer](https://registry.npmjs.org/@massalabs/as-transformer/-/as-transformer-0.1.3-dev.20230502152246.tgz)
+## [@massalabs/as-transformer](https://registry.npmjs.org/@massalabs/as-transformer/-/as-transformer-0.2.0.tgz)
 
 **License:** ISC - perpetual
 
-**Used version:** 0.1.3-dev.20230210120639
+**Used version:** 0.2.0
 
 **Many thanks to:** 
 
-## [@massalabs/as-types](https://registry.npmjs.org/@massalabs/as-types/-/as-types-0.0.3-dev.20230502152246.tgz)
+## [@massalabs/as-types](https://registry.npmjs.org/@massalabs/as-types/-/as-types-1.0.0.tgz)
 
 **License:** ISC - perpetual
 
-**Used version:** 0.0.3-dev.20230210120639
+**Used version:** 1.0.0
 
 **Many thanks to:** 
 
