@@ -2,7 +2,7 @@ name: Npm nightly publish
 
 on:
   push:
-    branches: [ main, buildnet ]
+    branches: [ main, buildnet, testnet ]
 
 jobs:
   test:
