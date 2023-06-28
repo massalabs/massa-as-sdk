@@ -1,16 +1,11 @@
-name: Publish npm dev
+name: Publish NPM dev packages
 
 on:
   push:
-    branches: [ main ]
+    branches: [ add_dist_version ]
 
 jobs:
-  test:
-    uses: ./.github/workflows/unit-test.yml
-
-  publish-npm-dev:
-    needs: test
-
+  publish-npm:
     runs-on: ubuntu-latest
     
     steps:
@@ -21,9 +16,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          registry-url: https://registry.npmjs.org
+          registry-url: https://registry.npmjs.org/
 
-      - name: Publish package on npm
-        run: ./scripts/publish-dev.sh
+      - name: Publish on npm
+        run: ./scripts/add_versions.sh
         env:
           NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
