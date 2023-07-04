@@ -44,3 +44,36 @@ export function isSignatureValid(
 ): bool {
   return env.isSignatureValid(digest, signature, publicKey);
 }
+
+/**
+ * Checks if an EVM signature is valid.
+ *
+ * @param digest - Digest message.
+ * @param publicKey - Expects a public key in ETH full format.
+ *                    Length: 65 bytes
+ * @param signature - Expects a SECP256K1 signature in full ETH format.
+ *                    Format: (r, s, v) v will be ignored.
+ *                    Length: 65 bytes
+ *
+ * @returns 'true' if the signature is valid, 'false' otherwise.
+ *
+ */
+export function isEvmSignatureValid(
+  digest: StaticArray<u8>,
+  publicKey: StaticArray<u8>,
+  signature: StaticArray<u8>,
+): bool {
+  return env.isEvmSignatureValid(digest, signature, publicKey);
+}
+
+/**
+ * Computes the Keccak256 hash of the given `data`.
+ *
+ * @param data - The data to hash.
+ *
+ * @returns The Keccak256 hash of the `data`, serialized as a `StaticArray<u8>`.
+ *
+ */
+export function keccak256(data: StaticArray<u8>): StaticArray<u8> {
+  return env.keccak256(data);
+}
