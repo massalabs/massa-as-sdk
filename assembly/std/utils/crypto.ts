@@ -60,8 +60,8 @@ export function isSignatureValid(
  */
 export function isEvmSignatureValid(
   digest: StaticArray<u8>,
-  publicKey: StaticArray<u8>,
   signature: StaticArray<u8>,
+  publicKey: StaticArray<u8>,
 ): bool {
   return env.isEvmSignatureValid(digest, signature, publicKey);
 }
