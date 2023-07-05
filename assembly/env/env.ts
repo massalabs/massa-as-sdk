@@ -136,6 +136,13 @@ export namespace env {
     publicKey: string,
   ): bool;
 
+  @external("massa", "assembly_script_evm_signature_verify")
+  export declare function isEvmSignatureValid(
+    digest: StaticArray<u8>,
+    signature: StaticArray<u8>,
+    publicKey: StaticArray<u8>,
+  ): bool;
+
   @external("massa", "assembly_script_address_from_public_key")
   export declare function publicKeyToAddress(publicKey: string): string;
 
@@ -190,6 +197,9 @@ export namespace env {
 
   @external("massa", "assembly_script_hash_sha256")
   export declare function sha256(bytecode: StaticArray<u8>): StaticArray<u8>;
+
+  @external("massa", "assembly_script_keccak256_hash")
+  export declare function keccak256(data: StaticArray<u8>): StaticArray<u8>;
 
   @external("massa", "assembly_script_validate_address")
   export declare function validateAddress(address: string): bool;
