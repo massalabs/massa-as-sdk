@@ -195,3 +195,17 @@ export function sendMessage(
     filterKey,
   );
 }
+
+/**
+ * Checks if the given function exists in a smart contract at the given address.
+ *
+ * @returns true if the function exists, false otherwise.
+ *
+ */
+export function getOriginOperationId(): string | null {
+  let id = env.getOriginOperationId();
+  if (id == "") {
+    return null;
+  }
+  return id;
+}
