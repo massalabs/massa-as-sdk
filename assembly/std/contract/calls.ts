@@ -204,7 +204,7 @@ export function sendMessage(
  */
 export function getOriginOperationId(): string | null {
   let id = env.getOriginOperationId();
-  if (id == "") {
+  if (!id.length) {
     return null;
   }
   return id;
