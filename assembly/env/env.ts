@@ -168,7 +168,7 @@ export namespace env {
     filter_key: StaticArray<u8>,
   ): void;
 
-  @external("massa", "get_origin_operation_id")
+  @external("massa", "assembly_script_get_origin_operation_id")
   export declare function getOriginOperationId(): string;
 
   @external("massa", "assembly_script_get_current_period")
