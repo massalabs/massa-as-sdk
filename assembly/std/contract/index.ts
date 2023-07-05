@@ -18,6 +18,8 @@
  * - {@link localExecution}.
  * - {@link functionExists}.
  * - {@link callerHasWriteAccess}.
+ * - {@link sendMessage}.
+ * - {@link getOriginOperationId}.
  *
  * In the file **bytecode.ts** you can find functions to manipulate **smart contracts bytecode** such as:
  * - {@link getBytecode}.
