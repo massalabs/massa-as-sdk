@@ -1,4 +1,6 @@
 import { env } from '../../env';
+import { encodeLengthPrefixed, stringToUint8Array } from './new_utils';
+import * as proto from "massa-proto-as/assembly";
 
 /**
  * Generates an event that is then emitted by the blockchain.
@@ -8,6 +10,20 @@ import { env } from '../../env';
  */
 export function generateEvent(event: string): void {
   env.generateEvent(event);
+}
+
+/// NEW
+export function generateEventBis(event: string): void {
+  const message = stringToUint8Array(event);
+  const req = new proto.GenerateEventRequest(message);
+  const reqBytes = proto.encodeGenerateEventRequest(req);
+  const respBytes = Uint8Array.wrap(
+    env.generateEventBis(encodeLengthPrefixed(reqBytes).buffer)
+  );
+
+  const resp = proto.decodeAbiResponse(respBytes);
+
+  assert(resp.error === null, "Error generating event" + resp.error!.message);
 }
 
 /**

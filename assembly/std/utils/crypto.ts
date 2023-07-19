@@ -1,4 +1,6 @@
 import { env } from '../../env';
+import { encodeLengthPrefixed } from './new_utils';
+import * as proto from "massa-proto-as/assembly";
 
 /**
  * Computes the SHA256 hash of the given `data`.
@@ -64,6 +66,24 @@ export function isEvmSignatureValid(
   publicKey: StaticArray<u8>,
 ): bool {
   return env.isEvmSignatureValid(digest, signature, publicKey);
+}
+
+/// NEW
+export function isEvmSignatureValidBis(
+  digest: Uint8Array,
+  signature: Uint8Array,
+  publicKey: Uint8Array
+): bool {
+  const req = new proto.VerifyEvmSigRequest(digest, signature, publicKey);
+  const reqBytes = proto.encodeVerifyEvmSigRequest(req);
+  const respBytes = Uint8Array.wrap(
+    env.isEvmSignatureValidBis(encodeLengthPrefixed(reqBytes).buffer)
+  );
+  const resp = proto.decodeAbiResponse(respBytes);
+  assert(resp.error === null);
+  assert(resp.res !== null);
+  assert(resp.res!.verifyEvmSigResult !== null);
+  return resp.res!.verifyEvmSigResult!.isVerified;
 }
 
 /**

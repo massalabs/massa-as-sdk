@@ -107,6 +107,10 @@ export namespace env {
   @external("massa", "assembly_script_generate_event")
   export declare function generateEvent(event: string): void;
 
+  /// NEW
+  @external("massa", "abi_generate_event")
+  export declare function generateEventBis(arg: ArrayBuffer): ArrayBuffer;
+
   @external("massa", "assembly_script_transfer_coins")
   export declare function transferCoins(to: string, amount: u64): void;
 
@@ -135,6 +139,10 @@ export namespace env {
     signature: string,
     publicKey: string,
   ): bool;
+
+  /// NEW
+  @external("massa", "abi_verify_evm_signature")
+  export declare function isEvmSignatureValidBis(arg: ArrayBuffer): ArrayBuffer;
 
   @external("massa", "assembly_script_evm_signature_verify")
   export declare function isEvmSignatureValid(
