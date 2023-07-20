@@ -8,6 +8,7 @@ const { createHash } = await import('node:crypto');
 let callerAddress = 'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq';
 let contractAddress = 'AS12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT';
 
+const OpId = "O1kEZsswxG6VFzfrnS5ZzEfcy2mYETUvyLn1NScCzqTX726KLzX";
 /**
  * return a random string
  *
@@ -708,6 +709,12 @@ export default function createMockedABI(
       assembly_script_address_from_public_key(publicKeyPtr) {
         return newString(
           'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq',
+        );
+      },
+
+      assembly_script_get_origin_operation_id() {
+        return newString(
+          OpId
         );
       },
     },
