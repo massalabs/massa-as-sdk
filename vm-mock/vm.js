@@ -8,7 +8,6 @@ const { createHash } = await import('node:crypto');
 let callerAddress = 'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq';
 let contractAddress = 'AS12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT';
 
-const OpId = "O1kEZsswxG6VFzfrnS5ZzEfcy2mYETUvyLn1NScCzqTX726KLzX";
 /**
  * return a random string
  *
@@ -31,8 +30,17 @@ function mixRandomChars(length) {
  *
  * @returns {string} a random Address
  */
-function generateDumbAddress() {
+export function generateDumbAddress() {
   return 'A12' + mixRandomChars(47);
+}
+
+/**
+ * Generates a random operationId.
+ *
+ * @returns {string} a random operationId
+ */
+export function generateRandOpId() {
+  return 'O1' + mixRandomChars(47);
 }
 
 let callStack = callerAddress + ' , ' + contractAddress;
@@ -713,8 +721,7 @@ export default function createMockedABI(
       },
 
       assembly_script_get_origin_operation_id() {
-        return newString(
-          OpId
+        return newString(generateRandOpId()
         );
       },
     },
