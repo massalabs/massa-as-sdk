@@ -15,6 +15,7 @@
  * In the file **address.ts** you can find utilities functions to interact further with {@link Address} such as:
  * - {@link publicKeyToAddress}.
  * - {@link validateAddress}.
+ * - {@link isAddressEoa}.
  * To be moved in the {@link Address} namespace.
  *
  * In the file **crypto.ts** you can find basic **cryptographic** functions such as:
@@ -22,6 +23,8 @@
  * - {@link isSignatureValid}.
  * - {@link keccak256}.
  * - {@link isEvmSignatureValid}.
+ * - {@link evmGetAddressFromPubkey}.
+ * - {@link evmGetPubkeyFromSignature}.
  * - {@link toBase58}.
  *
  * In the file **events.ts** you can find functions to generate **events** in the blockchain such as:

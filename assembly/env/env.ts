@@ -143,6 +143,20 @@ export namespace env {
     publicKey: StaticArray<u8>,
   ): bool;
 
+  @external("massa", "assembly_script_evm_get_address_from_pubkey")
+  export declare function evmGetAddressFromPubkey(
+    publicKey: StaticArray<u8>,
+  ): StaticArray<u8>;
+
+  @external("massa", "assembly_script_evm_get_pubkey_from_signature")
+  export declare function evmGetPubkeyFromSignature(
+    hash: StaticArray<u8>,
+    signature: StaticArray<u8>,
+  ): StaticArray<u8>;
+
+  @external("massa", "assembly_script_is_address_eoa")
+  export declare function isAddressEoa(address: string): bool;
+
   @external("massa", "assembly_script_address_from_public_key")
   export declare function publicKeyToAddress(publicKey: string): string;
 

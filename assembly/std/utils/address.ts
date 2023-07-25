@@ -27,3 +27,14 @@ export function publicKeyToAddress(pubKey: string): Address {
 export function validateAddress(address: string): bool {
   return env.validateAddress(address);
 }
+
+/**
+ * Checks if the given address is a user or a contract address.
+ *
+ * @param address - the string address to identify.
+ *
+ * @returns 'true' if the address is a user address, 'false' otherwise.
+ */
+export function isAddressEoa(address: string): bool {
+  return env.isAddressEoa(address);
+}
