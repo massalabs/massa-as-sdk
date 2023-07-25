@@ -49,11 +49,11 @@ export function isSignatureValid(
  * Checks if an EVM signature is valid.
  *
  * @param digest - Digest message.
- * @param publicKey - Expects a public key in ETH full format.
- *                    Length: 65 bytes
  * @param signature - Expects a SECP256K1 signature in full ETH format.
  *                    Format: (r, s, v) v will be ignored.
  *                    Length: 65 bytes
+ * @param publicKey - Expects a SECP256K1 public key in raw format.
+ *                    Length: 64 bytes
  *
  * @returns 'true' if the signature is valid, 'false' otherwise.
  *
@@ -64,6 +64,38 @@ export function isEvmSignatureValid(
   publicKey: StaticArray<u8>,
 ): bool {
   return env.isEvmSignatureValid(digest, signature, publicKey);
+}
+
+/**
+ * Get an EVM address from a public key.
+ *
+ * @param publicKey - Expects a SECP256K1 public key in raw format.
+ *                    Length: 64 bytes
+ *
+ * @returns The EVM address corresponding to the public key, serialized as a `StaticArray<u8>`.
+ *
+ */
+export function evmGetAddressFromPubkey(
+  publicKey: StaticArray<u8>,
+): StaticArray<u8> {
+  return env.evmGetAddressFromPubkey(publicKey);
+}
+
+/**
+ * Get an EVM public key from a signature.
+ *
+ * @param hash - Hashed data that was signed.
+ * @param signature - Expects a SECP256K1 signature in full ETH format.
+ *                    Format: (r, s, v) v will be ignored.
+ *                    Length: 65 bytes
+ *
+ * @returns The EVM public key corresponding to the signature, serialized as a `StaticArray<u8>`.
+ */
+export function evmGetPubkeyFromSignature(
+  hash: StaticArray<u8>,
+  signature: StaticArray<u8>,
+): StaticArray<u8> {
+  return env.evmGetPubkeyFromSignature(hash, signature);
 }
 
 /**
