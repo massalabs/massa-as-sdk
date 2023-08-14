@@ -23,13 +23,13 @@ export class Bytes32 {
       this.offset_ser += arg.length;
     } else if (arg instanceof string) {
       let _arg = stringToBytes(arg);
-      assert(this.offset_ser + arg.length <= this.MAX_LEN);
+      assert(this.offset_ser + _arg.length <= this.MAX_LEN);
       memory.copy(
         changetype<usize>(this.serialized) + this.offset_ser,
         changetype<usize>(_arg),
         _arg.length,
       );
-      this.offset_ser += arg.length;
+      this.offset_ser += _arg.length;
     } else {
       ERROR('Do not know how to serialize the given type');
     }
@@ -84,11 +84,13 @@ abstract class BytesLen implements Serializable {
     return this.serialized;
   }
 
+  /*
   public deserialize(data: StaticArray<u8>, offset: i32 = 0): Result<i32> {
     const args = new Args(data, offset);
     this.serialized = args.getNextData(this.max_len());
     return new Result(args.offset);
   }
+  */
 }
 
 export class Bytes4 extends BytesLen {
