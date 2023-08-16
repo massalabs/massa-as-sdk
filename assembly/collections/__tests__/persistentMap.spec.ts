@@ -1,4 +1,5 @@
 import { PersistentMap } from '../persistentMap';
+import { Address } from '../../std';
 
 describe('Persistent Map tests', () => {
   it('empty map', () => {
@@ -86,5 +87,62 @@ describe('Persistent Map tests', () => {
       }
     }
     expect(isU8Set).toBeTruthy('expected an array of u8s of 255');
+  });
+  it('StaticArray<u8> values', () => {
+    const map = new PersistentMap<string, StaticArray<u8>>('my');
+    let key = 'key';
+    let _value: Array<u8> = [1, 2, 3, 254, 255];
+    let value = StaticArray.fromArray(_value);
+
+    // set
+    const setResult = map.set(key, value);
+    expect(setResult.isOk()).toBeTruthy('set should be OK');
+    expect<number>(map.size()).toBe(1, 'size must be 1');
+
+    // get
+    const got = map.get(key);
+    expect<StaticArray<u8> | null>(got).not.toBeNull(
+      'retrieved value must not be null',
+    );
+    expect<StaticArray<u8> | null>(map.get(key)).toStrictEqual(value);
+  });
+  it('Serializable values', () => {
+    const map = new PersistentMap<string, Address>('REG');
+    let keyA = 'addrA';
+    let keyB = 'addrB';
+    let keyC = 'adDrC';
+
+    let valueA = new Address();
+    let valueB = new Address('01');
+
+    // set
+    const setResult = map.set(keyA, valueA);
+    expect(setResult.isOk()).toBeTruthy('set should be OK');
+    expect<number>(map.size()).toBe(1, 'size must be 1');
+    const setResultB = map.set(keyB, valueB);
+    expect(setResultB.isOk()).toBeTruthy('set should be OK');
+    expect<number>(map.size()).toBe(2, 'size must be 2');
+
+    // get
+    const got = map.get(keyA, new Address());
+    expect<Address | null>(got).not.toBeNull(
+      'retrieved value must not be null',
+    );
+    expect<Address | null>(map.get(keyA, new Address())).toStrictEqual(valueA);
+    expect<Address>(map.getSome(keyA, new Address()).unwrap()).toStrictEqual(
+      valueA,
+    );
+    expect<Address | null>(map.get(keyB, new Address())).toStrictEqual(valueB);
+    expect<Address>(map.getSome(keyB, new Address()).unwrap()).toStrictEqual(
+      valueB,
+    );
+
+    // expect<Address>(map.getSome(keyC, new Address())).toStrictEqual(valueB);
+    // expect<Address | null>(map.get(keyC, new Address())).toStrictEqual(new Address());
+    expect<Address | null>(map.get(keyC, new Address())).toStrictEqual(
+      new Address(),
+    );
+    let res = map.getSome(keyC, new Address());
+    assert(res.isErr(), 'getSome for keyC should return an Result in error');
   });
 });
