@@ -14,7 +14,7 @@ export class AbiEncode {
     return this.serialized;
   }
 
-  add<T>(arg: T): AbiEncode {
+  add<T>(arg: T): this {
     if (arg instanceof u8) {
       let arg32 = new StaticArray<u8>(32 - sizeof<T>()).concat(toBytes(arg));
       this.serialized = this.serialized.concat(arg32);
@@ -84,7 +84,7 @@ export class AbiEncodePacked {
     return this.serialized;
   }
 
-  add<T>(arg: T): AbiEncodePacked {
+  add<T>(arg: T): this {
     if (arg instanceof u8) {
       this.serialized = this.serialized.concat(toBytes(arg));
     } else if (arg instanceof u16) {
@@ -119,7 +119,7 @@ export class AbiEncodeWithSelector {
     return this.serialized;
   }
 
-  add<T>(arg: T): AbiEncodeWithSelector {
+  add<T>(arg: T): this {
     if (arg instanceof u8) {
       let arg32 = new StaticArray<u8>(32 - sizeof<T>()).concat(toBytes(arg));
       this.serialized = this.serialized.concat(arg32);

@@ -6,9 +6,7 @@ export class Bytes32 {
   private serialized: StaticArray<u8> = new StaticArray<u8>(32);
   private offset_ser: i32 = 0;
 
-  add<T>(arg: T): Bytes32 {
-    // let len = this.serialized.length;
-
+  add<T>(arg: T): this {
     if (arg instanceof StaticArray<u8>) {
       assert(this.offset_ser + arg.length <= this.MAX_LEN);
 
