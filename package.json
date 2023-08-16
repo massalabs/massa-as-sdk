@@ -37,6 +37,7 @@
     "@massalabs/as-types": "^1.0.0",
     "@massalabs/eslint-config": "^0.0.8",
     "@massalabs/prettier-config-as": "^0.0.2",
+    "as-bignum": "^0.2.40",
     "husky": "^8.0.2",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
