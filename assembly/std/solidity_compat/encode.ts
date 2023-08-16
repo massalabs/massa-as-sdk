@@ -18,12 +18,7 @@ export class AbiEncode {
     if (arg instanceof u8) {
       let arg32 = new StaticArray<u8>(32 - sizeof<T>()).concat(toBytes(arg));
       this.serialized = this.serialized.concat(arg32);
-    } else if (arg instanceof u16) {
-      let arg32 = new StaticArray<u8>(32 - sizeof<T>()).concat(
-        toBytes(bswap(arg)),
-      );
-      this.serialized = this.serialized.concat(arg32);
-    } else if (arg instanceof u32) {
+    } else if (arg instanceof u16 || arg instanceof u32 || arg instanceof u64) {
       let arg32 = new StaticArray<u8>(32 - sizeof<T>()).concat(
         toBytes(bswap(arg)),
       );
