@@ -42,6 +42,10 @@ export const _KEY_ELEMENT_SUFFIX = '::';
  *
  * @typeParam K - The generic type parameter `K` can be any [valid AssemblyScript type](https://docs.assemblyscript.org/basics/types).
  * @typeParam V - The generic type parameter `V` can be any [valid AssemblyScript type](https://docs.assemblyscript.org/basics/types).
+ *
+ * MISC:
+ *
+ * Original code from Near (https://github.com/near/near-sdk-as/blob/master/sdk-core/assembly/collections/persistentMap.ts)
  */
 export class PersistentMap<K, V> {
   private _elementPrefix: string;
@@ -54,7 +58,7 @@ export class PersistentMap<K, V> {
    * Example
    *
    * ```ts
-   * let map = new PersistentMap<string, string>("m") // note the prefix must be unique (per NEAR account)
+   * let map = new PersistentMap<string, string>("m") // note the prefix must be unique (per Massa account)
    * ```
    * @param prefix - A prefix to use for every key of this map.
    */
