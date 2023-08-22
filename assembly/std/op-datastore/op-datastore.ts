@@ -96,3 +96,16 @@ export function getOpKeys(): Array<StaticArray<u8>> {
   let keysSer = env.getOpKeys();
   return derKeys(keysSer);
 }
+
+/**
+ * Retrieves all the keys filtered with a prefix from the operation datastore.
+ *
+ * @returns - a list of keys (e.g. a list of byte array)
+ *
+ */
+export function getOpKeysPrefix(
+  prefix: StaticArray<u8>,
+): Array<StaticArray<u8>> {
+  let keysSer = env.getOpKeysPrefix(prefix);
+  return derKeys(keysSer);
+}
