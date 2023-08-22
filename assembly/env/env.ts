@@ -201,7 +201,7 @@ export namespace env {
   ): void;
 
   @external("massa", "assembly_script_get_op_keys")
-  export declare function getOpKeys(): StaticArray<u8>;
+  export declare function getOpKeys(prefix: StaticArray<u8>): StaticArray<u8>;
 
   @external("massa", "assembly_script_has_op_key")
   export declare function hasOpKey(key: StaticArray<u8>): StaticArray<u8>;

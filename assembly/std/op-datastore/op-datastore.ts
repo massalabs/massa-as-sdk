@@ -92,7 +92,7 @@ export function getOpData(key: StaticArray<u8>): StaticArray<u8> {
  * @returns - a list of keys (e.g. a list of byte array)
  *
  */
-export function getOpKeys(): Array<StaticArray<u8>> {
-  let keysSer = env.getOpKeys();
+export function getOpKeys(prefix: StaticArray<u8>): Array<StaticArray<u8>> {
+  let keysSer = env.getOpKeys(prefix);
   return derKeys(keysSer);
 }
