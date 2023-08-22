@@ -103,7 +103,9 @@ export function getOpKeys(): Array<StaticArray<u8>> {
  * @returns - a list of keys (e.g. a list of byte array)
  *
  */
-export function getOpKeysPrefix(prefix: StaticArray<u8>): Array<StaticArray<u8>> {
+export function getOpKeysPrefix(
+  prefix: StaticArray<u8>,
+): Array<StaticArray<u8>> {
   let keysSer = env.getOpKeysPrefix(prefix);
   return derKeys(keysSer);
 }
