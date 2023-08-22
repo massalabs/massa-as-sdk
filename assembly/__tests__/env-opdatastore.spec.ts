@@ -32,7 +32,7 @@ describe('Testing mocked Operation Datastore', () => {
 
   test('getOpKeys - no keys', () => {
     const expected: StaticArray<u8> = [0, 0, 0, 0];
-    expect(env.getOpKeys(new StaticArray<u8>(0))).toStrictEqual(expected);
+    expect(env.getOpKeys()).toStrictEqual(expected);
   });
 
   test('getOpKeys - keys found', () => {
@@ -40,7 +40,7 @@ describe('Testing mocked Operation Datastore', () => {
     env.set(stringToBytes('key2'), stringToBytes('value2'));
     env.set(stringToBytes('key3'), stringToBytes('value3'));
 
-    expect(env.getOpKeys(new StaticArray<u8>(0))).not.toBeNull();
+    expect(env.getOpKeys()).not.toBeNull();
   });
 
   test('getOpKeys - expected specific keys ', () => {
@@ -51,6 +51,6 @@ describe('Testing mocked Operation Datastore', () => {
       3, 0, 0, 0, 4, 107, 101, 121, 49, 4, 107, 101, 121, 50, 4, 107, 101, 121,
       51,
     ];
-    expect(env.getOpKeys(new StaticArray<u8>(0))).toStrictEqual(expected);
+    expect(env.getOpKeys()).toStrictEqual(expected);
   });
 });
