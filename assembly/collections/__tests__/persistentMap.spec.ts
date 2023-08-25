@@ -143,6 +143,6 @@ describe('Persistent Map tests', () => {
       new Address(),
     );
     let res = map.getSome(keyC, new Address());
-    assert(res.isErr(), 'getSome for keyC should return an Result in error');
+    assert(res.isErr(), 'getSome for keyC should return a Result in error');
   });
 });
