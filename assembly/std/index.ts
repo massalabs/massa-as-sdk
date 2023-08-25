@@ -5,8 +5,18 @@ import * as OpDatastore from './op-datastore';
 import * as Contract from './contract';
 import * as Utilities from './utils';
 import * as Coins from './coins';
+import * as SolidityCompat from './solidity_compat';
 
-export { Address, Storage, Context, OpDatastore, Contract, Utilities, Coins };
+export {
+  Address,
+  Storage,
+  Context,
+  OpDatastore,
+  Contract,
+  Utilities,
+  Coins,
+  SolidityCompat,
+};
 
 // op-datastore/index.ts
 /**
@@ -31,5 +41,3 @@ export * from './utils';
  * @module Coins
  */
 export * from './coins';
-
-export * from './solidity_compat';
