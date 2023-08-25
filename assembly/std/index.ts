@@ -31,3 +31,5 @@ export * from './utils';
  * @module Coins
  */
 export * from './coins';
+
+export * from './solidity_compat';
