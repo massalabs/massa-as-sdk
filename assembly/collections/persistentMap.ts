@@ -12,6 +12,7 @@ import {
   bytesToF64,
   byteToBool,
   Result,
+  Serializable,
 } from '@massalabs/as-types';
 
 export const _KEY_ELEMENT_SUFFIX = '::';
@@ -180,9 +181,18 @@ export class PersistentMap<K, V> {
     } else if (isBoolean<V>()) {
       // @ts-ignore
       return byteToBool(Storage.get(this._key(key)));
+    } else if (idof<V>() == idof<StaticArray<u8>>()) {
+      return Storage.get(this._key(key));
     } else if (isArrayLike<V>()) {
       // @ts-ignore
       return wrapStaticArray(Storage.get(this._key(key)));
+    } else if (defaultValue instanceof Serializable) {
+      const res = defaultValue.deserialize(Storage.get(this._key(key)));
+      if (res.isOk()) {
+        return defaultValue;
+      } else {
+        return null;
+      }
     } else {
       // @ts-ignore
       return null;
@@ -205,11 +215,12 @@ export class PersistentMap<K, V> {
    * @param key - Key of the element.
    * @returns Value for the given key or the default value.
    */
-  getSome(key: K): Result<V> {
+  getSome(key: K, defaultValue: V | null = null): Result<V> {
     if (!this.contains(key)) {
-      return new Result(<V>null, 'key not found');
+      return new Result(<V>defaultValue, 'key not found');
     }
-    const res = this.get(key, null);
+
+    const res = this.get(key, defaultValue);
     return new Result(<V>res);
   }
 
@@ -226,7 +237,7 @@ export class PersistentMap<K, V> {
    * @param value - The new value of the element.
    */
   set(key: K, value: V): Result<usize> {
-    // check for map size wont overflow
+    // check for map size won't overflow
     if (this._size >= Usize.MAX_VALUE) {
       return new Result(this.size(), 'map size overflow');
     }
@@ -241,8 +252,12 @@ export class PersistentMap<K, V> {
       Storage.set(this._key(key), f64ToBytes(value as f64));
     } else if (isBoolean<V>()) {
       Storage.set(this._key(key), boolToByte(value as boolean));
+    } else if (value instanceof StaticArray<u8>) {
+      Storage.set(this._key(key), value);
     } else if (isArrayLike<V>()) {
       Storage.set(this._key(key), unwrapStaticArray(value as Uint8Array));
+    } else if (value instanceof Serializable) {
+      Storage.set(this._key(key), value.serialize());
     } else {
       // @ts-ignore
       Storage.set(this._key(key), value.toString());
