@@ -41,3 +41,8 @@ export * from './utils';
  * @module Coins
  */
 export * from './coins';
+
+/**
+ * @module Context
+ */
+export * from './context';
