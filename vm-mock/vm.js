@@ -364,7 +364,7 @@ export default function createMockedABI(
       assembly_script_append_data(keyPtr, valuePtr) {
         const address = contractAddress;
         const key = ptrToUint8ArrayString(keyPtr);
-        const newValue = byteArrToUTF8String(getArrayBuffer(valuePtr));
+        const newValue = getArrayBuffer(valuePtr);
 
         if (!ledger.has(address)) {
           throw new Error('Runtime error: address parsing error: ' + address);
@@ -376,14 +376,18 @@ export default function createMockedABI(
           throw new Error('Runtime error: data entry not found');
         }
 
-        const oldValue = byteArrToUTF8String(addressStorage.get(key));
-        addressStorage.set(key, stringToByteArray(oldValue + newValue));
+        const oldValue = addressStorage.get(key);
+        const concat = new Uint8Array(oldValue.byteLength + newValue.byteLength);
+        concat.set(new Uint8Array(oldValue), 0);
+        concat.set(new Uint8Array(newValue), oldValue.byteLength);
+
+        addressStorage.set(key, concat);
       },
 
       assembly_script_append_data_for(addressPtr, keyPtr, valuePtr) {
         const address = ptrToString(addressPtr);
         const key = ptrToUint8ArrayString(keyPtr);
-        const newValue = byteArrToUTF8String(getArrayBuffer(valuePtr));
+        const newValue = getArrayBuffer(valuePtr);
 
         if (!ledger.has(address)) {
           throw new Error('Runtime error: address parsing error: ' + address);
@@ -395,8 +399,12 @@ export default function createMockedABI(
           throw new Error('Runtime error: data entry not found');
         }
 
-        const oldValue = byteArrToUTF8String(addressStorage.get(key));
-        addressStorage.set(key, stringToByteArray(oldValue + newValue));
+        const oldValue = addressStorage.get(key);
+        const concat = new Uint8Array(oldValue.byteLength + newValue.byteLength);
+        concat.set(new Uint8Array(oldValue), 0);
+        concat.set(new Uint8Array(newValue), oldValue.byteLength);
+
+        addressStorage.set(key, concat);
       },
 
       assembly_script_get_call_stack() {
@@ -516,22 +524,34 @@ export default function createMockedABI(
         console.log(a);
       },
 
-      assembly_script_get_keys_for(aPtr) {
+      assembly_script_get_keys_for(aPtr, prefix) {
         const a = ptrToString(aPtr);
         if (!ledger.has(a)) return newArrayBuffer('');
 
         const addressStorage = ledger.get(a).storage;
-        const keysArr = Array.from(addressStorage.keys());
+        let keysArr = Array.from(addressStorage.keys());
+        if(prefix) {
+          keysArr = keysArr.filter((key) => {
+            const prefixStr = ptrToUint8ArrayString(prefix);
+            return key.startsWith(prefixStr);
+          });
+        }
         const keys = serializeKeys(keysArr);
 
         return newArrayBuffer(keys);
       },
 
-      assembly_script_get_keys() {
+      assembly_script_get_keys(prefix) {
         const addressStorage = ledger.get(contractAddress).storage;
-        const keysArr = Array.from(addressStorage.keys());
-        const keys = serializeKeys(keysArr);
+        let keysArr = Array.from(addressStorage.keys());
 
+        if(prefix) {
+          keysArr = keysArr.filter((key) => {
+            const prefixStr = ptrToUint8ArrayString(prefix);
+            return key.startsWith(prefixStr);
+          });
+        }
+        const keys = serializeKeys(keysArr);
         return newArrayBuffer(keys);
       },
 
