@@ -524,22 +524,34 @@ export default function createMockedABI(
         console.log(a);
       },
 
-      assembly_script_get_keys_for(aPtr) {
+      assembly_script_get_keys_for(aPtr, prefix) {
         const a = ptrToString(aPtr);
         if (!ledger.has(a)) return newArrayBuffer('');
 
         const addressStorage = ledger.get(a).storage;
-        const keysArr = Array.from(addressStorage.keys());
+        let keysArr = Array.from(addressStorage.keys());
+        if(prefix) {
+          keysArr = keysArr.filter((key) => {
+            const prefixStr = ptrToUint8ArrayString(prefix);
+            return key.startsWith(prefixStr);
+          });
+        }
         const keys = serializeKeys(keysArr);
 
         return newArrayBuffer(keys);
       },
 
-      assembly_script_get_keys() {
+      assembly_script_get_keys(prefix) {
         const addressStorage = ledger.get(contractAddress).storage;
-        const keysArr = Array.from(addressStorage.keys());
-        const keys = serializeKeys(keysArr);
+        let keysArr = Array.from(addressStorage.keys());
 
+        if(prefix) {
+          keysArr = keysArr.filter((key) => {
+            const prefixStr = ptrToUint8ArrayString(prefix);
+            return key.startsWith(prefixStr);
+          });
+        }
+        const keys = serializeKeys(keysArr);
         return newArrayBuffer(keys);
       },
 
