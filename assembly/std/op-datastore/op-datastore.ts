@@ -24,38 +24,6 @@ import { env } from '../../env';
 import { derKeys } from './util';
 
 /**
- * Retrieves all the keys from the operation datastore.
- *
- * @param prefix - the serialized prefix to filter the keys (optional)
- *
- * @returns - a list of keys (e.g. a list of byte array)
- *
- */
-export function getKeys(
-  prefix: StaticArray<u8> = new StaticArray<u8>(0),
-): Array<StaticArray<u8>> {
-  let keysSer = env.getKeys(prefix);
-  return derKeys(keysSer);
-}
-
-/**
- * Retrieves all the keys from the operation datastore from a remote address.
- *
- * @param address - the address in the datastore
- * @param prefix - the prefix to filter the keys (optional)
- *
- * @returns - a list of key (e.g. a list of byte array)
- *
- */
-export function getKeysOf(
-  address: string,
-  prefix: StaticArray<u8> = new StaticArray<u8>(0),
-): Array<StaticArray<u8>> {
-  let keysSer = env.getKeysOf(address, prefix);
-  return derKeys(keysSer);
-}
-
-/**
  * Checks if a given serialized 'key' is present in the operation datastore.
  *
  * @param key - the serialized key to look for in the datastore.
