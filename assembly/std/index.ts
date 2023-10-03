@@ -46,3 +46,8 @@ export * from './coins';
  * @module Context
  */
 export * from './context';
+
+/**
+ * @module Storage
+ */
+export * from './storage';

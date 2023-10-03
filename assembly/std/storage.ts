@@ -40,6 +40,7 @@
 import { env } from '../env';
 import { Address } from './address';
 import { Args, bytesToString, stringToBytes } from '@massalabs/as-types';
+import { derKeys } from './op-datastore';
 
 /**
  * Converts the given value to a StaticArray<u8> to match the expected format for datastore operations.
@@ -312,4 +313,36 @@ export function has<T>(key: T): bool {
  */
 export function hasOf<T>(address: Address, key: T): bool {
   return env.hasOf(address.toString(), toDatastoreFormat(key));
+}
+
+/**
+ * Retrieves all the keys from the datastore.
+ *
+ * @param prefix - the serialized prefix to filter the keys (optional)
+ *
+ * @returns - a list of keys (e.g. a list of byte array)
+ *
+ */
+export function getKeys(
+  prefix: StaticArray<u8> = new StaticArray<u8>(0),
+): Array<StaticArray<u8>> {
+  let keysSer = env.getKeys(prefix);
+  return derKeys(keysSer);
+}
+
+/**
+ * Retrieves all the keys from the datastore from a remote address.
+ *
+ * @param address - the address in the datastore
+ * @param prefix - the prefix to filter the keys (optional)
+ *
+ * @returns - a list of key (e.g. a list of byte array)
+ *
+ */
+export function getKeysOf(
+  address: string,
+  prefix: StaticArray<u8> = new StaticArray<u8>(0),
+): Array<StaticArray<u8>> {
+  let keysSer = env.getKeysOf(address, prefix);
+  return derKeys(keysSer);
 }
