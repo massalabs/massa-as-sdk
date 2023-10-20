@@ -131,14 +131,14 @@ export namespace env {
 
   @external("massa", "assembly_script_signature_verify")
   export declare function isSignatureValid(
-    digest: string,
+    data: string,
     signature: string,
     publicKey: string,
   ): bool;
 
   @external("massa", "assembly_script_evm_signature_verify")
   export declare function isEvmSignatureValid(
-    digest: StaticArray<u8>,
+    data: StaticArray<u8>,
     signature: StaticArray<u8>,
     publicKey: StaticArray<u8>,
   ): bool;
