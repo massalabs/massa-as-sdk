@@ -31,7 +31,7 @@ export function toBase58(data: string): string {
  * Checks if a signature is valid.
  *
  * @param publicKey - base58check encoded public key.
- * @param digest - digest message.
+ * @param data - The data that was signed.
  * @param signature - base58check encoded signature.
  *
  * @returns 'true' if the signature is valid, 'false' otherwise.
@@ -39,16 +39,16 @@ export function toBase58(data: string): string {
  */
 export function isSignatureValid(
   publicKey: string,
-  digest: string,
+  data: string,
   signature: string,
 ): bool {
-  return env.isSignatureValid(digest, signature, publicKey);
+  return env.isSignatureValid(data, signature, publicKey);
 }
 
 /**
  * Checks if an EVM signature is valid.
  *
- * @param digest - Digest message.
+ * @param data - The data that was signed.
  * @param signature - Expects a SECP256K1 signature in full ETH format.
  *                    Format: (r, s, v) v will be ignored.
  *                    Length: 65 bytes
@@ -59,11 +59,11 @@ export function isSignatureValid(
  *
  */
 export function isEvmSignatureValid(
-  digest: StaticArray<u8>,
+  data: StaticArray<u8>,
   signature: StaticArray<u8>,
   publicKey: StaticArray<u8>,
 ): bool {
-  return env.isEvmSignatureValid(digest, signature, publicKey);
+  return env.isEvmSignatureValid(data, signature, publicKey);
 }
 
 /**
