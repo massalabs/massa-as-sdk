@@ -169,7 +169,7 @@ export namespace env {
   @external("massa", "assembly_script_send_message")
   export declare function sendMessage(
     address: string,
-    handler: string,
+    functionName: string,
     validityStartPeriod: u64,
     validityStartThread: u8,
     validityEndPeriod: u64,
@@ -177,9 +177,9 @@ export namespace env {
     maxGas: u64,
     rawFee: u64,
     coins: u64,
-    data: StaticArray<u8>,
-    filter_address: string,
-    filter_key: StaticArray<u8>,
+    functionParams: StaticArray<u8>,
+    filterAddress: string,
+    filterKey: StaticArray<u8>,
   ): void;
 
   @external("massa", "assembly_script_get_origin_operation_id")

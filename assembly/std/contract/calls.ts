@@ -159,7 +159,7 @@ export function functionExists(address: Address, func: string): bool {
  * @param maxGas - Maximum gas for the message execution
  * @param rawFee - Fee to be paid for message execution
  * @param coins - Coins of the sender
- * @param msg - function argument serialized in bytes
+ * @param functionParams - function parameters serialized in bytes
  * @param filterAddress - If you want your message to be trigger only
  * if a modification is made on a specific address precise it here
  * @param filterKey - If you want your message to be trigger only
@@ -176,7 +176,7 @@ export function sendMessage(
   maxGas: u64,
   rawFee: u64,
   coins: u64,
-  msg: StaticArray<u8>,
+  functionParams: StaticArray<u8>,
   filterAddress: Address = new Address(),
   filterKey: StaticArray<u8> = new StaticArray<u8>(0),
 ): void {
@@ -190,7 +190,7 @@ export function sendMessage(
     maxGas,
     rawFee,
     coins,
-    msg,
+    functionParams,
     filterAddress.toString(),
     filterKey,
   );
