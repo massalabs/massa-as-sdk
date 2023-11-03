@@ -187,7 +187,7 @@ export class PersistentMap<K, V> {
       // @ts-ignore
       return wrapStaticArray(Storage.get(this._key(key)));
     } else if (defaultValue instanceof Serializable) {
-      const res = defaultValue.deserialize(Storage.get(this._key(key)));
+      const res = defaultValue.deserialize(Storage.get(this._key(key)), 0);
       if (res.isOk()) {
         return defaultValue;
       } else {
