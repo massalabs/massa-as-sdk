@@ -109,13 +109,6 @@ export default function createMockedABI(
   function byteArrToString(arr) {
     return new TextDecoder('utf-16').decode(arr);
   }
-  /**
-   * @param {ArrayBuffer} arr the array to decode
-   * @returns {string} the decoded string
-   */
-  function byteArrToUTF8String(arr) {
-    return new TextDecoder('utf-8').decode(arr);
-  }
 
   /**
    * @param {number} ptr the pointer
@@ -155,14 +148,6 @@ export default function createMockedABI(
    */
   function newString(buffer) {
     return webModule.__newString(buffer);
-  }
-
-  /**
-   * @param {string} text to transform
-   * @returns {Uint8Array} the array of bytes
-   */
-  function stringToByteArray(text) {
-    return new TextEncoder().encode(text);
   }
 
   /**
@@ -508,10 +493,9 @@ export default function createMockedABI(
       },
 
       assembly_script_hash_sha256(aPtr) {
-        const data = byteArrToUTF8String(getArrayBuffer(aPtr));
-        const hash = createHash('sha256').update(data, 'utf8').digest('hex');
-
-        return newArrayBuffer(stringToByteArray(hash));
+        const data = getArrayBuffer(aPtr);
+        const hash = createHash('sha256').update(new Uint8Array(data)).digest();
+        return newArrayBuffer(hash);
       },
 
       assembly_script_validate_address(addressPtr) {

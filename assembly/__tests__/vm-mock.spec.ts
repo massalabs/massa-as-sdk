@@ -17,6 +17,7 @@ import {
 import { Args, bytesToString, stringToBytes } from '@massalabs/as-types';
 import { env } from '../env/index';
 import { callee, caller, isDeployingContract } from '../std/context';
+import { staticArrayToHexString } from './utils';
 
 const testAddress = new Address(
   'AU12E6N5BFAdC2wyiBV6VJjqkWhpz1kLVp2XpbRdSnL1mKjCWT6oR',
@@ -101,22 +102,13 @@ describe('Testing mocked Storage and CallStack', () => {
   });
 
   test('Testing sha256', () => {
-    const result = bytesToString(sha256(stringToBytes('something')));
-    expect(result).toBe(
+    const hash = sha256(stringToBytes('something'));
+    expect(staticArrayToHexString(hash)).toBe(
       '3fc9b689459d738f8c88a3a48aa9e33542016b7a4052e001aaa536fca74813cb',
     );
   });
 
   test('Testing keccak256', () => {
-    function staticArrayToHexString(arr: StaticArray<u8>): string {
-      let result = '';
-      for (let i = 0; i < arr.length; i++) {
-        let hexValue = arr[i].toString(16).padStart(2, '0'); // Convert to hex and pad with zero if needed
-        result += hexValue;
-      }
-      return result;
-    }
-
     const hash = keccak256(
       stringToBytes('The quick brown fox jumps over the lazy dog'),
     );
