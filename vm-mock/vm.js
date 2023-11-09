@@ -1,4 +1,5 @@
 const { createHash } = await import('node:crypto');
+import  sha3  from 'js-sha3';
 
 /**
  * Addresses and callstack
@@ -743,6 +744,12 @@ export default function createMockedABI(
       assembly_script_get_origin_operation_id() {
         return newString(generateRandOpId()
         );
+      },
+
+      assembly_script_keccak256_hash(dataPtr) {
+        const data = getArrayBuffer(dataPtr);
+        const hash =  sha3.keccak256.arrayBuffer(data);
+        return newArrayBuffer(hash);
       },
     },
   };

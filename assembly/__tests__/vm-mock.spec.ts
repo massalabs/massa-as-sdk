@@ -6,6 +6,7 @@ import {
   sha256,
   getKeysOf,
   validateAddress,
+  keccak256,
 } from '../std';
 import { changeCallStack, resetStorage } from '../vm-mock/storage';
 import {
@@ -103,6 +104,30 @@ describe('Testing mocked Storage and CallStack', () => {
     const result = bytesToString(sha256(stringToBytes('something')));
     expect(result).toBe(
       '3fc9b689459d738f8c88a3a48aa9e33542016b7a4052e001aaa536fca74813cb',
+    );
+  });
+
+  test('Testing keccak256', () => {
+    function staticArrayToHexString(arr: StaticArray<u8>): string {
+      let result = '';
+      for (let i = 0; i < arr.length; i++) {
+        let hexValue = arr[i].toString(16).padStart(2, '0'); // Convert to hex and pad with zero if needed
+        result += hexValue;
+      }
+      return result;
+    }
+
+    const hash = keccak256(
+      stringToBytes('The quick brown fox jumps over the lazy dog'),
+    );
+    expect(hash).toStrictEqual([
+      77, 116, 27, 111, 30, 178, 156, 178, 169, 185, 145, 28, 130, 245, 111,
+      168, 215, 59, 4, 149, 157, 61, 157, 34, 40, 149, 223, 108, 11, 40, 170,
+      21,
+    ]);
+
+    expect(staticArrayToHexString(hash)).toBe(
+      '4d741b6f1eb29cb2a9b9911c82f56fa8d73b04959d3d9d222895df6c0b28aa15',
     );
   });
 
