@@ -41,6 +41,14 @@ The following is a list of all the dependencies of this project:
 
 **Many thanks to:** [Nathan SEVA](ns@massa.net)
 
+## [js-sha3](git+https://github.com/emn178/js-sha3.git)
+
+**License:** MIT - perpetual
+
+**Used version:** 0.9.2
+
+**Many thanks to:** [Chen, Yi-Cyuan](emn178@gmail.com)
+
 ## [as-bignum](https://github.com/MaxGraey/as-bignum.git)
 
 **License:** Apache-2.0 - perpetual
