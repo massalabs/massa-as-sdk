@@ -6,3 +6,14 @@ export function staticArrayToHexString(arr: StaticArray<u8>): string {
   }
   return result;
 }
+
+export function hexStringToStaticArray(hexString: string): StaticArray<u8> {
+  let result = new StaticArray<u8>(hexString.length / 2);
+
+  for (let i = 0; i < hexString.length; i += 2) {
+    let byte = parseInt(hexString.substr(i, 2), 16);
+    result[i / 2] = <u8>byte;
+  }
+
+  return result;
+}
