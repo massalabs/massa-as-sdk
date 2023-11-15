@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {
   Address,
   Storage,
@@ -7,6 +8,8 @@ import {
   getKeysOf,
   validateAddress,
   keccak256,
+  isEvmSignatureValid,
+  evmGetPubkeyFromSignature,
 } from '../std';
 import { changeCallStack, resetStorage } from '../vm-mock/storage';
 import {
@@ -17,7 +20,7 @@ import {
 import { Args, bytesToString, stringToBytes } from '@massalabs/as-types';
 import { env } from '../env/index';
 import { callee, caller, isDeployingContract } from '../std/context';
-import { staticArrayToHexString } from './utils';
+import { hexStringToStaticArray, staticArrayToHexString } from './utils';
 
 const testAddress = new Address(
   'AU12E6N5BFAdC2wyiBV6VJjqkWhpz1kLVp2XpbRdSnL1mKjCWT6oR',
@@ -255,5 +258,35 @@ describe('Testing mocked Context', () => {
     setLocalContext();
 
     expect(caller().toString()).toStrictEqual(callee().toString());
+  });
+
+  it('should verify evm signature', () => {
+    const data = stringToBytes('Hello World');
+    const signature = hexStringToStaticArray(
+      '1617966ef37eaff4312132243df65cfb66ccda057e996b586f910d6eb422787453b0a8465be9716493650d6706bc84efe85a5d76a0111c89d0cdf8ba57e510571c',
+    );
+    // secp256k1 raw public key (compression header byte has been removed)
+    const publicKey = hexStringToStaticArray(
+      'ae04a0fb4545138d22ed46eee76e683c50412ffb8cb02ee8fa5a5c8eec35f72dc076cb1b7468f8cacf136a7e0609b31ed580746d8efc659a993ccd695d6387ff',
+    );
+
+    expect(isEvmSignatureValid(data, signature, publicKey)).toStrictEqual(true);
+  });
+
+  it('should get evm public key from signature', () => {
+    const digest = hexStringToStaticArray(
+      'a1de988600a42c4b4ab089b619297c17d53cffae5d5120d82d8a92d0bb3b78f2',
+    );
+    const signature = hexStringToStaticArray(
+      '1617966ef37eaff4312132243df65cfb66ccda057e996b586f910d6eb422787453b0a8465be9716493650d6706bc84efe85a5d76a0111c89d0cdf8ba57e510571c',
+    );
+    // secp256k1 public key (with compression header byte)
+    const publicKey = hexStringToStaticArray(
+      '04ae04a0fb4545138d22ed46eee76e683c50412ffb8cb02ee8fa5a5c8eec35f72dc076cb1b7468f8cacf136a7e0609b31ed580746d8efc659a993ccd695d6387ff',
+    );
+
+    expect(evmGetPubkeyFromSignature(digest, signature)).toStrictEqual(
+      publicKey,
+    );
   });
 });

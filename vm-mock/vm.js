@@ -1,5 +1,6 @@
 const { createHash } = await import('node:crypto');
-import  sha3  from 'js-sha3';
+import { SigningKey, hashMessage } from 'ethers';
+import sha3 from 'js-sha3';
 
 /**
  * Addresses and callstack
@@ -453,11 +454,11 @@ export default function createMockedABI(
         // Ensure the caller address is different from the contract address
         if (!addrPtr || ptrToString(addrPtr) === contractAddress) {
           // generate a new address if it is the same as the contract address
-          callerAddress = generateDumbAddress(); 
+          callerAddress = generateDumbAddress();
         } else {
           callerAddress = ptrToString(addrPtr);
         }
-        
+
         if (!ledger.has(callerAddress)) {
           // add the new address to the ledger
           ledger.set(callerAddress, {
@@ -515,7 +516,7 @@ export default function createMockedABI(
 
         const addressStorage = ledger.get(a).storage;
         let keysArr = Array.from(addressStorage.keys());
-        if(prefix) {
+        if (prefix) {
           keysArr = keysArr.filter((key) => {
             const prefixStr = ptrToUint8ArrayString(prefix);
             return key.startsWith(prefixStr);
@@ -530,7 +531,7 @@ export default function createMockedABI(
         const addressStorage = ledger.get(contractAddress).storage;
         let keysArr = Array.from(addressStorage.keys());
 
-        if(prefix) {
+        if (prefix) {
           keysArr = keysArr.filter((key) => {
             const prefixStr = ptrToUint8ArrayString(prefix);
             return key.startsWith(prefixStr);
@@ -719,6 +720,44 @@ export default function createMockedABI(
         return true;
       },
 
+      assembly_script_evm_signature_verify(dataPtr, signaturePtr, publicKeyPtr) {
+
+        const signatureBuf = getArrayBuffer(signaturePtr);
+        if (signatureBuf.byteLength !== 65) {
+          console.log('Invalid signature length. Expected 65 bytes');
+          throw new Error();
+        }
+
+        const pubKeyBuf = getArrayBuffer(publicKeyPtr);
+        if (pubKeyBuf.byteLength !== 64) {
+          console.log('Invalid publickey length. Expected 64 bytes uncompressed secp256k1 public key');
+          throw new Error();
+        }
+
+        const digest = hashMessage(new Uint8Array(getArrayBuffer(dataPtr)));
+        const signature = "0x" + Buffer.from(signatureBuf).toString('hex');
+        const recovered = SigningKey.recoverPublicKey(digest, signature);
+
+        const publicKey = "0x" + "04"/* compression header*/ + Buffer.from(pubKeyBuf).toString('hex');
+        return recovered === publicKey;
+      },
+
+      assembly_script_evm_get_pubkey_from_signature(dataPtr, signaturePtr) {
+
+        const signatureBuf = getArrayBuffer(signaturePtr);
+        if (signatureBuf.byteLength !== 65) {
+          console.log('Invalid signature length. Expected 65 bytes');
+          throw new Error();
+        }
+        const digest = "0x" + Buffer.from(getArrayBuffer(dataPtr)).toString('hex');
+
+        const signature = "0x" + Buffer.from(signatureBuf).toString('hex');
+
+        const recovered = SigningKey.recoverPublicKey(digest, signature);
+
+        return newArrayBuffer(Buffer.from(recovered.substring(2), "hex"));
+      },
+
       assembly_script_address_from_public_key(publicKeyPtr) {
         return newString(
           'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq',
@@ -732,7 +771,7 @@ export default function createMockedABI(
 
       assembly_script_keccak256_hash(dataPtr) {
         const data = getArrayBuffer(dataPtr);
-        const hash =  sha3.keccak256.arrayBuffer(data);
+        const hash = sha3.keccak256.arrayBuffer(data);
         return newArrayBuffer(hash);
       },
     },
