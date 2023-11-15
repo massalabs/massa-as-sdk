@@ -41,14 +41,6 @@ The following is a list of all the dependencies of this project:
 
 **Many thanks to:** [Nathan SEVA](ns@massa.net)
 
-## [js-sha3](git+https://github.com/emn178/js-sha3.git)
-
-**License:** MIT - perpetual
-
-**Used version:** 0.9.2
-
-**Many thanks to:** [Chen, Yi-Cyuan](emn178@gmail.com)
-
 ## [as-bignum](https://github.com/MaxGraey/as-bignum.git)
 
 **License:** Apache-2.0 - perpetual
@@ -57,6 +49,14 @@ The following is a list of all the dependencies of this project:
 
 **Many thanks to:** [MaxGraey](maxgraey@gmail.com)
 
+## [ethers](git://github.com/ethers-io/ethers.js.git)
+
+**License:** MIT - perpetual
+
+**Used version:** 6.8.1
+
+**Many thanks to:** [Richard Moore](me@ricmoo.com)
+
 ## [husky](git+https://github.com/typicode/husky.git)
 
 **License:** MIT - perpetual
@@ -64,6 +64,14 @@ The following is a list of all the dependencies of this project:
 **Used version:** 8.0.3
 
 **Many thanks to:** [Typicode](typicode@gmail.com)
+
+## [js-sha3](git+https://github.com/emn178/js-sha3.git)
+
+**License:** MIT - perpetual
+
+**Used version:** 0.9.2
+
+**Many thanks to:** [Chen, Yi-Cyuan](emn178@gmail.com)
 
 ## [lint-staged](git+https://github.com/okonet/lint-staged.git)
 
