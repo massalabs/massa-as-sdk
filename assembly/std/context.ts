@@ -62,8 +62,8 @@ export function isDeployingContract(): bool {
  *
  * @returns An array of `Address` objects, one for each address in the input string.
  */
-function json2Address(str: string): Array<Address> {
-  str = str.substr(1, str.length - 2);
+export function json2Address(str: string): Array<Address> {
+  str = str.substring(1, str.length - 1);
 
   const a = str.split(',');
   return a.map<Address>((x) => new Address(x.substring(1, x.length - 1)));

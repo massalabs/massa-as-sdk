@@ -7,6 +7,7 @@ import {
   transferredCoins,
   isDeployingContract,
   timestamp,
+  json2Address,
 } from '../context';
 import { validateAddress } from '../utils';
 
@@ -44,5 +45,21 @@ describe('Context', () => {
   test('timestamp', () => {
     const time = timestamp();
     expect(time).toBeGreaterThan(0);
+  });
+
+  test('json2Address', () => {
+    const jsonString = '["address1","address2","address3"]';
+    const expectedOutput = [
+      new Address('address1'),
+      new Address('address2'),
+      new Address('address3'),
+    ];
+
+    const result = json2Address(jsonString);
+
+    expect(result.length).toBe(expectedOutput.length);
+    for (let i = 0; i < result.length; i++) {
+      expect(result[i]).toBe(expectedOutput[i]);
+    }
   });
 });
