@@ -36,7 +36,7 @@
     "js-sha3": "^0.9.2"
   },
   "devDependencies": {
-    "@as-pect/cli": "^8.0.1",
+    "@as-pect/cli": "^8.1.0",
     "@massalabs/as-transformer": "^0.2.0",
     "@massalabs/as-types": "^2.0.0",
     "@massalabs/eslint-config": "^0.0.8",

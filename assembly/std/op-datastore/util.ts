@@ -7,6 +7,8 @@
  *
  */
 function getNumberOfKeys(keysSer: StaticArray<u8>): u32 {
+  // check if keysSer is more than 4 bytes
+  assert(keysSer.length >= 4, 'Invalid keysSer length');
   // The first 4 bytes of the input array represent the number of keys
   let arr = new Uint8Array(4);
   arr[0] = keysSer[0];
@@ -46,7 +48,8 @@ function getNumberOfKeys(keysSer: StaticArray<u8>): u32 {
  *
  */
 export function derKeys(keysSer: StaticArray<u8>): Array<StaticArray<u8>> {
-  if (keysSer.length == 0) return [];
+  // check if keysSer is more than 4 bytes (for the number of keys)
+  if (keysSer.length < 4) return [];
 
   const keyCount: u32 = getNumberOfKeys(keysSer);
   const keys = new Array<StaticArray<u8>>(keyCount);
