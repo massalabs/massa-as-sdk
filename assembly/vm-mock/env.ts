@@ -19,6 +19,9 @@
 @external("massa", "assembly_script_mock_call")
 export declare function mockScCall(value: StaticArray<u8>): void;
 
+@external("massa", "assembly_script_set_chain_id")
+export declare function mockSetChainId(value: number): void;
+
 /**
  * Add a new smart contract address to the ledger
  *
