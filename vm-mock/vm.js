@@ -87,7 +87,7 @@ function resetLedger() {
 let webModule;
 
 const scCallMockStack = [];
-const chainIdMockStack = [];
+let chainIdMock = BigInt(77658366); // Default value, chain id for chain id
 
 /**
  * Create a mock vm to simulate calls and responses of Massa WebAssembly sdk.
@@ -776,15 +776,10 @@ export default function createMockedABI(
         return newArrayBuffer(hash);
       },
       assembly_script_set_chain_id(value) {
-        chainIdMockStack.push(value);
+        chainIdMock = value;
       },
       assembly_script_chain_id() {
-        if (chainIdMockStack.length) {
-          return chainIdMockStack.shift();
-        }
-        throw new Error(
-          `No mock defined for chain id".`,
-        );
+        return chainIdMock;
       },
     },
   };
