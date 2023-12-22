@@ -217,6 +217,11 @@ export default function createMockedABI(
     );
   }
 
+  function concatenateArrays(oldValue, newValue) {
+    const totalLength = oldValue.byteLength + newValue.byteLength;
+    return new Uint8Array(totalLength);
+  }
+
   resetLedger();
 
   const myImports = {
@@ -369,9 +374,7 @@ export default function createMockedABI(
         }
 
         const oldValue = addressStorage.get(key);
-        const concat = new Uint8Array(
-          oldValue.byteLength + newValue.byteLength,
-        );
+        const concat = concatenateArrays(oldValue, newValue);
         concat.set(new Uint8Array(oldValue), 0);
         concat.set(new Uint8Array(newValue), oldValue.byteLength);
 
@@ -394,9 +397,7 @@ export default function createMockedABI(
         }
 
         const oldValue = addressStorage.get(key);
-        const concat = new Uint8Array(
-          oldValue.byteLength + newValue.byteLength,
-        );
+        const concat = concatenateArrays(oldValue, newValue);
         concat.set(new Uint8Array(oldValue), 0);
         concat.set(new Uint8Array(newValue), oldValue.byteLength);
 
