@@ -87,6 +87,7 @@ function resetLedger() {
 let webModule;
 
 const scCallMockStack = [];
+let chainIdMock = BigInt(77658366); // Default value, chain id for Buildnet
 
 /**
  * Create a mock vm to simulate calls and responses of Massa WebAssembly sdk.
@@ -216,6 +217,11 @@ export default function createMockedABI(
     );
   }
 
+  function concatenateArrays(oldValue, newValue) {
+    const totalLength = oldValue.byteLength + newValue.byteLength;
+    return new Uint8Array(totalLength);
+  }
+
   resetLedger();
 
   const myImports = {
@@ -250,9 +256,10 @@ export default function createMockedABI(
             throw new Error('Runtime error: data entry not found');
           }
         } else {
-          throw new Error('Runtime error: address parsing error: ' + contractAddress);
+          throw new Error(
+            'Runtime error: address parsing error: ' + contractAddress,
+          );
         }
-
       },
 
       assembly_script_reset_storage() {
@@ -262,7 +269,8 @@ export default function createMockedABI(
       assembly_script_change_call_stack(callstackPtr) {
         callStack = ptrToString(callstackPtr);
         callerAddress = callStack.split(' , ')[0];
-        contractAddress = (callStack.split(' , ').length > 1) ? callStack.split(' , ')[1] : '';
+        contractAddress =
+          callStack.split(' , ').length > 1 ? callStack.split(' , ')[1] : '';
       },
 
       assembly_script_generate_event(msgPtr) {
@@ -327,7 +335,9 @@ export default function createMockedABI(
           }
           addressStorage.delete(k);
         } else {
-          throw new Error('Runtime error: address parsing error: ' + contractAddress);
+          throw new Error(
+            'Runtime error: address parsing error: ' + contractAddress,
+          );
         }
       },
 
@@ -364,7 +374,7 @@ export default function createMockedABI(
         }
 
         const oldValue = addressStorage.get(key);
-        const concat = new Uint8Array(oldValue.byteLength + newValue.byteLength);
+        const concat = concatenateArrays(oldValue, newValue);
         concat.set(new Uint8Array(oldValue), 0);
         concat.set(new Uint8Array(newValue), oldValue.byteLength);
 
@@ -387,7 +397,7 @@ export default function createMockedABI(
         }
 
         const oldValue = addressStorage.get(key);
-        const concat = new Uint8Array(oldValue.byteLength + newValue.byteLength);
+        const concat = concatenateArrays(oldValue, newValue);
         concat.set(new Uint8Array(oldValue), 0);
         concat.set(new Uint8Array(newValue), oldValue.byteLength);
 
@@ -475,8 +485,7 @@ export default function createMockedABI(
         if (!addrPtr) {
           // if the address is not set, uses the current contract address as caller address
           callerAddress = contractAddress;
-        }
-        else {
+        } else {
           callerAddress = ptrToString(addrPtr);
           contractAddress = callerAddress;
         }
@@ -682,7 +691,9 @@ export default function createMockedABI(
         const addressTo = ptrToString(_addressToPtr);
 
         if (!ledger.has(addressFrom)) {
-          throw new Error('Runtime error: address parsing error: ' + addressFrom);
+          throw new Error(
+            'Runtime error: address parsing error: ' + addressFrom,
+          );
         }
 
         if (!ledger.has(addressTo)) {
@@ -720,8 +731,11 @@ export default function createMockedABI(
         return true;
       },
 
-      assembly_script_evm_signature_verify(dataPtr, signaturePtr, publicKeyPtr) {
-
+      assembly_script_evm_signature_verify(
+        dataPtr,
+        signaturePtr,
+        publicKeyPtr,
+      ) {
         const signatureBuf = getArrayBuffer(signaturePtr);
         if (signatureBuf.byteLength !== 65) {
           console.log('Invalid signature length. Expected 65 bytes');
@@ -730,32 +744,37 @@ export default function createMockedABI(
 
         const pubKeyBuf = getArrayBuffer(publicKeyPtr);
         if (pubKeyBuf.byteLength !== 64) {
-          console.log('Invalid publickey length. Expected 64 bytes uncompressed secp256k1 public key');
+          console.log(
+            'Invalid public key length. Expected 64 bytes uncompressed secp256k1 public key',
+          );
           throw new Error();
         }
 
         const digest = hashMessage(new Uint8Array(getArrayBuffer(dataPtr)));
-        const signature = "0x" + Buffer.from(signatureBuf).toString('hex');
+        const signature = '0x' + Buffer.from(signatureBuf).toString('hex');
         const recovered = SigningKey.recoverPublicKey(digest, signature);
 
-        const publicKey = "0x" + "04"/* compression header*/ + Buffer.from(pubKeyBuf).toString('hex');
+        const publicKey =
+          '0x' +
+          '04' /* compression header*/ +
+          Buffer.from(pubKeyBuf).toString('hex');
         return recovered === publicKey;
       },
 
       assembly_script_evm_get_pubkey_from_signature(dataPtr, signaturePtr) {
-
         const signatureBuf = getArrayBuffer(signaturePtr);
         if (signatureBuf.byteLength !== 65) {
           console.log('Invalid signature length. Expected 65 bytes');
           throw new Error();
         }
-        const digest = "0x" + Buffer.from(getArrayBuffer(dataPtr)).toString('hex');
+        const digest =
+          '0x' + Buffer.from(getArrayBuffer(dataPtr)).toString('hex');
 
-        const signature = "0x" + Buffer.from(signatureBuf).toString('hex');
+        const signature = '0x' + Buffer.from(signatureBuf).toString('hex');
 
         const recovered = SigningKey.recoverPublicKey(digest, signature);
 
-        return newArrayBuffer(Buffer.from(recovered.substring(2), "hex"));
+        return newArrayBuffer(Buffer.from(recovered.substring(2), 'hex'));
       },
 
       assembly_script_address_from_public_key(publicKeyPtr) {
@@ -765,14 +784,19 @@ export default function createMockedABI(
       },
 
       assembly_script_get_origin_operation_id() {
-        return newString(generateRandOpId()
-        );
+        return newString(generateRandOpId());
       },
 
       assembly_script_keccak256_hash(dataPtr) {
         const data = getArrayBuffer(dataPtr);
         const hash = sha3.keccak256.arrayBuffer(data);
         return newArrayBuffer(hash);
+      },
+      assembly_script_set_chain_id(value) {
+        chainIdMock = BigInt(value);
+      },
+      assembly_script_chain_id() {
+        return chainIdMock;
       },
     },
   };

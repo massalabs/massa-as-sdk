@@ -100,3 +100,6 @@ export declare function setDeployContext(callerAddress?: string): void;
  */
 @external("massa", "assembly_script_set_local_context")
 export declare function setLocalContext(address?: string): void;
+
+@external("massa", "assembly_script_set_chain_id")
+export declare function mockSetChainId(value: number): void;
