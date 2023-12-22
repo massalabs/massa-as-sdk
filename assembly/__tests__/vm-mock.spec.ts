@@ -302,7 +302,6 @@ describe('Testing mocked Chain id', () => {
   });
 
   it('chain id mock value', () => {
-    let chainId = env.chainId();
     expect(env.chainId()).toBe(9_000_000);
   });
 });

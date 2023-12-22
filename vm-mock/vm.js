@@ -791,6 +791,12 @@ export default function createMockedABI(
         const hash = sha3.keccak256.arrayBuffer(data);
         return newArrayBuffer(hash);
       },
+      assembly_script_set_chain_id(value) {
+        chainIdMock = BigInt(value);
+      },
+      assembly_script_chain_id() {
+        return chainIdMock;
+      },
     },
   };
 
