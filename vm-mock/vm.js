@@ -744,7 +744,7 @@ export default function createMockedABI(
         const pubKeyBuf = getArrayBuffer(publicKeyPtr);
         if (pubKeyBuf.byteLength !== 64) {
           console.log(
-            'Invalid publickey length. Expected 64 bytes uncompressed secp256k1 public key',
+            'Invalid public key length. Expected 64 bytes uncompressed secp256k1 public key',
           );
           throw new Error();
         }

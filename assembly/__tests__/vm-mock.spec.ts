@@ -14,6 +14,7 @@ import {
 import { changeCallStack, resetStorage } from '../vm-mock/storage';
 import {
   mockAdminContext,
+  mockSetChainId,
   setDeployContext,
   setLocalContext,
 } from '../vm-mock/env';
@@ -288,5 +289,20 @@ describe('Testing mocked Context', () => {
     expect(evmGetPubkeyFromSignature(digest, signature)).toStrictEqual(
       publicKey,
     );
+  });
+});
+
+describe('Testing mocked Chain id', () => {
+  beforeEach(() => {
+    mockSetChainId(9_000_000);
+  });
+
+  afterAll(() => {
+    mockSetChainId(77);
+  });
+
+  it('chain id mock value', () => {
+    let chainId = env.chainId();
+    expect(env.chainId()).toBe(9_000_000);
   });
 });
