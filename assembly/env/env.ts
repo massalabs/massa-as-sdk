@@ -222,4 +222,7 @@ export namespace env {
 
   @external("massa", "assembly_script_validate_address")
   export declare function validateAddress(address: string): bool;
+
+  @external("massa", "assembly_script_chain_id")
+  export declare function chainId(): u64;
 }

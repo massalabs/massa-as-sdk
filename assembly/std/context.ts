@@ -209,3 +209,12 @@ export function currentPeriod(): u64 {
 export function currentThread(): u8 {
   return env.currentThread();
 }
+
+/**
+ * Retrieve the current chain id
+ *
+ * @returns the current chain id.
+ */
+export function chainId(): u64 {
+  return env.chainId();
+}
