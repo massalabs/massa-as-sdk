@@ -217,9 +217,19 @@ export default function createMockedABI(
     );
   }
 
-  function concatenateArrays(oldValue, newValue) {
-    const totalLength = oldValue.byteLength + newValue.byteLength;
-    return new Uint8Array(totalLength);
+  /**
+   * Concatenate two arrays
+   *
+   * @param {ArrayBuffer} array1 - The first array
+   * @param {ArrayBuffer} array2 - The second array
+   * @returns {Uint8Array} - The concatenated array
+   */
+  function concatenateArrays(array1, array2) {
+    const totalLength = array1.byteLength + array2.byteLength;
+    const result = new Uint8Array(totalLength);
+    result.set(new Uint8Array(array1), 0);
+    result.set(new Uint8Array(array2), array1.byteLength);
+    return result;
   }
 
   resetLedger();
@@ -375,8 +385,6 @@ export default function createMockedABI(
 
         const oldValue = addressStorage.get(key);
         const concat = concatenateArrays(oldValue, newValue);
-        concat.set(new Uint8Array(oldValue), 0);
-        concat.set(new Uint8Array(newValue), oldValue.byteLength);
 
         addressStorage.set(key, concat);
       },
@@ -398,8 +406,6 @@ export default function createMockedABI(
 
         const oldValue = addressStorage.get(key);
         const concat = concatenateArrays(oldValue, newValue);
-        concat.set(new Uint8Array(oldValue), 0);
-        concat.set(new Uint8Array(newValue), oldValue.byteLength);
 
         addressStorage.set(key, concat);
       },
