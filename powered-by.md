@@ -33,11 +33,11 @@ The following is a list of all the dependencies of this project:
 
 **Many thanks to:** 
 
-## [@massalabs/as-types](https://registry.npmjs.org/@massalabs/as-types/-/as-types-1.1.0.tgz)
+## [@massalabs/as-types](https://registry.npmjs.org/@massalabs/as-types/-/as-types-2.0.0.tgz)
 
 **License:** ISC - perpetual
 
-**Used version:** 1.0.0
+**Used version:** 2.0.0
 
 **Many thanks to:** 
 
