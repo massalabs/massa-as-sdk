@@ -1,6 +1,6 @@
 {
   "name": "@massalabs/massa-as-sdk",
-  "version": "2.5.3",
+  "version": "2.5.4",
   "description": "Massa assemblyscript sdk",
   "main": "assembly/index.ts",
   "types": "assembly/index.ts",
@@ -38,7 +38,7 @@
   "devDependencies": {
     "@as-pect/cli": "^8.0.1",
     "@massalabs/as-transformer": "^0.2.0",
-    "@massalabs/as-types": "^1.0.0",
+    "@massalabs/as-types": "^2.0.0",
     "@massalabs/eslint-config": "^0.0.8",
     "@massalabs/prettier-config-as": "^0.0.2",
     "as-bignum": "^0.2.40",
