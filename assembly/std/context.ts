@@ -159,6 +159,10 @@ export function transactionCreator(): Address {
 
 /**
  * Returns the amount transferred in the current call.
+ * 
+ * @remarks
+ * The returned value is related to the `coins` argument sent along the call.
+ * It is not related to the transferCoins or transferCoinsOf functions.
  *
  * @returns The value in the smallest unit.
  */
