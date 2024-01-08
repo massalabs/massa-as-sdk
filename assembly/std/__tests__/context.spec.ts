@@ -9,6 +9,7 @@ import {
   timestamp,
 } from '../context';
 import { validateAddress, json2Address } from '../utils';
+import { setCallCoins } from '../../vm-mock';
 
 describe('Context', () => {
   test('ownedAddresses', () => {
