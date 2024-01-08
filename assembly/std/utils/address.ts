@@ -38,3 +38,24 @@ export function validateAddress(address: string): bool {
 export function isAddressEoa(address: string): bool {
   return env.isAddressEoa(address);
 }
+
+/**
+ * Returns an array of addresses.
+ *
+ * Parses a JSON-encoded string of addresses and returns an array of `Address` objects.
+ *
+ * @remarks
+ * This function takes a string containing a JSON-encoded array of addresses
+ * (ex: "[address1,address2,...,addressN]") and returns an array of `Address`
+ * objects.
+ *
+ * @param str - A string containing a JSON-encoded array of addresses.
+ *
+ * @returns An array of `Address` objects, one for each address in the input string.
+ */
+export function json2Address(str: string): Array<Address> {
+  str = str.substring(1, str.length - 1);
+
+  const a = str.split(',');
+  return a.map<Address>((x) => new Address(x.substring(1, x.length - 1)));
+}

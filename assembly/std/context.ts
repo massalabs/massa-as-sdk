@@ -30,7 +30,7 @@
 
 import { env } from '../env/index';
 import { Address } from './address';
-import { callerHasWriteAccess, Context } from '.';
+import { callerHasWriteAccess, Context, json2Address } from '.';
 
 /**
  * Determines whether the smart contract is currently being deployed.
@@ -46,27 +46,6 @@ import { callerHasWriteAccess, Context } from '.';
 @inline
 export function isDeployingContract(): bool {
   return callerHasWriteAccess() && Context.callee().notEqual(Context.caller());
-}
-
-/**
- * Returns an array of addresses.
- *
- * Parses a JSON-encoded string of addresses and returns an array of `Address` objects.
- *
- * @remarks
- * This function takes a string containing a JSON-encoded array of addresses
- * (ex: "[address1,address2,...,addressN]") and returns an array of `Address`
- * objects.
- *
- * @param str - A string containing a JSON-encoded array of addresses.
- *
- * @returns An array of `Address` objects, one for each address in the input string.
- */
-function json2Address(str: string): Array<Address> {
-  str = str.substr(1, str.length - 2);
-
-  const a = str.split(',');
-  return a.map<Address>((x) => new Address(x.substring(1, x.length - 1)));
 }
 
 /**

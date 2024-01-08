@@ -46,6 +46,7 @@ const keySerOk3: StaticArray<u8> = [
 ];
 
 const keysSerKo8: StaticArray<u8> = []; // edge case
+const keysSerKo9: StaticArray<u8> = [0, 0]; // length < 4 (Minimal length)
 
 describe('index tests', () => {
   it('derOpKeys ok 1', () => {
@@ -71,6 +72,11 @@ describe('index tests', () => {
   it('derOpKeys ko 8', () => {
     let res8 = derKeys(keysSerKo8);
     expect(res8.length).toBe(0);
+  });
+
+  it('derOpKeys ko 8', () => {
+    let res9 = derKeys(keysSerKo9);
+    expect(res9.length).toBe(0);
   });
 
   it('derOpKeys ok 3', () => {
