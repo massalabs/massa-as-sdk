@@ -20,6 +20,28 @@
 export declare function mockScCall(value: StaticArray<u8>): void;
 
 /**
+ * Set mock for call coins.
+ * 
+ * @remarks
+ * This function is used to mock the call coins value for test purpose.
+ * Don't forget to reset the mock after the test.
+ *
+ * @example
+ * ```typescript
+ * test('mocked SC call', () => {
+ *   const coins: u64 = 123;
+ *   setCallCoins(coins);
+ *   const res = transferredCoins();
+ *   expect(res).toBe(coins);
+ *   setCallCoins(0); // Don't forget to reset the mock
+
+ * });
+ * ```
+ */
+@external("massa", "assembly_script_set_call_coins")
+export declare function setCallCoins(value: u64): void;
+
+/**
  * Add a new smart contract address to the ledger
  *
  * @remarks

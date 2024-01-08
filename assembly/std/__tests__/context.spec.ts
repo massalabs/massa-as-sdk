@@ -9,6 +9,7 @@ import {
   timestamp,
 } from '../context';
 import { validateAddress, json2Address } from '../utils';
+import { setCallCoins } from '../../vm-mock';
 
 describe('Context', () => {
   test('ownedAddresses', () => {
@@ -33,8 +34,9 @@ describe('Context', () => {
   });
 
   test('transferredCoins', () => {
-    const coins = transferredCoins();
-    expect(coins).toBe(0);
+    setCallCoins(100);
+    expect(transferredCoins()).toBe(100);
+    setCallCoins(0);
   });
 
   test('isDeployingContract', () => {

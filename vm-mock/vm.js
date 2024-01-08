@@ -87,6 +87,7 @@ function resetLedger() {
 let webModule;
 
 const scCallMockStack = [];
+let callCoins = BigInt(0); // Default value, coins for a call
 let chainIdMock = BigInt(77658366); // Default value, chain id for Buildnet
 
 /**
@@ -582,8 +583,12 @@ export default function createMockedABI(
         return newArrayBuffer(addressStorage.get(k));
       },
 
+      assembly_script_set_call_coins(coinAmount) {
+        callCoins = BigInt(coinAmount);
+      },
+
       assembly_script_get_call_coins() {
-        return BigInt(0);
+        return callCoins;
       },
 
       assembly_script_local_execution() {
