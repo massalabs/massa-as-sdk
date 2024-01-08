@@ -7,9 +7,8 @@ import {
   transferredCoins,
   isDeployingContract,
   timestamp,
-  json2Address,
 } from '../context';
-import { validateAddress } from '../utils';
+import { validateAddress, json2Address } from '../utils';
 
 describe('Context', () => {
   test('ownedAddresses', () => {
