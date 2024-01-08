@@ -33,8 +33,8 @@ describe('Context', () => {
   });
 
   test('transferredCoins', () => {
-    const coins = transferredCoins();
-    expect(coins).toBe(0);
+    setCallCoins(100);
+    expect(transferredCoins()).toBe(100);
   });
 
   test('isDeployingContract', () => {
