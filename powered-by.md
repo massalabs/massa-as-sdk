@@ -21,15 +21,15 @@ The following is a list of all the dependencies of this project:
 
 **License:** MIT - perpetual
 
-**Used version:** 8.0.1
+**Used version:** 8.1.0
 
 **Many thanks to:** [Joshua Tenner](tenner.joshua@gmail.com)
 
-## [@massalabs/as-transformer](https://registry.npmjs.org/@massalabs/as-transformer/-/as-transformer-0.2.1.tgz)
+## [@massalabs/as-transformer](https://registry.npmjs.org/@massalabs/as-transformer/-/as-transformer-0.3.2.tgz)
 
 **License:** ISC - perpetual
 
-**Used version:** 0.2.0
+**Used version:** 0.3.2
 
 **Many thanks to:** 
 
