@@ -71,5 +71,6 @@ describe('Testing env coins related functions', () => {
   it('callCoins', () => {
     setCallCoins(100);
     expect(env.callCoins()).toBe(100);
+    setCallCoins(0);
   });
 });

@@ -588,9 +588,7 @@ export default function createMockedABI(
       },
 
       assembly_script_get_call_coins() {
-        const coins = callCoins;
-        callCoins = BigInt(0);
-        return coins;
+        return callCoins;
       },
 
       assembly_script_local_execution() {

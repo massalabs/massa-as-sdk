@@ -35,6 +35,7 @@ describe('Context', () => {
   test('transferredCoins', () => {
     setCallCoins(100);
     expect(transferredCoins()).toBe(100);
+    setCallCoins(0);
   });
 
   test('isDeployingContract', () => {

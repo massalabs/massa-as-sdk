@@ -21,14 +21,20 @@ export declare function mockScCall(value: StaticArray<u8>): void;
 
 /**
  * Set mock for call coins.
+ * 
+ * @remarks
+ * This function is used to mock the call coins value for test purpose.
+ * Don't forget to reset the mock after the test.
  *
  * @example
  * ```typescript
  * test('mocked SC call', () => {
- *   const mockValue: u64 = 123;
- *   mockCallCoins(mockValue);
+ *   const coins: u64 = 123;
+ *   setCallCoins(coins);
  *   const res = transferredCoins();
- *   expect(res).toBe(mockValue);
+ *   expect(res).toBe(coins);
+ *   setCallCoins(0); // Don't forget to reset the mock
+
  * });
  * ```
  */
