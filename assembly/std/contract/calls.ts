@@ -197,9 +197,9 @@ export function sendMessage(
 }
 
 /**
- * Checks if the given function exists in a smart contract at the given address.
+ * Returns the operation id that originated the current execution if there is one
  *
- * @returns true if the function exists, false otherwise.
+ * @returns The operation id or null
  *
  */
 export function getOriginOperationId(): string | null {
