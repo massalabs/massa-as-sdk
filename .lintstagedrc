@@ -1,5 +1,5 @@
 {
-  "*.{js,ts,jsx,tsx,json,cjs}": [
+  "*.{js,ts,json,cjs}": [
     "npx eslint"
   ],
   "*.ts": [
