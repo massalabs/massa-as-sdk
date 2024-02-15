@@ -1,4 +1,23 @@
 /**
+ *  Set MAS balance for a given address..
+ *
+ * @param address - The address to set the balance for
+ *
+ * @example
+ * ```typescript
+ * test('mocked balance', () => {
+ *  const addr = 'A12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT';
+ * const balance: u64 = 123;
+ * mockBalance(addr.toString(), balance);
+ * const res = balanceOf(addr);
+ * expect(res).toBe(balance);
+ * });
+ * ```
+ */
+@external("massa", "assembly_script_mock_balance")
+export declare function mockBalance(address: string, balance: u64): void;
+
+/**
  *  Set mock for smartcontract call. When called multiple time, mocked values will be added in the mock stack.
  *
  * @param value - Value returned by the mocked function

@@ -727,6 +727,13 @@ export default function createMockedABI(
         ledger.get(addressTo).balance += BigInt(_coinsAmount);
       },
 
+      assembly_script_mock_balance(aPtr, amount) {
+        const addr = ptrToString(aPtr);
+        ledger.set(addr, {
+          balance: BigInt(amount),
+        });
+      },
+
       assembly_script_get_balance() {
         return BigInt(ledger.get(contractAddress).balance);
       },
