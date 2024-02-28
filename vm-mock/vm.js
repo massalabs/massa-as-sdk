@@ -10,6 +10,8 @@ import sha3 from 'js-sha3';
 let callerAddress = 'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq';
 let contractAddress = 'AS12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT';
 
+let mockedOriginOpId = '';
+
 /**
  * return a random string
  *
@@ -801,7 +803,15 @@ export default function createMockedABI(
         );
       },
 
+      assembly_script_set_origin_operation_id(dataPtr) {
+        const opId = ptrToString(dataPtr);
+        mockedOriginOpId = opId;
+      },
+
       assembly_script_get_origin_operation_id() {
+        if(mockedOriginOpId !== '') {
+          return newString(mockedOriginOpId);
+        }
         return newString(generateRandOpId());
       },
 

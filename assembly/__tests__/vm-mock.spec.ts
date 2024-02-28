@@ -10,10 +10,12 @@ import {
   keccak256,
   isEvmSignatureValid,
   evmGetPubkeyFromSignature,
+  getOriginOperationId,
 } from '../std';
 import { changeCallStack, resetStorage } from '../vm-mock/storage';
 import {
   mockAdminContext,
+  mockOriginOperationId,
   mockSetChainId,
   setDeployContext,
   setLocalContext,
@@ -303,5 +305,23 @@ describe('Testing mocked Chain id', () => {
 
   it('chain id mock value', () => {
     expect(env.chainId()).toBe(9_000_000);
+  });
+});
+
+describe('Testing mocked origin operation id', () => {
+  const mockedOpId = 'imAniceOpId';
+  beforeEach(() => {
+    mockOriginOperationId(mockedOpId);
+  });
+
+  it('operation Id is mocked', () => {
+    const opId = getOriginOperationId();
+    expect(opId).toBe(mockedOpId);
+  });
+
+  it('operation Id mock is unset', () => {
+    mockOriginOperationId('');
+    const opId = getOriginOperationId();
+    expect(opId).not.toBe(mockedOpId);
   });
 });

@@ -168,3 +168,24 @@ export declare function setLocalContext(address?: string): void;
 
 @external("massa", "assembly_script_set_chain_id")
 export declare function mockSetChainId(value: number): void;
+
+/**
+ * Set mock for origin operation Id.
+ *
+ * @remarks
+ * This function is used to mock the origin operation Id for test purpose.
+ * If an empty string is passed, the origin operation Id will be reset to the default value (random generated).
+ * Don't forget to reset the mock after the test.
+ *
+ * @example
+ * ```typescript
+ * test('mock origin opId', () => {
+ *   const opId = 123;
+ *   mockOriginOperationId(opId);
+ *   const res = getOriginOperationId()();
+ *   expect(res).toBe(opId);
+ * });
+ * ```
+ */
+@external("massa", "assembly_script_set_origin_operation_id")
+export declare function mockOriginOperationId(opId: string): void;
