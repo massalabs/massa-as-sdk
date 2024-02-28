@@ -1,9 +1,8 @@
 // This file is aim to test the env coins related functions which are external functions
 
 import { env } from '../env';
-import { resetStorage, setCallCoins } from '../vm-mock';
-import { Address, Storage } from '../std';
-import { stringToBytes } from '@massalabs/as-types';
+import { resetStorage, mockTransferredCoins } from '../vm-mock';
+import { Address } from '../std';
 
 const testAddress = new Address(
   'AU12E6N5BFAdC2wyiBV6VJjqkWhpz1kLVp2XpbRdSnL1mKjCWT6oR',
@@ -69,8 +68,8 @@ describe('Testing env coins related functions', () => {
   });
 
   it('callCoins', () => {
-    setCallCoins(100);
+    mockTransferredCoins(100);
     expect(env.callCoins()).toBe(100);
-    setCallCoins(0);
+    mockTransferredCoins(0);
   });
 });
