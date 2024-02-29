@@ -1,3 +1,5 @@
+/* eslint-disable new-cap */
+
 const { createHash } = await import('node:crypto');
 import { SigningKey, hashMessage } from 'ethers';
 import sha3 from 'js-sha3';
@@ -11,6 +13,17 @@ let callerAddress = 'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq';
 let contractAddress = 'AS12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT';
 
 let mockedOriginOpId = '';
+
+/**
+ * log error and throw
+ *
+ * @param {string} msg error message
+ */
+function ERROR(msg) {
+  console.log('\x1b[31m%s\x1b[0m','Vm-mock error: ' + msg);
+  throw new Error(msg);
+}
+
 
 /**
  * return a random string
@@ -67,7 +80,6 @@ let callStack = callerAddress + ' , ' + contractAddress;
 */
 let ledger;
 let adminContext = false;
-let deployContext = false;
 
 /**
  * Reset the ledger
@@ -268,12 +280,10 @@ export default function createMockedABI(
           if (addressStorage.has(key)) {
             return newArrayBuffer(addressStorage.get(key));
           } else {
-            throw new Error('Runtime error: data entry not found');
+            ERROR('data entry not found');
           }
         } else {
-          throw new Error(
-            'Runtime error: address parsing error: ' + contractAddress,
-          );
+          ERROR(`Address ${contractAddress} does not exist in ledger.`);
         }
       },
 
@@ -317,10 +327,10 @@ export default function createMockedABI(
           if (addressStorage.has(key)) {
             return newArrayBuffer(addressStorage.get(key));
           } else {
-            throw new Error('Runtime error: data entry not found');
+            ERROR('data entry not found');
           }
         } else {
-          throw new Error('Runtime error: address parsing error: ' + a);
+          ERROR(`Address ${a} does not exist in ledger.`);
         }
       },
 
@@ -346,13 +356,11 @@ export default function createMockedABI(
         if (ledger.has(contractAddress)) {
           const addressStorage = ledger.get(contractAddress).storage;
           if (!addressStorage.has(key)) {
-            throw new Error('Runtime error: data entry not found');
+            ERROR('data entry not found');
           }
           addressStorage.delete(key);
         } else {
-          throw new Error(
-            'Runtime error: address parsing error: ' + contractAddress,
-          );
+          ERROR(`Address ${contractAddress} does not exist in ledger.`);
         }
       },
 
@@ -361,13 +369,13 @@ export default function createMockedABI(
         const key = ptrToUint8ArrayString(kPtr);
 
         if (!ledger.has(address)) {
-          throw new Error('Runtime error: address parsing error: ' + address);
+          ERROR(`Address ${address} does not exist in ledger.`);
         }
 
         const addressStorage = ledger.get(address).storage;
 
         if (!addressStorage.has(key)) {
-          throw new Error('Runtime error: data entry not found');
+          ERROR('data entry not found');
         }
 
         addressStorage.delete(key);
@@ -379,13 +387,13 @@ export default function createMockedABI(
         const newValue = getArrayBuffer(valuePtr);
 
         if (!ledger.has(address)) {
-          throw new Error('Runtime error: address parsing error: ' + address);
+          ERROR(`Address ${address} does not exist in ledger.`);
         }
 
         const addressStorage = ledger.get(address).storage;
 
         if (!addressStorage.has(key)) {
-          throw new Error('Runtime error: data entry not found');
+          ERROR('data entry not found');
         }
 
         const oldValue = addressStorage.get(key);
@@ -400,13 +408,13 @@ export default function createMockedABI(
         const newValue = getArrayBuffer(valuePtr);
 
         if (!ledger.has(address)) {
-          throw new Error('Runtime error: address parsing error: ' + address);
+          ERROR(`Address ${address} does not exist in ledger.`);
         }
 
         const addressStorage = ledger.get(address).storage;
 
         if (!addressStorage.has(key)) {
-          throw new Error('Runtime error: data entry not found');
+          ERROR('data entry not found');
         }
 
         const oldValue = addressStorage.get(key);
@@ -448,18 +456,14 @@ export default function createMockedABI(
         if (scCallMockStack.length) {
           return newArrayBuffer(scCallMockStack.shift());
         }
-        throw new Error(
-          `No mock defined for sc call on "${ptrToString(method)}".`,
-        );
+        ERROR('No mock defined for sc call on ' + ptrToString(method));
       },
 
       assembly_script_local_call(_address, method, _param) {
         if (scCallMockStack.length) {
           return newArrayBuffer(scCallMockStack.shift());
         }
-        throw new Error(
-          `No mock defined for sc call on "${ptrToString(method)}".`,
-        );
+        ERROR('No mock defined for sc call on ' + ptrToString(method));
       },
 
       assembly_script_mock_admin_context(isAdmin) {
@@ -629,7 +633,7 @@ export default function createMockedABI(
         const calledFunction = ptrToString(handlerPtr);
 
         if (!ledger.has(address)) {
-          throw new Error(`Address ${ptrToString(addressPtr)} does not exist.`);
+          ERROR(`Address ${address} does not exist.`);
         }
         console.log(
           `sendMessage: function ${calledFunction} will be called in ${address}`,
@@ -656,7 +660,7 @@ export default function createMockedABI(
         const bytecode = getArrayBuffer(bytecodePtr);
 
         if (!ledger.has(a)) {
-          throw new Error('Runtime error: address parsing error: ' + a);
+          ERROR(`Address ${a} does not exist in ledger.`);
         }
 
         const addressLedger = ledger.get(a);
@@ -671,7 +675,7 @@ export default function createMockedABI(
       assembly_script_get_bytecode_for(aPtr) {
         const a = ptrToString(aPtr);
         if (!ledger.has(a)) {
-          throw new Error('Runtime error: address parsing error: ' + a);
+          ERROR(`Address ${a} does not exist in ledger.`);
         }
 
         const addressLedger = ledger.get(a);
@@ -688,10 +692,9 @@ export default function createMockedABI(
           });
         }
         const callerBalance = ledger.get(callerAddress).balance;
+
         if (callerBalance < BigInt(_coinsAmount)) {
-          throw new Error(
-            `Runtime error: not enough balance to transfer ${_coinsAmount} coins.`,
-          );
+          ERROR('not enough balance to transfer ' + _coinsAmount + ' coins.');
         }
         ledger.get(callerAddress).balance -= BigInt(_coinsAmount);
         ledger.get(address).balance += BigInt(_coinsAmount);
@@ -706,9 +709,7 @@ export default function createMockedABI(
         const addressTo = ptrToString(_addressToPtr);
 
         if (!ledger.has(addressFrom)) {
-          throw new Error(
-            'Runtime error: address parsing error: ' + addressFrom,
-          );
+          ERROR(`Sending address ${addressFrom} does not exist in ledger.`);
         }
 
         if (!ledger.has(addressTo)) {
@@ -722,9 +723,7 @@ export default function createMockedABI(
         const addressFromBalance = ledger.get(addressFrom).balance;
 
         if (addressFromBalance < BigInt(_coinsAmount)) {
-          throw new Error(
-            `Runtime error: not enough balance to transfer ${_coinsAmount} coins.`,
-          );
+          ERROR(`not enough balance to transfer ${_coinsAmount} coins.`);
         }
 
         ledger.get(addressFrom).balance -= BigInt(_coinsAmount);
@@ -741,11 +740,7 @@ export default function createMockedABI(
           });
           return;
         }
-        ledger.set(addr, {
-          storage: ledger.get(addr).storage,
-          contract: ledger.get(addr).contract,
-          balance: BigInt(amount),
-        });
+        ledger.get(addr).balance = BigInt(amount);
       },
 
       assembly_script_get_balance() {
@@ -770,16 +765,12 @@ export default function createMockedABI(
       ) {
         const signatureBuf = getArrayBuffer(signaturePtr);
         if (signatureBuf.byteLength !== 65) {
-          console.log('Invalid signature length. Expected 65 bytes');
-          throw new Error();
+          ERROR('Invalid signature length. Expected 65 bytes');
         }
 
         const pubKeyBuf = getArrayBuffer(publicKeyPtr);
         if (pubKeyBuf.byteLength !== 64) {
-          console.log(
-            'Invalid public key length. Expected 64 bytes uncompressed secp256k1 public key',
-          );
-          throw new Error();
+          ERROR('Invalid public key length. Expected 64 bytes uncompressed secp256k1 public key');
         }
 
         const digest = hashMessage(new Uint8Array(getArrayBuffer(dataPtr)));
@@ -796,8 +787,7 @@ export default function createMockedABI(
       assembly_script_evm_get_pubkey_from_signature(dataPtr, signaturePtr) {
         const signatureBuf = getArrayBuffer(signaturePtr);
         if (signatureBuf.byteLength !== 65) {
-          console.log('Invalid signature length. Expected 65 bytes');
-          throw new Error();
+          ERROR('Invalid signature length. Expected 65 bytes');
         }
         const digest =
           '0x' + Buffer.from(getArrayBuffer(dataPtr)).toString('hex');
