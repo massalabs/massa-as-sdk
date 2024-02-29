@@ -11,10 +11,13 @@ import {
   isEvmSignatureValid,
   evmGetPubkeyFromSignature,
   getOriginOperationId,
+  balance,
+  balanceOf,
 } from '../std';
 import { changeCallStack, resetStorage } from '../vm-mock/storage';
 import {
   mockAdminContext,
+  mockBalance,
   mockOriginOperationId,
   mockSetChainId,
   setDeployContext,
@@ -323,5 +326,24 @@ describe('Testing mocked origin operation id', () => {
     mockOriginOperationId('');
     const opId = getOriginOperationId();
     expect(opId).not.toBe(mockedOpId);
+  });
+});
+
+describe('balance mock', () => {
+  it('mock balance', () => {
+    mockBalance(testAddress.toString(), 9999);
+    expect(balanceOf(testAddress.toString())).toBe(9999);
+  });
+
+  it('mock contract balance', () => {
+    mockBalance(contractAddress.toString(), 9999);
+    expect(balance()).toBe(9999);
+  });
+
+  it('mock contract balance and preserve storage', () => {
+    Storage.set('thekey', 'thevalue');
+    mockBalance(contractAddress.toString(), 9999);
+    expect(balance()).toBe(9999);
+    expect(Storage.get('thekey')).toBe('thevalue');
   });
 });
