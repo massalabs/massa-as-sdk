@@ -24,7 +24,6 @@ function ERROR(msg) {
   throw new Error(msg);
 }
 
-
 /**
  * return a random string
  *
@@ -470,10 +469,6 @@ export default function createMockedABI(
         adminContext = isAdmin;
       },
 
-      assembly_script_mock_not_admin_context() {
-        adminContext = false;
-      },
-
       assembly_script_set_deploy_context(addrPtr) {
         adminContext = true;
         // Ensure the caller address is different from the contract address
@@ -682,22 +677,31 @@ export default function createMockedABI(
         return newArrayBuffer(addressLedger.contract);
       },
 
-      assembly_script_transfer_coins(_addressPtr, _coinsAmount) {
-        const address = ptrToString(_addressPtr);
-        if (!ledger.has(address)) {
-          ledger.set(address, {
+      assembly_script_transfer_coins(addressPtr, amount) {
+        const toAddress = ptrToString(addressPtr);
+
+        if (!ledger.has(toAddress)) {
+          ledger.set(toAddress, {
             storage: new Map(),
             contract: '',
             balance: BigInt(0),
           });
         }
-        const callerBalance = ledger.get(callerAddress).balance;
+        // get last elt of callStack
+        const callStackArray = callStack.split(' , ');
+        const fromAddress = callStackArray[callStackArray.length - 1];
 
-        if (callerBalance < BigInt(_coinsAmount)) {
-          ERROR('not enough balance to transfer ' + _coinsAmount + ' coins.');
+        if (!ledger.has(fromAddress)) {
+          ERROR(`Sending address ${fromAddress} does not exist in ledger.`);
         }
-        ledger.get(callerAddress).balance -= BigInt(_coinsAmount);
-        ledger.get(address).balance += BigInt(_coinsAmount);
+        const senderBalance = ledger.get(fromAddress).balance;
+
+        if (senderBalance < BigInt(amount)) {
+          ERROR('not enough balance to transfer ' + amount + ' coins.');
+        }
+
+        ledger.get(toAddress).balance += BigInt(amount);
+        ledger.get(fromAddress).balance -= BigInt(amount);
       },
 
       assembly_script_transfer_coins_for(

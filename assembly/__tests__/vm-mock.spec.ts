@@ -13,6 +13,7 @@ import {
   getOriginOperationId,
   balance,
   balanceOf,
+  transferCoins,
 } from '../std';
 import { changeCallStack, resetStorage } from '../vm-mock/storage';
 import {
@@ -37,6 +38,14 @@ const badAddress = new Address(
 
 const testAddress2 = new Address(
   'AS12E6N5BFAdC2wyiBV6VJjqkWhpz1kLVp2XpbRdSnL1mKjCWT6oP',
+);
+
+const callerAddress: Address = new Address(
+  'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq',
+);
+
+const contractAddress: Address = new Address(
+  'AS12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT',
 );
 
 const keyTest = 'test';
@@ -169,13 +178,6 @@ describe('Testing mocked Storage and CallStack', () => {
     expect(result2).toBe(false);
   });
 });
-
-const callerAddress: Address = new Address(
-  'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq',
-);
-const contractAddress: Address = new Address(
-  'AS12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT',
-);
 
 describe('Testing mocked Context', () => {
   beforeEach(() => {
@@ -345,5 +347,39 @@ describe('balance mock', () => {
     mockBalance(contractAddress.toString(), 9999);
     expect(balance()).toBe(9999);
     expect(Storage.get('thekey')).toBe('thevalue');
+  });
+});
+
+describe('transfer coins', () => {
+  const amount = 666;
+  it('contract transfer amount to user', () => {
+    const initialContractBalance = balance();
+
+    transferCoins(testAddress, amount);
+    expect(balanceOf(testAddress.toString())).toBe(amount);
+    expect(balance()).toBe(initialContractBalance - amount);
+    expect(balanceOf(contractAddress.toString())).toBe(
+      initialContractBalance - amount,
+    );
+  });
+
+  it('transfer increase user balance', () => {
+    const initialUserBalance = 123;
+    const initialContractBalance = balance();
+
+    mockBalance(testAddress.toString(), initialUserBalance);
+
+    transferCoins(testAddress, amount);
+    expect(balanceOf(testAddress.toString())).toBe(amount + initialUserBalance);
+    expect(balance()).toBe(initialContractBalance - amount);
+    expect(balanceOf(contractAddress.toString())).toBe(
+      initialContractBalance - amount,
+    );
+  });
+
+  throws('throw if insufficient balance', () => {
+    mockBalance(contractAddress.toString(), 0);
+    expect(balance()).toBe(0);
+    transferCoins(testAddress, amount);
   });
 });
