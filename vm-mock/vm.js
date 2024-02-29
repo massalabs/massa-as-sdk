@@ -733,7 +733,17 @@ export default function createMockedABI(
 
       assembly_script_mock_balance(aPtr, amount) {
         const addr = ptrToString(aPtr);
+        if (!ledger.has(addr)) {
+          ledger.set(addr, {
+            storage: new Map(),
+            contract: '',
+            balance: BigInt(amount),
+          });
+          return;
+        }
         ledger.set(addr, {
+          storage: ledger.get(addr).storage,
+          contract: ledger.get(addr).contract,
           balance: BigInt(amount),
         });
       },
