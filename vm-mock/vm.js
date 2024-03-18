@@ -692,6 +692,10 @@ export default function createMockedABI(
             balance: BigInt(0),
           });
         }
+        if (ledger.get(toAddress).balance === undefined) {
+          ledger.get(toAddress).balance = BigInt(0);
+        }
+
         // get last elt of callStack
         const callStackArray = callStack.split(' , ');
         const fromAddress = callStackArray[callStackArray.length - 1];
@@ -699,19 +703,10 @@ export default function createMockedABI(
         if (!ledger.has(fromAddress)) {
           ERROR(`Sending address ${fromAddress} does not exist in ledger.`);
         }
+
         const senderBalance = ledger.get(fromAddress).balance;
-
-        if (senderBalance < BigInt(amount)) {
-          ERROR('not enough balance to transfer ' + amount + ' coins.');
-        }
-
-        // We should not have this case, but someone could add a ledger.set without a balance
-        // Typescript could be used to avoid this kind of error
-        if (ledger.get(toAddress).balance === undefined) {
-          ledger.get(toAddress).balance = BigInt(0);
-        }
-        if (ledger.get(fromAddress).balance === undefined) {
-          ledger.get(fromAddress).balance = BigInt(0);
+        if (senderBalance == undefined || senderBalance < BigInt(amount)) {
+          ERROR('Not enough balance to transfer ' + amount + ' coins.');
         }
 
         ledger.get(toAddress).balance += BigInt(amount);

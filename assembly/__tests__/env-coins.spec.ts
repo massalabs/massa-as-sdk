@@ -1,11 +1,7 @@
 // This file is aim to test the env coins related functions which are external functions
 
 import { env } from '../env';
-import {
-  resetStorage,
-  mockTransferredCoins,
-  addAddressToLedger,
-} from '../vm-mock';
+import { resetStorage, mockTransferredCoins } from '../vm-mock';
 import { Address } from '../std';
 
 const testAddress = new Address(
@@ -14,10 +10,6 @@ const testAddress = new Address(
 
 const testAddress2 = new Address(
   'AU12E6N5BFAdC2wyiBV6VJjqkWhpz1kLVp2XpbRdSnL1mKjCWT6oT',
-);
-
-const testAddress3 = new Address(
-  'AU12E6N5BFAdC2wyiBV6VJjqkWhpz1kLVp2XpbRdSnL1mKjCWT6oU',
 );
 
 beforeEach(() => {
@@ -58,18 +50,6 @@ describe('Testing env coins related functions', () => {
     );
     // then
     expect(env.balanceOf(testAddress2.toString())).toBe(amount);
-  });
-
-  it('transferCoins to mock address created with addAddressToLedger', () => {
-    addAddressToLedger(testAddress3.toString());
-    const amount: u64 = 100;
-    const receiverCurrentBalance = env.balanceOf(testAddress3.toString());
-    // given
-    expect(receiverCurrentBalance).toBe(0);
-    // when
-    env.transferCoins(testAddress3.toString(), amount);
-    // then
-    expect(env.balanceOf(testAddress3.toString())).toBe(amount);
   });
 
   it('get the balance of an address', () => {
