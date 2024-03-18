@@ -440,7 +440,7 @@ export default function createMockedABI(
         ledger.set(newAddress._value, {
           storage: new Map(),
           contract: '',
-          alance: BigInt(0),
+          balance: BigInt(0),
         });
 
         return newArrayBuffer(newAddress._value);
@@ -487,7 +487,7 @@ export default function createMockedABI(
           ledger.set(callerAddress, {
             storage: new Map(),
             contract: '',
-            alance: BigInt(0),
+            balance: BigInt(0),
           });
         }
         // updating the callStack
@@ -507,7 +507,7 @@ export default function createMockedABI(
           ledger.set(callerAddress, {
             storage: new Map(),
             contract: '',
-            alance: BigInt(0),
+            balance: BigInt(0),
           });
         }
         callStack = callerAddress + ' , ' + contractAddress;
