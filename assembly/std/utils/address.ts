@@ -1,5 +1,6 @@
 import { env } from '../../env';
 import { Address } from '../address';
+import { getBytecodeOf } from '../contract';
 
 /**
  * Retrieves an 'Address' object from the given public key.
@@ -58,4 +59,26 @@ export function json2Address(str: string): Array<Address> {
 
   const a = str.split(',');
   return a.map<Address>((x) => new Address(x.substring(1, x.length - 1)));
+}
+
+/**
+ * Asserts that the given address is an already deployed non-destroyed contract.
+ *
+ * @param address - The address to check.
+ *
+ * @throws
+ * If the address is not a valid smart contract address.
+ * If no bytecode is found at the address.
+ */
+export function assertIsSmartContract(address: string): void {
+  // Check if it's a valid smart contract address
+  assert(validateAddress(address), `${address} is not a valid Address`);
+  assert(
+    address.startsWith('AS'),
+    `${address} is not a smart contract Address`,
+  );
+  // Throw if no contract has been deployed at this address
+  const bytecode = getBytecodeOf(new Address(address));
+  // Check if the contract has been destroyed
+  assert(bytecode.length > 0, `No bytecode found at address: ${address}`);
 }
