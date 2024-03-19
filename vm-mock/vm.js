@@ -20,7 +20,7 @@ let mockedOriginOpId = '';
  * @param {string} msg error message
  */
 function ERROR(msg) {
-  console.log('\x1b[31m%s\x1b[0m','Vm-mock error: ' + msg);
+  console.log('\x1b[31m%s\x1b[0m', 'Vm-mock error: ' + msg);
   throw new Error(msg);
 }
 
@@ -188,7 +188,6 @@ export default function createMockedABI(
    * @returns {Uint8Array} - The serialized keys.
    */
   function serializeKeys(keysArr) {
-
     const serialized = [];
     const lengthBytes = numToLittleEndianBytes(keysArr.length);
 
@@ -258,6 +257,7 @@ export default function createMockedABI(
         ledger.set(address, {
           storage: new Map(),
           contract: '',
+          balance: BigInt(0),
         });
       },
 
@@ -311,6 +311,7 @@ export default function createMockedABI(
           ledger.set(a, {
             storage: new Map(),
             contract: '',
+            balance: BigInt(0),
           });
         }
         const addressStorage = ledger.get(a).storage;
@@ -435,11 +436,13 @@ export default function createMockedABI(
       // map the AssemblyScript file with the contractAddresses generated
       assembly_script_create_sc(_) {
         const newAddress = { _value: generateDumbAddress(), _isValid: true };
-        const newAddressLedger = {
+
+        ledger.set(newAddress._value, {
           storage: new Map(),
           contract: '',
-        };
-        ledger.set(newAddress._value, newAddressLedger);
+          balance: BigInt(0),
+        });
+
         return newArrayBuffer(newAddress._value);
       },
 
@@ -484,6 +487,7 @@ export default function createMockedABI(
           ledger.set(callerAddress, {
             storage: new Map(),
             contract: '',
+            balance: BigInt(0),
           });
         }
         // updating the callStack
@@ -503,6 +507,7 @@ export default function createMockedABI(
           ledger.set(callerAddress, {
             storage: new Map(),
             contract: '',
+            balance: BigInt(0),
           });
         }
         callStack = callerAddress + ' , ' + contractAddress;
@@ -687,6 +692,10 @@ export default function createMockedABI(
             balance: BigInt(0),
           });
         }
+        if (ledger.get(toAddress).balance === undefined) {
+          ledger.get(toAddress).balance = BigInt(0);
+        }
+
         // get last elt of callStack
         const callStackArray = callStack.split(' , ');
         const fromAddress = callStackArray[callStackArray.length - 1];
@@ -694,10 +703,10 @@ export default function createMockedABI(
         if (!ledger.has(fromAddress)) {
           ERROR(`Sending address ${fromAddress} does not exist in ledger.`);
         }
-        const senderBalance = ledger.get(fromAddress).balance;
 
-        if (senderBalance < BigInt(amount)) {
-          ERROR('not enough balance to transfer ' + amount + ' coins.');
+        const senderBalance = ledger.get(fromAddress).balance;
+        if (senderBalance == undefined || senderBalance < BigInt(amount)) {
+          ERROR('Not enough balance to transfer ' + amount + ' coins.');
         }
 
         ledger.get(toAddress).balance += BigInt(amount);
@@ -774,7 +783,9 @@ export default function createMockedABI(
 
         const pubKeyBuf = getArrayBuffer(publicKeyPtr);
         if (pubKeyBuf.byteLength !== 64) {
-          ERROR('Invalid public key length. Expected 64 bytes uncompressed secp256k1 public key');
+          ERROR(
+            'Invalid public key length. Expected 64 bytes uncompressed secp256k1 public key',
+          );
         }
 
         const digest = hashMessage(new Uint8Array(getArrayBuffer(dataPtr)));
@@ -815,7 +826,7 @@ export default function createMockedABI(
       },
 
       assembly_script_get_origin_operation_id() {
-        if(mockedOriginOpId !== '') {
+        if (mockedOriginOpId !== '') {
           return newString(mockedOriginOpId);
         }
         return newString(generateRandOpId());
