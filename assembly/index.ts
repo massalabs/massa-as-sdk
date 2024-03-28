@@ -8,6 +8,9 @@ export { collections };
 import * as env from './env/index';
 export { env };
 
+import * as security from './security/index';
+export { security };
+
 // massa std functionalities
 export * from './std';
 
