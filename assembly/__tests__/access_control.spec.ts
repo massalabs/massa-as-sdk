@@ -48,7 +48,7 @@ describe('AccessControl - use case tests', () => {
       const USER = controller.newPermission('user');
       controller.grantPermission(USER, userAddress);
 
-      controller.mustHavePermission(ADMIN || USER, guestAddress);
+      controller.mustHaveAnyPermission(ADMIN | USER, guestAddress);
     }).toThrow('or on multiple permissions should work');
   });
 });

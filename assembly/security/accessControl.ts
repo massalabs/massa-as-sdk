@@ -46,7 +46,7 @@ import { Address, Storage } from '../std/index';
  * }
  *
  * export function internalOnly(_: StaticArray<u8>): StaticArray<u8> {
- *   controller.mustHavePermission(ADMIN || USER, Context.caller());
+ *   controller.mustHaveAnyPermission(ADMIN | USER, Context.caller());
  *   return stringToBytes('Internal data');
  * }
  *
