@@ -14,42 +14,42 @@ import { Address, Storage } from '../std/index';
  * - User access rights are stored and managed in a similar bitmask format.
  * - Utilizes blockchain's native storage, with ModuleId as a prefix to differentiate keys
  *   belonging to different modules.
- * 
+ *
  * @example
  * ```ts
  * import { Context, Address } from '@massalabs/massa-as-sdk';
  * import { Args, stringToBytes } from '@massalabs/as-types';
  * import { AccessControl } from '@massalabs/sc-standards';
- * 
+ *
  * const controller = new AccessControl<u8>(1);
  * const ADMIN = controller.newPermission('admin');
  * const USER = controller.newPermission('user');
- * 
+ *
  * export function constructor(raw: StaticArray<u8>): StaticArray<u8> {
  *   if (!Context.isDeployingContract()) {
  *     return [];
  *   }
- * 
+ *
  *   const args = new Args(raw);
  *   const adminAddress = args.nextSerializable<Address>().expect('Admin address is missing');
  *   const userAddress = args.nextSerializable<Address>().expect('User address is missing');
- * 
+ *
  *   controller.grantPermission(ADMIN, adminAddress);
  *   controller.grantPermission(USER, userAddress);
- * 
+ *
  *   return [];
  * }
- * 
+ *
  * export function superSensite(_: StaticArray<u8>): StaticArray<u8> {
  *   controller.mustHavePermission(ADMIN, Context.caller());
  *   return stringToBytes('Super sensitive data');
  * }
- * 
+ *
  * export function internalOnly(_: StaticArray<u8>): StaticArray<u8> {
  *   controller.mustHavePermission(ADMIN || USER, Context.caller());
  *   return stringToBytes('Internal data');
  * }
- * 
+ *
  * export function publicData(_: StaticArray<u8>): StaticArray<u8> {
  *   return stringToBytes('Public data');
  * }
