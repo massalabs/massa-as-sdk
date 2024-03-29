@@ -185,7 +185,7 @@ export class AccessControl<T> {
    * @param permission - The permission bitmask to check.
    * @param user - The user identified by his address.
    * @returns true if the user has the permission, false otherwise.
-   * 
+   *
    * @throws if the permission does not exist.
    */
   public hasPermission(permission: T, user: Address): boolean {
@@ -220,7 +220,7 @@ export class AccessControl<T> {
    * @param permission - The permission bitmask to check.
    * @param user - The user identified by his address.
    * @returns true if the user has any of the permissions, false otherwise.
-   * 
+   *
    * @throws if the permission does not exist.
    */
   public hasAnyPermission(permission: T, user: Address): boolean {
@@ -248,5 +248,4 @@ export class AccessControl<T> {
       `User does not have any of the permissions.`,
     );
   }
-
 }
