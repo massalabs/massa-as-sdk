@@ -162,7 +162,7 @@ export class AccessControl<T> {
    *
    * @throws if the user does not have the permission or if the permission does not exist.
    */
-  public remokePermission(permission: T, user: Address): void {
+  public revokePermission(permission: T, user: Address): void {
     assert(
       permission < this._permissionIndexToBitmask(this.permissionIndex),
       this.errPermissionDoesNotExist,
@@ -185,6 +185,8 @@ export class AccessControl<T> {
    * @param permission - The permission bitmask to check.
    * @param user - The user identified by his address.
    * @returns true if the user has the permission, false otherwise.
+   * 
+   * @throws if the permission does not exist.
    */
   public hasPermission(permission: T, user: Address): boolean {
     assert(
@@ -212,4 +214,39 @@ export class AccessControl<T> {
       `User does not have '${this._permissionToName(permission)}' permission.`,
     );
   }
+
+  /**
+   * Checks if the user has any of the given permissions.
+   * @param permission - The permission bitmask to check.
+   * @param user - The user identified by his address.
+   * @returns true if the user has any of the permissions, false otherwise.
+   * 
+   * @throws if the permission does not exist.
+   */
+  public hasAnyPermission(permission: T, user: Address): boolean {
+    assert(
+      permission < this._permissionIndexToBitmask(this.permissionIndex),
+      this.errPermissionDoesNotExist,
+    );
+
+    const ua = this._getUserAccess(user);
+    // @ts-ignore arithmetic operations on generic types
+    return (ua & permission) != 0;
+  }
+
+  /**
+   * Checks if the user has any of the given permissions.
+   * @param permission - The permission bitmask to check.
+   * @param user - The user identified by his address.
+   *
+   * @throws if the user does not have any of the permissions.
+   */
+  @inline
+  public mustHaveAnyPermission(permission: T, user: Address): void {
+    assert(
+      this.hasAnyPermission(permission, user),
+      `User does not have any of the permissions.`,
+    );
+  }
+
 }

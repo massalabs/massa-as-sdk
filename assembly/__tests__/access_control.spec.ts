@@ -21,8 +21,8 @@ describe('AccessControl - use case tests', () => {
       const USER = controller.newPermission('user');
       controller.grantPermission(USER, userAddress);
 
-      controller.mustHavePermission(ADMIN || USER, adminAddress);
-      controller.mustHavePermission(ADMIN || USER, userAddress);
+      controller.mustHaveAnyPermission(ADMIN | USER, adminAddress);
+      controller.mustHaveAnyPermission(ADMIN | USER, userAddress);
     }).not.toThrow('or on multiple permissions should work');
   });
 
@@ -134,6 +134,33 @@ describe('AccessControl - unit tests', () => {
     }).toThrow('User does not have admin permission');
   });
 
+  test('should handle multiple permissions', () => {
+    resetStorage();
+    const accessControl = new AccessControl<u8>(1);
+    const ADMIN = accessControl.newPermission('admin');
+    const USER = accessControl.newPermission('user');
+    const userAddress = new Address(
+      'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq',
+    );
+    accessControl.grantPermission(USER, userAddress);
+    accessControl.mustHaveAnyPermission(ADMIN | USER, userAddress);
+  });
+
+  test('should panic on missing must have any permissions', () => {
+    resetStorage();
+    expect(() => {
+      const accessControl = new AccessControl<u8>(1);
+      const ADMIN = accessControl.newPermission('admin');
+      const USER = accessControl.newPermission('user');
+      const GUEST = accessControl.newPermission('guest');
+      const userAddress = new Address(
+        'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq',
+      );
+      accessControl.grantPermission(GUEST, userAddress);
+      accessControl.mustHaveAnyPermission(ADMIN | USER, userAddress);
+    }).toThrow('User does not have admin or user permission');
+  });
+
   test('should add permissions to user', () => {
     resetStorage();
     const accessControl = new AccessControl<u8>(1);
@@ -180,7 +207,7 @@ describe('AccessControl - unit tests', () => {
       'User should have admin permission',
     );
 
-    accessControl.remokePermission(USER, userAddress);
+    accessControl.revokePermission(USER, userAddress);
 
     expect(accessControl.hasPermission(USER, userAddress)).toBeFalsy(
       'User should not have user permission',
