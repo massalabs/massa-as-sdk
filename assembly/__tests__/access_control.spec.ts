@@ -22,7 +22,7 @@ describe('AccessControl - use case tests', () => {
       controller.grantPermission(USER, userAddress);
 
       controller.mustHavePermission(ADMIN || USER, adminAddress);
-      controller.mustHavePermission(ADMIN || USER, adminAddress);
+      controller.mustHavePermission(ADMIN || USER, userAddress);
     }).not.toThrow('or on multiple permissions should work');
   });
 
