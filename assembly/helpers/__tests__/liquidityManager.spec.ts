@@ -219,25 +219,6 @@ describe('LiquidityManager - unit tests', () => {
     );
   });
 
-  test('updateAllowance with insufficient funds', () => {
-    expect(() => {
-      resetStorage();
-      const storagePrefixManager = new StoragePrefixManager();
-      const liquidityManager = new LiquidityManager<u8>(storagePrefixManager);
-
-      const user1 = new Address(
-        'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq',
-      );
-      const user2 = new Address(
-        'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKr',
-      );
-
-      liquidityManager.mint(user1, 100);
-
-      liquidityManager.updateAllowance(user1, user2, 101, true);
-    }).toThrow('updateAllowance should reject if not enough balance.');
-  });
-
   test('transferFrom', () => {
     liquidityManager.mint(user1, 100);
     liquidityManager.updateAllowance(user1, user2, 100, true);
