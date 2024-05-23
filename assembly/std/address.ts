@@ -10,6 +10,7 @@
  */
 
 import { Serializable, Args, Result } from '@massalabs/as-types';
+import { validateAddress } from './utils';
 
 /**
  * Represents a Massa blockchain address.
@@ -113,5 +114,34 @@ export class Address implements Serializable {
   @operator('!=')
   notEqual(address: Address): boolean {
     return !(this == address);
+  }
+
+  isValid(): bool {
+    return validateAddress(this._value);
+  }
+
+  /**
+   * Checks if the address is a smart contract.
+   *
+   * @param address - The address to check.
+   *
+   * @returns `true` if the address is a smart contract, `false` otherwise.
+   *
+   * @throws
+   * If no bytecode is found at the address.
+   */
+  @inline
+  isSmartContract(): bool {
+    return this._value.startsWith('AS') && this.isValid();
+  }
+
+  /**
+   * Checks if the address is an External owned account address.
+   *
+   * @returns `true` if the address is a Eoa address, `false` otherwise.
+   */
+  @inline
+  isEoa(): bool {
+    return this._value.startsWith('AU') && this.isValid();
   }
 }

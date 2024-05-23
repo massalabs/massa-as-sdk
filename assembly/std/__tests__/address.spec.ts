@@ -1,6 +1,8 @@
 import { Args } from '@massalabs/as-types';
 import { Address } from '../address';
 import { validateAddress } from '../utils';
+import { addAddressToLedger } from '../../vm-mock';
+import { setBytecodeOf } from '../contract';
 
 describe('Address tests', () => {
   it('basic tests', () => {
@@ -46,8 +48,8 @@ describe('Address tests', () => {
 
   it('multiple args', () => {
     [
-      'A12LmTm4zRYkUQZusw7eevvV5ySzSwndJpENQ7EZHcmDbWafx96T',
-      'A1aMywGBgBywiL6WcbKR4ugxoBtdP9P3waBVi5e713uvj7F1DJL',
+      'AU12LmTm4zRYkUQZusw7eevvV5ySzSwndJpENQ7EZHcmDbWafx96T',
+      'AU12LmTm4zRYkUQZusw7eevvV5ySzSwndJpENQ7EZHcmDbWafx96T',
     ].forEach((input) => {
       const theNumber = 4;
       const args = new Args()
@@ -58,5 +60,20 @@ describe('Address tests', () => {
       const deserialized = args.nextSerializable<Address>().unwrap();
       expect(deserialized.toString()).toBe(input);
     });
+  });
+
+  test('is Eoa address', () => {
+    const userAddress = new Address(
+      'AU12LmTm4zRYkUQZusw7eevvV5ySzSwndJpENQ7EZHcmDbWafx96T',
+    );
+    expect(userAddress.isEoa()).toBeTruthy();
+  });
+
+  test('is contract address', () => {
+    const sc = 'AS1aMywGBgBywiL6WcbKR4ugxoBtdP9P3waBVi5e713uvj7F1DJL';
+    addAddressToLedger(sc);
+    const contractAddress = new Address(sc);
+    setBytecodeOf(contractAddress, [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]);
+    expect(contractAddress.isSmartContract()).toBeTruthy();
   });
 });

@@ -9,6 +9,7 @@
     "excludeProtected": true,
     "excludeExternals": true,
     "includeVersion": true,
-    "skipErrorChecking": true
+    "skipErrorChecking": true,
+    "experimentalDecorators": true
   }
 }
