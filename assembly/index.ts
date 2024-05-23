@@ -11,6 +11,8 @@ export { env };
 import * as security from './security/index';
 export { security };
 
+export * from './helpers/index';
+
 // massa std functionalities
 export * from './std';
 
