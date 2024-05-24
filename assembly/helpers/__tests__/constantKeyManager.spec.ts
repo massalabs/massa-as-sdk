@@ -51,4 +51,18 @@ describe('ConstantManager - unit tests', () => {
     expect(cst.tryValue().isErr()).toBe(true);
     expect(cst.tryValue().error).toBe('Key not found');
   });
+
+  test('get/set - array of serializable', () => {
+    const addr1 = new Address(
+      'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq',
+    );
+    const addr2 = new Address(
+      'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKr',
+    );
+
+    const addresses = new ConstantManager<Array<Address>, u8, Address>();
+    addresses.set([addr1, addr2]);
+
+    expect(addresses.mustValue()).toStrictEqual([addr1, addr2]);
+  });
 });

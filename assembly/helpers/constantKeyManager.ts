@@ -49,6 +49,6 @@ export class ConstantManager<TValue, TKey = u8, TArray = void> {
    * @param value - The value to store. Must be an A
    */
   public set(value: TValue): void {
-    Storage.set(this.key, new Args().add(value).serialize());
+    Storage.set(this.key, new Args().add<TValue, TArray>(value).serialize());
   }
 }
