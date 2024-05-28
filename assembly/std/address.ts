@@ -116,6 +116,11 @@ export class Address implements Serializable {
     return !(this == address);
   }
 
+  /**
+   * Checks if the address is valid.
+   *
+   * @returns `true` if the address is valid, `false` otherwise.
+   */
   isValid(): bool {
     return validateAddress(this._value);
   }
@@ -126,9 +131,6 @@ export class Address implements Serializable {
    * @param address - The address to check.
    *
    * @returns `true` if the address is a smart contract, `false` otherwise.
-   *
-   * @throws
-   * If no bytecode is found at the address.
    */
   @inline
   isSmartContract(): bool {
