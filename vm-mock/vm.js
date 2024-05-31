@@ -757,7 +757,7 @@ export default function createMockedABI(
       },
 
       assembly_script_get_balance() {
-        return BigInt(ledger.get(contractAddress).balance);
+        return BigInt(ledger.get(contractAddress).balance) + callCoins;
       },
 
       assembly_script_get_balance_for(aPtr) {
