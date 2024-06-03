@@ -21,6 +21,7 @@ import {
   mockBalance,
   mockOriginOperationId,
   mockSetChainId,
+  mockTransferredCoins,
   setDeployContext,
   setLocalContext,
 } from '../vm-mock/env';
@@ -220,11 +221,12 @@ describe('Testing mocked Context', () => {
     expect(isDeployingContract()).toStrictEqual(true);
   });
 
-  it('should set the same address for caller and callee when deploy context is set', () => {
-    setDeployContext('AS12BqZEQ6sByNCALLER');
+  it('should update the caller address', () => {
+    const deployerAddr = 'AS12BqZEQ6sByNCALLER';
+    setDeployContext(deployerAddr);
 
-    expect(caller()).toStrictEqual(new Address('AS12BqZEQ6sByNCALLER'));
-    expect(callee()).not.toStrictEqual(new Address('AS12BqZEQ6sByNCALLER'));
+    expect(caller()).toStrictEqual(new Address(deployerAddr));
+    expect(callee()).toStrictEqual(contractAddress);
   });
 
   it('should give a random distinct value to callerAddress when deploy context is set', () => {
@@ -239,9 +241,7 @@ describe('Testing mocked Context', () => {
 
     setDeployContext();
 
-    expect(caller()).not.toStrictEqual(callerAddress);
-    expect(caller()).not.toStrictEqual(callee());
-
+    expect(caller()).toStrictEqual(callerAddress);
     expect(callee()).toStrictEqual(contractAddress);
   });
 
@@ -332,28 +332,50 @@ describe('Testing mocked origin operation id', () => {
 });
 
 describe('balance mock', () => {
-  it('mock balance', () => {
-    mockBalance(testAddress.toString(), 9999);
-    expect(balanceOf(testAddress.toString())).toBe(9999);
+  afterEach(() => {
+    resetStorage();
+  });
+
+  it('mock user balance', () => {
+    const amount = 54331;
+    mockBalance(testAddress.toString(), amount);
+    expect(balanceOf(testAddress.toString())).toBe(amount);
   });
 
   it('mock contract balance', () => {
-    mockBalance(contractAddress.toString(), 9999);
-    expect(balance()).toBe(9999);
+    const amount = 5433109876;
+    mockBalance(contractAddress.toString(), amount);
+    expect(balance()).toBe(amount);
+    expect(balanceOf(contractAddress.toString())).toBe(amount);
+  });
+
+  it('mock contract balance with transferred coins', () => {
+    const amount = 1234567;
+    const callCoins = 888;
+    mockTransferredCoins(callCoins);
+    mockBalance(contractAddress.toString(), amount);
+    expect(balance()).toBe(callCoins + amount);
+    expect(balanceOf(contractAddress.toString())).toBe(callCoins + amount);
   });
 
   it('mock contract balance and preserve storage', () => {
+    const amount = 12345671234;
     Storage.set('thekey', 'thevalue');
-    mockBalance(contractAddress.toString(), 9999);
-    expect(balance()).toBe(9999);
+    mockBalance(contractAddress.toString(), amount);
+    expect(balance()).toBe(amount);
     expect(Storage.get('thekey')).toBe('thevalue');
   });
 });
 
 describe('transfer coins', () => {
+  afterEach(() => {
+    resetStorage();
+  });
+
   const amount = 666;
   it('contract transfer amount to user', () => {
-    const initialContractBalance = balance();
+    const initialContractBalance = 987654321;
+    mockBalance(contractAddress.toString(), initialContractBalance);
 
     transferCoins(testAddress, amount);
     expect(balanceOf(testAddress.toString())).toBe(amount);
@@ -363,11 +385,12 @@ describe('transfer coins', () => {
     );
   });
 
-  it('transfer increase user balance', () => {
+  it('contract transfer amount to user with initial balance', () => {
     const initialUserBalance = 123;
-    const initialContractBalance = balance();
-
     mockBalance(testAddress.toString(), initialUserBalance);
+
+    const initialContractBalance = 1234567;
+    mockBalance(contractAddress.toString(), initialContractBalance);
 
     transferCoins(testAddress, amount);
     expect(balanceOf(testAddress.toString())).toBe(amount + initialUserBalance);
@@ -377,9 +400,45 @@ describe('transfer coins', () => {
     );
   });
 
+  it('contract transfer amount to user with initial balance and transferred coin', () => {
+    const initialCallerBalance = 300000;
+    mockBalance(caller().toString(), initialCallerBalance);
+
+    const initialUserBalance = 123;
+    mockBalance(testAddress.toString(), initialUserBalance);
+
+    const initialContractBalance = 333333333333;
+    mockBalance(contractAddress.toString(), initialContractBalance);
+
+    const callCoins = 222;
+    mockTransferredCoins(callCoins);
+
+    transferCoins(testAddress, amount);
+    // caller balance should be reduced by transferred coins
+    expect(balanceOf(caller().toString())).toBe(
+      initialCallerBalance - callCoins,
+    );
+    // user balance should be increased by the transferred coins
+    expect(balanceOf(testAddress.toString())).toBe(amount + initialUserBalance);
+    // contract balance should be reduced by the transferred coins
+    expect(balance()).toBe(initialContractBalance - amount + callCoins);
+    expect(balanceOf(contractAddress.toString())).toBe(
+      initialContractBalance - amount + callCoins,
+    );
+  });
+
   throws('throw if insufficient balance', () => {
     mockBalance(contractAddress.toString(), 0);
     expect(balance()).toBe(0);
     transferCoins(testAddress, amount);
+  });
+
+  it('Use the caller transferred coins to process the transfer', () => {
+    mockBalance(contractAddress.toString(), 0);
+    expect(balance()).toBe(0);
+    mockTransferredCoins(amount);
+    expect(balance()).toBe(amount);
+    transferCoins(testAddress, amount);
+    expect(balance()).toBe(0);
   });
 });

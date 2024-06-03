@@ -121,17 +121,10 @@ export declare function addAddressToLedger(address: string): void;
 export declare function mockAdminContext(isAdmin: bool): void;
 
 /**
- * Emulate a deployment context by giving the write access to all contracts
- * as well a emulating a deployment for all of them.
+ * Emulate a deployment context by giving the write access to called contract.
+ * If callerAddress is not passed, uses the current call stack caller address as the caller address.
+ * If callerAddress is passed, the call stack will be updated to have the given address as the caller address.
  *
- * @remarks
- * By default, the context as already callStack that emulates a deployment but has not write access.
- * This function ensure that both are set.
- *
- * The deployment emulation is done by modifying the call stack to have different caller and callee addresses.
- *
- * If the given callerAddress is the same as the current contract address in the call stack,
- * it is ignored to generate a different one.
  *
  * @param callerAddress - the optional caller address to use for the deployment emulation
  *

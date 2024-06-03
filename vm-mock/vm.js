@@ -1,4 +1,4 @@
-/* eslint-disable new-cap */
+/* eslint-disable new-cap,jsdoc/require-returns */
 
 const { createHash } = await import('node:crypto');
 import { SigningKey, hashMessage } from 'ethers';
@@ -9,8 +9,8 @@ import sha3 from 'js-sha3';
  */
 
 // Those both addresses have been randomly generated
-let callerAddress = 'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq';
-let contractAddress = 'AS12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT';
+let defaultCallerAddress = 'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq';
+let defaultContractAddress = 'AS12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT';
 
 let mockedOriginOpId = '';
 
@@ -59,7 +59,7 @@ export function generateRandOpId() {
   return 'O1' + mixRandomChars(47);
 }
 
-let callStack = callerAddress + ' , ' + contractAddress;
+let callStack = defaultCallerAddress + ' , ' + defaultContractAddress;
 
 /**
  * Ledger and datastore
@@ -80,28 +80,60 @@ let callStack = callerAddress + ' , ' + contractAddress;
 let ledger;
 let adminContext = false;
 
+let webModule;
+
+const scCallMockStack = [];
+let callCoins = 0n; // Default value, coins for a call
+let chainIdMock = 77658366n; // Default value, chain id for Buildnet
+
 /**
  * Reset the ledger
  */
 function resetLedger() {
   ledger = new Map();
-  ledger.set(callerAddress, {
+  ledger.set(defaultCallerAddress, {
     storage: new Map(),
     contract: '',
-    balance: BigInt(100000),
+    balance: 100_000n,
   });
-  ledger.set(contractAddress, {
+  ledger.set(defaultContractAddress, {
     storage: new Map(),
     contract: '',
-    balance: BigInt(100000),
+    balance: 100_000n,
   });
+  callCoins = 0n;
 }
 
-let webModule;
+/**
+ *
+ */
+function getCaller() {
+  // get first elt of callStack
+  const callStackArray = callStack.split(' , ');
+  if (callStackArray.length < 2) {
+    ERROR(`Invalid call stack ${callStack}.`);
+  }
+  return callStackArray[0];
+}
 
-const scCallMockStack = [];
-let callCoins = BigInt(0); // Default value, coins for a call
-let chainIdMock = BigInt(77658366); // Default value, chain id for Buildnet
+/**
+ *
+ */
+function getCallee() {
+  // get last elt of callStack
+  const callStackArray = callStack.split(' , ');
+  if (callStackArray.length < 2) {
+    ERROR(`Invalid call stack ${callStack}.`);
+  }
+  return callStackArray[callStackArray.length - 1];
+}
+
+/**
+ *
+ */
+function getCalleeBalance() {
+  return BigInt(ledger.get(getCallee()).balance) + callCoins;
+}
 
 /**
  * Create a mock vm to simulate calls and responses of Massa WebAssembly sdk.
@@ -265,7 +297,7 @@ export default function createMockedABI(
         const key = ptrToUint8ArrayString(kPtr);
         const v = getArrayBuffer(vPtr);
 
-        const addressStorage = ledger.get(contractAddress).storage;
+        const addressStorage = ledger.get(getCallee()).storage;
 
         addressStorage.set(key, v);
       },
@@ -273,8 +305,9 @@ export default function createMockedABI(
       assembly_script_get_data(kPtr) {
         const key = ptrToUint8ArrayString(kPtr);
 
-        if (ledger.has(contractAddress)) {
-          const addressStorage = ledger.get(contractAddress).storage;
+        const callee = getCallee();
+        if (ledger.has(callee)) {
+          const addressStorage = ledger.get(callee).storage;
 
           if (addressStorage.has(key)) {
             return newArrayBuffer(addressStorage.get(key));
@@ -282,7 +315,7 @@ export default function createMockedABI(
             ERROR('data entry not found');
           }
         } else {
-          ERROR(`Address ${contractAddress} does not exist in ledger.`);
+          ERROR(`Address ${callee} does not exist in ledger.`);
         }
       },
 
@@ -292,9 +325,6 @@ export default function createMockedABI(
 
       assembly_script_change_call_stack(callstackPtr) {
         callStack = ptrToString(callstackPtr);
-        callerAddress = callStack.split(' , ')[0];
-        contractAddress =
-          callStack.split(' , ').length > 1 ? callStack.split(' , ')[1] : '';
       },
 
       assembly_script_generate_event(msgPtr) {
@@ -336,7 +366,7 @@ export default function createMockedABI(
 
       assembly_script_has_data(kPtr) {
         const key = ptrToUint8ArrayString(kPtr);
-        const addressStorage = ledger.get(contractAddress).storage;
+        const addressStorage = ledger.get(getCallee()).storage;
         return addressStorage.has(key);
       },
 
@@ -353,14 +383,15 @@ export default function createMockedABI(
 
       assembly_script_delete_data(kPtr) {
         const key = ptrToUint8ArrayString(kPtr);
-        if (ledger.has(contractAddress)) {
-          const addressStorage = ledger.get(contractAddress).storage;
+        const callee = getCallee();
+        if (ledger.has(callee)) {
+          const addressStorage = ledger.get(callee).storage;
           if (!addressStorage.has(key)) {
             ERROR('data entry not found');
           }
           addressStorage.delete(key);
         } else {
-          ERROR(`Address ${contractAddress} does not exist in ledger.`);
+          ERROR(`Address ${callee} does not exist in ledger.`);
         }
       },
 
@@ -382,15 +413,15 @@ export default function createMockedABI(
       },
 
       assembly_script_append_data(kPtr, valuePtr) {
-        const address = contractAddress;
+        const callee = getCallee();
         const key = ptrToUint8ArrayString(kPtr);
         const newValue = getArrayBuffer(valuePtr);
 
-        if (!ledger.has(address)) {
-          ERROR(`Address ${address} does not exist in ledger.`);
+        if (!ledger.has(callee)) {
+          ERROR(`Address ${callee} does not exist in ledger.`);
         }
 
-        const addressStorage = ledger.get(address).storage;
+        const addressStorage = ledger.get(callee).storage;
 
         if (!addressStorage.has(key)) {
           ERROR('data entry not found');
@@ -454,8 +485,12 @@ export default function createMockedABI(
         scCallMockStack.push(getArrayBuffer(ptr));
       },
 
-      assembly_script_call(_address, method, _param, _coins) {
+      assembly_script_call(_address, method, _param, coins) {
         if (scCallMockStack.length) {
+          if(BigInt(coins) > getCalleeBalance()) {
+            ERROR('Not enough balance to pay the call to ' + ptrToString(method));
+          }
+          // todo: remove spent coins from the callee balance
           return newArrayBuffer(scCallMockStack.shift());
         }
         ERROR('No mock defined for sc call on ' + ptrToString(method));
@@ -474,43 +509,37 @@ export default function createMockedABI(
 
       assembly_script_set_deploy_context(addrPtr) {
         adminContext = true;
-        // Ensure the caller address is different from the contract address
-        if (!addrPtr || ptrToString(addrPtr) === contractAddress) {
-          // generate a new address if it is the same as the contract address
-          callerAddress = generateDumbAddress();
-        } else {
-          callerAddress = ptrToString(addrPtr);
+        let caller = getCaller();
+        if(addrPtr) {
+          caller = ptrToString(addrPtr);
+          if (!ledger.has(caller)) {
+            // add the new address to the ledger
+            ledger.set(caller, {
+              storage: new Map(),
+              contract: '',
+              balance: BigInt(0),
+            });
+          }
+          // updating the callStack
+          callStack = caller + ' , ' + getCallee();
         }
-
-        if (!ledger.has(callerAddress)) {
-          // add the new address to the ledger
-          ledger.set(callerAddress, {
-            storage: new Map(),
-            contract: '',
-            balance: BigInt(0),
-          });
-        }
-        // updating the callStack
-        callStack = callerAddress + ' , ' + contractAddress;
       },
 
       assembly_script_set_local_context(addrPtr) {
         adminContext = true;
-        if (!addrPtr) {
-          // if the address is not set, uses the current contract address as caller address
-          callerAddress = contractAddress;
-        } else {
+        let callerAddress = getCallee();
+        if (addrPtr) {
           callerAddress = ptrToString(addrPtr);
-          contractAddress = callerAddress;
+          if (!ledger.has(callerAddress)) {
+            ledger.set(callerAddress, {
+              storage: new Map(),
+              contract: '',
+              balance: BigInt(0),
+            });
+          }
         }
-        if (!ledger.has(callerAddress)) {
-          ledger.set(callerAddress, {
-            storage: new Map(),
-            contract: '',
-            balance: BigInt(0),
-          });
-        }
-        callStack = callerAddress + ' , ' + contractAddress;
+
+        callStack = callerAddress + ' , ' + callerAddress;
       },
 
       assembly_script_caller_has_write_access() {
@@ -552,7 +581,7 @@ export default function createMockedABI(
       },
 
       assembly_script_get_keys(prefix) {
-        const addressStorage = ledger.get(contractAddress).storage;
+        const addressStorage = ledger.get(getCallee()).storage;
         let keysArr = Array.from(addressStorage.keys());
 
         if (prefix) {
@@ -567,7 +596,7 @@ export default function createMockedABI(
 
       assembly_script_has_op_key(kPtr) {
         const k = ptrToUint8ArrayString(kPtr);
-        const addressStorage = ledger.get(contractAddress).storage;
+        const addressStorage = ledger.get(getCallee()).storage;
 
         if (!addressStorage.has(k)) return newArrayBuffer();
 
@@ -575,7 +604,7 @@ export default function createMockedABI(
       },
 
       assembly_script_get_op_keys() {
-        const addressStorage = ledger.get(contractAddress).storage;
+        const addressStorage = ledger.get(getCallee()).storage;
         const keysArr = Array.from(addressStorage.keys());
         const keys = serializeKeys(keysArr);
 
@@ -584,7 +613,7 @@ export default function createMockedABI(
 
       assembly_script_get_op_data(kPtr) {
         const k = ptrToUint8ArrayString(kPtr);
-        const addressStorage = ledger.get(contractAddress).storage;
+        const addressStorage = ledger.get(getCallee()).storage;
 
         if (!addressStorage.has(k)) return newArrayBuffer();
 
@@ -592,7 +621,22 @@ export default function createMockedABI(
       },
 
       assembly_script_set_call_coins(coinAmount) {
-        callCoins = BigInt(coinAmount);
+        const amount  = BigInt(coinAmount);
+        if(amount == 0n) {
+          callCoins = 0n;
+          return;
+        }
+        const caller = ledger.get(getCaller());
+        if (!caller) {
+          ERROR(`Unable to add coins for contract call. Address ${getCaller()} does not exists in ledger.`);
+        }
+
+        if (caller.balance < amount) {
+          ERROR(`${getCaller()} has not enough balance to pay ${amount.toString()} coins.`);
+        }
+        callCoins = amount;
+        caller.balance -= callCoins;
+
       },
 
       assembly_script_get_call_coins() {
@@ -612,7 +656,7 @@ export default function createMockedABI(
       },
 
       assembly_script_get_owned_addresses() {
-        return newString(`[ ${callerAddress} , ${contractAddress} ]`);
+        return newString(`[ ${getCaller()} , ${getCallee()} ]`);
       },
 
       assembly_script_send_message(
@@ -651,7 +695,7 @@ export default function createMockedABI(
       assembly_script_set_bytecode(bytecodePtr) {
         const bytecode = getArrayBuffer(bytecodePtr);
 
-        const addressLedger = ledger.get(contractAddress);
+        const addressLedger = ledger.get(getCallee());
         addressLedger.contract = bytecode;
       },
 
@@ -668,7 +712,7 @@ export default function createMockedABI(
       },
 
       assembly_script_get_bytecode() {
-        const addressLedger = ledger.get(contractAddress);
+        const addressLedger = ledger.get(getCallee());
         return newArrayBuffer(addressLedger.contract);
       },
 
@@ -696,15 +740,12 @@ export default function createMockedABI(
           ledger.get(toAddress).balance = BigInt(0);
         }
 
-        // get last elt of callStack
-        const callStackArray = callStack.split(' , ');
-        const fromAddress = callStackArray[callStackArray.length - 1];
-
+        const fromAddress = getCallee();
         if (!ledger.has(fromAddress)) {
           ERROR(`Sending address ${fromAddress} does not exist in ledger.`);
         }
 
-        const senderBalance = ledger.get(fromAddress).balance;
+        const senderBalance = getCalleeBalance();
         if (senderBalance == undefined || senderBalance < BigInt(amount)) {
           ERROR('Not enough balance to transfer ' + amount + ' coins.');
         }
@@ -757,14 +798,17 @@ export default function createMockedABI(
       },
 
       assembly_script_get_balance() {
-        return BigInt(ledger.get(contractAddress).balance) + callCoins;
+        return getCalleeBalance();
       },
 
       assembly_script_get_balance_for(aPtr) {
-        const a = ptrToString(aPtr);
-        if (!ledger.has(a)) return BigInt(0);
+        const addr = ptrToString(aPtr);
+        if (!ledger.has(addr)) return 0n;
 
-        return BigInt(ledger.get(a).balance);
+        if(addr === getCallee()) {
+          return getCalleeBalance();
+        }
+        return ledger.get(addr).balance;
       },
 
       assembly_script_signature_verify(digestPtr, signaturePtr, publicKeyPtr) {
