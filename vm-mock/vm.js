@@ -84,6 +84,7 @@ let webModule;
 
 const scCallMockStack = [];
 let callCoins = 0n; // Default value, coins for a call
+let spentCoins = 0n; // Coins spent during the call
 let chainIdMock = 77658366n; // Default value, chain id for Buildnet
 
 /**
@@ -102,6 +103,7 @@ function resetLedger() {
     balance: 100_000n,
   });
   callCoins = 0n;
+  spentCoins = 0n;
 }
 
 /**
@@ -132,7 +134,7 @@ function getCallee() {
  *
  */
 function getCalleeBalance() {
-  return BigInt(ledger.get(getCallee()).balance) + callCoins;
+  return BigInt(ledger.get(getCallee()).balance) + callCoins - spentCoins;
 }
 
 /**
@@ -490,7 +492,7 @@ export default function createMockedABI(
           if(BigInt(coins) > getCalleeBalance()) {
             ERROR('Not enough balance to pay the call to ' + ptrToString(method));
           }
-          // todo: remove spent coins from the callee balance
+          spentCoins += BigInt(coins);
           return newArrayBuffer(scCallMockStack.shift());
         }
         ERROR('No mock defined for sc call on ' + ptrToString(method));

@@ -14,12 +14,14 @@ import {
   balance,
   balanceOf,
   transferCoins,
+  call,
 } from '../std';
 import { changeCallStack, resetStorage } from '../vm-mock/storage';
 import {
   mockAdminContext,
   mockBalance,
   mockOriginOperationId,
+  mockScCall,
   mockSetChainId,
   mockTransferredCoins,
   setDeployContext,
@@ -440,5 +442,21 @@ describe('transfer coins', () => {
     expect(balance()).toBe(amount);
     transferCoins(testAddress, amount);
     expect(balance()).toBe(0);
+  });
+});
+
+describe('Callee balance', () => {
+  afterEach(() => {
+    resetStorage();
+  });
+
+  it('Contract balance must be updated after internal SC call', () => {
+    const amount = 666;
+    mockBalance(contractAddress.toString(), amount);
+    expect(balance()).toBe(amount);
+    mockScCall([]);
+    call(new Address(), 'targetFn', new Args(), amount);
+    expect(balance()).toBe(0);
+    expect(balanceOf(contractAddress.toString())).toBe(0);
   });
 });
