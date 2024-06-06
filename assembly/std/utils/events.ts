@@ -1,6 +1,6 @@
 import { encode } from 'as-base64/assembly';
 import { env } from '../../env';
-import { staticArrayToUint8Array } from './arrays';
+import { staticArrayToUint8Array } from '@massalabs/as-types';
 
 /**
  * Generates an event that is then emitted by the blockchain.
