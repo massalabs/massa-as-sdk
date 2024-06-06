@@ -1,6 +1,14 @@
 # Dependencies Report
 
 The following is a list of all the dependencies of this project:
+## [as-base64](https://registry.npmjs.org/as-base64/-/as-base64-0.2.0.tgz)
+
+**License:** MIT - perpetual
+
+**Used version:** 0.2.0
+
+**Many thanks to:** [Willem Wyndham](hello@near.org)
+
 ## [ethers](git://github.com/ethers-io/ethers.js.git)
 
 **License:** MIT - perpetual
@@ -33,11 +41,11 @@ The following is a list of all the dependencies of this project:
 
 **Many thanks to:** 
 
-## [@massalabs/as-types](https://registry.npmjs.org/@massalabs/as-types/-/as-types-2.0.1-dev.20240529131344.tgz)
+## [@massalabs/as-types](https://registry.npmjs.org/@massalabs/as-types/-/as-types-2.1.0.tgz)
 
 **License:** ISC - perpetual
 
-**Used version:** 2.0.1-dev.20240529131344
+**Used version:** 2.1.0
 
 **Many thanks to:** 
 
