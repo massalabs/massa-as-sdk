@@ -1,4 +1,4 @@
-import { encode } from 'as-base64';
+import { encode } from 'as-base64/assembly';
 import { env } from '../../env';
 import { staticArrayToUint8Array } from './arrays';
 
