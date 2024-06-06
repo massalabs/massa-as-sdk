@@ -112,3 +112,6 @@ node_modules/
 docs
 # Jetbrains IDE
 .idea
+
+# Mac
+.DS_Store

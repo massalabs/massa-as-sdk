@@ -1,4 +1,6 @@
+import { encode } from 'as-base64/assembly';
 import { env } from '../../env';
+import { staticArrayToUint8Array } from '@massalabs/as-types';
 
 /**
  * Generates an event that is then emitted by the blockchain.
@@ -8,6 +10,24 @@ import { env } from '../../env';
  */
 export function generateEvent(event: string): void {
   env.generateEvent(event);
+}
+
+/**
+ * Wrap the generateEvent function to emit a raw event.
+ *
+ * @remarks This function encodes the StaticArray<u8> as a base64 string.
+ *
+ * Example:
+ * ```ts
+ * const num: u64 = 8767;
+ * const event = new Args().add(num).serialize();
+ * generateRawEvent(event);
+ * ```
+ * @param event - The static array event to emit.
+ *
+ */
+export function generateRawEvent(event: StaticArray<u8>): void {
+  generateEvent(encode(staticArrayToUint8Array(event)));
 }
 
 /**
