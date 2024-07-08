@@ -226,15 +226,15 @@ export namespace env {
   @external("massa", "assembly_script_chain_id")
   export declare function chainId(): u64;
 
-  @external("massa", "assembly_script_get_asc_call_fee")
-  export declare function getAscCallFee(
+  @external("massa", "assembly_script_deferred_call_quote")
+  export declare function deferredCallQuote(
     ascPeriod: u64,
     ascThread: u8,
     maxGas: u64,
   ): u64;
 
-  @external("massa", "assembly_script_asc_call_register")
-  export declare function ascCallRegister(
+  @external("massa", "assembly_script_deferred_call_register")
+  export declare function deferredCallRegister(
     targetAddress: string,
     targetFunction: string,
     targetPeriod: u64,
@@ -244,9 +244,9 @@ export namespace env {
     params: StaticArray<u8>,
   ): StaticArray<u8>;
 
-  @external("massa", "assembly_script_asc_call_exists")
-  export declare function ascCallExists(callId: StaticArray<u8>): bool;
+  @external("massa", "assembly_script_deferred_call_exists")
+  export declare function deferredCallExists(callId: StaticArray<u8>): bool;
 
-  @external("massa", "assembly_script_asc_call_cancel")
-  export declare function ascCallCancel(callId: StaticArray<u8>): void;
+  @external("massa", "assembly_script_deferred_call_cancel")
+  export declare function deferredCallCancel(callId: StaticArray<u8>): void;
 }
