@@ -51,3 +51,8 @@ export * from './context';
  * @module Storage
  */
 export * from './storage';
+
+/**
+ * @module ASC
+ */
+export * from './deferredCalls';

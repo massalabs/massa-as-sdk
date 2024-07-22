@@ -225,4 +225,28 @@ export namespace env {
 
   @external("massa", "assembly_script_chain_id")
   export declare function chainId(): u64;
+
+  @external("massa", "assembly_script_deferred_call_quote")
+  export declare function deferredCallQuote(
+    ascPeriod: u64,
+    ascThread: u8,
+    maxGas: u64,
+  ): u64;
+
+  @external("massa", "assembly_script_deferred_call_register")
+  export declare function deferredCallRegister(
+    targetAddress: string,
+    targetFunction: string,
+    targetPeriod: u64,
+    targetThread: u8,
+    maxGas: u64,
+    rawCoins: u64,
+    params: StaticArray<u8>,
+  ): StaticArray<u8>;
+
+  @external("massa", "assembly_script_deferred_call_exists")
+  export declare function deferredCallExists(callId: StaticArray<u8>): bool;
+
+  @external("massa", "assembly_script_deferred_call_cancel")
+  export declare function deferredCallCancel(callId: StaticArray<u8>): void;
 }
