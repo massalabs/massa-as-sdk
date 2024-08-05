@@ -1,7 +1,7 @@
 import { env } from '../env/index';
 
-import { changeCallStack, resetStorage } from '../vm-mock/storage';
-import { Args, bytesToString, stringToBytes } from '@massalabs/as-types';
+import { resetStorage } from '../vm-mock/storage';
+import { stringToBytes } from '@massalabs/as-types';
 
 describe('Testing mocked Operation Datastore', () => {
   beforeAll(() => {

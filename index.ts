@@ -3,4 +3,4 @@
 // export {env};
 
 // massa std functionalities
-export * from "./assembly/index";
+export * from './assembly/index';
