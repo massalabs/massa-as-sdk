@@ -33,14 +33,6 @@ The following is a list of all the dependencies of this project:
 
 **Many thanks to:** [Joshua Tenner](tenner.joshua@gmail.com)
 
-## [@massalabs/as-transformer](https://registry.npmjs.org/@massalabs/as-transformer/-/as-transformer-0.3.2.tgz)
-
-**License:** ISC - perpetual
-
-**Used version:** 0.3.2
-
-**Many thanks to:** 
-
 ## [@massalabs/as-types](https://registry.npmjs.org/@massalabs/as-types/-/as-types-2.1.0.tgz)
 
 **License:** ISC - perpetual
