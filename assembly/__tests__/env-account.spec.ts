@@ -1,6 +1,3 @@
-import { Address } from '../std';
-import { changeCallStack, resetStorage } from '../vm-mock/storage';
-import { Args, bytesToString, stringToBytes } from '@massalabs/as-types';
 import { env } from '../env/index';
 
 describe('Testing mocked account related functions', () => {

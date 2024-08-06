@@ -40,7 +40,7 @@ import { Address, Storage } from '../std/index';
  *   return [];
  * }
  *
- * export function superSensite(_: StaticArray<u8>): StaticArray<u8> {
+ * export function superSensible(_: StaticArray<u8>): StaticArray<u8> {
  *   controller.mustHavePermission(ADMIN, Context.caller());
  *   return stringToBytes('Super sensitive data');
  * }
