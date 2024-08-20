@@ -9,8 +9,10 @@ import sha3 from 'js-sha3';
  */
 
 // Those both addresses have been randomly generated
-let defaultCallerAddress = 'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq';
-let defaultContractAddress = 'AS12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT';
+let defaultCallerAddress =
+  'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq';
+let defaultContractAddress =
+  'AS12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT';
 
 let mockedOriginOpId = '';
 
@@ -134,7 +136,11 @@ function getCallee() {
  *
  */
 function getCalleeBalance() {
-  return BigInt(ledger.get(getCallee()).balance) + callCoins - spentCoins;
+  let calleeBalance = 0n;
+  if (ledger.has(getCallee())) {
+    calleeBalance = BigInt(ledger.get(getCallee()).balance);
+  }
+  return calleeBalance + callCoins - spentCoins;
 }
 
 /**
@@ -489,8 +495,10 @@ export default function createMockedABI(
 
       assembly_script_call(_address, method, _param, coins) {
         if (scCallMockStack.length) {
-          if(BigInt(coins) > getCalleeBalance()) {
-            ERROR('Not enough balance to pay the call to ' + ptrToString(method));
+          if (BigInt(coins) > getCalleeBalance()) {
+            ERROR(
+              'Not enough balance to pay the call to ' + ptrToString(method),
+            );
           }
           spentCoins += BigInt(coins);
           return newArrayBuffer(scCallMockStack.shift());
@@ -512,7 +520,7 @@ export default function createMockedABI(
       assembly_script_set_deploy_context(addrPtr) {
         adminContext = true;
         let caller = getCaller();
-        if(addrPtr) {
+        if (addrPtr) {
           caller = ptrToString(addrPtr);
           if (!ledger.has(caller)) {
             // add the new address to the ledger
@@ -623,22 +631,25 @@ export default function createMockedABI(
       },
 
       assembly_script_set_call_coins(coinAmount) {
-        const amount  = BigInt(coinAmount);
-        if(amount == 0n) {
+        const amount = BigInt(coinAmount);
+        if (amount == 0n) {
           callCoins = 0n;
           return;
         }
         const caller = ledger.get(getCaller());
         if (!caller) {
-          ERROR(`Unable to add coins for contract call. Address ${getCaller()} does not exists in ledger.`);
+          ERROR(
+            `Unable to add coins for contract call. Address ${getCaller()} does not exists in ledger.`,
+          );
         }
 
         if (caller.balance < amount) {
-          ERROR(`${getCaller()} has not enough balance to pay ${amount.toString()} coins.`);
+          ERROR(
+            `${getCaller()} has not enough balance to pay ${amount.toString()} coins.`,
+          );
         }
         callCoins = amount;
         caller.balance -= callCoins;
-
       },
 
       assembly_script_get_call_coins() {
@@ -807,7 +818,7 @@ export default function createMockedABI(
         const addr = ptrToString(aPtr);
         if (!ledger.has(addr)) return 0n;
 
-        if(addr === getCallee()) {
+        if (addr === getCallee()) {
           return getCalleeBalance();
         }
         return ledger.get(addr).balance;
