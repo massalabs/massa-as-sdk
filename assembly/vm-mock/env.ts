@@ -182,3 +182,6 @@ export declare function mockSetChainId(value: number): void;
  */
 @external("massa", "assembly_script_set_origin_operation_id")
 export declare function mockOriginOperationId(opId: string): void;
+
+@external("massa", "assembly_script_set_slot")
+export declare function mockCurrentSlot(period: u64, thread: u8): void;

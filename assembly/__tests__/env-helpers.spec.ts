@@ -2,7 +2,7 @@
 
 import { env } from '../env';
 import { Address } from '../std';
-import { addAddressToLedger } from '../vm-mock';
+import { addAddressToLedger, mockCurrentSlot } from '../vm-mock';
 
 const testAddress = new Address(
   'AU12E6N5BFAdC2wyiBV6VJjqkWhpz1kLVp2XpbRdSnL1mKjCWT6oR',
@@ -15,6 +15,12 @@ describe('Testing env coins related functions', () => {
 
   test('get the currentThread', () => {
     expect(env.currentThread()).toBe(1);
+  });
+
+  test('current slot', () => {
+    mockCurrentSlot(1234, 8);
+    expect(env.currentPeriod()).toBe(1234);
+    expect(env.currentThread()).toBe(8);
   });
 
   test('setBytecode', () => {
