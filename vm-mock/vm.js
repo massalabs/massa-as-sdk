@@ -84,6 +84,8 @@ let adminContext = false;
 
 let webModule;
 
+let currentSlot = { period: 0n, thread: 1 };
+
 const scCallMockStack = [];
 let callCoins = 0n; // Default value, coins for a call
 let spentCoins = 0n; // Coins spent during the call
@@ -698,11 +700,18 @@ export default function createMockedABI(
       },
 
       assembly_script_get_current_period() {
-        return BigInt(0);
+        return currentSlot.period;
       },
 
       assembly_script_get_current_thread() {
-        return 1;
+        return currentSlot.thread;
+      },
+
+      assembly_script_set_slot(period, thread) {
+        currentSlot = {
+          period: BigInt(period),
+          thread,
+        };
       },
 
       assembly_script_set_bytecode(bytecodePtr) {
