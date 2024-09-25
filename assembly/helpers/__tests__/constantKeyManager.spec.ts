@@ -3,6 +3,7 @@ import { resetStorage } from '../../vm-mock';
 import { u256 } from 'as-bignum/assembly';
 import { ConstantManager } from '../constantKeyManager';
 import { KeyIncrementer } from '../keyIncrementer';
+import { stringToBytes } from '@massalabs/as-types';
 
 beforeEach(() => {
   resetStorage();
@@ -23,6 +24,31 @@ describe('ConstantManager - use cases', () => {
     const owner = new ConstantManager<Address>(keyManager);
     const fee = new ConstantManager<u64>(keyManager);
     const usdc = new ConstantManager<u256>(keyManager);
+
+    owner.set(
+      new Address('AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq'),
+    );
+    fee.set(100);
+    usdc.set(u256.fromU64(1000000));
+
+    expect(owner.mustValue().toString()).toBe(
+      'AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq',
+    );
+    expect(fee.mustValue()).toBe(100);
+    expect(usdc.mustValue().toString()).toBe('1000000');
+  });
+
+  test('executes a basic scenario - with a tag', () => {
+    const tagOwner = stringToBytes('owner');
+    const tagFee = stringToBytes('fee');
+    const tagUsdc = stringToBytes('usdc');
+
+    // a key manager instance is needed to generate unique keys
+    const keyManager = new KeyIncrementer<u8>();
+
+    const owner = new ConstantManager<Address>(keyManager, tagOwner);
+    const fee = new ConstantManager<u64>(keyManager, tagFee);
+    const usdc = new ConstantManager<u256>(keyManager, tagUsdc);
 
     owner.set(
       new Address('AU12UBnqTHDQALpocVBnkPNy7y5CndUJQTLutaVDDFgMJcq5kQiKq'),
