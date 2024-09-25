@@ -12,8 +12,11 @@ import { Storage } from '../std';
 export class ConstantManager<TValue, TKey = u8, TArray = void> {
   public key: StaticArray<u8>;
 
-  constructor(manager: KeySequenceManager = new KeyIncrementer<TKey>(0)) {
-    this.key = manager.nextKey();
+  constructor(
+    manager: KeySequenceManager = new KeyIncrementer<TKey>(0),
+    tag: StaticArray<u8> = new StaticArray<u8>(0),
+  ) {
+    this.key = manager.nextKey().concat(tag);
   }
 
   /**
