@@ -909,6 +909,31 @@ export default function createMockedABI(
       assembly_script_chain_id() {
         return chainIdMock;
       },
+      // Deferred calls
+      assembly_script_get_deferred_call_quote(_period, _thread, _gas) {
+        return 123456789n;
+      },
+      assembly_script_deferred_call_register(
+        _targetAddress,
+        _targetFunction,
+        _targetPeriod,
+        _targetThread,
+        _maxGas,
+        _params,
+        _rawCoins,
+      ) {
+        // todo
+        const callId =
+          'D12inbCjPBMwrsMoZbKPyzV3ZAKygPYi3JQ7K7myu5kxQFPvPNBv87FDRjdhs253B95';
+        return newString(callId);
+      },
+      assembly_script_deferred_call_exists(_idPtr) {
+        // todo
+        return true;
+      },
+      assembly_script_deferred_call_cancel(_idPtr) {
+        // todo
+      },
     },
   };
 
