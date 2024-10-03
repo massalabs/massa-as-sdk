@@ -201,3 +201,12 @@ export function currentThread(): u8 {
 export function chainId(): u64 {
   return env.chainId();
 }
+
+export class Slot {
+  public period: u64;
+  public thread: u8;
+  public constructor(period: u64, thread: u8) {
+    this.period = period;
+    this.thread = thread;
+  }
+}
