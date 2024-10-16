@@ -93,7 +93,7 @@ The following is a list of all the dependencies of this project:
 
 **License:** Apache-2.0 - perpetual
 
-**Used version:** 0.23.25
+**Used version:** 0.23.28
 
 **Many thanks to:** n/a
 
