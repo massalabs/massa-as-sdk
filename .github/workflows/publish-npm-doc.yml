@@ -1,6 +1,7 @@
 name: Publish npm package and documentation
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - v*
