@@ -60,4 +60,5 @@ jobs:
         target: "/var/www/type-doc"
         host: ${{ secrets.MASSANET_HOST }}
         username: ${{ secrets.MASSANET_USERNAME }}
+        port: 22000
         key: ${{ secrets.MASSANET_SSHKEY }}
