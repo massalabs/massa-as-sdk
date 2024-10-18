@@ -87,13 +87,10 @@ export function findCheapestSlot(
 ): Slot {
   let cheapestSlotPeriod: u64 = startPeriod;
   let cheapestSlotThread: u8 = 0;
-  let cheapestSlotPrice: u64 = deferredCallQuote(
-    new Slot(startPeriod, 0),
-    maxGas,
-  );
+  let cheapestSlotPrice: u64 = U64.MAX_VALUE;
 
   for (let period = startPeriod; period <= endPeriod; period++) {
-    for (let thread: u8 = 1; thread < 32; thread++) {
+    for (let thread: u8 = 0; thread < 32; thread++) {
       const price = deferredCallQuote(new Slot(period, thread), maxGas);
       if (price < cheapestSlotPrice) {
         cheapestSlotPrice = price;
