@@ -231,6 +231,7 @@ export namespace env {
     ascPeriod: u64,
     ascThread: u8,
     maxGas: u64,
+    paramsSize: u64,
   ): u64;
 
   @external("massa", "assembly_script_deferred_call_register")

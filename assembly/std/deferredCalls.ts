@@ -14,8 +14,8 @@ import { Slot } from './context';
  * @returns Mas amount
  *
  */
-export function deferredCallQuote(targetSlot: Slot, maxGas: u64): u64 {
-  return env.deferredCallQuote(targetSlot.period, targetSlot.thread, maxGas);
+export function deferredCallQuote(targetSlot: Slot, maxGas: u64, paramsSize: u64): u64 {
+  return env.deferredCallQuote(targetSlot.period, targetSlot.thread, maxGas, paramsSize);
 }
 
 /**
@@ -84,17 +84,19 @@ export function findCheapestSlot(
   startPeriod: u64,
   endPeriod: u64,
   maxGas: u64,
+  paramsSize: u64,
 ): Slot {
   let cheapestSlotPeriod: u64 = startPeriod;
   let cheapestSlotThread: u8 = 0;
   let cheapestSlotPrice: u64 = deferredCallQuote(
     new Slot(startPeriod, 0),
     maxGas,
+    paramsSize
   );
 
   for (let period = startPeriod; period <= endPeriod; period++) {
     for (let thread: u8 = 1; thread < 32; thread++) {
-      const price = deferredCallQuote(new Slot(period, thread), maxGas);
+      const price = deferredCallQuote(new Slot(period, thread), maxGas, paramsSize);
       if (price < cheapestSlotPrice) {
         cheapestSlotPrice = price;
         cheapestSlotPeriod = period;
