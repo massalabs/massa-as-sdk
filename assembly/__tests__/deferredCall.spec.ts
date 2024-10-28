@@ -15,7 +15,9 @@ describe('Deferred call test (vm mock)', () => {
     deferredCallCancel('dummy');
   });
   it('quote', () => {
-    expect(deferredCallQuote(new Slot(123, 22), 123_456_789)).toBe(123456789);
+    expect(deferredCallQuote(new Slot(123, 22), 123_456_789, 0)).toBe(
+      123456789,
+    );
   });
   it('register', () => {
     expect(
