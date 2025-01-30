@@ -2,8 +2,10 @@ import { u128, u256 } from 'as-bignum/assembly';
 import { toBytes, stringToBytes } from '@massalabs/as-types';
 import { Bytes4, Bytes32 } from './bytes';
 
-// Emulate abi.encode
-// Note: in order to add a class (a struct in Solidity) you need to add each field one by one
+// Implementation of abi.encode
+// https://docs.soliditylang.org/en/develop/abi-spec.html
+// Note: in order to abi.encode a class (e.g. a struct in Solidity):
+// add each field one by one in correct order
 export class AbiEncode {
   private serialized: StaticArray<u8> = new StaticArray<u8>(0);
   constructor(serialized: StaticArray<u8> = []) {
@@ -65,7 +67,8 @@ export class AbiEncode {
   }
 }
 
-// Emulate abi.encodePacked
+// Implementation of abi.encodePacked:
+// https://docs.soliditylang.org/en/develop/abi-spec.html#non-standard-packed-mode
 export class AbiEncodePacked {
   private _offset: i32 = 0;
   private serialized: StaticArray<u8> = new StaticArray<u8>(0);
@@ -97,7 +100,8 @@ export class AbiEncodePacked {
   }
 }
 
-// Emulate abi.encodeWithSelector
+// Implementation of abi.encodeWithSelector:
+// https://docs.soliditylang.org/en/develop/abi-spec.html#function-selector-and-argument-encoding
 export class AbiEncodeWithSelector {
   private serialized: StaticArray<u8> = new StaticArray<u8>(8);
 
