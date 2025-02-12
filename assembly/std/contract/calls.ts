@@ -1,6 +1,7 @@
 import { Args } from '@massalabs/as-types';
 import { env } from '../../env';
 import { Address } from '../address';
+import { Slot } from '../context';
 
 /**
  * Calls a function of a smart contract deployed at a given address.
@@ -118,6 +119,42 @@ export function functionExists(address: Address, func: string): bool {
 }
 
 /**
+ * @deprecated Use {@link asyncCall} instead.
+ *
+ */
+
+export function sendMessage(
+  at: Address,
+  functionName: string,
+  validityStartPeriod: u64,
+  validityStartThread: u8,
+  validityEndPeriod: u64,
+  validityEndThread: u8,
+  maxGas: u64,
+  rawFee: u64,
+  coins: u64,
+  functionParams: StaticArray<u8>,
+  filterAddress: Address = new Address(),
+  filterKey: StaticArray<u8> = new StaticArray<u8>(0),
+): void {
+  env.sendMessage(
+    at.toString(),
+    functionName,
+    validityStartPeriod,
+    validityStartThread,
+    validityEndPeriod,
+    validityEndThread,
+    maxGas,
+    rawFee,
+    coins,
+    functionParams,
+    filterAddress.toString(),
+    filterKey,
+  );
+}
+
+/**
+ *
  * Ask to schedule the execution of a function at a given address in the future.
  *
  * @remarks
@@ -152,10 +189,8 @@ export function functionExists(address: Address, func: string): bool {
  *
  * @param at - Address of the contract
  * @param functionName - name of the function in that contract
- * @param validityStartPeriod - Period of the validity start slot
- * @param validityStartThread - Thread of the validity start slot
- * @param validityEndPeriod - Period of the validity end slot
- * @param validityEndThread - Thread of the validity end slot
+ * @param validityStartSlot - Validity start slot
+ * @param validityEndSlot - Validity end slot
  * @param maxGas - Maximum gas for the message execution
  * @param rawFee - Fee to be paid for message execution
  * @param coins - Coins of the sender
@@ -166,13 +201,11 @@ export function functionExists(address: Address, func: string): bool {
  * if a modification is made on a specific storage key of the `filterAddress` precise it here
  *
  */
-export function sendMessage(
+export function asyncCall(
   at: Address,
   functionName: string,
-  validityStartPeriod: u64,
-  validityStartThread: u8,
-  validityEndPeriod: u64,
-  validityEndThread: u8,
+  validityStartSlot: Slot,
+  validityEndSlot: Slot,
   maxGas: u64,
   rawFee: u64,
   coins: u64,
@@ -183,10 +216,10 @@ export function sendMessage(
   env.sendMessage(
     at.toString(),
     functionName,
-    validityStartPeriod,
-    validityStartThread,
-    validityEndPeriod,
-    validityEndThread,
+    validityStartSlot.period,
+    validityStartSlot.thread,
+    validityEndSlot.period,
+    validityEndSlot.thread,
     maxGas,
     rawFee,
     coins,
