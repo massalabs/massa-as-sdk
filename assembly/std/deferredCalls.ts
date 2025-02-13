@@ -10,6 +10,7 @@ import { Slot } from './context';
  *
  * @param targetSlot - The targeted slot
  * @param maxGas - The maximum amount of gas that the deferred call can use
+ * @param paramsSize - The size in bytes of the serialized parameters of the called function.
  *
  * @returns Mas amount
  *
@@ -17,7 +18,7 @@ import { Slot } from './context';
 export function deferredCallQuote(
   targetSlot: Slot,
   maxGas: u64,
-  paramsSize: u64,
+  paramsSize: u64 = 0,
 ): u64 {
   return env.deferredCallQuote(
     targetSlot.period,
@@ -35,7 +36,7 @@ export function deferredCallQuote(
  * @param targetSlot - The target slot for the deferred call
  * @param maxGas - The maximum amount of gas that the deferred call can use
  * @param params - The parameters to send to the target deferred call function
- * @param rawCoins - The amount of coins to send to the target deferred call
+ * @param coins - The amount of coins to send to the target deferred call
  *
  * @returns The id of the new deferred call
  */
@@ -44,8 +45,8 @@ export function deferredCallRegister(
   targetFunction: string,
   targetSlot: Slot,
   maxGas: u64,
-  params: StaticArray<u8>,
-  rawCoins: u64,
+  params: StaticArray<u8> = [],
+  coins: u64 = 0,
 ): string {
   return env.deferredCallRegister(
     targetAddress,
@@ -54,30 +55,30 @@ export function deferredCallRegister(
     targetSlot.thread,
     maxGas,
     params,
-    rawCoins,
+    coins,
   );
 }
 
 /**
  * Check if an deferred call exists
  *
- * @param ascCallId - The id of the deferred call
+ * @param id - The id of the deferred call
  *
- * @returns True if the deferred call exists otherwise false
+ * @returns True if the deferred call is schedueled. False if already executed, canceled or inexistant.
  */
-export function deferredCallExists(ascCallId: string): bool {
-  return env.deferredCallExists(ascCallId);
+export function deferredCallExists(id: string): bool {
+  return env.deferredCallExists(id);
 }
 
 /**
  * Cancel an deferred call
  *
- * @param ascCallId - The id of the deferred call
+ * @param id - The id of the deferred call
  *
  * @returns True if the deferred call has been canceled otherwise false
  */
-export function deferredCallCancel(ascCallId: string): void {
-  env.deferredCallCancel(ascCallId);
+export function deferredCallCancel(id: string): void {
+  env.deferredCallCancel(id);
 }
 
 /**
@@ -93,7 +94,7 @@ export function findCheapestSlot(
   startPeriod: u64,
   endPeriod: u64,
   maxGas: u64,
-  paramsSize: u64,
+  paramsSize: u64 = 0,
 ): Slot {
   let cheapestSlotPeriod: u64 = startPeriod;
   let cheapestSlotThread: u8 = 0;
