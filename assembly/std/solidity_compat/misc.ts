@@ -18,6 +18,8 @@ export function bytes32ToU256(a: StaticArray<u8>): u256 {
 
 // implementation Solidity selfdestruct:
 // https://www.infuy.com/blog/using-self-destruct-in-solidity-contracts/
+// Note: this function will try to delete all Storage keys. Devs might want to clean things up manually
+//       before using this function.
 export function selfDestruct(transferToAddr: Address): void {
   // 1- empty the SC
   let emptySc = new StaticArray<u8>(0);
