@@ -9,7 +9,7 @@ import {
   timestamp,
 } from '../context';
 import { validateAddress, json2Address } from '../utils';
-import { mockTransferredCoins } from '../../vm-mock';
+import { mockBalance, mockTransferredCoins } from '../../vm-mock';
 
 describe('Context', () => {
   test('ownedAddresses', () => {
@@ -34,6 +34,7 @@ describe('Context', () => {
   });
 
   test('transferredCoins', () => {
+    mockBalance(caller().toString(), 100);
     mockTransferredCoins(100);
     expect(transferredCoins()).toBe(100);
     mockTransferredCoins(0);
