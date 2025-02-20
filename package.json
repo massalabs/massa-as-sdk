@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "as-base64": "^0.2.0",
+    "bs58check": "^4.0.0",
     "ethers": "^6.8.1",
     "js-sha3": "^0.9.2"
   },

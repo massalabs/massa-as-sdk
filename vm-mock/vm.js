@@ -1,8 +1,9 @@
 /* eslint-disable new-cap,jsdoc/require-returns */
 
-const { createHash } = await import('node:crypto');
+const { createHash, getRandomValues } = await import('node:crypto');
 import { SigningKey, hashMessage } from 'ethers';
 import sha3 from 'js-sha3';
+import bs58 from 'bs58check';
 
 /**
  * Addresses and callstack
@@ -27,29 +28,32 @@ function ERROR(msg) {
 }
 
 /**
- * return a random string
+ * return a random base58 string
  *
  * @param {number} length length of the string to generate
- * @returns {string} random string
+ * @returns {string} random base58 string
  */
-function mixRandomChars(length) {
-  let result = '';
-  let characters =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let charactersLength = characters.length;
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
+function randomB58(byteLen) {
+  const randomBytes = getRandomValues(new Uint8Array(byteLen));
+  return bs58.encode(randomBytes);
 }
 
 /**
- * Generates a probably invalid address of 50 base58 characters.
+ * Generates a probably invalid user address.
  *
- * @returns {string} a random Address
+ * @returns {string} a random user address
  */
-export function generateDumbAddress() {
-  return 'A12' + mixRandomChars(47);
+export function generateUserAddress() {
+  return 'AU' + randomB58(33);
+}
+
+/**
+ * Generates a probably invalid sc address.
+ *
+ * @returns {string} a random contract address
+ */
+export function generateSCAddress() {
+  return 'AS' + randomB58(33);
 }
 
 /**
@@ -58,7 +62,7 @@ export function generateDumbAddress() {
  * @returns {string} a random operationId
  */
 export function generateRandOpId() {
-  return 'O1' + mixRandomChars(47);
+  return 'O' + randomB58(33);
 }
 
 let callStack = defaultCallerAddress + ' , ' + defaultContractAddress;
@@ -474,17 +478,16 @@ export default function createMockedABI(
         );
       },
 
-      // map the AssemblyScript file with the contractAddresses generated
       assembly_script_create_sc(_) {
-        const newAddress = { _value: generateDumbAddress(), _isValid: true };
+        const newAddress = generateSCAddress();
 
-        ledger.set(newAddress._value, {
+        ledger.set(newAddress, {
           storage: new Map(),
-          contract: '',
+          contract: [0,1,2,3],
           balance: BigInt(0),
         });
 
-        return newArrayBuffer(newAddress._value);
+        return newString(newAddress);
       },
 
       assembly_script_get_time() {
