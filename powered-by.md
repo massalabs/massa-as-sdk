@@ -9,6 +9,14 @@ The following is a list of all the dependencies of this project:
 
 **Many thanks to:** [Willem Wyndham](hello@near.org)
 
+## [bs58check](git+https://github.com/bitcoinjs/bs58check.git)
+
+**License:** MIT - perpetual
+
+**Used version:** 4.0.0
+
+**Many thanks to:** Daniel Cousens
+
 ## [ethers](git://github.com/ethers-io/ethers.js.git)
 
 **License:** MIT - perpetual
