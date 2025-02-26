@@ -1,5 +1,7 @@
 import { Serializable, stringToBytes } from '@massalabs/as-types';
 
+// An implementation of Solidity Bytes32:
+// https://docs.soliditylang.org/en/latest/types.html#fixed-size-byte-arrays
 export class Bytes32 {
   private MAX_LEN: i32 = 32;
   // private _offset: i32 = 0;
@@ -39,6 +41,9 @@ export class Bytes32 {
   }
 }
 
+// An abstract implementation of Solidity BytesXX:
+// https://docs.soliditylang.org/en/latest/types.html#fixed-size-byte-arrays
+// See Bytes4 implementation
 abstract class BytesLen implements Serializable {
   private serialized: StaticArray<u8> = new StaticArray<u8>(0);
   private offset_ser: i32 = 0;
@@ -91,6 +96,8 @@ abstract class BytesLen implements Serializable {
   */
 }
 
+// An implementation of Solidity Bytes4
+// https://docs.soliditylang.org/en/latest/types.html#fixed-size-byte-arrays
 export class Bytes4 extends BytesLen {
   @inline
   max_len(): i32 {
