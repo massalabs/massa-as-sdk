@@ -26,7 +26,7 @@ export function selfDestruct(transferToAddr: Address): void {
   env.setBytecode(emptySc);
 
   // 2- delete everything in Storage
-  let keys = env.getKeys(new StaticArray<u8>(0));
+  let keys = Storage.getKeys(new StaticArray<u8>(0));
   for (let i = 0; i < keys.length; i++) {
     Storage.del(keys[i]);
   }
