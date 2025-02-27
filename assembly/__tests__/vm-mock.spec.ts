@@ -23,13 +23,14 @@ import {
   mockOriginOperationId,
   mockScCall,
   mockSetChainId,
+  mockTimestamp,
   mockTransferredCoins,
   setDeployContext,
   setLocalContext,
 } from '../vm-mock/env';
 import { Args, bytesToString, stringToBytes } from '@massalabs/as-types';
 import { env } from '../env/index';
-import { callee, caller, isDeployingContract } from '../std/context';
+import { callee, caller, isDeployingContract, timestamp } from '../std/context';
 import { hexStringToStaticArray, staticArrayToHexString } from './utils';
 
 const testAddress = new Address(
@@ -458,5 +459,14 @@ describe('Callee balance', () => {
     call(new Address(), 'targetFn', new Args(), amount);
     expect(balance()).toBe(0);
     expect(balanceOf(contractAddress.toString())).toBe(0);
+  });
+});
+
+describe('Testing mocked Timestamp', () => {
+  const mock = 123456789;
+
+  it('timestamp mock value', () => {
+    mockTimestamp(mock);
+    expect(timestamp()).toBe(mock);
   });
 });
