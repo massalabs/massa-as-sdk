@@ -18,6 +18,24 @@
 export declare function mockBalance(address: string, balance: u64): void;
 
 /**
+ *  Set mock for timestamp.
+ *
+ * @param timestamp - The timestamp to set
+ *
+ * @example
+ * ```typescript
+ * test('mocked timestamp', () => {
+ * const timestamp: u64 = 123;
+ * mockTimestamp(timestamp);
+ * const res = timestamp();
+ * expect(res).toBe(timestamp);
+ * });
+ * ```
+ */
+@external("massa", "assembly_script_mock_get_time")
+export declare function mockTimestamp(timestamp: u64): void;
+
+/**
  *  Set mock for smartcontract call. When called multiple time, mocked values will be added in the mock stack.
  *
  * @param value - Value returned by the mocked function

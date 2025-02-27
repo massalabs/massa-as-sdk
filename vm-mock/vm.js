@@ -5,6 +5,7 @@ import { SigningKey, hashMessage } from 'ethers';
 import sha3 from 'js-sha3';
 import bs58 from 'bs58check';
 
+const BUILDNET_CHAIN_ID = 77658366n;
 /**
  * Addresses and callstack
  */
@@ -30,8 +31,7 @@ function ERROR(msg) {
 /**
  * return a random base58 string
  *
- * @param {number} length length of the string to generate
- * @returns {string} random base58 string
+ * @param {number} byteLen - length of the string
  */
 function randomB58(byteLen) {
   const randomBytes = getRandomValues(new Uint8Array(byteLen));
@@ -90,10 +90,11 @@ let webModule;
 
 let currentSlot = { period: 0n, thread: 1 };
 
-const scCallMockStack = [];
 let callCoins = 0n; // Default value, coins for a call
 let spentCoins = 0n; // Coins spent during the call
-let chainIdMock = 77658366n; // Default value, chain id for Buildnet
+let chainIdMock = BUILDNET_CHAIN_ID; // Default value, chain id for Buildnet
+let timestampMock = null;
+const scCallMockStack = [];
 
 /**
  * Reset the ledger
@@ -110,8 +111,20 @@ function resetLedger() {
     contract: '',
     balance: 100_000n,
   });
+
+  resetMockValues();
+}
+
+/**
+ * Reset the mock values
+ */
+function resetMockValues() {
   callCoins = 0n;
   spentCoins = 0n;
+  chainIdMock = BUILDNET_CHAIN_ID;
+  timestampMock = null;
+  scCallMockStack.length = 0;
+  mockedOriginOpId = '';
 }
 
 /**
@@ -483,14 +496,21 @@ export default function createMockedABI(
 
         ledger.set(newAddress, {
           storage: new Map(),
-          contract: [0,1,2,3],
+          contract: [0, 1, 2, 3],
           balance: BigInt(0),
         });
 
         return newString(newAddress);
       },
 
+      assembly_script_mock_get_time(timestamp) {
+        timestampMock = BigInt(timestamp);
+      },
+
       assembly_script_get_time() {
+        if (timestampMock) {
+          return timestampMock;
+        }
         return BigInt(Date.now());
       },
 

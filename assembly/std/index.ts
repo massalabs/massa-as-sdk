@@ -6,6 +6,7 @@ import * as Contract from './contract';
 import * as Utilities from './utils';
 import * as Coins from './coins';
 import * as SolidityCompat from './solidity_compat';
+import * as Constant from './constant';
 
 export {
   Address,
@@ -16,6 +17,7 @@ export {
   Utilities,
   Coins,
   SolidityCompat,
+  Constant,
 };
 
 // op-datastore/index.ts
