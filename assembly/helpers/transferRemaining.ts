@@ -1,5 +1,5 @@
 import { SafeMath } from '@massalabs/as-types';
-import { balance, Context, transferCoins } from '../std';
+import { Address, balance, Context, transferCoins } from '../std';
 
 /**
  * Function to transfer remaining Massa coins to a recipient at the end of a call
@@ -9,12 +9,12 @@ import { balance, Context, transferCoins } from '../std';
 export function transferRemaining(
   balanceInit: u64,
   callerDebit: u64 = 0,
+  refundRecipient: Address = Context.caller(),
 ): void {
   // Get the current balance of the smart contract
   const balanceFinal = balance();
   // Get the coins transferred to the smart contract
   const sent = Context.transferredCoins();
-  const refundRecipient = Context.caller();
 
   assert(sent >= callerDebit, 'INSUFFICIENT_COINS_TRANSFERRED');
 

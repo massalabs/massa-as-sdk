@@ -1,5 +1,5 @@
 import { transferRemaining } from '../transferRemaining';
-import { balance, balanceOf } from '../../std';
+import { Address, balance, balanceOf } from '../../std';
 import {
   changeCallStack,
   mockBalance,
@@ -8,6 +8,7 @@ import {
 } from '../../vm-mock';
 
 const caller = 'AU12NT6c6oiYQhcXNAPRRqDudZGurJkFKcYNLPYSwYkMoEniHv8FW';
+const refundRecipient = 'AU12NT6c6oiYQhcXNAPRRqDudZGurJkFKcYNLPYSwYkMoEniHv8FW';
 
 export const contractAddress =
   'AS12BqZEQ6sByhRLyEuf0YbQmcF2PsDdkNNG1akBJu9XcjZA1eT';
@@ -212,5 +213,22 @@ describe('transferRemaining', () => {
       callerInitBalance - spentCoins - callerDebit,
     );
     expect(balance()).toBe(balanceBeforeExecution + callerDebit);
+  });
+
+  // scenario:
+  // The contract has more coins than it started with and a refund provided recipient
+  it('refund recipient if provided', () => {
+    const balanceInit: u64 = 1000;
+    const freedCoins = 100;
+    const balanceFinal: u64 = balanceInit + freedCoins;
+
+    mockBalance(contractAddress, balanceFinal);
+    mockBalance(caller, 0);
+    mockTransferredCoins(0);
+
+    transferRemaining(balanceInit, 0, new Address(refundRecipient));
+
+    expect(balanceOf(refundRecipient)).toBe(freedCoins);
+    expect(balance()).toBe(balanceInit);
   });
 });
