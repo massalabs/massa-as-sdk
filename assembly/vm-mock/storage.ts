@@ -12,3 +12,9 @@ export declare function changeCallStack(callStack: string): void;
  */
 @external("massa", "assembly_script_reset_storage")
 export declare function resetStorage(): void;
+
+@external("massa", "assembly_script_set_op_data")
+export declare function setOpData(
+  key: StaticArray<u8>,
+  val: StaticArray<u8>,
+): void;

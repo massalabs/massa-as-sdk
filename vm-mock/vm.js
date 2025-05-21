@@ -31,7 +31,8 @@ function ERROR(msg) {
 /**
  * return a random base58 string
  *
- * @param {number} byteLen - length of the string
+ * @param {number} byteLen - length of bytes to generate
+ * @returns {string} random base58 string
  */
 function randomB58(byteLen) {
   const randomBytes = getRandomValues(new Uint8Array(byteLen));
@@ -84,6 +85,12 @@ let callStack = defaultCallerAddress + ' , ' + defaultContractAddress;
 }
 */
 let ledger;
+/* opDatastore format :
+{
+    Map<key: Uint8ArrayString, value: ArrayBuffer>
+}
+*/
+let opDatastore;
 let adminContext = false;
 
 let webModule;
@@ -125,6 +132,7 @@ function resetMockValues() {
   timestampMock = null;
   scCallMockStack.length = 0;
   mockedOriginOpId = '';
+  opDatastore = new Map();
 }
 
 /**
@@ -631,28 +639,39 @@ export default function createMockedABI(
 
       assembly_script_has_op_key(kPtr) {
         const k = ptrToUint8ArrayString(kPtr);
-        const addressStorage = ledger.get(getCallee()).storage;
-
-        if (!addressStorage.has(k)) return newArrayBuffer();
-
-        return newArrayBuffer(addressStorage.get(k));
+        return opDatastore.has(k);
       },
 
       assembly_script_get_op_keys() {
-        const addressStorage = ledger.get(getCallee()).storage;
-        const keysArr = Array.from(addressStorage.keys());
+        const keysArr = Array.from(opDatastore.keys());
         const keys = serializeKeys(keysArr);
+        return newArrayBuffer(keys);
+      },
 
+      assembly_script_get_op_keys_prefix(kPtr) {
+        const k = ptrToUint8ArrayString(kPtr);
+        const keysArr = Array.from(opDatastore.keys()).filter((key) => {
+          return key.startsWith(k);
+        });
+        const keys = serializeKeys(keysArr);
         return newArrayBuffer(keys);
       },
 
       assembly_script_get_op_data(kPtr) {
         const k = ptrToUint8ArrayString(kPtr);
-        const addressStorage = ledger.get(getCallee()).storage;
 
-        if (!addressStorage.has(k)) return newArrayBuffer();
+        if (!opDatastore.has(k)){
+          ERROR(`Runtime error: key ${k} does not exist in operation datastore.`);
+        }
 
-        return newArrayBuffer(addressStorage.get(k));
+        return newArrayBuffer(opDatastore.get(k));
+      },
+
+      assembly_script_set_op_data(kPtr, vPtr) {
+        const key = ptrToUint8ArrayString(kPtr);
+        const val = getArrayBuffer(vPtr);
+
+        opDatastore.set(key, val);
       },
 
       assembly_script_set_call_coins(coinAmount) {
