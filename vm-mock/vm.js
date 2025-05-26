@@ -639,7 +639,7 @@ export default function createMockedABI(
 
       assembly_script_has_op_key(kPtr) {
         const k = ptrToUint8ArrayString(kPtr);
-        return opDatastore.has(k);
+        return newArrayBuffer(opDatastore.has(k) ? [1] : [0]);
       },
 
       assembly_script_get_op_keys() {

@@ -32,7 +32,11 @@ import { derKeys } from './util';
  *
  */
 export function hasOpKey(key: StaticArray<u8>): bool {
-  return env.hasOpKey(key);
+  // From https://doc.rust-lang.org/reference/types/boolean.html &&
+  // https://www.assemblyscript.org/types.html
+  // we can safely cast from u8 to bool
+  // Note: this is a workaround because env.hasOpKey returns a StaticArray<u8> instead of a boolean.
+  return bool(env.hasOpKey(key)[0]);
 }
 
 /**
