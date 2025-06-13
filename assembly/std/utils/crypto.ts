@@ -28,7 +28,7 @@ export function sha256(data: StaticArray<u8>): StaticArray<u8> {
  */
 export function mimc(data: StaticArray<u8>): StaticArray<u8> {
   assert(
-    env.chainId() === 67766589,
+    env.chainId() === 67766589 || env.chainId() === 77658366,
     'abi assembly_script_hash_mimc not supported on current network',
   );
   return env.mimc(data);
