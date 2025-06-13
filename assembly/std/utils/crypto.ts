@@ -21,13 +21,16 @@ export function sha256(data: StaticArray<u8>): StaticArray<u8> {
  * @remarks
  * The SHA256 hash algorithm produces a 32-byte hash, which is returned as a `StaticArray<u8>`.
  *
- * @param data - The data to hash. It should be of length < 32 bytes or a concatenation of multiple 32-byte hashes.
+ * @param data - The data to hash. It should be of len less than 32 bytes or a concatenation of multiple 32-byte hashes.
  *
  * @returns The MiMC hash of the `data`, serialized as a `StaticArray<u8>`.
  *
  */
 export function mimc(data: StaticArray<u8>): StaticArray<u8> {
-  assert(env.chainId() === 67766589, 'abi assembly_script_hash_mimc not supported on current network');
+  assert(
+    env.chainId() === 67766589,
+    'abi assembly_script_hash_mimc not supported on current network',
+  );
   return env.mimc(data);
 }
 
