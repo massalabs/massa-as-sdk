@@ -7,6 +7,7 @@ import {
   sha256,
   getKeysOf,
   validateAddress,
+  mimc,
   keccak256,
   isEvmSignatureValid,
   evmGetPubkeyFromSignature,
