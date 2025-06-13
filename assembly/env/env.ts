@@ -217,6 +217,9 @@ export namespace env {
   @external("massa", "assembly_script_hash_sha256")
   export declare function sha256(bytecode: StaticArray<u8>): StaticArray<u8>;
 
+  @external("massa", "assembly_script_hash_mimc")
+  export declare function mimc(data: StaticArray<u8>): StaticArray<u8>;
+
   @external("massa", "assembly_script_keccak256_hash")
   export declare function keccak256(data: StaticArray<u8>): StaticArray<u8>;
 
