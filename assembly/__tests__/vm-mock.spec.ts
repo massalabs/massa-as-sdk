@@ -129,6 +129,14 @@ describe('Testing mocked Storage and CallStack', () => {
       '3fc9b689459d738f8c88a3a48aa9e33542016b7a4052e001aaa536fca74813cb',
     );
   });
+  
+  test('Testing mimc', () => {
+    const hash = mimc(stringToBytes('Hello World'));
+    expect(hash).toStrictEqual([
+        37, 9, 120, 104, 178, 123, 147, 205, 1, 53, 154, 155, 95, 126, 42, 115, 62, 136, 182,
+        12, 227, 45, 22, 153, 180, 233, 123, 101, 206, 135, 162, 184,
+    ]);
+  });
 
   test('Testing keccak256', () => {
     const hash = keccak256(
