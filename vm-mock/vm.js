@@ -949,7 +949,6 @@ export default function createMockedABI(
       assembly_script_hash_mimc(dataPtr) {
         const data = getArrayBuffer(dataPtr);
         
-        // const hash = sha3.keccak256.arrayBuffer(data);
 
         const hash = [
           37, 9, 120, 104, 178, 123, 147, 205, 1, 53, 154, 155, 95, 126, 42, 115, 62, 136, 182,
