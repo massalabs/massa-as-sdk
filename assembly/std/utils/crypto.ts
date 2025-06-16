@@ -1,5 +1,5 @@
 import { env } from '../../env';
-
+import { CLAYER_CHAIN_ID, MOCK_CHAIN_ID } from '../constant';
 /**
  * Computes the SHA256 hash of the given `data`.
  *
@@ -28,7 +28,7 @@ export function sha256(data: StaticArray<u8>): StaticArray<u8> {
  */
 export function mimc(data: StaticArray<u8>): StaticArray<u8> {
   assert(
-    env.chainId() === 67766589 || env.chainId() === 77658366,
+    env.chainId() === CLAYER_CHAIN_ID || env.chainId() === MOCK_CHAIN_ID,
     'abi assembly_script_hash_mimc not supported on current network',
   );
   return env.mimc(data);
