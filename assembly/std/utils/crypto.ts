@@ -19,7 +19,7 @@ export function sha256(data: StaticArray<u8>): StaticArray<u8> {
  * Computes the MiMC hash of the given `data`.
  *
  * @remarks
- * The SHA256 hash algorithm produces a 32-byte hash, which is returned as a `StaticArray<u8>`.
+ * The MiMC hash algorithm produces a 32-byte hash, which is returned as a `StaticArray<u8>`.
  *
  * @param data - The data to hash. It should be of len less than 32 bytes or a concatenation of multiple 32-byte hashes.
  *

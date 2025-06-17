@@ -4,6 +4,7 @@ const { createHash, getRandomValues } = await import('node:crypto');
 import { SigningKey, hashMessage } from 'ethers';
 import sha3 from 'js-sha3';
 import bs58 from 'bs58check';
+import { hashMimc } from './mimc.js';
 
 const MOCK_CHAIN_ID = 9123n;
 /**
@@ -945,15 +946,9 @@ export default function createMockedABI(
         const hash = sha3.keccak256.arrayBuffer(data);
         return newArrayBuffer(hash);
       },
-      
       assembly_script_hash_mimc(dataPtr) {
         const data = getArrayBuffer(dataPtr);
-        
-
-        const hash = [
-          37, 9, 120, 104, 178, 123, 147, 205, 1, 53, 154, 155, 95, 126, 42, 115, 62, 136, 182,
-          12, 227, 45, 22, 153, 180, 233, 123, 101, 206, 135, 162, 184];
-        
+        const hash = hashMimc(data);
         return newArrayBuffer(hash);
       },
       assembly_script_set_chain_id(value) {
