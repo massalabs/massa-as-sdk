@@ -7,6 +7,7 @@ import {
   sha256,
   getKeysOf,
   validateAddress,
+  mimc,
   keccak256,
   isEvmSignatureValid,
   evmGetPubkeyFromSignature,
@@ -128,6 +129,31 @@ describe('Testing mocked Storage and CallStack', () => {
     expect(staticArrayToHexString(hash)).toBe(
       '3fc9b689459d738f8c88a3a48aa9e33542016b7a4052e001aaa536fca74813cb',
     );
+  });
+
+  test('Testing mimc', () => {
+    const hash0 = mimc(stringToBytes(''));
+    expect(hash0).toStrictEqual([
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0,
+    ]);
+    const hash1 = mimc(stringToBytes('Hello World'));
+    expect(hash1).toStrictEqual([
+      37, 9, 120, 104, 178, 123, 147, 205, 1, 53, 154, 155, 95, 126, 42, 115,
+      62, 136, 182, 12, 227, 45, 22, 153, 180, 233, 123, 101, 206, 135, 162,
+      184,
+    ]);
+    const hash2 = mimc(hash1);
+    expect(hash2).toStrictEqual([
+      32, 230, 249, 72, 11, 8, 251, 253, 161, 246, 128, 243, 21, 63, 102, 187,
+      2, 212, 194, 126, 100, 195, 9, 100, 15, 135, 217, 110, 106, 38, 120, 245,
+    ]);
+
+    const hash3 = mimc(hash1.concat(hash1));
+    expect(hash3).toStrictEqual([
+      31, 13, 212, 12, 150, 157, 144, 161, 249, 21, 94, 81, 53, 123, 172, 234,
+      151, 64, 249, 134, 149, 179, 241, 241, 49, 37, 128, 22, 128, 233, 208, 51,
+    ]);
   });
 
   test('Testing keccak256', () => {

@@ -4,8 +4,9 @@ const { createHash, getRandomValues } = await import('node:crypto');
 import { SigningKey, hashMessage } from 'ethers';
 import sha3 from 'js-sha3';
 import bs58 from 'bs58check';
+import { hashMimc } from './mimc.js';
 
-const BUILDNET_CHAIN_ID = 77658366n;
+const MOCK_CHAIN_ID = 9123n;
 /**
  * Addresses and callstack
  */
@@ -99,7 +100,7 @@ let currentSlot = { period: 0n, thread: 1 };
 
 let callCoins = 0n; // Default value, coins for a call
 let spentCoins = 0n; // Coins spent during the call
-let chainIdMock = BUILDNET_CHAIN_ID; // Default value, chain id for Buildnet
+let chainIdMock = MOCK_CHAIN_ID; // Default value, chain id for Mock
 let timestampMock = null;
 const scCallMockStack = [];
 
@@ -128,7 +129,7 @@ function resetLedger() {
 function resetMockValues() {
   callCoins = 0n;
   spentCoins = 0n;
-  chainIdMock = BUILDNET_CHAIN_ID;
+  chainIdMock = MOCK_CHAIN_ID;
   timestampMock = null;
   scCallMockStack.length = 0;
   mockedOriginOpId = '';
@@ -943,6 +944,11 @@ export default function createMockedABI(
       assembly_script_keccak256_hash(dataPtr) {
         const data = getArrayBuffer(dataPtr);
         const hash = sha3.keccak256.arrayBuffer(data);
+        return newArrayBuffer(hash);
+      },
+      assembly_script_hash_mimc(dataPtr) {
+        const data = getArrayBuffer(dataPtr);
+        const hash = hashMimc(data);
         return newArrayBuffer(hash);
       },
       assembly_script_set_chain_id(value) {

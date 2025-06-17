@@ -1,5 +1,5 @@
 import { env } from '../../env';
-
+import { CLAYER_CHAIN_ID, MOCK_CHAIN_ID } from '../constant';
 /**
  * Computes the SHA256 hash of the given `data`.
  *
@@ -13,6 +13,25 @@ import { env } from '../../env';
  */
 export function sha256(data: StaticArray<u8>): StaticArray<u8> {
   return env.sha256(data);
+}
+
+/**
+ * Computes the MiMC hash of the given `data`.
+ *
+ * @remarks
+ * The MiMC hash algorithm produces a 32-byte hash, which is returned as a `StaticArray<u8>`.
+ *
+ * @param data - The data to hash. It should be of len less than 32 bytes or a concatenation of multiple 32-byte hashes.
+ *
+ * @returns The MiMC hash of the `data`, serialized as a `StaticArray<u8>`.
+ *
+ */
+export function mimc(data: StaticArray<u8>): StaticArray<u8> {
+  assert(
+    env.chainId() === CLAYER_CHAIN_ID || env.chainId() === MOCK_CHAIN_ID,
+    'abi assembly_script_hash_mimc not supported on current network',
+  );
+  return env.mimc(data);
 }
 
 /**

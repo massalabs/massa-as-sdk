@@ -32,6 +32,7 @@
     "doc": "typedoc assembly/index.ts --name massa-as-sdk --out docs/documentation/html --tsconfig assembly/tsconfig.json"
   },
   "dependencies": {
+    "@noble/curves": "^1.9.2",
     "as-base64": "^0.2.0",
     "bs58check": "^4.0.0",
     "ethers": "^6.8.1",
