@@ -1,6 +1,14 @@
 # Dependencies Report
 
 The following is a list of all the dependencies of this project:
+## [@noble/curves](git+https://github.com/paulmillr/noble-curves.git)
+
+**License:** MIT - perpetual
+
+**Used version:** 1.9.2
+
+**Many thanks to:** Paul Miller (https://paulmillr.com)
+
 ## [as-base64](https://registry.npmjs.org/as-base64/-/as-base64-0.2.0.tgz)
 
 **License:** MIT - perpetual
