@@ -602,6 +602,18 @@ export default function createMockedABI(
         return isValidLength(address) && isValidPrefix(address);
       },
 
+      assembly_script_is_address_eoa(addressPtr) {
+        const address = ptrToString(addressPtr);
+
+        // An EOA (externally owned account) is a user address ("AU" prefix).
+        // Smart-contract addresses use the "AS" prefix.
+        return (
+          isValidLength(address) &&
+          isValidPrefix(address) &&
+          address[1] === 'U'
+        );
+      },
+
       assembly_script_print(aPtr) {
         const a = ptrToString(aPtr);
         console.log(a);

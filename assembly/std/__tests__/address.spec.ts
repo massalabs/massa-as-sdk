@@ -1,6 +1,6 @@
 import { Args } from '@massalabs/as-types';
 import { Address } from '../address';
-import { validateAddress } from '../utils';
+import { isAddressEoa, validateAddress } from '../utils';
 import { addAddressToLedger } from '../../vm-mock';
 import { setBytecodeOf } from '../contract';
 
@@ -75,5 +75,24 @@ describe('Address tests', () => {
     const contractAddress = new Address(sc);
     setBytecodeOf(contractAddress, [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]);
     expect(contractAddress.isSmartContract()).toBeTruthy();
+  });
+
+  test('isAddressEoa mock returns true for a user address', () => {
+    expect(
+      isAddressEoa('AU12LmTm4zRYkUQZusw7eevvV5ySzSwndJpENQ7EZHcmDbWafx96T'),
+    ).toBeTruthy();
+  });
+
+  test('isAddressEoa mock returns false for a smart-contract address', () => {
+    expect(
+      isAddressEoa('AS1aMywGBgBywiL6WcbKR4ugxoBtdP9P3waBVi5e713uvj7F1DJL'),
+    ).toBeFalsy();
+  });
+
+  test('isAddressEoa mock returns false for an invalid address', () => {
+    // wrong prefix
+    expect(isAddressEoa('ZZ123')).toBeFalsy();
+    // too short (below the mock's minAddressLength = 40)
+    expect(isAddressEoa('AU1tooShort')).toBeFalsy();
   });
 });
