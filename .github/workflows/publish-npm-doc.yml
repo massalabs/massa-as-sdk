@@ -58,7 +58,7 @@ jobs:
       with:
         source: "./massa-as-sdk"
         target: "/var/www/type-doc"
-        host: ${{ secrets.MASSANET_HOST }}
-        username: ${{ secrets.MASSANET_USERNAME }}
-        port: 22000
+        host: 51.195.222.250
+        username: website-deploy
+        port: 22
         key: ${{ secrets.MASSANET_SSHKEY }}
