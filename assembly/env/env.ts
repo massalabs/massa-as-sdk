@@ -51,6 +51,24 @@ export namespace env {
     prefix: StaticArray<u8>,
   ): StaticArray<u8>;
 
+  // Available from execution version 2 (MIP-0002). A module importing it fails
+  // to instantiate on a node where MIP-0002 is not active.
+  @external("massa", "assembly_script_get_keys_paginated")
+  export declare function getKeysPage(
+    prefix: StaticArray<u8>,
+    startKey: StaticArray<u8>,
+    count: i32,
+  ): StaticArray<u8>;
+
+  // Available from execution version 2 (MIP-0002). See getKeysPage.
+  @external("massa", "assembly_script_get_keys_for_paginated")
+  export declare function getKeysOfPage(
+    address: string,
+    prefix: StaticArray<u8>,
+    startKey: StaticArray<u8>,
+    count: i32,
+  ): StaticArray<u8>;
+
   @external("massa", "assembly_script_set_data")
   export declare function set(
     key: StaticArray<u8>,

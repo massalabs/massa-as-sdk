@@ -271,6 +271,82 @@ export default function createMockedABI(
   }
 
   /**
+   * Maximum number of keys returned by one datastore key query (MIP-0002).
+   */
+  const MAX_DATASTORE_KEYS_PAGE = 500;
+
+  /**
+   * @param {string} key - a key as stored in the mocked ledger ("1,2,3")
+   * @returns {number[]} the key bytes
+   */
+  function keyToBytes(key) {
+    return key === '' ? [] : key.split(',').map(Number);
+  }
+
+  /**
+   * Lexicographic byte order, as in the node datastore.
+   *
+   * @param {number[]} a - first key
+   * @param {number[]} b - second key
+   * @returns {number} negative, zero or positive
+   */
+  function compareKeyBytes(a, b) {
+    const len = Math.min(a.length, b.length);
+    for (let i = 0; i < len; i++) {
+      if (a[i] !== b[i]) return a[i] - b[i];
+    }
+    return a.length - b.length;
+  }
+
+  /**
+   * Fails like a MIP-0002 node when a legacy (unbounded) key query matches more
+   * than one page of keys.
+   *
+   * @param {string[]} keysArr - the matched keys
+   */
+  function checkLegacyKeysCap(keysArr) {
+    if (keysArr.length > MAX_DATASTORE_KEYS_PAGE) {
+      ERROR(
+        `datastore key query matched more than the maximum of ${MAX_DATASTORE_KEYS_PAGE} keys`,
+      );
+    }
+  }
+
+  /**
+   * One page of keys in byte order, as returned by the paginated key ABIs.
+   *
+   * @param {Map} storage - the address storage
+   * @param {number} prefixPtr - prefix pointer (empty means every key)
+   * @param {number} startKeyPtr - exclusive cursor pointer (empty means unset)
+   * @param {number} count - page size
+   * @returns {Uint8Array} the serialized keys
+   */
+  function keysPage(storage, prefixPtr, startKeyPtr, count) {
+    if (
+      !Number.isInteger(count) ||
+      count < 1 ||
+      count > MAX_DATASTORE_KEYS_PAGE
+    ) {
+      ERROR(
+        `datastore key page size must be between 1 and ${MAX_DATASTORE_KEYS_PAGE}, got ${count}`,
+      );
+    }
+    const prefix = Array.from(new Uint8Array(getArrayBuffer(prefixPtr)));
+    const startKey = Array.from(new Uint8Array(getArrayBuffer(startKeyPtr)));
+    const page = Array.from(storage.keys())
+      .map((key) => ({ key, bytes: keyToBytes(key) }))
+      .filter(
+        ({ bytes }) =>
+          prefix.every((b, i) => bytes[i] === b) &&
+          (startKey.length === 0 || compareKeyBytes(bytes, startKey) > 0),
+      )
+      .sort((a, b) => compareKeyBytes(a.bytes, b.bytes))
+      .slice(0, count)
+      .map(({ key }) => key);
+    return serializeKeys(page);
+  }
+
+  /**
    * Check if the address prefix is valid
    *
    * @param {string} address - the address to check
@@ -608,9 +684,7 @@ export default function createMockedABI(
         // An EOA (externally owned account) is a user address ("AU" prefix).
         // Smart-contract addresses use the "AS" prefix.
         return (
-          isValidLength(address) &&
-          isValidPrefix(address) &&
-          address[1] === 'U'
+          isValidLength(address) && isValidPrefix(address) && address[1] === 'U'
         );
       },
 
@@ -631,6 +705,7 @@ export default function createMockedABI(
             return key.startsWith(prefixStr);
           });
         }
+        checkLegacyKeysCap(keysArr);
         const keys = serializeKeys(keysArr);
 
         return newArrayBuffer(keys);
@@ -646,8 +721,26 @@ export default function createMockedABI(
             return key.startsWith(prefixStr);
           });
         }
+        checkLegacyKeysCap(keysArr);
         const keys = serializeKeys(keysArr);
         return newArrayBuffer(keys);
+      },
+
+      assembly_script_get_keys_paginated(prefix, startKey, count) {
+        const addressStorage = ledger.get(getCallee()).storage;
+        return newArrayBuffer(
+          keysPage(addressStorage, prefix, startKey, count),
+        );
+      },
+
+      assembly_script_get_keys_for_paginated(aPtr, prefix, startKey, count) {
+        const a = ptrToString(aPtr);
+        if (!ledger.has(a)) {
+          ERROR('data entry not found');
+        }
+        return newArrayBuffer(
+          keysPage(ledger.get(a).storage, prefix, startKey, count),
+        );
       },
 
       assembly_script_has_op_key(kPtr) {
@@ -673,8 +766,10 @@ export default function createMockedABI(
       assembly_script_get_op_data(kPtr) {
         const k = ptrToUint8ArrayString(kPtr);
 
-        if (!opDatastore.has(k)){
-          ERROR(`Runtime error: key ${k} does not exist in operation datastore.`);
+        if (!opDatastore.has(k)) {
+          ERROR(
+            `Runtime error: key ${k} does not exist in operation datastore.`,
+          );
         }
 
         return newArrayBuffer(opDatastore.get(k));

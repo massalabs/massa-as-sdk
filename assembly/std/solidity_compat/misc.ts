@@ -25,10 +25,14 @@ export function selfDestruct(transferToAddr: Address): void {
   let emptySc = new StaticArray<u8>(0);
   env.setBytecode(emptySc);
 
-  // 2- delete everything in Storage
-  let keys = Storage.getKeys(new StaticArray<u8>(0));
-  for (let i = 0; i < keys.length; i++) {
-    Storage.del(keys[i]);
+  // 2- delete everything in Storage, one page at a time: deleted keys leave the
+  //    datastore, so each page is read from the beginning again
+  let keys = Storage.getKeysPage();
+  while (keys.length > 0) {
+    for (let i = 0; i < keys.length; i++) {
+      Storage.del(keys[i]);
+    }
+    keys = Storage.getKeysPage();
   }
 
   // 3- transfer back coins if any
