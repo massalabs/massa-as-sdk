@@ -1,7 +1,5 @@
 # Massa-as-sdk
 
-![check-code-coverage](https://img.shields.io/badge/coverage-%25-red)
-
 Massa-as-sdk is a collection of tools, objects, and functions specifically designed for Massa smart contracts in AssemblyScript. This SDK enables you to import object classes, such as address and storage objects, and use them without having to write them from scratch every time. Additionally, it allows you to use Massa's ABI functions.
 
 > _Massa-as-sdk is part of the Massa smart contract tooling. To learn more about Massa and its capabilities, visit the [Massa website](https://massa.net)._
@@ -38,6 +36,3 @@ If you would like to contribute to Massa-as-sdk, please read the [CONTRIBUTING f
 
 ## License
 Massa-as-sdk is released under the [MIT License](LICENSE).
-
-## Powered By
-Massa-as-sdk is developed with love by MassaLabs and powered by a variety of [open-source projects](powered-by.md).
