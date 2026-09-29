@@ -316,12 +316,25 @@ export function hasOf<T>(address: Address, key: T): bool {
 }
 
 /**
+ * Maximum number of keys returned by one datastore key query from execution version 2 (MIP-0002).
+ *
+ * It is the largest `count` accepted by {@link getKeysPage} and {@link getKeysOfPage}, and the largest number of
+ * keys {@link getKeys} and {@link getKeysOf} can match before failing.
+ */
+export const MAX_DATASTORE_KEYS_PAGE: i32 = 500;
+
+/**
  * Retrieves all the keys from the datastore.
+ *
+ * @deprecated From execution version 2 (MIP-0002), the call fails when more than {@link MAX_DATASTORE_KEYS_PAGE}
+ * keys match `prefix`: the result is never truncated. Use {@link getKeysPage} for a datastore that can grow.
  *
  * @param prefix - the serialized prefix to filter the keys (optional)
  *
  * @returns - a list of keys (e.g. a list of byte array)
  *
+ * @throws
+ * - from MIP-0002, if more than {@link MAX_DATASTORE_KEYS_PAGE} keys match `prefix`.
  */
 export function getKeys(
   prefix: StaticArray<u8> = new StaticArray<u8>(0),
@@ -333,11 +346,16 @@ export function getKeys(
 /**
  * Retrieves all the keys from the datastore from a remote address.
  *
+ * @deprecated From execution version 2 (MIP-0002), the call fails when more than {@link MAX_DATASTORE_KEYS_PAGE}
+ * keys match `prefix`: the result is never truncated. Use {@link getKeysOfPage} for a datastore that can grow.
+ *
  * @param address - the address in the datastore
  * @param prefix - the prefix to filter the keys (optional)
  *
  * @returns - a list of key (e.g. a list of byte array)
  *
+ * @throws
+ * - from MIP-0002, if more than {@link MAX_DATASTORE_KEYS_PAGE} keys match `prefix`.
  */
 export function getKeysOf(
   address: string,
@@ -345,4 +363,76 @@ export function getKeysOf(
 ): Array<StaticArray<u8>> {
   let keysSer = env.getKeysOf(address, prefix);
   return derKeys(keysSer);
+}
+
+/**
+ * Retrieves one page of keys from the datastore, in ascending byte order.
+ *
+ * To read every key, pass the last key of the previous page as `startKey` until a page shorter than `count` is
+ * returned:
+ * ```ts
+ * let cursor = new StaticArray<u8>(0);
+ * while (true) {
+ *   const page = Storage.getKeysPage(prefix, cursor);
+ *   // ... process page ...
+ *   if (page.length < MAX_DATASTORE_KEYS_PAGE) break;
+ *   cursor = page[page.length - 1];
+ * }
+ * ```
+ *
+ * Process each page, then drop it. Do not concatenate pages into one array (a "get all keys" helper): the result
+ * grows with the datastore, and decoding the keys costs gas per key. A datastore of a few thousand keys then exhausts
+ * the contract memory (a few MB) or the gas of the operation, and a failed operation consumes all of its gas. When the
+ * work does not fit in one operation, save the cursor in the datastore and resume from it in the next call.
+ *
+ * @remarks
+ * Available from execution version 2 (MIP-0002). A contract calling this function cannot be deployed or executed
+ * before MIP-0002 is active. Each call costs a flat amount of gas, whatever `count` and the number of keys returned.
+ *
+ * @param prefix - only keys starting with this prefix are returned. Empty matches every key.
+ * @param startKey - exclusive cursor: only keys strictly greater than it are returned. Empty starts at the
+ * beginning of the range.
+ * @param count - maximum number of keys returned, in `1..=`{@link MAX_DATASTORE_KEYS_PAGE}.
+ *
+ * @returns - up to `count` keys
+ *
+ * @throws
+ * - if `count` is outside `1..=`{@link MAX_DATASTORE_KEYS_PAGE}.
+ */
+export function getKeysPage(
+  prefix: StaticArray<u8> = new StaticArray<u8>(0),
+  startKey: StaticArray<u8> = new StaticArray<u8>(0),
+  count: i32 = MAX_DATASTORE_KEYS_PAGE,
+): Array<StaticArray<u8>> {
+  return derKeys(env.getKeysPage(prefix, startKey, count));
+}
+
+/**
+ * Retrieves one page of keys from the datastore of a remote address, in ascending byte order.
+ *
+ * See {@link getKeysPage} for the pagination pattern.
+ *
+ * @remarks
+ * Available from execution version 2 (MIP-0002). A contract calling this function cannot be deployed or executed
+ * before MIP-0002 is active.
+ *
+ * @param address - the address whose datastore is read
+ * @param prefix - only keys starting with this prefix are returned. Empty matches every key.
+ * @param startKey - exclusive cursor: only keys strictly greater than it are returned. Empty starts at the
+ * beginning of the range.
+ * @param count - maximum number of keys returned, in `1..=`{@link MAX_DATASTORE_KEYS_PAGE}.
+ *
+ * @returns - up to `count` keys
+ *
+ * @throws
+ * - if `count` is outside `1..=`{@link MAX_DATASTORE_KEYS_PAGE}.
+ * - if the address does not exist.
+ */
+export function getKeysOfPage(
+  address: string,
+  prefix: StaticArray<u8> = new StaticArray<u8>(0),
+  startKey: StaticArray<u8> = new StaticArray<u8>(0),
+  count: i32 = MAX_DATASTORE_KEYS_PAGE,
+): Array<StaticArray<u8>> {
+  return derKeys(env.getKeysOfPage(address, prefix, startKey, count));
 }
